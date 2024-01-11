@@ -1,1 +1,14 @@
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
 
+spring:
+  data:
+    mongodb:
+      host: ${HOST:localhost}
+      port: ${PORT:27017}
+      database: ${DATABASE}
