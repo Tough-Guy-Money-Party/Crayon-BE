@@ -12,6 +12,6 @@ public class ClubGetServiceImpl implements ClubGetService {
     private final ClubRepository clubRepository;
 
     public Club byId(String id) {
-        return clubRepository.findById(id).orElseThrow(ClubNotFoundException::new);
+        return clubRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(ClubNotFoundException::new);
     }
 }

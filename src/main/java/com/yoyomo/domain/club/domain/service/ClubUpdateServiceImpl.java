@@ -1,7 +1,9 @@
 package com.yoyomo.domain.club.domain.service;
 
+import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -20,14 +22,26 @@ public class ClubUpdateServiceImpl implements ClubUpdateService {
     private final MongoTemplate mongoTemplate;
 
     public void from(String id, ClubRequest request) {
-        Query query = query(where(ID).is(id));
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
         Update update = mapToUpdate(request);
-        mongoTemplate.updateFirst(query, update, Club.class);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
     }
 
     public void delete(String id) {
-        Query query = query(where(ID).is(id));
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
         Update update = new Update().currentDate(DELETED_AT);
-        mongoTemplate.updateFirst(query, update, Club.class);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
+    }
+
+    private void checkIsDeleted(UpdateResult result) {
+        if (result.getMatchedCount() == 0) {
+            throw new ClubNotFoundException();
+        }
     }
 }
