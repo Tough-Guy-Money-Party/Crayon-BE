@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.presentation;
 
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -23,9 +24,9 @@ public class ClubController {
 
     @PostMapping
     @Operation(summary = "동아리 생성")
-    public ResponseDto create(@RequestBody ClubRequest clubRequest) {
-        String clubId = clubManageUseCase.create(clubRequest);
-        return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), clubId);
+    public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest) {
+        ClubCreateResponse response = clubManageUseCase.create(clubRequest);
+        return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 
     @GetMapping("/{id}")

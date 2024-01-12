@@ -1,7 +1,9 @@
 package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
+import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
@@ -17,19 +19,17 @@ public class ClubManageUseCase {
     private final ClubGetService clubGetService;
     private final ClubSaveService clubSaveService;
     private final ClubUpdateService updateService;
+    private final ClubMapper clubMapper;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
-        return new ClubResponse(club.getName(), club.getDescription());
+        return clubMapper.clubToClubResponse(club);
     }
 
-    public String create(ClubRequest request) {
-        Club club = Club.builder()
-                .name(request.name())
-                .subDomain(request.subDomain())
-                .description(request.description())
-                .build();
-        return clubSaveService.save(club).getId();
+    public ClubCreateResponse create(ClubRequest request) {
+        Club club = clubMapper.from(request);
+        String id = clubSaveService.save(club).getId();
+        return new ClubCreateResponse(id);
     }
 
     public void update(String id, ClubRequest request) {
