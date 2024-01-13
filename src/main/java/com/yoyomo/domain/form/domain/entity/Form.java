@@ -20,5 +20,5 @@ public class Form {
     private String id;
     private String clubId;
     private String name;
-    private List<Item> formItems;
+    private List<Item> items;
 }
