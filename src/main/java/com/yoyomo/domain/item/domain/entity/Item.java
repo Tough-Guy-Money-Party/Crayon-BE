@@ -16,7 +16,7 @@ import org.springframework.data.annotation.Id;
 public class Item {
     @Id
     @Builder.Default
-    private ObjectId id = ObjectId.get();
+    private String id = ObjectId.get().toHexString();
     private String question;
     private Type type;
     private int order;
