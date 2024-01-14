@@ -11,7 +11,7 @@ public enum ResponseMessage {
     SUCCESS_UPDATE("지원폼 수정에 성공했습니다."),
     SUCCESS_DELETE("지원폼 삭제에 성공했습니다."),
 
-    CLUB_NOT_FOUND("존재하지 않는 지원폼입니다."),
+    FORM_NOT_FOUND("존재하지 않는 지원폼입니다."),
     ;
     private String message;
 }
