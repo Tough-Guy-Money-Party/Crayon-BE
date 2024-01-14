@@ -1,4 +1,4 @@
-package com.yoyomo.domain.item.application.dto;
+package com.yoyomo.domain.item.application.dto.req;
 
 import com.yoyomo.domain.item.domain.entity.type.Type;
 

@@ -1,6 +1,6 @@
 package com.yoyomo.domain.item.presentation;
 
-import com.yoyomo.domain.item.application.dto.ItemRequest;
+import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;

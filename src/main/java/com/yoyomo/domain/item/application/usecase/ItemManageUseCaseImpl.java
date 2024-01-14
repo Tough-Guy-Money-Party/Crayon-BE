@@ -1,7 +1,7 @@
 package com.yoyomo.domain.item.application.usecase;
 
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
-import com.yoyomo.domain.item.application.dto.ItemRequest;
+import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
 import lombok.RequiredArgsConstructor;
