@@ -12,3 +12,16 @@ spring:
       host: ${HOST:localhost}
       port: ${PORT:27017}
       database: ${DATABASE}
+    redis:
+      host: localhost
+      port: 6379
+  jwt:
+    token:
+      access-expiration-time: 43200000
+      refresh-expiration-time: 604800000
+
+jwt:
+  access_secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345
+  refresh_secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345
+
+is-using-refresh-token: true
