@@ -6,25 +6,31 @@ import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.item.presentation.constant.ResponseMessage.SUCCESS_CREATE;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @Tag(name = "ITEM")
 @RestController
-@RequestMapping("/item")
+@RequestMapping("/form/{formId}/item")
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemManageUseCase itemManageUseCase;
 
     @PostMapping
     @Operation(summary = "항목 생성")
-    public ResponseDto create(@RequestBody ItemRequest itemRequest) {
-        itemManageUseCase.create(itemRequest);
+    public ResponseDto create(@PathVariable String formId, @RequestBody ItemRequest itemRequest) {
+        itemManageUseCase.create(formId, itemRequest);
+        return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
+    }
+
+    @PatchMapping("/{itemId}")
+    @Operation(summary = "항목 수정")
+    public ResponseDto update(@PathVariable String formId,
+                              @PathVariable String itemId,
+                              @RequestBody ItemRequest request) {
+        itemManageUseCase.update(formId, itemId, request);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 }

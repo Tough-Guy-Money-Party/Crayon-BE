@@ -15,8 +15,15 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
     private final ItemFactory itemFactory;
     private final FormUpdateService formUpdateService;
 
-    public void create(ItemRequest request) {
+    @Override
+    public void create(String formId, ItemRequest request) {
         Item item = itemFactory.createItem(request);
-        formUpdateService.addItem(request.formId(), item);
+        formUpdateService.addItem(formId, item);
+    }
+
+    @Override
+    public void update(String formId, String itemId, ItemRequest request) {
+        Item item = itemFactory.createItem(request);
+        formUpdateService.updateItem(formId, itemId, item);
     }
 }
