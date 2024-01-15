@@ -26,4 +26,9 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
         Item item = itemFactory.createItem(request);
         formUpdateService.updateItem(formId, itemId, item);
     }
+
+    @Override
+    public void delete(String formId, String itemId) {
+        formUpdateService.deleteItem(formId, itemId);
+    }
 }

@@ -27,4 +27,10 @@ public class FormUpdateService {
         form.addItem(item);
         formSaveService.save(form);
     }
+
+    public void deleteItem(String formId, String itemId) {
+        Form form = formGetService.byId(formId);
+        form.removeItem(itemId);
+        formSaveService.save(form);
+    }
 }

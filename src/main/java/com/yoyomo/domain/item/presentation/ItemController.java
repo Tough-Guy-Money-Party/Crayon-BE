@@ -8,8 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.domain.item.presentation.constant.ResponseMessage.SUCCESS_CREATE;
+import static com.yoyomo.domain.item.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "ITEM")
 @RestController
@@ -31,6 +32,13 @@ public class ItemController {
                               @PathVariable String itemId,
                               @RequestBody ItemRequest request) {
         itemManageUseCase.update(formId, itemId, request);
-        return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @PatchMapping("/{itemId}")
+    @Operation(summary = "항목 삭제")
+    public ResponseDto update(@PathVariable String formId, @PathVariable String itemId) {
+        itemManageUseCase.delete(formId, itemId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 }
