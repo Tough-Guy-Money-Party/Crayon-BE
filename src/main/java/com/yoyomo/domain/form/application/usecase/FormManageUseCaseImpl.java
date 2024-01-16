@@ -19,7 +19,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public FormResponse read(String id) {
-        Form form = formGetService.byId(id);
+        Form form = formGetService.find(id);
         return formMapper.mapToFormResponse(form);
     }
 

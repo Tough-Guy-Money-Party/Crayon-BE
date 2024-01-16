@@ -16,20 +16,19 @@ public class FormUpdateService {
     private final FormGetService formGetService;
 
     public void addItem(String formId, Item item) {
-        Form form = formGetService.byId(formId);
+        Form form = formGetService.find(formId);
         form.addItem(item);
         formSaveService.save(form);
     }
 
     public void updateItem(String formId, String itemId, Item item) {
-        Form form = formGetService.byId(formId);
-        form.removeItem(itemId);
-        form.addItem(item);
+        Form form = formGetService.find(formId);
+        form.updateItem(itemId, item);
         formSaveService.save(form);
     }
 
     public void deleteItem(String formId, String itemId) {
-        Form form = formGetService.byId(formId);
+        Form form = formGetService.find(formId);
         form.removeItem(itemId);
         formSaveService.save(form);
     }

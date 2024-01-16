@@ -2,10 +2,10 @@ package com.yoyomo.domain.form.application.dto.res;
 
 import com.yoyomo.domain.item.domain.entity.Item;
 
-import java.util.List;
+import java.util.Map;
 
 public record FormResponse(
         String name,
-        List<Item> items
+        Map<String, Item> items
 ) {
 }

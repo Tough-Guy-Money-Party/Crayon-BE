@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class FormGetService {
     private final FormRepository formRepository;
 
-    public Form byId(String id) {
+    public Form find(String id) {
         return formRepository.findById(id).orElseThrow();
     }
 }
