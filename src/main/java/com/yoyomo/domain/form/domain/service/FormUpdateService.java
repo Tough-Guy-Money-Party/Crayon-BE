@@ -12,13 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class FormUpdateService {
-    private final FormSaveService formSaveService;
-    private final FormGetService formGetService;
+    private static final String ID = "id";
+    private static final String DELETED_AT = "deletedAt";
+    private final MongoTemplate mongoTemplate;
 
-    public void addItem(String formId, Item item) {
-        Form form = formGetService.find(formId);
-        form.addItem(item);
-        formSaveService.save(form);
+    public void from(String id, FormRequest request) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = MapperUtil.mapToUpdate(request);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
+        checkIsDeleted(result);
     }
 
     public void updateItem(String formId, String itemId, Item item) {
@@ -27,9 +31,9 @@ public class FormUpdateService {
         formSaveService.save(form);
     }
 
-    public void deleteItem(String formId, String itemId) {
-        Form form = formGetService.find(formId);
-        form.removeItem(itemId);
-        formSaveService.save(form);
+    private void checkIsDeleted(UpdateResult result) {
+        if (result.getMatchedCount() == 0) {
+            throw new ClubNotFoundException();
+        }
     }
 }

@@ -13,4 +13,7 @@ public interface FormManageUseCase {
     List<FormResponse> read();
 
     FormCreateResponse create(FormRequest request);
+
+    void update(String id, FormRequest request);
+
 }

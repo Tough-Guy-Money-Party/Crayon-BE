@@ -40,4 +40,9 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         String id = formSaveService.save(form).getId();
         return new FormCreateResponse(id);
     }
+
+    @Override
+    public void update(String id, FormRequest request) {
+        formUpdateService.from(id, request);
+    }
 }

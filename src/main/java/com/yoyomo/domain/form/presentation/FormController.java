@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_CREATE;
-import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -45,4 +44,12 @@ public class FormController {
         FormCreateResponse response = formManageUseCase.create(request);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
+
+    @PatchMapping("/{formId}")
+    @Operation(summary = "지원폼 수정")
+    public ResponseDto update(@PathVariable String formId, @RequestBody FormRequest request) {
+        formManageUseCase.update(formId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
 }
