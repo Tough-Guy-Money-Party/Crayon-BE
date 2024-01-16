@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_CREATE;
 import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_READ;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -23,10 +25,17 @@ public class FormController {
     private final FormManageUseCase formManageUseCase;
 
     @GetMapping("/{formId}")
-    @Operation(summary = "지원폼 조회")
+    @Operation(summary = "지원폼 상세 조회")
     public ResponseDto<FormResponse> read(@PathVariable String formId) {
         FormResponse response = formManageUseCase.read(formId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "지원폼 목록 조회")
+    public ResponseDto<List<FormResponse>> readAll() {
+        List<FormResponse> responses = formManageUseCase.read();
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
     @PostMapping

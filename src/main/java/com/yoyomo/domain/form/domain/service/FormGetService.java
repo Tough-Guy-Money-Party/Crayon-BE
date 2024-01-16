@@ -5,6 +5,8 @@ import com.yoyomo.domain.form.domain.repository.FormRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FormGetService {
@@ -12,5 +14,9 @@ public class FormGetService {
 
     public Form find(String id) {
         return formRepository.findById(id).orElseThrow();
+    }
+
+    public List<Form> findAll() {
+        return formRepository.findAll();
     }
 }

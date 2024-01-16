@@ -10,6 +10,8 @@ import com.yoyomo.domain.form.domain.service.FormSaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FormManageUseCaseImpl implements FormManageUseCase {
@@ -21,6 +23,14 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public FormResponse read(String id) {
         Form form = formGetService.find(id);
         return formMapper.mapToFormResponse(form);
+    }
+
+    @Override
+    public List<FormResponse> read() {
+        List<Form> forms = formGetService.findAll();
+        return forms.stream()
+                .map(formMapper::mapToFormResponse)
+                .toList();
     }
 
     @Override
