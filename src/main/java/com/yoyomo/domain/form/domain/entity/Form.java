@@ -1,15 +1,18 @@
 package com.yoyomo.domain.form.domain.entity;
 
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.item.exception.ItemNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -22,17 +25,24 @@ public class Form {
     private String clubId;
     private String name;
     @Builder.Default
-    private List<Item> items = new ArrayList<>();
+    private Map<String, Item> items = new LinkedHashMap<>();
 
-    public void addItem(Item item) {
-        this.items.add(item);
+    public Item getItem(String itemId) {
+        return Optional.ofNullable(items.get(itemId))
+                .orElseThrow(ItemNotFoundException::new);
     }
 
-    public void removeItem(String id) {
-        Item item = items.stream()
-                .filter(i -> i.getId().equals(id))
-                .findFirst()
-                .orElseThrow(NoSuchFieldError::new);
-        items.remove(item);
+    public void addItem(Item item) {
+        this.items.put(ObjectId.get().toHexString(), item);
+    }
+
+    public void updateItem(String itemId, Item item) {
+        Optional.ofNullable(items.replace(itemId, item))
+                .orElseThrow(ItemNotFoundException::new);
+    }
+
+    public void removeItem(String itemId) {
+        Optional.ofNullable(items.remove(itemId))
+                .orElseThrow(ItemNotFoundException::new);
     }
 }
