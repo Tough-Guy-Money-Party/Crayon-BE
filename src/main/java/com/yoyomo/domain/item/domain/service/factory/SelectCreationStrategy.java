@@ -7,6 +7,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SelectCreationStrategy implements ItemCreationStrategy {
+    private static SelectCreationStrategy instance;
+
+    private SelectCreationStrategy() {
+    }
+
+    public static SelectCreationStrategy getInstance() {
+        if (instance == null) {
+            return instance = new SelectCreationStrategy();
+        }
+        return instance;
+    }
 
     @Override
     public Item create(ItemRequest request) {

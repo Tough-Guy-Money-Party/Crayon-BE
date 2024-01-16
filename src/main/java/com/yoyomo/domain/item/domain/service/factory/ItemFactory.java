@@ -13,10 +13,10 @@ public class ItemFactory {
 
     private ItemFactory() {
         this.creationStrategies = Map.of(
-                Type.RADIO, new SelectCreationStrategy(),
-                Type.CHECKBOX, new SelectCreationStrategy(),
-                Type.SHORT, new TextCreationStrategy(),
-                Type.LONG, new TextCreationStrategy()
+                Type.RADIO, SelectCreationStrategy.getInstance(),
+                Type.CHECKBOX, SelectCreationStrategy.getInstance(),
+                Type.SHORT, TextCreationStrategy.getInstance(),
+                Type.LONG, TextCreationStrategy.getInstance()
         );
     }
 

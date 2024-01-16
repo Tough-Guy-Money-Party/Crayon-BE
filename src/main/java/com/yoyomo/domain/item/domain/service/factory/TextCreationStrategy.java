@@ -7,6 +7,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TextCreationStrategy implements ItemCreationStrategy {
+    private static TextCreationStrategy instance;
+
+    private TextCreationStrategy() {
+    }
+
+    public static TextCreationStrategy getInstance() {
+        if (instance == null) {
+            return instance = new TextCreationStrategy();
+        }
+        return instance;
+    }
+
     @Override
     public Item create(ItemRequest request) {
         return Text.builder()
