@@ -19,8 +19,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Transactional
 @RequiredArgsConstructor
 public class ClubUpdateService {
-    String ID = "id";
-    String DELETED_AT = "deletedAt";
+    private static final String ID = "id";
+    private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
     public void from(String id, ClubRequest request) {
