@@ -16,4 +16,5 @@ public interface FormManageUseCase {
 
     void update(String id, FormRequest request);
 
+    void delete(String formId);
 }

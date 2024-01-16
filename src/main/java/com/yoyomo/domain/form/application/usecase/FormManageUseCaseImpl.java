@@ -8,6 +8,7 @@ import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
+import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormGetService formGetService;
     private final FormSaveService formSaveService;
+    private final FormUpdateService formUpdateService;
     private final FormMapper formMapper;
 
     @Override
@@ -44,5 +46,10 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public void update(String id, FormRequest request) {
         formUpdateService.from(id, request);
+    }
+
+    @Override
+    public void delete(String id) {
+        formUpdateService.delete(id);
     }
 }

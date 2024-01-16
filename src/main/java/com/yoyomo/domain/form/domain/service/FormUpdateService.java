@@ -1,13 +1,20 @@
 package com.yoyomo.domain.form.domain.service;
 
+import com.mongodb.client.result.UpdateResult;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
+import com.yoyomo.domain.form.application.dto.req.FormRequest;
 import com.yoyomo.domain.form.domain.entity.Form;
-import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,10 +32,13 @@ public class FormUpdateService {
         checkIsDeleted(result);
     }
 
-    public void updateItem(String formId, String itemId, Item item) {
-        Form form = formGetService.find(formId);
-        form.updateItem(itemId, item);
-        formSaveService.save(form);
+    public void delete(String id) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = new Update().currentDate(DELETED_AT);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
+        checkIsDeleted(result);
     }
 
     private void checkIsDeleted(UpdateResult result) {

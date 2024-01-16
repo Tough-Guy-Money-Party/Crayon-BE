@@ -52,4 +52,10 @@ public class FormController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    @DeleteMapping("/{formId}")
+    @Operation(summary = "지원폼 삭제")
+    public ResponseDto delete(@PathVariable String formId) {
+        formManageUseCase.delete(formId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
 }
