@@ -10,9 +10,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Getter
 @Builder
@@ -25,7 +24,10 @@ public class Form {
     private String clubId;
     private String name;
     @Builder.Default
+    private List<String> process = new LinkedList<>();
+    @Builder.Default
     private Map<String, Item> items = new LinkedHashMap<>();
+    private LocalDateTime deletedAt;
 
     public Item getItem(String itemId) {
         return Optional.ofNullable(items.get(itemId))
