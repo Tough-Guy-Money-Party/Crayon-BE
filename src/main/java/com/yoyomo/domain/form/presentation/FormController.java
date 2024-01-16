@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.presentation;
 
 import com.yoyomo.domain.form.application.dto.req.FormRequest;
 import com.yoyomo.domain.form.application.dto.res.FormCreateResponse;
+import com.yoyomo.domain.form.application.dto.res.FormDetailsResponse;
 import com.yoyomo.domain.form.application.dto.res.FormResponse;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -26,8 +27,8 @@ public class FormController {
 
     @GetMapping("/{formId}")
     @Operation(summary = "지원폼 상세 조회")
-    public ResponseDto<FormResponse> read(@PathVariable String formId) {
-        FormResponse response = formManageUseCase.read(formId);
+    public ResponseDto<FormDetailsResponse> read(@PathVariable String formId) {
+        FormDetailsResponse response = formManageUseCase.read(formId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 

@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.form.application.dto.req.FormRequest;
 import com.yoyomo.domain.form.application.dto.res.FormCreateResponse;
+import com.yoyomo.domain.form.application.dto.res.FormDetailsResponse;
 import com.yoyomo.domain.form.application.dto.res.FormResponse;
 import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
@@ -20,9 +21,9 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormMapper formMapper;
 
     @Override
-    public FormResponse read(String id) {
+    public FormDetailsResponse read(String id) {
         Form form = formGetService.find(id);
-        return formMapper.mapToFormResponse(form);
+        return formMapper.mapToFormDetailsResponse(form);
     }
 
     @Override
