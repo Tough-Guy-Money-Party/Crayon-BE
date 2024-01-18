@@ -6,12 +6,18 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
 
+#spring:
+#  data:
+#    mongodb:
+#      host: ${HOST:localhost}
+#      port: ${PORT:27017}
+#      database: ${DATABASE}
 spring:
   data:
     mongodb:
-      host: ${HOST:localhost}
-      port: ${PORT:27017}
-      database: ${DATABASE}
+      host: localhost
+      port: 27017
+      database: yoyomo
     redis:
       host: localhost
       port: 6379
@@ -19,6 +25,10 @@ spring:
     token:
       access-expiration-time: 43200000
       refresh-expiration-time: 604800000
+#  security:
+#    user:
+#      name: user
+#      password: 0791b2d8-45e8-4313-8f00-3afe53ce896c
 
 jwt:
   access_secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345

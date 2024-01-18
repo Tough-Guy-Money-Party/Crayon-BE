@@ -1,9 +1,10 @@
 package com.yoyomo.global.config.jwt.exception;
 
 import com.yoyomo.global.config.exception.ApplicationException;
-
+import static com.yoyomo.global.config.jwt.presentation.constant.ResponseMessage.INVALID_TOKEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class InvalidTokenException extends ApplicationException {
     public InvalidTokenException() {
-        super(401,"유효하지 않은 토큰입니다.");
+        super(UNAUTHORIZED.value(),INVALID_TOKEN.getMessage());
     }
 }

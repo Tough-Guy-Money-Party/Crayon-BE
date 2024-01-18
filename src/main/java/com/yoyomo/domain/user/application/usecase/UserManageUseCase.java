@@ -22,31 +22,31 @@ public class UserManageUseCase {
     private final UserSaveService userSaveService;
     private final UserUpdateService userUpdateService;
 
-    public ResponseEntity<UserResponse> login(LoginRequest request) throws Exception {
+    public UserResponse login(LoginRequest request) throws Exception {
         return userGetService.login(request.getAccessToken());
     }
 
-    public ResponseEntity<Void> register(RegisterRequest request) throws Exception {
+    public Void register(RegisterRequest request) throws Exception {
         return userSaveService.register(request.getAccessToken(), request.getName(), request.getNumber());
     }
 
-    public ResponseEntity<UserResponse> testLogin(TestLoginRequest request) throws Exception {
+    public UserResponse testLogin(TestLoginRequest request) throws Exception {
         return userGetService.testLogin(request.getEmail());
     }
 
-    public ResponseEntity<Void> testRegister(TestRegisterRequest request) throws Exception {
+    public Void testRegister(TestRegisterRequest request) throws Exception {
         return userSaveService.testRegister(request.getEmail(), request.getName(), request.getNumber());
     }
 
-    public ResponseEntity<JwtResponse> tokenRefresh(RefreshRequest request) throws Exception {
+    public JwtResponse tokenRefresh(RefreshRequest request) throws Exception {
         return userGetService.tokenRefresh(request.getRefreshToken(), request.getEmail());
     }
 
-    public ResponseEntity<Void> update(Authentication authentication) {
+    public Void update(Authentication authentication) {
         return userUpdateService.update(authentication.getName());
     }
 
-    public ResponseEntity<Void> delete(Authentication authentication) {
+    public Void delete(Authentication authentication) {
         return userUpdateService.delete(authentication.getName());
     }
 }

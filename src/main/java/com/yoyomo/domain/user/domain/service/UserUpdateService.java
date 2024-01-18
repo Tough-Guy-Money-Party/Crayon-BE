@@ -25,12 +25,12 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
-    public ResponseEntity<Void> update(String email) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public Void update(String email) {
+        return null;
     }
 
-    public ResponseEntity<Void> delete(String email) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public Void delete(String email) {
+        return null;
     }
 
 }
