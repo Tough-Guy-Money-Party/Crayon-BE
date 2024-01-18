@@ -20,59 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserGetService {
-
-    @Value("${is-using-refresh-token}")
-    private boolean isUsingRefreshToken;
-
     private final UserRepository userRepository;
-    private final KakaoService kakaoService;
-    private final JwtProvider jwtProvider;
-    public UserResponse login(String token) throws Exception{
-        String email = kakaoService.getEmail(token);
-        if (userRepository.existsByEmail(email)) {
-            User user = userRepository.findByEmail(email).get();
-            JwtResponse tokenDto = new JwtResponse(
-                    jwtProvider.createAccessToken(user.getEmail()),
-                    jwtProvider.createRefreshToken(user.getEmail())
-            );
-            UserResponse signResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .number(user.getNumber())
-                    .token(tokenDto)
-                    .build();
-            return signResponse;
-        }
-        throw new UserNotFoundException();
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).get();
     }
 
-    public UserResponse testLogin(String email) {
-        if (userRepository.existsByEmail(email)) {
-            User user = userRepository.findByEmail(email).get();
-            JwtResponse tokenDto = new JwtResponse(
-                    jwtProvider.createAccessToken(user.getEmail()),
-                    isUsingRefreshToken
-                            ? jwtProvider.createRefreshToken(user.getEmail())
-                            : "No Refresh Token Provided"
-            );
-            UserResponse signResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .number(user.getNumber())
-                    .token(tokenDto)
-                    .build();
-            return signResponse;
-        }
-        throw new UserNotFoundException();
-    }
-
-    public JwtResponse tokenRefresh(String refreshToken, String email) throws Exception {
-        if(isUsingRefreshToken){
-            JwtResponse jwtResponse = jwtProvider.reissueToken(refreshToken, email);
-            return jwtResponse;
-        }
-        return null;
+    public Boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
     }
 }

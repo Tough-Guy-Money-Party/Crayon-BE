@@ -25,11 +25,11 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
-    public Void update(String email) {
+    public Void updateByEmail(String email) {
         return null;
     }
 
-    public Void delete(String email) {
+    public Void deleteByEmail(String email) {
         return null;
     }
 
