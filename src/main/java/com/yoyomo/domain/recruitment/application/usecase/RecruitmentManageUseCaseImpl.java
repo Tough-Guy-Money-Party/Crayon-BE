@@ -45,4 +45,9 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public void update(String recruitmentId, RecruitmentRequest request) {
         recruitmentUpdateService.from(recruitmentId, request);
     }
+
+    @Override
+    public void delete(String recruitmentId) {
+        recruitmentUpdateService.delete(recruitmentId);
+    }
 }

@@ -14,4 +14,6 @@ public interface RecruitmentManageUseCase {
     List<RecruitmentResponse> readAll(String formId);
 
     void update(String recruitmentId, RecruitmentRequest request);
+
+    void delete(String recruitmentId);
 }

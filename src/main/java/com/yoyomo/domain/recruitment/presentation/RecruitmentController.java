@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CREATE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -51,6 +50,13 @@ public class RecruitmentController {
                               @PathVariable String recruitmentId,
                               @RequestBody RecruitmentRequest request) {
         recruitmentManageUseCase.update(recruitmentId, request);
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @DeleteMapping("/{recruitmentId}")
+    @Operation(summary = "모집 수정")
+    public ResponseDto update(@PathVariable String formId, @PathVariable String recruitmentId) {
+        recruitmentManageUseCase.delete(recruitmentId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 }

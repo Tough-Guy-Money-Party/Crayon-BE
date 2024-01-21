@@ -1,7 +1,9 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
+import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +28,22 @@ public class RecruitmentUpdateService {
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = MapperUtil.mapToUpdate(request);
-        mongoTemplate.updateFirst(query, update, Recruitment.class);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
+        checkIsDeleted(result);
+    }
+
+    public void delete(String id) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = new Update().currentDate(DELETED_AT);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
+        checkIsDeleted(result);
+    }
+
+    private void checkIsDeleted(UpdateResult result) {
+        if (result.getMatchedCount() == 0) {
+            throw new RecruitmentNotFoundException();
+        }
     }
 }
