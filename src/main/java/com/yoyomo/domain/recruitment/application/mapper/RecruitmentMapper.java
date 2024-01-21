@@ -10,5 +10,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RecruitmentMapper {
-    Recruitment from(RecruitmentRequest request);
+    Recruitment from(String formId, RecruitmentRequest request);
 }

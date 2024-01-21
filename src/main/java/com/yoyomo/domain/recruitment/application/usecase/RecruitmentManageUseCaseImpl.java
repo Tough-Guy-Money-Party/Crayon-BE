@@ -14,8 +14,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentMapper recruitmentMapper;
 
     @Override
-    public void create(RecruitmentRequest request) {
-        Recruitment recruitment = recruitmentMapper.from(request);
+    public void create(String formId, RecruitmentRequest request) {
+        Recruitment recruitment = recruitmentMapper.from(formId, request);
         recruitmentSaveService.save(recruitment);
     }
 }
