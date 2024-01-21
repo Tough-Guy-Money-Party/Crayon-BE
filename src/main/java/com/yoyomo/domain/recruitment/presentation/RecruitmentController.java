@@ -54,7 +54,7 @@ public class RecruitmentController {
     }
 
     @DeleteMapping("/{recruitmentId}")
-    @Operation(summary = "모집 수정")
+    @Operation(summary = "모집 삭제")
     public ResponseDto update(@PathVariable String formId, @PathVariable String recruitmentId) {
         recruitmentManageUseCase.delete(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
