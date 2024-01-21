@@ -12,4 +12,6 @@ public interface RecruitmentManageUseCase {
     RecruitmentDetailsResponse read(String recruitmentId);
 
     List<RecruitmentResponse> readAll(String formId);
+
+    void update(String recruitmentId, RecruitmentRequest request);
 }

@@ -32,16 +32,25 @@ public class RecruitmentController {
     }
 
     @GetMapping("/{recruitmentId}")
-    @Operation(summary = "모집 조회")
+    @Operation(summary = "모집 상세 조회")
     public ResponseDto<RecruitmentDetailsResponse> read(@PathVariable String formId, @PathVariable String recruitmentId) {
         RecruitmentDetailsResponse response = recruitmentManageUseCase.read(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
     @GetMapping("/list")
-    @Operation(summary = "모집 조회")
+    @Operation(summary = "모집 목록 조회")
     public ResponseDto<List<RecruitmentResponse>> readAll(@PathVariable String formId) {
         List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(formId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
+    }
+
+    @PatchMapping("/{recruitmentId}")
+    @Operation(summary = "모집 수정")
+    public ResponseDto update(@PathVariable String formId,
+                              @PathVariable String recruitmentId,
+                              @RequestBody RecruitmentRequest request) {
+        recruitmentManageUseCase.update(recruitmentId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage());
     }
 }

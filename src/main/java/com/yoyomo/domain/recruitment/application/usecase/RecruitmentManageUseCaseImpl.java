@@ -7,6 +7,7 @@ import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentSaveService recruitmentSaveService;
     private final RecruitmentGetService recruitmentGetService;
+    private final RecruitmentUpdateService recruitmentUpdateService;
     private final RecruitmentMapper recruitmentMapper;
 
     @Override
@@ -37,5 +39,10 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
         return recruitments.stream()
                 .map(recruitmentMapper::mapToRecruitmentResponse)
                 .toList();
+    }
+
+    @Override
+    public void update(String recruitmentId, RecruitmentRequest request) {
+        recruitmentUpdateService.from(recruitmentId, request);
     }
 }
