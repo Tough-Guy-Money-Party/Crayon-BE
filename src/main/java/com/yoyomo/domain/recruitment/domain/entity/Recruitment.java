@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @Builder
@@ -20,5 +20,5 @@ public class Recruitment {
     private String formId;
     private String name;
     private int generation;
-    private Map<String, Schedule> calendar;
+    private List<Schedule> calendar;
 }
