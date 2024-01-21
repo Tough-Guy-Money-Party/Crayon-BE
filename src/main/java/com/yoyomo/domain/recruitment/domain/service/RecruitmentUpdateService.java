@@ -18,11 +18,12 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @RequiredArgsConstructor
 public class RecruitmentUpdateService {
     private static final String ID = "id";
+    private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
     public void from(String id, RecruitmentRequest request) {
         Query query = query(
-                where(ID).is(id)
+                where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = MapperUtil.mapToUpdate(request);
         mongoTemplate.updateFirst(query, update, Recruitment.class);

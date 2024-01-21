@@ -4,7 +4,10 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RecruitmentRepository extends MongoRepository<Recruitment, String> {
-    List<Recruitment> findAllByFormId(String formId);
+    Optional<Recruitment> findByIdAndDeletedAtIsNull(String id);
+
+    List<Recruitment> findAllByFormIdAndDeletedAtIsNull(String formId);
 }
