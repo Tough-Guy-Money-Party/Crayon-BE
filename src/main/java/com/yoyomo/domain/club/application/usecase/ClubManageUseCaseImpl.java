@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubGetService clubGetService;
     private final ClubSaveService clubSaveService;
-    private final ClubUpdateService updateService;
+    private final ClubUpdateService clubUpdateService;
     private final ClubMapper clubMapper;
 
     public ClubResponse read(String id) {
@@ -33,10 +33,10 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     public void update(String id, ClubRequest request) {
-        updateService.from(id, request);
+        clubUpdateService.from(id, request);
     }
 
     public void delete(String id) {
-        updateService.delete(id);
+        clubUpdateService.delete(id);
     }
 }
