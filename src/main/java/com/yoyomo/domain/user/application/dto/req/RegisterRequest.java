@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class RegisterRequest {
-    private String accessToken;
+    private String email;
     private String name;
     private String number;
 }
