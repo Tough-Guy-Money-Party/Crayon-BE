@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface FormRepository extends MongoRepository<Form, String> {
     Optional<Form> findByIdAndDeletedAtIsNull(String id);
 
-    List<Form> findAllByDeletedAtIsNull();
+    List<Form> findAllByClubIdAndDeletedAtIsNull(String clubId);
 }
