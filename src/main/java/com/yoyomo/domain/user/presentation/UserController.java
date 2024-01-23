@@ -27,14 +27,14 @@ public class UserController {
         return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(),response);
     }
 
-    @GetMapping(value = "/login/{code}")
+    @PostMapping(value = "/login/{code}")
     @Operation(summary = "로그인")
     public ResponseDto<UserResponse> login(@PathVariable String code) throws Exception {
         UserResponse response =  userManageUseCase.login(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
 
-    @GetMapping(value = "/refresh")
+    @PostMapping(value = "/refresh")
     @Operation(summary = "토큰 재발급")
     public ResponseDto<JwtResponse> refresh(@RequestBody RefreshRequest request) throws Exception {
         JwtResponse jwtResponse =  userManageUseCase.tokenRefresh(request);
