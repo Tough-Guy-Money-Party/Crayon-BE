@@ -43,25 +43,25 @@ public class UserManageUseCase {
             );
             UserResponse signResponse = UserResponse.builder()
                     .id(user.getId())
-                    .name(user.getName())
                     .email(user.getEmail())
-                    .number(user.getNumber())
                     .token(tokenDto)
                     .build();
             return signResponse;
+        }else{
+            RegisterRequest registerRequest = RegisterRequest.builder()
+                    .email(email)
+                    .build();
+            return this.register(registerRequest);
         }
-        throw new NeedRegisterException(email);
     }
 
-    public UserResponse register(RegisterRequest request) throws Exception {
+    public UserResponse register(RegisterRequest request) {
         String email = request.getEmail();
         if (userGetService.existsByEmail(email)){
             throw new UserConflictException();
         }
         User user = User.builder()
                 .email(email)
-                .name(request.getName())
-                .number(request.getNumber())
                 .build();
         userSaveService.save(user);
         JwtResponse tokenDto = new JwtResponse(
@@ -70,15 +70,13 @@ public class UserManageUseCase {
         );
         UserResponse signResponse = UserResponse.builder()
                 .id(user.getId())
-                .name(user.getName())
                 .email(user.getEmail())
-                .number(user.getNumber())
                 .token(tokenDto)
                 .build();
         return signResponse;
     }
 
-    public JwtResponse tokenRefresh(RefreshRequest request) throws Exception {
+    public JwtResponse tokenRefresh(RefreshRequest request) {
         if(isUsingRefreshToken){
             JwtResponse jwtResponse = jwtProvider.reissueToken(request.getRefreshToken(), request.getEmail());
             return jwtResponse;
