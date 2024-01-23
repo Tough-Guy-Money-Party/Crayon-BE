@@ -10,7 +10,7 @@ import java.util.List;
 public interface FormManageUseCase {
     FormDetailsResponse read(String id);
 
-    List<FormResponse> read();
+    List<FormResponse> readAll(String clubId);
 
     FormCreateResponse create(FormRequest request);
 

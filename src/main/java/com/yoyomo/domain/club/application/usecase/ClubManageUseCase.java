@@ -5,11 +5,11 @@ import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 
 public interface ClubManageUseCase {
-    public ClubResponse read(String id);
+    ClubResponse read(String id);
 
-    public ClubCreateResponse create(ClubRequest request);
+    ClubCreateResponse create(ClubRequest request);
 
-    public void update(String id, ClubRequest request);
+    void update(String id, ClubRequest request);
 
-    public void delete(String id);
+    void delete(String id);
 }

@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "ITEM")
 @RestController
-@RequestMapping("/form/{formId}/item")
+@RequestMapping("/forms/{formId}/items")
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemManageUseCase itemManageUseCase;
