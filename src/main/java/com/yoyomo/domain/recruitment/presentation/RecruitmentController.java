@@ -39,8 +39,8 @@ public class RecruitmentController {
 
     @GetMapping
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<List<RecruitmentResponse>> readAll(@PathVariable String formId) {
-        List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(formId);
+    public ResponseDto<List<RecruitmentResponse>> readAll(@RequestParam String clubId) {
+        List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 

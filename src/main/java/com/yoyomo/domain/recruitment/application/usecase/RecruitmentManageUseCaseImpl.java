@@ -34,8 +34,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public List<RecruitmentResponse> readAll(String formId) {
-        List<Recruitment> recruitments = recruitmentGetService.findAll(formId);
+    public List<RecruitmentResponse> readAll(String clubId) {
+        List<Recruitment> recruitments = recruitmentGetService.findAll(clubId);
         return recruitments.stream()
                 .map(recruitmentMapper::mapToRecruitmentResponse)
                 .toList();

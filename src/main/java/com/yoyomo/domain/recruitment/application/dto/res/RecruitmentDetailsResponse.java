@@ -7,6 +7,7 @@ import java.util.List;
 public record RecruitmentDetailsResponse(
         String name,
         int generation,
-        List<Schedule> calendar
+        List<Schedule> calendar,
+        String formId
 ) {
 }

@@ -18,7 +18,7 @@ public class RecruitmentGetService {
                 .orElseThrow(RecruitmentNotFoundException::new);
     }
 
-    public List<Recruitment> findAll(String formId) {
-        return recruitmentRepository.findAllByFormIdAndDeletedAtIsNull(formId);
+    public List<Recruitment> findAll(String clubId) {
+        return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
     }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface RecruitmentRepository extends MongoRepository<Recruitment, String> {
     Optional<Recruitment> findByIdAndDeletedAtIsNull(String id);
 
-    List<Recruitment> findAllByFormIdAndDeletedAtIsNull(String formId);
+    List<Recruitment> findAllByClubIdAndDeletedAtIsNull(String clubId);
 }
