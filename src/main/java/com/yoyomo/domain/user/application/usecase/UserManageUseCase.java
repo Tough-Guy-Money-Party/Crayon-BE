@@ -6,7 +6,6 @@ import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.domain.user.domain.service.UserUpdateService;
-import com.yoyomo.domain.user.exception.NeedRegisterException;
 import com.yoyomo.domain.user.exception.UserConflictException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
