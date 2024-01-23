@@ -30,7 +30,6 @@ public class UserController {
     @GetMapping(value = "/login/{code}")
     @Operation(summary = "로그인")
     public ResponseDto<UserResponse> login(@PathVariable String code) throws Exception {
-        System.out.println(code);
         UserResponse response =  userManageUseCase.login(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }

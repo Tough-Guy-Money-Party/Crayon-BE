@@ -8,7 +8,6 @@ import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.domain.user.domain.service.UserUpdateService;
 import com.yoyomo.domain.user.exception.NeedRegisterException;
 import com.yoyomo.domain.user.exception.UserConflictException;
-import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.KakaoService;
@@ -35,7 +34,6 @@ public class UserManageUseCase {
 
     public UserResponse login(String code) throws Exception {
         String token = kakaoService.getKakaoAccessToken(code);
-        System.out.println(token);
         String email = kakaoService.getEmail(token);
         if (userGetService.existsByEmail(email)) {
             User user = userGetService.findByEmail(email);
