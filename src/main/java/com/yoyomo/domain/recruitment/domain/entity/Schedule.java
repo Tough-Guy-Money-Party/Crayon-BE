@@ -13,5 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Schedule {
     private String title;
-    private LocalDateTime dateTime;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
 }
