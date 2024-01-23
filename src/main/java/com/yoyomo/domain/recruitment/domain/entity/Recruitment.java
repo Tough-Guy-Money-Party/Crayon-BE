@@ -18,6 +18,7 @@ import java.util.List;
 public class Recruitment {
     @Id
     private String id;
+    private String clubId;
     private String formId;
     private String name;
     private int generation;
