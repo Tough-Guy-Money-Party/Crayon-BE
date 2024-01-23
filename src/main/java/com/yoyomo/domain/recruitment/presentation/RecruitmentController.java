@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Tag(name = "RECRUITMENT")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/form/{formId}/recruitment")
+@RequestMapping("/recruitments")
 public class RecruitmentController {
     private final RecruitmentManageUseCase recruitmentManageUseCase;
 
@@ -32,12 +32,12 @@ public class RecruitmentController {
 
     @GetMapping("/{recruitmentId}")
     @Operation(summary = "모집 상세 조회")
-    public ResponseDto<RecruitmentDetailsResponse> read(@PathVariable String formId, @PathVariable String recruitmentId) {
+    public ResponseDto<RecruitmentDetailsResponse> read(@PathVariable String recruitmentId) {
         RecruitmentDetailsResponse response = recruitmentManageUseCase.read(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     @Operation(summary = "모집 목록 조회")
     public ResponseDto<List<RecruitmentResponse>> readAll(@PathVariable String formId) {
         List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(formId);
@@ -46,16 +46,14 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정")
-    public ResponseDto update(@PathVariable String formId,
-                              @PathVariable String recruitmentId,
-                              @RequestBody RecruitmentRequest request) {
+    public ResponseDto update(@PathVariable String recruitmentId, @RequestBody RecruitmentRequest request) {
         recruitmentManageUseCase.update(recruitmentId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{recruitmentId}")
     @Operation(summary = "모집 삭제")
-    public ResponseDto update(@PathVariable String formId, @PathVariable String recruitmentId) {
+    public ResponseDto update(@PathVariable String recruitmentId) {
         recruitmentManageUseCase.delete(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
