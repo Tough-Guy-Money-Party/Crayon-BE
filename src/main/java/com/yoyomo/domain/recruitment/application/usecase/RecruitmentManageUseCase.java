@@ -7,7 +7,7 @@ import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import java.util.List;
 
 public interface RecruitmentManageUseCase {
-    void create(String formId, RecruitmentRequest request);
+    void create(RecruitmentRequest request);
 
     RecruitmentDetailsResponse read(String recruitmentId);
 

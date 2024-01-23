@@ -5,8 +5,9 @@ import com.yoyomo.domain.recruitment.domain.entity.Schedule;
 import java.util.List;
 
 public record RecruitmentRequest(
+        String clubId,
         String name,
-        int generation,
+        Integer generation,
         List<Schedule> calendar
 ) {
 }

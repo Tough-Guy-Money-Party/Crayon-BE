@@ -25,8 +25,8 @@ public class RecruitmentController {
 
     @PostMapping
     @Operation(summary = "모집 생성")
-    public ResponseDto create(@PathVariable String formId, @RequestBody RecruitmentRequest request) {
-        recruitmentManageUseCase.create(formId, request);
+    public ResponseDto create(@RequestBody RecruitmentRequest request) {
+        recruitmentManageUseCase.create(request);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 

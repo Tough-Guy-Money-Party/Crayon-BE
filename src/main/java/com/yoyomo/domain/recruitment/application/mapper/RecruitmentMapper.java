@@ -12,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RecruitmentMapper {
-    Recruitment from(String formId, RecruitmentRequest request);
+    Recruitment from(RecruitmentRequest request);
 
     RecruitmentDetailsResponse mapToRecruitmentDetails(Recruitment recruitment);
 
