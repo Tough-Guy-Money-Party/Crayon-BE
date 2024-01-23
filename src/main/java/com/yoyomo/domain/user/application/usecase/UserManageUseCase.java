@@ -48,15 +48,11 @@ public class UserManageUseCase {
                     .build();
             return signResponse;
         }else{
-            RegisterRequest registerRequest = RegisterRequest.builder()
-                    .email(email)
-                    .build();
-            return this.register(registerRequest);
+            return this.register(email);
         }
     }
 
-    public UserResponse register(RegisterRequest request) {
-        String email = request.getEmail();
+    public UserResponse register(String email) {
         if (userGetService.existsByEmail(email)){
             throw new UserConflictException();
         }
