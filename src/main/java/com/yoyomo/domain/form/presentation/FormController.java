@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Tag(name = "FORM")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/form")
+@RequestMapping("/forms")
 public class FormController {
     private final FormManageUseCase formManageUseCase;
 
@@ -31,10 +31,10 @@ public class FormController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     @Operation(summary = "지원폼 목록 조회")
-    public ResponseDto<List<FormResponse>> readAll() {
-        List<FormResponse> responses = formManageUseCase.read();
+    public ResponseDto<List<FormResponse>> readAll(@RequestParam String clubId) {
+        List<FormResponse> responses = formManageUseCase.readAll(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 

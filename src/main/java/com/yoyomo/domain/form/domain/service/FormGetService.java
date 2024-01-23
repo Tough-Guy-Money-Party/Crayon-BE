@@ -18,7 +18,7 @@ public class FormGetService {
                 .orElseThrow(FormNotFoundException::new);
     }
 
-    public List<Form> findAll() {
-        return formRepository.findAllByDeletedAtIsNull();
+    public List<Form> findAll(String clubId) {
+        return formRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
     }
 }

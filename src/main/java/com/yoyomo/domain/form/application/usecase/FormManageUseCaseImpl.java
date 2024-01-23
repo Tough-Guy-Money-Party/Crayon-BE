@@ -29,8 +29,8 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
-    public List<FormResponse> read() {
-        List<Form> forms = formGetService.findAll();
+    public List<FormResponse> readAll(String clubId) {
+        List<Form> forms = formGetService.findAll(clubId);
         return forms.stream()
                 .map(formMapper::mapToFormResponse)
                 .toList();

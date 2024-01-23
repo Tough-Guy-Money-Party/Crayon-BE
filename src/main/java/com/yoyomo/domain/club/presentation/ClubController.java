@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Tag(name = "CLUB")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/club")
+@RequestMapping("/clubs")
 public class ClubController {
     private final ClubManageUseCase clubManageUseCase;
 
