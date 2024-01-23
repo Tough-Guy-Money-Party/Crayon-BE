@@ -6,6 +6,9 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
 spring:
+  application:
+    kakao-client-id: ${KAKAO_CLIENT_ID}
+    kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
       host: ${HOST:localhost}

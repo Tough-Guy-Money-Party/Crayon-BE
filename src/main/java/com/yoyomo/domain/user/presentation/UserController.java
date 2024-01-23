@@ -22,33 +22,19 @@ public class UserController {
 
     @PostMapping(value = "/register")
     @Operation(summary = "회원가입")
-    public ResponseDto<Void>  register(@RequestBody RegisterRequest request) throws Exception {
-        userManageUseCase.register(request);
-        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage());
+    public ResponseDto<UserResponse>  register(@RequestBody RegisterRequest request) throws Exception {
+        UserResponse response = userManageUseCase.register(request.getEmail());
+        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(),response);
     }
 
-    @GetMapping(value = "/login")
+    @PostMapping(value = "/login/{code}")
     @Operation(summary = "로그인")
-    public ResponseDto<UserResponse> login(@RequestBody LoginRequest request) throws Exception {
-        UserResponse response =  userManageUseCase.login(request);
+    public ResponseDto<?> login(@PathVariable String code) throws Exception {
+        UserResponse response =  userManageUseCase.login(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
 
-    @PostMapping(value = "/test-register")
-    @Operation(summary = "테스트 회원가입")
-    public ResponseDto<Void>  testRegister(@RequestBody TestRegisterRequest request) throws Exception {
-        userManageUseCase.testRegister(request);
-        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage());
-    }
-
-    @GetMapping(value = "/test-login")
-    @Operation(summary = "테스트 로그인")
-    public ResponseDto<UserResponse> testLogin(@RequestBody TestLoginRequest request) throws Exception {
-        UserResponse response =  userManageUseCase.testLogin(request);
-        return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
-    }
-
-    @GetMapping(value = "/refresh")
+    @PostMapping(value = "/refresh")
     @Operation(summary = "토큰 재발급")
     public ResponseDto<JwtResponse> refresh(@RequestBody RefreshRequest request) throws Exception {
         JwtResponse jwtResponse =  userManageUseCase.tokenRefresh(request);
