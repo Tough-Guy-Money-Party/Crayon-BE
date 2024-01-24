@@ -7,7 +7,6 @@ import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.domain.user.domain.service.UserUpdateService;
 import com.yoyomo.domain.user.exception.UserConflictException;
-import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.KakaoService;
@@ -32,8 +31,9 @@ public class UserManageUseCase {
     private final KakaoService kakaoService;
     private final JwtProvider jwtProvider;
 
-    public UserResponse login(LoginRequest request) throws Exception {
-        String email = kakaoService.getEmail(request.getAccessToken());
+    public UserResponse login(String code) throws Exception {
+        String token = kakaoService.getKakaoAccessToken(code);
+        String email = kakaoService.getEmail(token);
         if (userGetService.existsByEmail(email)) {
             User user = userGetService.findByEmail(email);
             JwtResponse tokenDto = new JwtResponse(
@@ -42,65 +42,36 @@ public class UserManageUseCase {
             );
             UserResponse signResponse = UserResponse.builder()
                     .id(user.getId())
-                    .name(user.getName())
                     .email(user.getEmail())
-                    .number(user.getNumber())
                     .token(tokenDto)
                     .build();
             return signResponse;
+        }else{
+            return this.register(email);
         }
-        throw new UserNotFoundException();
     }
 
-    public Void register(RegisterRequest request) throws Exception {
-        String email = kakaoService.getEmail(request.getAccessToken());
+    public UserResponse register(String email) {
         if (userGetService.existsByEmail(email)){
             throw new UserConflictException();
         }
         User user = User.builder()
                 .email(email)
-                .name(request.getName())
-                .number(request.getNumber())
                 .build();
         userSaveService.save(user);
-        return null;
-    }
-
-    public UserResponse testLogin(TestLoginRequest request) {
-        if (userGetService.existsByEmail(request.getEmail())) {
-            User user = userGetService.findByEmail(request.getEmail());
-            JwtResponse tokenDto = new JwtResponse(
-                    jwtProvider.createAccessToken(user.getEmail()),
-                    isUsingRefreshToken
-                            ? jwtProvider.createRefreshToken(user.getEmail())
-                            : "No Refresh Token Provided"
-            );
-            UserResponse signResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .number(user.getNumber())
-                    .token(tokenDto)
-                    .build();
-            return signResponse;
-        }
-        throw new UserNotFoundException();
-    }
-
-    public Void testRegister(TestRegisterRequest request) throws Exception {
-        if (userGetService.existsByEmail(request.getEmail())){
-            throw new UserConflictException();
-        }
-        User user = User.builder()
-                .email(request.getEmail())
-                .name(request.getName())
-                .number(request.getNumber())
+        JwtResponse tokenDto = new JwtResponse(
+                jwtProvider.createAccessToken(user.getEmail()),
+                jwtProvider.createRefreshToken(user.getEmail())
+        );
+        UserResponse signResponse = UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .token(tokenDto)
                 .build();
-        userSaveService.save(user);
-        return null;
+        return signResponse;
     }
 
-    public JwtResponse tokenRefresh(RefreshRequest request) throws Exception {
+    public JwtResponse tokenRefresh(RefreshRequest request) {
         if(isUsingRefreshToken){
             JwtResponse jwtResponse = jwtProvider.reissueToken(request.getRefreshToken(), request.getEmail());
             return jwtResponse;
