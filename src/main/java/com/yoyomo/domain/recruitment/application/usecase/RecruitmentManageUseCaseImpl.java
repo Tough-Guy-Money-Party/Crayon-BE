@@ -1,5 +1,7 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
+import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
@@ -20,10 +22,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentGetService recruitmentGetService;
     private final RecruitmentUpdateService recruitmentUpdateService;
     private final RecruitmentMapper recruitmentMapper;
+    private final FormGetService formGetService;
 
     @Override
     public void create(RecruitmentRequest request) {
-        Recruitment recruitment = recruitmentMapper.from(request);
+        Form form = formGetService.find(request.formId());
+        Recruitment recruitment = recruitmentMapper.from(request, form);
         recruitmentSaveService.save(recruitment);
     }
 

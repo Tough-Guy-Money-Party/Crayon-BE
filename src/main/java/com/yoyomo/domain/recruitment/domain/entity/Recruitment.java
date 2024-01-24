@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import com.yoyomo.domain.form.domain.entity.Form;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +20,9 @@ public class Recruitment {
     @Id
     private String id;
     private String clubId;
-    private String formId;
-    private String name;
+    private String title;
     private int generation;
+    private Form form;
     private List<Schedule> calendar;
     private LocalDateTime deletedAt;
 }
