@@ -38,3 +38,15 @@ jobs:
   
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./crayon.zip s3://$S3_BUCKET_NAME/
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws deploy create-deployment \
+          --application-name crayon[만든 애플리케이션 이름] \
+          --deployment-group-name crayon-group[만든 애플리케이션 그룹 이름] \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=crayon-deploy[S3버킷이름],bundleType=zip,key=crayon.zip[S3버킷 속 압축파일] \ 
+          --region ap-northeast-2
