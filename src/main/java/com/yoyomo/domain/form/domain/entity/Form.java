@@ -11,7 +11,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -19,14 +21,17 @@ import java.util.*;
 @AllArgsConstructor
 @Document(collection = "forms")
 public class Form {
+
     @Id
     private String id;
+
     private String clubId;
+
     private String name;
-    @Builder.Default
-    private List<String> process = new LinkedList<>();
+
     @Builder.Default
     private Map<String, Item> items = new LinkedHashMap<>();
+
     private LocalDateTime deletedAt;
 
     public Item getItem(String itemId) {

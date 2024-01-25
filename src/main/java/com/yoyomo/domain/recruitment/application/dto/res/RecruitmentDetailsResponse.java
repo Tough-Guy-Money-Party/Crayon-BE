@@ -9,6 +9,7 @@ public record RecruitmentDetailsResponse(
         String title,
         int generation,
         List<Schedule> calendar,
+        List<String> process,
         Form form
 ) {
 }
