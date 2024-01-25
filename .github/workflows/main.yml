@@ -19,6 +19,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
+      - name: Make Directory
+        run: mkdir -p deploy
+
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy
   
