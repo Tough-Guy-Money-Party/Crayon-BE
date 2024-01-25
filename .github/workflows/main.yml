@@ -48,5 +48,5 @@ jobs:
           --application-name crayon \
           --deployment-group-name crayon-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=crayon-deploy,bundleType=zip,key=crayon.zip \ 
+          --s3-location bucket=crayon-deploy,bundleType=zip,key=crayon.zip \
           --region ap-northeast-2
