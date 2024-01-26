@@ -19,6 +19,6 @@ public class SwaggerConfig {
         return new Info()
                 .title("핫가머파")
                 .description("돈이 좋은 사람들의 API 문서입니다.")
-                .version("1.0.0");
+                .version("1.1.0");
     }
 }
