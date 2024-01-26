@@ -1,7 +1,6 @@
 package com.yoyomo.domain.item.application.usecase;
 
 import com.yoyomo.domain.form.domain.entity.Form;
-import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
 import com.yoyomo.domain.item.application.mapper.ItemMapper;
@@ -14,36 +13,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemManageUseCaseImpl implements ItemManageUseCase {
     private final ItemFactory itemFactory;
-    private final FormGetService formGetService;
     private final ItemUpdateService itemUpdateService;
     private final ItemMapper itemMapper;
 
     @Override
-    public void create(String formId, ItemRequest request) {
-        Item item = itemFactory.createItem(request);
-        itemUpdateService.addItem(formId, item);
+    public List<Item> create(List<ItemRequest> request) {
+        return request.stream()
+                .map(itemFactory::createItem)
+                .toList();
     }
 
     @Override
-    public void update(String formId, String itemId, ItemRequest request) {
-        Item item = itemFactory.createItem(request);
-        itemUpdateService.updateItem(formId, itemId, item);
+    public void update(String formId, List<ItemRequest> requests) {
+        List<Item> items = requests.stream()
+                .map(itemFactory::createItem)
+                .toList();
+        itemUpdateService.updateItem(formId, items);
     }
 
     @Override
-    public void delete(String formId, String itemId) {
-        itemUpdateService.deleteItem(formId, itemId);
+    public List<ItemResponse> get(Form form) {
+        List<Item> items = form.getItems();
+
+        return items.stream()
+                .map(this::getItemResponse)
+                .toList();
     }
 
-    @Override
-    public ItemResponse get(String formId, String itemId) {
-        Form form = formGetService.find(formId);
-        Item item = form.getItem(itemId);
+    public ItemResponse getItemResponse(Item item) {
         if (item instanceof Text) {
             return itemMapper.mapToTextResponse((Text) item);
         }

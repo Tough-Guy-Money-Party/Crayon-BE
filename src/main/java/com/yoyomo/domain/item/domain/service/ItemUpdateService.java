@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -15,21 +17,9 @@ public class ItemUpdateService {
     private final FormSaveService formSaveService;
     private final FormGetService formGetService;
 
-    public void addItem(String formId, Item item) {
+    public void updateItem(String formId, List<Item> items) {
         Form form = formGetService.find(formId);
-        form.addItem(item);
-        formSaveService.save(form);
-    }
-
-    public void updateItem(String formId, String itemId, Item item) {
-        Form form = formGetService.find(formId);
-        form.updateItem(itemId, item);
-        formSaveService.save(form);
-    }
-
-    public void deleteItem(String formId, String itemId) {
-        Form form = formGetService.find(formId);
-        form.removeItem(itemId);
+        form.updateItems(items);
         formSaveService.save(form);
     }
 }
