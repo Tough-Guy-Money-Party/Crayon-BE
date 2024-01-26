@@ -23,6 +23,15 @@ public class FormUpdateService {
     private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
+    public void update(String id, String name) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = new Update().set("name", name);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
+        checkIsDeleted(result);
+    }
+
     public void from(String id, FormRequest request) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
@@ -46,4 +55,5 @@ public class FormUpdateService {
             throw new ClubNotFoundException();
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.yoyomo.domain.form.presentation;
 
 import com.yoyomo.domain.form.application.dto.req.FormRequest;
+import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.form.application.dto.res.FormCreateResponse;
 import com.yoyomo.domain.form.application.dto.res.FormDetailsResponse;
 import com.yoyomo.domain.form.application.dto.res.FormResponse;
@@ -45,9 +46,9 @@ public class FormController {
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 
-    @PatchMapping("/{formId}")
+    @PutMapping("/{formId}")
     @Operation(summary = "지원폼 수정")
-    public ResponseDto update(@PathVariable String formId, @RequestBody FormRequest request) {
+    public ResponseDto update(@PathVariable String formId, @RequestBody FormUpdateRequest request) {
         formManageUseCase.update(formId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }

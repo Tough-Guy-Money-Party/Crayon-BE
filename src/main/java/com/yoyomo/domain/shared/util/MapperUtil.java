@@ -10,10 +10,11 @@ import java.util.Arrays;
 public class MapperUtil {
     private static final String CLASS = "class";
     private static final String ID = "id";
-    private static final String PROPERTY_FORMAT = "%s%s";
+    private static final String EMPTY_STRING = "";
+    private static final String DELIMITER = ".";
 
     public static Update mapToUpdate(Object... requests) {
-        return mapToUpdate("", requests);
+        return mapToUpdate(EMPTY_STRING, requests);
     }
 
     public static Update mapToUpdate(String pathPrefix, Object... requests) {
@@ -21,7 +22,7 @@ public class MapperUtil {
         Arrays.stream(requests).forEach(request -> {
             BeanWrapper beanWrapper = new BeanWrapperImpl(request);
             for (PropertyDescriptor pd : beanWrapper.getPropertyDescriptors()) {
-                String propertyName = String.format(PROPERTY_FORMAT, pathPrefix, pd.getName());
+                String propertyName = String.join(DELIMITER, pathPrefix, pd.getName());
                 Object propertyValue = beanWrapper.getPropertyValue(pd.getName());
 
                 if (propertyValue != null && !propertyName.contains(CLASS) && !propertyName.contains(ID)) {
