@@ -1,5 +1,6 @@
 package com.yoyomo.domain.shared.util;
 
+import com.yoyomo.domain.form.domain.entity.Form;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.mongodb.core.query.Update;
@@ -31,5 +32,9 @@ public class MapperUtil {
             }
         });
         return update;
+    }
+
+    public static Update mapToUpdate(Form form) {
+        return new Update().set(form.getClass().getSimpleName(), form);
     }
 }
