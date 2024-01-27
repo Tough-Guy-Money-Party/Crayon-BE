@@ -19,7 +19,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
     @Override
     public void checkReadPermission(User user, Application application) {
-        if (!user.getId().equals(application.getUserId())) {
+        if (!user.getId().equals(application.getUser().getId())) {
             throw new AccessDeniedException();
         }
     }

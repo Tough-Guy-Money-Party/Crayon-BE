@@ -1,6 +1,8 @@
 package com.yoyomo.domain.application.domain.entity;
 
+import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,19 +24,19 @@ public class Application {
     @Id
     private String id;
 
-    @NotBlank
-    private String userId;
+    @NotNull
+    private User user;
 
     @NotBlank
     private String recruitmentId;
 
-    @NotBlank
+    @NotNull
     private List<Answer> answers;
 
-    @NotBlank
+    @NotNull
     private SubmitStatus submitStatus;
 
-    @NotBlank
+    @NotNull
     @Builder.Default
     private ApplicationStatus applicationStatus = PENDING;
 }
