@@ -13,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_CREATE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -33,6 +32,16 @@ public class ApplicationController {
         User user = userInfoUseCase.get(authentication);
         applyUseCase.create(user, applicationRequest);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
+    }
+
+    @PutMapping("/{applicationId}")
+    @Operation(summary = "지원서 수정")
+    public ResponseDto apply(Authentication authentication,
+                             @PathVariable String applicationId,
+                             @RequestBody ApplicationRequest applicationRequest) {
+        User user = userInfoUseCase.get(authentication);
+        applyUseCase.update(user, applicationId, applicationRequest);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @GetMapping("/{applicationId}")
