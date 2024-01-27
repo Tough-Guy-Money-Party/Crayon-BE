@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -32,8 +31,7 @@ public class Recruitment {
 
     private List<Schedule> calendar;
 
-    @Builder.Default
-    private List<String> process = new LinkedList<>();
+    private List<String> process;
 
     private LocalDateTime deletedAt;
 }
