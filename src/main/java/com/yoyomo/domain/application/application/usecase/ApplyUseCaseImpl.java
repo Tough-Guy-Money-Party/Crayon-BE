@@ -20,13 +20,15 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final ApplicationUpdateService applicationUpdateService;
     private final ApplicationMapper applicationMapper;
 
-    public void create(User user, ApplicationRequest applicationRequest) {
-        Application application = applicationMapper.from(user, applicationRequest);
+    public void create(User user, ApplicationRequest request) {
+        applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
+        Application application = applicationMapper.from(user, request);
         applicationSaveService.save(application);
     }
 
     @Override
     public void update(User user, String applicationId, ApplicationRequest request) {
+        applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
         Application application = applicationGetService.find(applicationId);
         applicationManageUseCase.checkReadPermission(user, application);
         applicationUpdateService.from(applicationId, request);

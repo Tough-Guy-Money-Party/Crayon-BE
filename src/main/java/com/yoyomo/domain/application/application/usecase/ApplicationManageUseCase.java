@@ -9,5 +9,7 @@ import java.util.List;
 public interface ApplicationManageUseCase {
     void checkReadPermission(User user, Application application);
 
+    void checkDuplicatedApplication(User user, String recruitmentId);
+
     List<ApplicationResponse> readAll(String recruitmentId);
 }
