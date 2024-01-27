@@ -13,10 +13,10 @@ spring:
     mongodb:
       host: ${HOST:localhost}
       port: ${PORT:27017}
-      database: ${DATABASE}
+      database: ${DATABASE:crayon}
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       password: ${REDIS_PASS}
   jwt:
     token:
