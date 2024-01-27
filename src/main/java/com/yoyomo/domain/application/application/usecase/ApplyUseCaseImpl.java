@@ -19,7 +19,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final ApplicationMapper applicationMapper;
 
     public void create(User user, ApplicationRequest applicationRequest) {
-        Application application = applicationMapper.from(user.getId(), applicationRequest);
+        Application application = applicationMapper.from(user, applicationRequest);
         applicationSaveService.save(application);
     }
 

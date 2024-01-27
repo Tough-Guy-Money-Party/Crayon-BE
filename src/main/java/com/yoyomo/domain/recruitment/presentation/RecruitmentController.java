@@ -1,10 +1,13 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
+import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
+import com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage;
 import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +26,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/recruitments")
 public class RecruitmentController {
     private final RecruitmentManageUseCase recruitmentManageUseCase;
+    private final ApplicationManageUseCase applicationManageUseCase;
 
     @PostMapping
     @Operation(summary = "모집 생성")
@@ -64,5 +68,13 @@ public class RecruitmentController {
     public ResponseDto update(@PathVariable String recruitmentId) {
         recruitmentManageUseCase.delete(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+
+    @GetMapping("/{recruitmentId}/applications")
+    @Operation(summary = "모집 지원서 목록 조회")
+    public ResponseDto<List<ApplicationResponse>> readApplications(@PathVariable String recruitmentId) {
+        List<ApplicationResponse> response = applicationManageUseCase.readAll(recruitmentId);
+        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), response);
     }
 }
