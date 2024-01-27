@@ -1,12 +1,13 @@
 package com.yoyomo.domain.application.domain.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
+import java.util.List;
 
 import static com.yoyomo.domain.application.domain.entity.ApplicationStatus.PENDING;
 
@@ -15,15 +16,23 @@ import static com.yoyomo.domain.application.domain.entity.ApplicationStatus.PEND
 @AllArgsConstructor
 @Document(collection = "applications")
 public class Application {
+
     @Id
     private String id;
 
+    @NotBlank
+    private String userId;
+
+    @NotBlank
     private String recruitmentId;
 
-    private Map<String, String> answers;
+    @NotBlank
+    private List<Answer> answers;
 
+    @NotBlank
     private SubmitStatus submitStatus;
 
+    @NotBlank
     @Builder.Default
     private ApplicationStatus applicationStatus = PENDING;
 }
