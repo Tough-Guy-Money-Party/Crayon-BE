@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Tag(name = "APPLICATION")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/application")
+@RequestMapping("/applications")
 public class ApplicationController {
     private final UserInfoUseCase userInfoUseCase;
     private final ApplyUseCase applyUseCase;
