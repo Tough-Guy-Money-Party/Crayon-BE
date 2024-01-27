@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class Answer {
     @NotBlank
     private String itemId;
+    
+    @NotBlank
+    private String question;
 
     @NotBlank
     private String reply;
