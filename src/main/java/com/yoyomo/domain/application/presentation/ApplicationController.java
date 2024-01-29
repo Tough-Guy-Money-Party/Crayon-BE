@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
+import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
 import com.yoyomo.domain.user.application.usecase.UserInfoUseCase;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -45,11 +46,19 @@ public class ApplicationController {
     }
 
     @GetMapping("/{applicationId}")
-    @Operation(summary = "내 지원서 조회")
+    @Operation(summary = "내 지원서 상세 조회")
     public ResponseDto<ApplicationDetailsResponse> read(Authentication authentication,
                                                         @PathVariable String applicationId) {
         User user = userInfoUseCase.get(authentication);
         ApplicationDetailsResponse response = applyUseCase.read(user, applicationId);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
+
+    @GetMapping()
+    @Operation(summary = "내 지원서 목록 조회")
+    public ResponseDto<MyApplicationsResponse> readAll(Authentication authentication) {
+        User user = userInfoUseCase.get(authentication);
+        MyApplicationsResponse response = applyUseCase.readAll(user);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 }
