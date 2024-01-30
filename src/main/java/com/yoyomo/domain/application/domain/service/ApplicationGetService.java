@@ -25,6 +25,10 @@ public class ApplicationGetService {
         return applicationRepository.findAllByRecruitmentId(recruitmentId);
     }
 
+    public List<Application> findAll(User user) {
+        return applicationRepository.findAllByUser(user);
+    }
+
     public Optional<Application> find(User user, String recruitmentId) {
         return applicationRepository.findByUserAndRecruitmentIdAndSubmitStatus(user, recruitmentId, SubmitStatus.SUBMIT);
     }

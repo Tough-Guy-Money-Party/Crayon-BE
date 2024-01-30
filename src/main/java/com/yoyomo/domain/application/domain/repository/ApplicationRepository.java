@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface ApplicationRepository extends MongoRepository<Application, String> {
     List<Application> findAllByRecruitmentId(String recruitmentId);
 
+    List<Application> findAllByUser(User user);
+
     Optional<Application> findByUserAndRecruitmentIdAndSubmitStatus(User user, String recruitmentId, SubmitStatus submitStatus);
 }

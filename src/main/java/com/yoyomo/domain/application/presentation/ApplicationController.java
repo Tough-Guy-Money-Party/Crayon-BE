@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -54,11 +56,11 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
-    @GetMapping()
+    @GetMapping
     @Operation(summary = "내 지원서 목록 조회")
-    public ResponseDto<MyApplicationsResponse> readAll(Authentication authentication) {
+    public ResponseDto<List<MyApplicationsResponse>> readAll(Authentication authentication) {
         User user = userInfoUseCase.get(authentication);
-        MyApplicationsResponse response = applyUseCase.readAll(user);
+        List<MyApplicationsResponse> response = applyUseCase.readAll(user);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 }
