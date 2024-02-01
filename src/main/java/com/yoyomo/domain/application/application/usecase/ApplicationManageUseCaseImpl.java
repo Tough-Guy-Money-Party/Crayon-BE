@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +27,8 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
     @Override
     public void checkDuplicatedApplication(User user, String recruitmentId) {
-        Optional<Application> application = applicationGetService.find(user, recruitmentId);
-        if (application.isPresent()) {
+        boolean hasApplication = applicationGetService.find(user, recruitmentId);
+        if (hasApplication) {
             throw new AlreadySubmitApplicationException();
         }
     }

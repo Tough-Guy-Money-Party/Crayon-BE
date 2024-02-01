@@ -31,7 +31,8 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
 
     public void create(User user, ApplicationRequest request) {
         applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
-        Application application = applicationMapper.from(user, request);
+        Recruitment recruitment = recruitmentGetService.find(request.recruitmentId());
+        Application application = applicationMapper.from(user, recruitment, request);
         applicationSaveService.save(application);
     }
 
@@ -55,9 +56,8 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         List<Application> applications = applicationGetService.findAll(user);
         return applications.stream()
                 .map(application -> {
-                    Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
-                    Club club = clubGetService.byId(recruitment.getClubId());
-                    return applicationMapper.mapToMyApplications(application, club, recruitment);
+                    Club club = clubGetService.byId(application.getRecruitment().getClubId());
+                    return applicationMapper.mapToMyApplications(application, club);
                 }).toList();
     }
 }

@@ -14,4 +14,6 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
     List<Application> findAllByUser(User user);
 
     Optional<Application> findByUserAndRecruitmentIdAndSubmitStatus(User user, String recruitmentId, SubmitStatus submitStatus);
+
+    boolean existsByUserAndRecruitment_Id(User user, String recruitmentId);
 }
