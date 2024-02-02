@@ -27,7 +27,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
     @Override
     public void checkDuplicatedApplication(User user, String recruitmentId) {
-        boolean hasApplication = applicationGetService.find(user, recruitmentId);
+        boolean hasApplication = applicationGetService.exists(user, recruitmentId);
         if (hasApplication) {
             throw new AlreadySubmitApplicationException();
         }
@@ -36,7 +36,6 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public List<ApplicationResponse> readAll(String recruitmentId) {
         List<Application> applications = applicationGetService.findAll(recruitmentId);
-
         return applications.stream()
                 .map(applicationMapper::mapToApplicationResponse)
                 .toList();

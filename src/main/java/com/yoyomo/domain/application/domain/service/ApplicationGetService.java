@@ -27,7 +27,7 @@ public class ApplicationGetService {
         return applicationRepository.findAllByUser(user);
     }
 
-    public boolean find(User user, String recruitmentId) {
+    public boolean exists(User user, String recruitmentId) {
         return applicationRepository.existsByUserAndRecruitment_Id(user, recruitmentId);
     }
 }
