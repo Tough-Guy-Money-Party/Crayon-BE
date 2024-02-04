@@ -12,10 +12,9 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.application.usecase.UserInfoUseCase;
+import com.yoyomo.domain.user.application.usecase.UserManageUseCase;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,8 +32,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final RecruitmentGetService recruitmentGetService;
     private final ClubGetService clubGetService;
     private final UserInfoUseCase userInfoUseCase;
-    private final UserMapper userMapper;
-    private final UserSaveService userSaveService;
+    private final UserManageUseCase userManageUseCase;
 
     public void create(ApplicationRequest request) {
         User user = getUserOrCreateNew(request);
@@ -49,8 +47,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
             applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
             return user;
         } catch (UserNotFoundException e) {
-            User newUser = userMapper.from(request);
-            return userSaveService.save(newUser);
+            return userManageUseCase.create(request);
         }
     }
 
