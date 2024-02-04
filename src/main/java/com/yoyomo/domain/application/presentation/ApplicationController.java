@@ -37,9 +37,8 @@ public class ApplicationController {
 
     @PostMapping
     @Operation(summary = "지원서 작성")
-    public ResponseDto apply(Authentication authentication, @RequestBody ApplicationRequest applicationRequest) {
-        User user = userInfoUseCase.get(authentication);
-        applyUseCase.create(user, applicationRequest);
+    public ResponseDto apply(@RequestBody ApplicationRequest request) {
+        applyUseCase.create(request);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 

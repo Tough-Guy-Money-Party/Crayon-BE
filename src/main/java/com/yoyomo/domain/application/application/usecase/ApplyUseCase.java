@@ -8,7 +8,7 @@ import com.yoyomo.domain.user.domain.entity.User;
 import java.util.List;
 
 public interface ApplyUseCase {
-    void create(User user, ApplicationRequest applicationRequest);
+    void create(ApplicationRequest applicationRequest);
 
     void update(User user, String applicationId, ApplicationRequest applicationRequest);
 
