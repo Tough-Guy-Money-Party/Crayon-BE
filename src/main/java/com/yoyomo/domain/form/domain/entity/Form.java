@@ -25,10 +25,6 @@ public class Form {
 
     private String name;
 
-    private String email;
-
-    private String phone;
-
     private List<Item> items;
 
     private LocalDateTime deletedAt;
