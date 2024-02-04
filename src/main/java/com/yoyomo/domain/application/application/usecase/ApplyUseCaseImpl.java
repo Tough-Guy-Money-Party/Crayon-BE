@@ -34,6 +34,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final UserInfoUseCase userInfoUseCase;
     private final UserManageUseCase userManageUseCase;
 
+    @Override
     public void create(ApplicationRequest request) {
         User user = getUserOrCreateNew(request);
         Recruitment recruitment = recruitmentGetService.find(request.recruitmentId());
