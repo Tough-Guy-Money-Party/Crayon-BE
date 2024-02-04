@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.application.mapper;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
+import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -28,4 +29,6 @@ public interface ApplicationMapper {
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 
     ApplicationResponse mapToApplicationResponse(Application application);
+
+    ApplicationManageResponse mapToApplicationManage(Application application);
 }

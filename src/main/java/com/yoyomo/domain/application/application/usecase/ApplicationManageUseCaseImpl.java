@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -39,5 +40,11 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
         return applications.stream()
                 .map(applicationMapper::mapToApplicationResponse)
                 .toList();
+    }
+
+    @Override
+    public ApplicationManageResponse read(String applicationId) {
+        Application application = applicationGetService.find(applicationId);
+        return applicationMapper.mapToApplicationManage(application);
     }
 }
