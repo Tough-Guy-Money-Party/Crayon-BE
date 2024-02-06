@@ -1,6 +1,7 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
+import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -28,6 +29,15 @@ public class RecruitmentUpdateService {
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = MapperUtil.mapToUpdate(request);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
+        checkIsDeleted(result);
+    }
+
+    public void from(String id, Form form) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = MapperUtil.mapToUpdate(form);
         UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
         checkIsDeleted(result);
     }

@@ -6,8 +6,10 @@ import java.util.List;
 
 public record RecruitmentRequest(
         String clubId,
-        String name,
+        String formId,
+        String title,
         Integer generation,
-        List<Schedule> calendar
+        List<Schedule> calendar,
+        List<String> process
 ) {
 }

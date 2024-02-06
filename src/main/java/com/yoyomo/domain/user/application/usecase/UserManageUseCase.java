@@ -1,7 +1,9 @@
 package com.yoyomo.domain.user.application.usecase;
 
-import com.yoyomo.domain.user.application.dto.req.*;
+import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
+import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
 import com.yoyomo.domain.user.application.dto.res.UserResponse;
+import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
@@ -27,6 +29,7 @@ public class UserManageUseCase {
     private final UserGetService userGetService;
     private final UserSaveService userSaveService;
     private final UserUpdateService userUpdateService;
+    private final UserMapper userMapper;
 
     private final KakaoService kakaoService;
     private final JwtProvider jwtProvider;
@@ -46,13 +49,13 @@ public class UserManageUseCase {
                     .token(tokenDto)
                     .build();
             return signResponse;
-        }else{
+        } else {
             return this.register(email);
         }
     }
 
     public UserResponse register(String email) {
-        if (userGetService.existsByEmail(email)){
+        if (userGetService.existsByEmail(email)) {
             throw new UserConflictException();
         }
         User user = User.builder()
@@ -72,11 +75,16 @@ public class UserManageUseCase {
     }
 
     public JwtResponse tokenRefresh(RefreshRequest request) {
-        if(isUsingRefreshToken){
+        if (isUsingRefreshToken) {
             JwtResponse jwtResponse = jwtProvider.reissueToken(request.getRefreshToken(), request.getEmail());
             return jwtResponse;
         }
         return null;
+    }
+
+    public User create(ApplicationRequest request) {
+        User user = userMapper.from(request);
+        return userSaveService.save(user);
     }
 
     public Void update(Authentication authentication) {
