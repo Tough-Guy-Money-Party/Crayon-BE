@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.domain.entity;
 
+import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.validation.constraints.NotNull;
@@ -36,4 +37,6 @@ public class Application {
 
     @NotNull
     private List<ApplicationStatus> applicationStatus;
+
+    private Interview interview;
 }
