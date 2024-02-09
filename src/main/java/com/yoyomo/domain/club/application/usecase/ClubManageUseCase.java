@@ -9,7 +9,7 @@ public interface ClubManageUseCase {
     ClubResponse read(String id);
 
     ClubCreateResponse create(ClubRequest request, String userEmail);
-    void participate(ParticipationRequest participateRequest, String userEmail, String clubId);
+    void participate(ParticipationRequest participateRequest, String userEmail);
 
     void update(String id, ClubRequest request);
 
