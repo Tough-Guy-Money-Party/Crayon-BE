@@ -1,6 +1,7 @@
 package com.yoyomo.global.config.participation.service;
 
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
+import com.yoyomo.global.config.participation.exception.InvalidPaticipationCodeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,11 +53,11 @@ public class ParticipationCodeService {
         }
     }
 
-    public boolean isValidCode(String code, String clubId) {
-        String code_clubId = redisTemplate.opsForValue().get(code);
-        if (code_clubId == null){
-            return false;
+    public String getClubId(String code) {
+        String clubId = redisTemplate.opsForValue().get(code);
+        if (clubId == null){
+            throw new InvalidPaticipationCodeException();
         }
-        return code_clubId.equals(clubId);
+        return clubId;
     }
 }

@@ -18,24 +18,20 @@ public class ParticipationService {
     private final UserUpdateService userUpdateService;
     private final UserGetService userGetService;
     private final ParticipationCodeService participationCodeService;
-    public void participate (String code, String userEmail, String clubId) {
-        if (participationCodeService.isValidCode(code, clubId)){
-            User user = userGetService.findByEmail(userEmail);
-            System.out.println(user.getClubs());
-            boolean isAlreadyParticipate = user.getClubs()
-                    .stream()
-                    .anyMatch(club -> clubId.equals(club.getId()));
-            if (!isAlreadyParticipate){
-                clubUpdateService.addUser(userEmail, clubId);
-                userUpdateService.addClub(userEmail, clubId);
-                return;
-            }
-            throw new AlreadyParticipatedException();
+    public void checkAndParticipate (String code, String userEmail) {
+        String clubId = participationCodeService.getClubId(code);
+        User user = userGetService.findByEmail(userEmail);
+        boolean isAlreadyParticipate = user.getClubs()
+                .stream()
+                .anyMatch(club -> clubId.equals(club.getId()));
+        if (!isAlreadyParticipate){
+            this.addToEachList(userEmail, clubId);
+            return;
         }
-        throw new InvalidPaticipationCodeException();
+        throw new AlreadyParticipatedException();
     }
 
-    public void participate (String userEmail, String clubId) {
+    public void addToEachList (String userEmail, String clubId) {
         clubUpdateService.addUser(userEmail, clubId);
         userUpdateService.addClub(userEmail, clubId);
     }
