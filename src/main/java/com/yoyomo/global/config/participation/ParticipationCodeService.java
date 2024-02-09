@@ -1,12 +1,11 @@
-package com.yoyomo.global.config.Participation;
+package com.yoyomo.global.config.participation;
 
-import com.yoyomo.global.config.Participation.dto.codeResponse;
+import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -41,13 +40,21 @@ public class ParticipationCodeService {
         return randomCode;
     }
 
-    public codeResponse getCode (String clubId) {
+    public ParticipationCodeResponse getCode (String clubId) {
         String randomCode = redisTemplate.opsForValue().get(clubId);
         if(randomCode == null){
-            return new codeResponse(this.generate(clubId), LocalDateTime.now().toString() );
+            return new ParticipationCodeResponse(this.generate(clubId), LocalDateTime.now().toString() );
         }else{
             String createdAt = redisTemplate.opsForValue().get(clubId+"_createdAt");
-            return new codeResponse(randomCode, createdAt);
+            return new ParticipationCodeResponse(randomCode, createdAt);
         }
+    }
+
+    public boolean isValidCode(String code, String clubId) {
+        String code_clubId = redisTemplate.opsForValue().get(code);
+        if (code_clubId == null){
+            return false;
+        }
+        return code_clubId.equals(clubId);
     }
 }

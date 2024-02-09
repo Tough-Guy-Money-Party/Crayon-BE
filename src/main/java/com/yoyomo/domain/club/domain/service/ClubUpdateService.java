@@ -48,8 +48,9 @@ public class ClubUpdateService {
         checkIsDeleted(result);
     }
 
-    public void addUser(String userEmail, Club club) {
+    public void addUser(String userEmail, String clubId) {
         User user = userRepository.findByEmail(userEmail).get();
+        Club club = clubRepository.findById(clubId).get();
         List<User> managers = club.getManagers();
         managers.add(user);
         clubRepository.save(club);

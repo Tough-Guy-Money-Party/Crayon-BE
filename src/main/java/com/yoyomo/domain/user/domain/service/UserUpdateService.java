@@ -2,6 +2,7 @@ package com.yoyomo.domain.user.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.user.application.dto.req.UserUpdateRequest;
 import com.yoyomo.domain.user.application.dto.res.UserResponse;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -28,6 +29,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @RequiredArgsConstructor
 public class UserUpdateService {
     private final UserRepository userRepository;
+    private final ClubRepository clubRepository;
 
     public Void updateByEmail(String email) {
         return null;
@@ -37,8 +39,9 @@ public class UserUpdateService {
         return null;
     }
 
-    public void addClub(String userEmail, Club club) {
+    public void addClub(String userEmail, String clubId) {
         User user = userRepository.findByEmail(userEmail).get();
+        Club club = clubRepository.findById(clubId).get();
         List<Club> clubs = user.getClubs();
         clubs.add(club);
         userRepository.save(user);
