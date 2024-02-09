@@ -1,7 +1,8 @@
-package com.yoyomo.global.config.participation;
+package com.yoyomo.global.config.participation.service;
 
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Primary
 public class ParticipationCodeService {
     private final RedisTemplate<String, String> redisTemplate;
     public static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;

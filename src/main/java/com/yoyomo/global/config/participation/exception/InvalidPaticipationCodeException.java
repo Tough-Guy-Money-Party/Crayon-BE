@@ -1,8 +1,8 @@
-package com.yoyomo.domain.club.exception;
+package com.yoyomo.global.config.participation.exception;
 
 import com.yoyomo.global.config.exception.ApplicationException;
 
-import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.INVALID_CODE;
+import static com.yoyomo.global.config.participation.constant.ResponseMessage.INVALID_CODE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public class InvalidPaticipationCodeException extends ApplicationException {
