@@ -55,9 +55,9 @@ public class ParticipationCodeService {
 
     public String getClubId(String code) {
         String clubId = redisTemplate.opsForValue().get(code);
-        if (clubId == null){
-            throw new InvalidPaticipationCodeException();
+        if (clubId != null){
+            return clubId;
         }
-        return clubId;
+        throw new InvalidPaticipationCodeException();
     }
 }
