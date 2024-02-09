@@ -10,6 +10,7 @@ public enum ResponseMessage {
     SUCCESS_READ("동아리 조회에 성공했습니다."),
     SUCCESS_UPDATE("동아리 수정에 성공했습니다."),
     SUCCESS_DELETE("동아리 삭제에 성공했습니다."),
+    SUCCESS_에ET_CODE("동아리 관리자 참여 코드 조회 성공했습니다."),
 
     CLUB_NOT_FOUND("존재하지 않는 동아리입니다."),
     ;

@@ -4,6 +4,8 @@ import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
+import com.yoyomo.global.config.Participation.ParticipationCodeService;
+import com.yoyomo.global.config.Participation.dto.codeResponse;
 import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/clubs")
 public class ClubController {
     private final ClubManageUseCase clubManageUseCase;
+    private final ParticipationCodeService participationCodeService;
+
 
     @PostMapping
     @Operation(summary = "동아리 생성")
@@ -49,5 +53,12 @@ public class ClubController {
     public ResponseDto delete(@PathVariable String id) {
         clubManageUseCase.delete(id);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @GetMapping("/participation-code/{id}")
+    @Operation(summary = "동아리 관리자 참여 코드 조회")
+    public ResponseDto<codeResponse> getParticipationCode(@PathVariable String id) {
+        codeResponse response = participationCodeService.getCode(id);
+        return ResponseDto.of(OK.value(), SUCCESS_에ET_CODE.getMessage(), response);
     }
 }
