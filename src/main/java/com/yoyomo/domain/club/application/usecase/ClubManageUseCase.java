@@ -7,7 +7,7 @@ import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 public interface ClubManageUseCase {
     ClubResponse read(String id);
 
-    ClubCreateResponse create(ClubRequest request);
+    ClubCreateResponse create(ClubRequest request, String userEmail);
 
     void update(String id, ClubRequest request);
 

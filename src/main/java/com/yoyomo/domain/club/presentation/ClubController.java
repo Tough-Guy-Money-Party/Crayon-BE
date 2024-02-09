@@ -8,6 +8,7 @@ import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
@@ -24,8 +25,8 @@ public class ClubController {
 
     @PostMapping
     @Operation(summary = "동아리 생성")
-    public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest) {
-        ClubCreateResponse response = clubManageUseCase.create(clubRequest);
+    public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest, Authentication authentication) {
+        ClubCreateResponse response = clubManageUseCase.create(clubRequest, authentication.getName());
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 

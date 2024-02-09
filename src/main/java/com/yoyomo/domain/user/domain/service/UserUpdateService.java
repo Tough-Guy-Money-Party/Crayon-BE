@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -25,6 +27,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
+    private final UserRepository userRepository;
+
     public Void updateByEmail(String email) {
         return null;
     }
@@ -33,4 +37,10 @@ public class UserUpdateService {
         return null;
     }
 
+    public void addClub(String userEmail, Club club) {
+        User user = userRepository.findByEmail(userEmail).get();
+        List<Club> clubs = user.getClubs();
+        clubs.add(club);
+        userRepository.save(user);
+    }
 }
