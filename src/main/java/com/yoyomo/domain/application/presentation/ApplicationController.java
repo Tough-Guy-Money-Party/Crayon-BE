@@ -1,13 +1,13 @@
 package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
+import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
-import com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage;
 import com.yoyomo.domain.user.application.usecase.UserInfoUseCase;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -77,14 +77,21 @@ public class ApplicationController {
     @Operation(summary = "모집 지원서 목록 조회")
     public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String id) {
         List<ApplicationResponse> responses = applicationManageUseCase.readAll(id);
-        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
     @GetMapping("/{applicationId}")
     @Operation(summary = "모집 지원서 상세 조회")
     public ResponseDto<ApplicationManageResponse> readApplication(@PathVariable String applicationId) {
         ApplicationManageResponse response = applicationManageUseCase.read(applicationId);
-        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), response);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
+
+    @PatchMapping("/{applicationId}")
+    @Operation(summary = "모집 지원 단계 수정")
+    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody ApplicationStatusRequest request) {
+        applicationManageUseCase.update(applicationId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
 
