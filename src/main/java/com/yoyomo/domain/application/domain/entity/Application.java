@@ -36,7 +36,10 @@ public class Application {
     private SubmitStatus submitStatus;
 
     @NotNull
-    private List<ApplicationStatus> applicationStatus;
+    private ApplicationStatus applicationStatus;
+
+    @NotNull
+    private String process;
 
     private Interview interview;
 }
