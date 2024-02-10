@@ -11,6 +11,7 @@ public record MyApplicationsResponse(
         String id,
         ClubResponse club,
         List<Schedule> calendar,
-        ApplicationStatus applicationStatus
+        ApplicationStatus applicationStatus,
+        String process
 ) {
 }

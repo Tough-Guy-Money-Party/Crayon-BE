@@ -10,6 +10,7 @@ public record ApplicationRequest(
         String email,
         String phone,
         List<AnswerRequest> answers,
-        SubmitStatus submitStatus
+        SubmitStatus submitStatus,
+        String process
 ) {
 }

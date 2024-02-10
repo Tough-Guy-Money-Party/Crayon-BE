@@ -6,6 +6,7 @@ import com.yoyomo.domain.user.application.dto.res.UserApplicationResponse;
 public record ApplicationResponse(
         String id,
         UserApplicationResponse user,
-        ApplicationStatus applicationStatus
+        ApplicationStatus applicationStatus,
+        String process
 ) {
 }
