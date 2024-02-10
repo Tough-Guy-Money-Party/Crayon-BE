@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Primary
 public class ParticipationCodeService {
     private final RedisTemplate<String, String> redisTemplate;
-    public static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
+    public static final long EXPIRATION_TIME = 60 * 60 * 1000L;
     public String generate (String clubId) {
         String randomCode = UUID.randomUUID().toString();
         redisTemplate.opsForValue().set(

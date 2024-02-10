@@ -29,7 +29,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @RequiredArgsConstructor
 public class UserUpdateService {
     private final UserRepository userRepository;
-    private final ClubRepository clubRepository;
 
     public Void updateByEmail(String email) {
         return null;
@@ -39,9 +38,7 @@ public class UserUpdateService {
         return null;
     }
 
-    public void addClub(String userEmail, String clubId) {
-        User user = userRepository.findByEmail(userEmail).get();
-        Club club = clubRepository.findById(clubId).get();
+    public void addClub(User user, Club club) {
         List<Club> clubs = user.getClubs();
         clubs.add(club);
         userRepository.save(user);

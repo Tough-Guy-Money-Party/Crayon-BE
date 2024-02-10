@@ -28,7 +28,6 @@ public class ClubUpdateService {
     private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
     private final ClubRepository clubRepository;
-    private final UserRepository userRepository;
 
     public void from(String id, ClubRequest request) {
         Query query = query(
@@ -48,9 +47,7 @@ public class ClubUpdateService {
         checkIsDeleted(result);
     }
 
-    public void addUser(String userEmail, String clubId) {
-        User user = userRepository.findByEmail(userEmail).get();
-        Club club = clubRepository.findById(clubId).get();
+    public void addUser(User user, Club club) {
         List<User> managers = club.getManagers();
         managers.add(user);
         clubRepository.save(club);

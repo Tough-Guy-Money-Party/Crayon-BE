@@ -32,7 +32,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public ClubCreateResponse create(ClubRequest request, String userEmail) {
         Club club = clubMapper.from(request);
         club = clubSaveService.save(club);
-        participationService.addToEachList(userEmail, club.getId());
+        participationService.addToEachList(userEmail, club);
         return new ClubCreateResponse(club.getId());
     }
     @Override
