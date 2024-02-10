@@ -28,11 +28,10 @@ public class ParticipationService {
         boolean isAlreadyParticipate = user.getClubs()
                 .stream()
                 .anyMatch(club -> clubId.equals(club.getId()));
-        if (!isAlreadyParticipate){
-            this.addToEachList(userEmail, clubId);
-            return;
+        if (isAlreadyParticipate){
+            throw new AlreadyParticipatedException();
         }
-        throw new AlreadyParticipatedException();
+        this.addToEachList(userEmail, clubId);
     }
 
     public void addToEachList (String userEmail, String clubId) {
