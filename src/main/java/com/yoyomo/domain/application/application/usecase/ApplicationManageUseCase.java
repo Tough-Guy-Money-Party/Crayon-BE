@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -15,4 +16,6 @@ public interface ApplicationManageUseCase {
     List<ApplicationResponse> readAll(String recruitmentId);
 
     ApplicationManageResponse read(String applicationId);
+
+    void update(String id, ApplicationStatusRequest request);
 }
