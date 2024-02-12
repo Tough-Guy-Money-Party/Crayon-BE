@@ -18,7 +18,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class InterviewController {
     private final InterviewManageUseCase interviewManageUseCase;
 
-
     @PostMapping("/interview")
     @Operation(summary = "면접 생성")
     public ResponseDto<Void> create(@PathVariable String applicationId, @RequestBody InterviewRequest request) {
