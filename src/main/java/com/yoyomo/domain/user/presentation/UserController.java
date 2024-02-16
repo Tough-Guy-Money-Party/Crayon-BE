@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping(value = "/register")
     @Operation(summary = "회원가입")
     public ResponseDto<UserResponse>  register(@RequestBody RegisterRequest request) throws Exception {
-        UserResponse response = userManageUseCase.register(request.getEmail());
+        UserResponse response = userManageUseCase.register(request);
         return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(),response);
     }
 
