@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
 env:
-  S3_BUCKET_NAME: crayon-deploy
+  S3_BUCKET_NAME: crayon-be-deploy
 jobs:
   build:
     runs-on: ubuntu-latest 
