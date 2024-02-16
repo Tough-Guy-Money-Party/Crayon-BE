@@ -1,13 +1,18 @@
 package com.yoyomo.domain.club.presentation;
 
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
+
+import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.dto.ResponseDto;
+import com.yoyomo.global.config.participation.service.ParticipationCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
@@ -21,11 +26,13 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/clubs")
 public class ClubController {
     private final ClubManageUseCase clubManageUseCase;
+    private final ParticipationCodeService participationCodeService;
+
 
     @PostMapping
     @Operation(summary = "동아리 생성")
-    public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest) {
-        ClubCreateResponse response = clubManageUseCase.create(clubRequest);
+    public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest, Authentication authentication) {
+        ClubCreateResponse response = clubManageUseCase.create(clubRequest, authentication.getName());
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 
@@ -48,5 +55,25 @@ public class ClubController {
     public ResponseDto delete(@PathVariable String id) {
         clubManageUseCase.delete(id);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @PatchMapping("/participation")
+    @Operation(summary = "동아리 관리자 추가")
+    public ResponseDto participation(@RequestBody ParticipationRequest participationRequest, Authentication authentication) {
+        clubManageUseCase.participate(participationRequest, authentication.getName());
+        return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage());
+    }
+    @GetMapping("/participation/code/{id}")
+    @Operation(summary = "동아리 관리자 참여 코드 조회")
+    public ResponseDto<ParticipationCodeResponse> getParticipationCode(@PathVariable String id) {
+        ParticipationCodeResponse response = participationCodeService.getCode(id);
+        return ResponseDto.of(OK.value(), SUCCESS_GET_CODE.getMessage(), response);
+    }
+
+    @PostMapping("/participation/code/{id}")
+    @Operation(summary = "동아리 관리자 참여 코드 재생성")
+    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(@PathVariable String id) {
+        ParticipationCodeResponse response = participationCodeService.regenerate(id);
+        return ResponseDto.of(OK.value(), SUCCESS_REGENERATE_CODE.getMessage(), response);
     }
 }

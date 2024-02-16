@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserInfoUseCaseImpl implements UserInfoUseCase {
     private final UserGetService userGetService;
-
     public User get(Authentication authentication) {
         return userGetService.findByEmail(authentication.getName());
     }
-
     public User get(String name, String phone) {
         return userGetService.find(name, phone).orElseThrow(UserNotFoundException::new);
     }

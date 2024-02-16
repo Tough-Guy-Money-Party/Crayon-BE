@@ -2,6 +2,7 @@ package com.yoyomo.domain.user.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.user.application.dto.req.UserUpdateRequest;
 import com.yoyomo.domain.user.application.dto.res.UserResponse;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -18,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -25,6 +28,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
+    private final UserRepository userRepository;
+
     public Void updateByEmail(String email) {
         return null;
     }
@@ -33,4 +38,9 @@ public class UserUpdateService {
         return null;
     }
 
+    public void addClub(User user, Club club) {
+        List<Club> clubs = user.getClubs();
+        clubs.add(club);
+        userRepository.save(user);
+    }
 }
