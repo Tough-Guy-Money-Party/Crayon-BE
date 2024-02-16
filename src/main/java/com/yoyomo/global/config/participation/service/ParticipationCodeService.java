@@ -45,6 +45,9 @@ public class ParticipationCodeService {
 
     public ParticipationCodeResponse getCode (String clubId) {
         String randomCode = redisTemplate.opsForValue().get(clubId);
+        if(randomCode == null){
+            return new ParticipationCodeResponse(this.generate(clubId), LocalDateTime.now().toString());
+        }
         String createdAt = redisTemplate.opsForValue().get(clubId+"_createdAt");
         return new ParticipationCodeResponse(randomCode, createdAt);
     }
