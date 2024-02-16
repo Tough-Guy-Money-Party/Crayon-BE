@@ -23,7 +23,6 @@ public class Club {
     private String id;
     private String name;
     private String subDomain;
-    private String description;
     private LocalDateTime deletedAt;
     @DBRef
     private List<User> managers = new ArrayList<>();
