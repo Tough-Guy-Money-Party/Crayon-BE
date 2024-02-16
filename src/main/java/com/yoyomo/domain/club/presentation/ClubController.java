@@ -59,15 +59,21 @@ public class ClubController {
 
     @PatchMapping("/participation")
     @Operation(summary = "동아리 관리자 추가")
-    public ResponseDto<Void> participation(@RequestBody ParticipationRequest participationRequest, Authentication authentication) {
+    public ResponseDto participation(@RequestBody ParticipationRequest participationRequest, Authentication authentication) {
         clubManageUseCase.participate(participationRequest, authentication.getName());
         return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage());
     }
     @GetMapping("/participation/code/{id}")
     @Operation(summary = "동아리 관리자 참여 코드 조회")
-    public ResponseDto<ParticipationCodeResponse> getParticipationCode(@PathVariable String id, @RequestParam(value = "isRegeneration", defaultValue = "n") String isRegeneration) {
-        System.out.println(isRegeneration);
-        ParticipationCodeResponse response = participationCodeService.getCode(id, isRegeneration);
+    public ResponseDto<ParticipationCodeResponse> getParticipationCode(@PathVariable String id) {
+        ParticipationCodeResponse response = participationCodeService.getCode(id);
         return ResponseDto.of(OK.value(), SUCCESS_GET_CODE.getMessage(), response);
+    }
+
+    @PostMapping("/participation/code/{id}")
+    @Operation(summary = "동아리 관리자 참여 코드 재생성")
+    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(@PathVariable String id) {
+        ParticipationCodeResponse response = participationCodeService.regenerate(id);
+        return ResponseDto.of(OK.value(), SUCCESS_REGENERATE_CODE.getMessage(), response);
     }
 }

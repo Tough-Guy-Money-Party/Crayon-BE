@@ -43,13 +43,14 @@ public class ParticipationCodeService {
         return randomCode;
     }
 
-    public ParticipationCodeResponse getCode (String clubId, String isRegeneration) {
+    public ParticipationCodeResponse getCode (String clubId) {
         String randomCode = redisTemplate.opsForValue().get(clubId);
-        if(isRegeneration.equals("y") || randomCode == null){
-            return new ParticipationCodeResponse(this.generate(clubId), LocalDateTime.now().toString() );
-        }
         String createdAt = redisTemplate.opsForValue().get(clubId+"_createdAt");
         return new ParticipationCodeResponse(randomCode, createdAt);
+    }
+
+    public ParticipationCodeResponse regenerate (String clubId) {
+        return new ParticipationCodeResponse(this.generate(clubId), LocalDateTime.now().toString());
     }
 
     public String getClubId(String code) {
