@@ -16,7 +16,10 @@ public class ItemFactory {
                 Type.RADIO, SelectCreationStrategy.getInstance(),
                 Type.CHECKBOX, SelectCreationStrategy.getInstance(),
                 Type.SHORT, TextCreationStrategy.getInstance(),
-                Type.LONG, TextCreationStrategy.getInstance()
+                Type.LONG, TextCreationStrategy.getInstance(),
+                Type.STAGE, StageCreationStrategy.getInstance(),
+                Type.DATE, null,
+                Type.FILE, null
         );
     }
 
