@@ -14,6 +14,7 @@ import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.KakaoService;
+import com.yoyomo.global.config.kakao.dto.KakaoInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,9 +43,13 @@ public class UserManageUseCase {
     private final RedisTemplate<String, String> redisTemplate;
     public static final long EXPIRATION_TIME = 60 * 60 * 1000L;
 
+    public static final String EMAIL_INFO_KEY_PREFIX = "email";
+    public static final String NAME_INFO_KEY_PREFIX = "name";
+
     public UserResponse login(String code) throws Exception {
         String token = kakaoService.getKakaoAccessToken(code);
-        String email = kakaoService.getEmail(token);
+        KakaoInfoResponse kakaoInfoResponse = kakaoService.getInfo(token);
+        String email = kakaoInfoResponse.getEmail();
         if (userGetService.existsByEmail(email)) {
             User user = userGetService.findByEmail(email);
             JwtResponse tokenDto = new JwtResponse(
@@ -54,13 +59,21 @@ public class UserManageUseCase {
             UserResponse signResponse = UserResponse.builder()
                     .id(user.getId())
                     .email(user.getEmail())
+                    .name(user.getName())
                     .token(tokenDto)
                     .build();
             return signResponse;
         } else {
+            String name = kakaoInfoResponse.getName();
             redisTemplate.opsForValue().set(
-                    code,
+                    EMAIL_INFO_KEY_PREFIX+code,
                     email,
+                    EXPIRATION_TIME,
+                    TimeUnit.MILLISECONDS
+            );
+            redisTemplate.opsForValue().set(
+                    NAME_INFO_KEY_PREFIX+code,
+                    name,
                     EXPIRATION_TIME,
                     TimeUnit.MILLISECONDS
             );
@@ -69,13 +82,14 @@ public class UserManageUseCase {
     }
 
     public UserResponse register(RegisterRequest request) {
-        String email = redisTemplate.opsForValue().get(request.getCode());
+        String email = redisTemplate.opsForValue().get(EMAIL_INFO_KEY_PREFIX+request.getCode());
+        String name = redisTemplate.opsForValue().get(NAME_INFO_KEY_PREFIX+request.getCode());
         if (userGetService.existsByEmail(email)) {
             throw new UserConflictException();
         }
         User user = User.builder()
-                .name(request.getName())
                 .email(email)
+                .name(name)
                 .build();
         userSaveService.save(user);
         JwtResponse tokenDto = new JwtResponse(

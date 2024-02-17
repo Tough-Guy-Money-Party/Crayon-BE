@@ -6,7 +6,7 @@ import lombok.extern.jackson.Jacksonized;
 
 @Getter
 @Builder
+@Jacksonized
 public class RegisterRequest {
     private String code;
-    private String name;
 }

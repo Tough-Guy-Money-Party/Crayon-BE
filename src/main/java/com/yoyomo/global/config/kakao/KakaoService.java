@@ -1,5 +1,7 @@
 package com.yoyomo.global.config.kakao;
 
+import com.yoyomo.domain.user.application.dto.res.UserResponse;
+import com.yoyomo.global.config.kakao.dto.KakaoInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonParser;
@@ -73,7 +75,7 @@ public class KakaoService {
 
         return access_Token;
     }
-    public String getEmail(String token) throws Exception {
+    public KakaoInfoResponse getInfo(String token) throws Exception {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
         URL url = new URL(reqURL);
@@ -105,10 +107,18 @@ public class KakaoService {
         if(hasEmail){
             email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
         }
+        String name = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
         log.info("id : " + id);
         log.info("email : " + email);
+        log.info("nickname : " + name);
         br.close();
-        return email;
+
+        KakaoInfoResponse kakaoInfoResponse = KakaoInfoResponse.builder()
+                .email(email)
+                .name(name)
+                .build();
+
+        return kakaoInfoResponse;
     }
 }
