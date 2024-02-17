@@ -8,6 +8,7 @@ import java.util.List;
 public record RecruitmentDetailsResponse(
         String title,
         int generation,
+        String position,
         List<Process> process,
         Form form
 ) {
