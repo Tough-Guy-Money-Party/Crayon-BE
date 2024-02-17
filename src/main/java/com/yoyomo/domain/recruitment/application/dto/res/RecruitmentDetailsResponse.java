@@ -8,8 +8,7 @@ import java.util.List;
 public record RecruitmentDetailsResponse(
         String title,
         int generation,
-        List<Process> calendar,
-        List<String> process,
+        List<Process> process,
         Form form
 ) {
 }

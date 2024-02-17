@@ -15,4 +15,5 @@ public class Process {
     private String title;
     private LocalDate startAt;
     private LocalDate endAt;
+    private int templateId;
 }

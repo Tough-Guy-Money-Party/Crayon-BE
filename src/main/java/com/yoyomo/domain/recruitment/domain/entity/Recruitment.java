@@ -31,9 +31,7 @@ public class Recruitment {
 
     private Form form;
 
-    private List<Process> calendar;
-
-    private List<String> process;
+    private List<Process> process;
 
     private LocalDateTime deletedAt;
 }
