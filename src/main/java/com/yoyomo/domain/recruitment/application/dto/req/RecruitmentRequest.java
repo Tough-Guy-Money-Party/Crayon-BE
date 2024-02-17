@@ -9,6 +9,7 @@ public record RecruitmentRequest(
         String formId,
         String title,
         Integer generation,
+        String position,
         List<Schedule> calendar,
         List<String> process
 ) {

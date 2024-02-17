@@ -27,6 +27,8 @@ public class Recruitment {
 
     private int generation;
 
+    private String position;
+
     private Form form;
 
     private List<Schedule> calendar;
