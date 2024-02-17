@@ -1,6 +1,7 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
+import com.yoyomo.domain.item.domain.entity.File;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.type.Type;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,8 @@ public class ItemFactory {
                 Type.SHORT, TextCreationStrategy.getInstance(),
                 Type.LONG, TextCreationStrategy.getInstance(),
                 Type.STAGE, StageCreationStrategy.getInstance(),
-                Type.DATE, null,
-                Type.FILE, null
+                Type.DATE, DateCreationStrategy.getInstance(),
+                Type.FILE, FileCreationStrategy.getInstance()
         );
     }
 

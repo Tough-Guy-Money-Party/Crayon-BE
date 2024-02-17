@@ -9,7 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Stage extends Item {
-    private String meaning_of_high;
-    private String meaning_of_low;
+public class Date extends Item {
 }
