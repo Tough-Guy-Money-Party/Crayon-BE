@@ -31,7 +31,7 @@ public class Recruitment {
 
     private Form form;
 
-    private List<Schedule> calendar;
+    private List<Process> calendar;
 
     private List<String> process;
 
