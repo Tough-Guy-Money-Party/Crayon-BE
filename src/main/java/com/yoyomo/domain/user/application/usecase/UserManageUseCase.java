@@ -66,7 +66,7 @@ public class UserManageUseCase {
         } else {
             String name = kakaoInfoResponse.getName();
             redisTemplate.opsForValue().set(
-                    EMAIL_INFO_KEY_PREFIX+code,
+                    EMAIL_INFO_KEY_PREFIX + code,
                     email,
                     EXPIRATION_TIME,
                     TimeUnit.MILLISECONDS
