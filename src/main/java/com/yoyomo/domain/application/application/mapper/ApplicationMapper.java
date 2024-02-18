@@ -24,7 +24,7 @@ public interface ApplicationMapper {
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
 
-    @Mapping(target = "calendar", source = "application.recruitment.calendar")
+//    @Mapping(target = "calendar", source = "application.recruitment.calendar")
     @Mapping(target = "id", source = "application.id")
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 
