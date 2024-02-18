@@ -4,11 +4,11 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
 import com.yoyomo.domain.item.application.mapper.ItemMapper;
-import com.yoyomo.domain.item.domain.entity.Item;
-import com.yoyomo.domain.item.domain.entity.Select;
-import com.yoyomo.domain.item.domain.entity.Text;
+import com.yoyomo.domain.item.domain.entity.*;
 import com.yoyomo.domain.item.domain.service.ItemUpdateService;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
+import com.yoyomo.domain.item.exception.InvalidItemException;
+import com.yoyomo.domain.item.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,15 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
     public ItemResponse getItemResponse(Item item) {
         if (item instanceof Text) {
             return itemMapper.mapToTextResponse((Text) item);
+        }else if (item instanceof Select) {
+            return itemMapper.mapToSelectResponse((Select) item);
+        }else if (item instanceof Stage ){
+            return itemMapper.mapToStageResponse((Stage) item);
+        }else if (item instanceof Date ){
+            return itemMapper.mapToDateResponse((Date) item);
+        }else if (item instanceof File ){
+            return itemMapper.mapToFileResponse((File) item);
         }
-        return itemMapper.mapToSelectResponse((Select) item);
+        throw new InvalidItemException();
     }
 }
