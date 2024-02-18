@@ -7,6 +7,7 @@ import java.util.List;
 public record FormRequest(
         String clubId,
         String name,
+        String description,
         List<ItemRequest> itemRequests
 ) {
 }
