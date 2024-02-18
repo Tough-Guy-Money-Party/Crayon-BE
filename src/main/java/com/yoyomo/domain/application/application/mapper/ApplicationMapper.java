@@ -8,7 +8,8 @@ import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
-import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.entity.Applicant;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -21,11 +22,11 @@ public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "process", source = "request.process")
-    Application from(User user, Recruitment recruitment, ApplicationRequest request);
+    Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
 
-    @Mapping(target = "calendar", source = "application.recruitment.calendar")
+//    @Mapping(target = "calendar", source = "application.recruitment.calendar")
     @Mapping(target = "id", source = "application.id")
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 

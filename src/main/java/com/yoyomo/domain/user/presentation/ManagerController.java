@@ -1,8 +1,8 @@
 package com.yoyomo.domain.user.presentation;
 
 import com.yoyomo.domain.user.application.dto.req.*;
-import com.yoyomo.domain.user.application.dto.res.UserResponse;
-import com.yoyomo.domain.user.application.usecase.UserManageUseCase;
+import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import com.yoyomo.domain.user.application.usecase.ManagerManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,41 +17,41 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
-    private final UserManageUseCase userManageUseCase;
+public class ManagerController {
+    private final ManagerManageUseCase managerManageUseCase;
 
     @PostMapping(value = "/register")
     @Operation(summary = "회원가입")
-    public ResponseDto<UserResponse>  register(@RequestBody RegisterRequest request) throws Exception {
-        UserResponse response = userManageUseCase.register(request.getEmail());
+    public ResponseDto<ManagerResponse>  register(@RequestBody RegisterRequest request) throws Exception {
+        ManagerResponse response = managerManageUseCase.register(request);
         return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(),response);
     }
 
     @PostMapping(value = "/login/{code}")
     @Operation(summary = "로그인")
     public ResponseDto<?> login(@PathVariable String code) throws Exception {
-        UserResponse response =  userManageUseCase.login(code);
+        ManagerResponse response =  managerManageUseCase.login(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
 
     @PostMapping(value = "/refresh")
     @Operation(summary = "토큰 재발급")
     public ResponseDto<JwtResponse> refresh(@RequestBody RefreshRequest request) throws Exception {
-        JwtResponse jwtResponse =  userManageUseCase.tokenRefresh(request);
+        JwtResponse jwtResponse =  managerManageUseCase.tokenRefresh(request);
         return ResponseDto.of(OK.value(), SUCCESS_REFRESH.getMessage(), jwtResponse);
     }
 
     @DeleteMapping
     @Operation(summary = "유저 탈퇴")
     public ResponseDto<Void> delete(Authentication authentication) {
-        userManageUseCase.delete(authentication);
+        managerManageUseCase.delete(authentication);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 
     @PatchMapping
     @Operation(summary = "유저 수정")
     public ResponseDto<Void> update(Authentication authentication) {
-        userManageUseCase.update(authentication);
+        managerManageUseCase.update(authentication);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }

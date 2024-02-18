@@ -7,7 +7,6 @@ import java.util.List;
 public record ApplicationRequest(
         String recruitmentId,
         String name,
-        String email,
         String phone,
         List<AnswerRequest> answers,
         SubmitStatus submitStatus,

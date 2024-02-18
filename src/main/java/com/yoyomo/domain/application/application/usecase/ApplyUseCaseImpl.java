@@ -12,9 +12,8 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.application.usecase.UserInfoUseCase;
-import com.yoyomo.domain.user.application.usecase.UserManageUseCase;
-import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.application.usecase.ApplicantManageUseCase;
+import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,45 +30,45 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final ApplicationMapper applicationMapper;
     private final RecruitmentGetService recruitmentGetService;
     private final ClubGetService clubGetService;
-    private final UserInfoUseCase userInfoUseCase;
-    private final UserManageUseCase userManageUseCase;
+    private final com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCase ApplicantInfoUseCase;
+    private final ApplicantManageUseCase applicantManageUseCase;
 
     @Override
     public void create(ApplicationRequest request) {
-        User user = getUserOrCreateNew(request);
+        Applicant applicant = getUserOrCreateNew(request);
         Recruitment recruitment = recruitmentGetService.find(request.recruitmentId());
-        Application application = applicationMapper.from(user, recruitment, request);
+        Application application = applicationMapper.from(applicant, recruitment, request);
         applicationSaveService.save(application);
     }
 
-    private User getUserOrCreateNew(ApplicationRequest request) {
+    private Applicant getUserOrCreateNew(ApplicationRequest request) {
         try {
-            User user = userInfoUseCase.get(request.name(), request.phone());
-            applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
-            return user;
+            Applicant applicant = ApplicantInfoUseCase.get(request.name(), request.phone());
+            applicationManageUseCase.checkDuplicatedApplication(applicant, request.recruitmentId());
+            return applicant;
         } catch (UserNotFoundException e) {
-            return userManageUseCase.create(request);
+            return applicantManageUseCase.create(request);
         }
     }
 
     @Override
-    public void update(User user, String applicationId, ApplicationRequest request) {
-        applicationManageUseCase.checkDuplicatedApplication(user, request.recruitmentId());
+    public void update(Applicant applicant, String applicationId, ApplicationRequest request) {
+        applicationManageUseCase.checkDuplicatedApplication(applicant, request.recruitmentId());
         Application application = applicationGetService.find(applicationId);
-        applicationManageUseCase.checkReadPermission(user, application);
+        applicationManageUseCase.checkReadPermission(applicant, application);
         applicationUpdateService.from(applicationId, request);
     }
 
     @Override
-    public ApplicationDetailsResponse read(User user, String applicationId) {
+    public ApplicationDetailsResponse read(Applicant applicant, String applicationId) {
         Application application = applicationGetService.find(applicationId);
-        applicationManageUseCase.checkReadPermission(user, application);
+        applicationManageUseCase.checkReadPermission(applicant, application);
         return applicationMapper.mapToApplicationDetails(application);
     }
 
     @Override
-    public List<MyApplicationsResponse> readAll(User user) {
-        List<Application> applications = applicationGetService.findAll(user);
+    public List<MyApplicationsResponse> readAll(Applicant applicant) {
+        List<Application> applications = applicationGetService.findAll(applicant);
         return applications.stream()
                 .map(application -> {
                     Club club = clubGetService.byId(application.getRecruitment().getClubId());

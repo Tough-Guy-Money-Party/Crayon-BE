@@ -1,6 +1,5 @@
 package com.yoyomo.domain.user.application.dto.res;
 
-import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-    private String id;
+public class ApplicantResponse {
     private String name;
-    private String email;
-    private String number;
-    private JwtResponse token;
+    private String phone;
 }
