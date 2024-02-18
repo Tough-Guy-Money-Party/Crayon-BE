@@ -1,5 +1,5 @@
 package com.yoyomo.domain.item.domain.entity.type;
 
 public enum Type {
-    SHORT, LONG, RADIO, CHECKBOX
+    SHORT, LONG, RADIO, CHECKBOX, STAGE, DATE, FILE
 }

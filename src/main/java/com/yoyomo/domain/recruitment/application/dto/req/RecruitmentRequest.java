@@ -1,6 +1,6 @@
 package com.yoyomo.domain.recruitment.application.dto.req;
 
-import com.yoyomo.domain.recruitment.domain.entity.Schedule;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public record RecruitmentRequest(
         String formId,
         String title,
         Integer generation,
-        List<Schedule> calendar,
-        List<String> process
+        String position,
+        List<Process> process
 ) {
 }

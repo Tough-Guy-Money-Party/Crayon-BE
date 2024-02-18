@@ -2,7 +2,7 @@ package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
-import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.entity.Applicant;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class Application {
     private String id;
 
     @NotNull
-    private User user;
+    private Applicant applicant;
 
     @NotNull
     private Recruitment recruitment;

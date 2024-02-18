@@ -1,5 +1,6 @@
 package com.yoyomo.global.config.kakao;
 
+import com.yoyomo.global.config.kakao.dto.KakaoInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonParser;
@@ -13,10 +14,13 @@ import java.net.URL;
 @Slf4j
 @Service
 public class KakaoService {
-    @Value("${spring.application.kakao-client-id}")
-    private String clientId;
-    @Value("${spring.application.kakao-redirect-uri}")
-    private String redirectUrl;
+    private final String CLIENT_ID;
+    private final String REDIRECT_URL;
+    public KakaoService(@Value("${spring.application.kakao-client-id}") String clientId, @Value("${spring.application.kakao-redirect-uri}") String redirectUrl) {
+        this.CLIENT_ID = clientId;
+        this.REDIRECT_URL = redirectUrl;
+    }
+
     public String getKakaoAccessToken (String code) {
         String access_Token = "";
         String refresh_Token = "";
@@ -26,25 +30,21 @@ public class KakaoService {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
-            //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=" + clientId); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=" + redirectUrl); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=" + CLIENT_ID);
+            sb.append("&redirect_uri=" + REDIRECT_URL);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
 
-            //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             log.info("responseCode : " + responseCode);
 
-            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
             String result = "";
@@ -55,7 +55,6 @@ public class KakaoService {
 
             log.info("response body : " + result);
 
-            //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
@@ -73,7 +72,7 @@ public class KakaoService {
 
         return access_Token;
     }
-    public String getEmail(String token) throws Exception {
+    public KakaoInfoResponse getInfo(String token) throws Exception {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
         URL url = new URL(reqURL);
@@ -86,7 +85,6 @@ public class KakaoService {
         int responseCode = conn.getResponseCode();
         log.info("responseCode : " + responseCode);
 
-        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line = "";
         String result = "";
@@ -105,10 +103,18 @@ public class KakaoService {
         if(hasEmail){
             email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
         }
+        String name = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
         log.info("id : " + id);
         log.info("email : " + email);
+        log.info("nickname : " + name);
         br.close();
-        return email;
+
+        KakaoInfoResponse kakaoInfoResponse = KakaoInfoResponse.builder()
+                .email(email)
+                .name(name)
+                .build();
+
+        return kakaoInfoResponse;
     }
 }

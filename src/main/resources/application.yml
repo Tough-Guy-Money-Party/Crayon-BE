@@ -14,6 +14,9 @@ spring:
       host: ${HOST:localhost}
       port: ${PORT:27017}
       database: ${DATABASE:crayon}
+      username: ${USERNAME}
+      password: ${PASSWORD}
+      authentication-database: admin
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
@@ -27,3 +30,4 @@ jwt:
   refresh_secret: ${JWT_REFRESH_SECRET}
 
 is-using-refresh-token: true
+
