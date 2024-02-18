@@ -25,5 +25,7 @@ public class Item {
 
     private int order;
 
+    private String imageName;
+
     private boolean required;
 }

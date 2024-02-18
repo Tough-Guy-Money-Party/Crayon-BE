@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Stage extends Item {
 
-    private String meaning_of_high;
+    private String meaningOfHigh;
 
-    private String meaning_of_low;
+    private String meaningOfLow;
 }
