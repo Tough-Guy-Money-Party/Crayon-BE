@@ -1,4 +1,4 @@
-package com.yoyomo.domain.user.application.dto.res;
+package com.yoyomo.global.config.kakao.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserApplicationResponse {
+public class KakaoInfoResponse {
     private String name;
     private String email;
 }
