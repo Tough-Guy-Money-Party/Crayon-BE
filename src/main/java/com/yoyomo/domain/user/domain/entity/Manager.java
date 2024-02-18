@@ -1,29 +1,25 @@
-package com.yoyomo.domain.club.domain.entity;
+package com.yoyomo.domain.user.domain.entity;
 
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.club.domain.entity.Club;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "clubs")
-public class Club {
-    @Id
-    private String id;
-    private String name;
-    private String subDomain;
-    private LocalDateTime deletedAt;
+@Document(collection = "managers")
+public class Manager extends User{
+    private String email;
     @DBRef
-    private List<Manager> managers = new ArrayList<>();
+    private List<Club> clubs = new ArrayList<>();
 }

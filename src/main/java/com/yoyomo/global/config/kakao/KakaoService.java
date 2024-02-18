@@ -1,6 +1,5 @@
 package com.yoyomo.global.config.kakao;
 
-import com.yoyomo.domain.user.application.dto.res.UserResponse;
 import com.yoyomo.global.config.kakao.dto.KakaoInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import com.nimbusds.jose.shaded.gson.JsonElement;
