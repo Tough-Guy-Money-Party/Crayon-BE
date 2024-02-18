@@ -9,8 +9,13 @@ public record ItemRequest(
         Type type,
         int order,
         boolean required,
+        // for Text
         int limit,
-        List<String> options
+        // for Select
+        List<String> options,
+        // for Stage
+        String meaning_of_high,
+        String meaning_of_low
 ) {
 }
 
