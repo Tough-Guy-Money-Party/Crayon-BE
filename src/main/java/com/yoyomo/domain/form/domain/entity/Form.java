@@ -27,6 +27,8 @@ public class Form {
 
     private String description;
 
+    private String instruction;
+
     private List<Item> items;
 
     private LocalDateTime deletedAt;

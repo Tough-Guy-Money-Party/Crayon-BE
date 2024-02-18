@@ -8,6 +8,7 @@ public record FormRequest(
         String clubId,
         String name,
         String description,
+        String instruction,
         List<ItemRequest> itemRequests
 ) {
 }
