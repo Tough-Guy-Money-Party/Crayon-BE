@@ -16,12 +16,11 @@ public class UserSaveService {
     private final ManagerRepository managerRepository;
     private final ApplicantRepository applicantRepository;
 
-    public User save(User user) {
-        if (user instanceof Applicant) {
-            return applicantRepository.save((Applicant) user);
-        } else if (user instanceof Manager) {
-            return managerRepository.save((Manager) user);
-        }
-        return null;
+    public Applicant save(Applicant applicant) {
+        return applicantRepository.save(applicant);
+    }
+
+    public Manager save(Manager manager) {
+        return managerRepository.save(manager);
     }
 }

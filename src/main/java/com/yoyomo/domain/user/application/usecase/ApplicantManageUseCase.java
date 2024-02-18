@@ -18,8 +18,8 @@ public class ApplicantManageUseCase {
     private final UserMapper userMapper;
 
     public Applicant create(ApplicationRequest request) {
-        User applicant = userMapper.from(request);
-        return (Applicant) userSaveService.save(applicant);
+        Applicant applicant = userMapper.from(request);
+        return userSaveService.save(applicant);
     }
 
     public Void update() {
