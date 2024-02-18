@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    @Id
-    private String id;
-    private String name;
+@Document(collection = "applicants")
+public class Applicant extends User{
+    private String phone;
+//    @DBRef
+//    private List<Club> clubs = new ArrayList<>();
 }

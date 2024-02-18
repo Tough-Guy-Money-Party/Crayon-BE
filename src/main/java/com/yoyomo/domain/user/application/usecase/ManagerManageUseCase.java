@@ -1,11 +1,9 @@
 package com.yoyomo.domain.user.application.usecase;
 
-import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
 import com.yoyomo.domain.user.application.dto.req.RegisterRequest;
-import com.yoyomo.domain.user.application.dto.res.UserResponse;
-import com.yoyomo.domain.user.application.mapper.UserMapper;
-import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.domain.user.domain.service.UserUpdateService;
@@ -27,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserManageUseCase {
+public class ManagerManageUseCase {
 
     @Value("${is-using-refresh-token}")
     private boolean isUsingRefreshToken;
@@ -35,7 +33,6 @@ public class UserManageUseCase {
     private final UserGetService userGetService;
     private final UserSaveService userSaveService;
     private final UserUpdateService userUpdateService;
-    private final UserMapper userMapper;
 
     private final KakaoService kakaoService;
     private final JwtProvider jwtProvider;
@@ -46,20 +43,20 @@ public class UserManageUseCase {
     public static final String EMAIL_INFO_KEY_PREFIX = "email";
     public static final String NAME_INFO_KEY_PREFIX = "name";
 
-    public UserResponse login(String code) throws Exception {
+    public ManagerResponse login(String code) throws Exception {
         String token = kakaoService.getKakaoAccessToken(code);
         KakaoInfoResponse kakaoInfoResponse = kakaoService.getInfo(token);
         String email = kakaoInfoResponse.getEmail();
         if (userGetService.existsByEmail(email)) {
-            User user = userGetService.findByEmail(email);
+            Manager manager = userGetService.findByEmail(email);
             JwtResponse tokenDto = new JwtResponse(
-                    jwtProvider.createAccessToken(user.getEmail()),
-                    jwtProvider.createRefreshToken(user.getEmail())
+                    jwtProvider.createAccessToken(manager.getEmail()),
+                    jwtProvider.createRefreshToken(manager.getEmail())
             );
-            UserResponse signResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .name(user.getName())
+            ManagerResponse signResponse = ManagerResponse.builder()
+                    .id(manager.getId())
+                    .email(manager.getEmail())
+                    .name(manager.getName())
                     .token(tokenDto)
                     .build();
             return signResponse;
@@ -81,25 +78,25 @@ public class UserManageUseCase {
         }
     }
 
-    public UserResponse register(RegisterRequest request) {
+    public ManagerResponse register(RegisterRequest request) {
         String email = redisTemplate.opsForValue().get(EMAIL_INFO_KEY_PREFIX+request.getCode());
         String name = redisTemplate.opsForValue().get(NAME_INFO_KEY_PREFIX+request.getCode());
         if (userGetService.existsByEmail(email)) {
             throw new UserConflictException();
         }
-        User user = User.builder()
+        Manager manager = Manager.builder()
                 .email(email)
                 .name(name)
                 .build();
-        userSaveService.save(user);
+        userSaveService.save(manager);
         JwtResponse tokenDto = new JwtResponse(
-                jwtProvider.createAccessToken(user.getEmail()),
-                jwtProvider.createRefreshToken(user.getEmail())
+                jwtProvider.createAccessToken(manager.getEmail()),
+                jwtProvider.createRefreshToken(manager.getEmail())
         );
-        UserResponse signResponse = UserResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
+        ManagerResponse signResponse = ManagerResponse.builder()
+                .id(manager.getId())
+                .name(manager.getName())
+                .email(manager.getEmail())
                 .token(tokenDto)
                 .build();
         return signResponse;
@@ -111,11 +108,6 @@ public class UserManageUseCase {
             return jwtResponse;
         }
         return null;
-    }
-
-    public User create(ApplicationRequest request) {
-        User user = userMapper.from(request);
-        return userSaveService.save(user);
     }
 
     public Void update(Authentication authentication) {

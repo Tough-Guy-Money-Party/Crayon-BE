@@ -1,10 +1,10 @@
 package com.yoyomo.domain.user.domain.service;
 
-import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.user.domain.entity.Applicant;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.repository.UserRepository;
-import com.yoyomo.domain.user.exception.UserConflictException;
-import com.yoyomo.global.config.kakao.KakaoService;
+import com.yoyomo.domain.user.domain.repository.ApplicantRepository;
+import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserSaveService {
-    private final UserRepository userRepository;
+    private final ManagerRepository managerRepository;
+    private final ApplicantRepository applicantRepository;
+
     public User save(User user) {
-        return userRepository.save(user);
+        if (user instanceof Applicant) {
+            return applicantRepository.save((Applicant) user);
+        } else if (user instanceof Manager) {
+            return managerRepository.save((Manager) user);
+        }
+        return null;
     }
 }

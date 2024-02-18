@@ -5,8 +5,7 @@ import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
-import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.repository.UserRepository;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -47,9 +46,9 @@ public class ClubUpdateService {
         checkIsDeleted(result);
     }
 
-    public void addUser(User user, Club club) {
-        List<User> managers = club.getManagers();
-        managers.add(user);
+    public void addUser(Manager manager, Club club) {
+        List<Manager> managers = club.getManagers();
+        managers.add(manager);
         clubRepository.save(club);
     }
 
