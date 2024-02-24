@@ -20,12 +20,11 @@ import org.mapstruct.ReportingPolicy;
 public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "process", source = "request.process")
     Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
 
-//    @Mapping(target = "calendar", source = "application.recruitment.calendar")
+    //    @Mapping(target = "calendar", source = "application.recruitment.calendar")
     @Mapping(target = "id", source = "application.id")
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 

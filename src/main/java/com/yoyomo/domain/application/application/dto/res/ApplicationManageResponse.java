@@ -13,7 +13,6 @@ public record ApplicationManageResponse(
         RecruitmentDetailsResponse recruitment,
         List<Answer> answers,
         SubmitStatus submitStatus,
-        ApplicationStatus applicationStatus,
-        String process
+        ApplicationStatus applicationStatus
 ) {
 }
