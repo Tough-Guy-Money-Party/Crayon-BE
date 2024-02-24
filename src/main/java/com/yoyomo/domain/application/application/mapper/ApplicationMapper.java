@@ -20,6 +20,7 @@ import org.mapstruct.ReportingPolicy;
 public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "process", source = "request.process")
     Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
