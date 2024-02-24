@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+import static com.yoyomo.domain.application.domain.entity.ApplicationStatus.PENDING;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -36,10 +38,8 @@ public class Application {
     private SubmitStatus submitStatus;
 
     @NotNull
-    private ApplicationStatus applicationStatus;
-
-    @NotNull
-    private String process;
+    @Builder.Default
+    private ApplicationStatus applicationStatus = PENDING;
 
     private Interview interview;
 }
