@@ -69,8 +69,7 @@ public class ApplicationController {
         List<MyApplicationsResponse> response = applyUseCase.readAll(applicant);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
-
-
+    
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
     public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String id) {
