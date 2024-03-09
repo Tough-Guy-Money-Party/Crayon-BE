@@ -5,7 +5,7 @@ import com.yoyomo.domain.user.application.dto.res.ApplicantResponse;
 
 public record ApplicationResponse(
         String id,
-        ApplicantResponse user,
+        ApplicantResponse applicant,
         ApplicationStatus applicationStatus
 ) {
 }

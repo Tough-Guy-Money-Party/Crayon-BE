@@ -1,13 +1,13 @@
 package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
+import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
-import com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage;
 import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCase;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,6 @@ import static com.yoyomo.domain.application.presentation.constant.ResponseMessag
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-@Slf4j
 @Tag(name = "APPLICATION")
 @RestController
 @RequiredArgsConstructor
@@ -71,20 +69,26 @@ public class ApplicationController {
         List<MyApplicationsResponse> response = applyUseCase.readAll(applicant);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
-
-
+    
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
     public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String id) {
         List<ApplicationResponse> responses = applicationManageUseCase.readAll(id);
-        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
     @GetMapping("/{applicationId}")
     @Operation(summary = "모집 지원서 상세 조회")
     public ResponseDto<ApplicationManageResponse> readApplication(@PathVariable String applicationId) {
         ApplicationManageResponse response = applicationManageUseCase.read(applicationId);
-        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), response);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
+
+    @PatchMapping("/{applicationId}")
+    @Operation(summary = "모집 지원 단계 수정")
+    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody ApplicationStatusRequest request) {
+        applicationManageUseCase.update(applicationId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
 
