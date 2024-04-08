@@ -11,6 +11,7 @@ import com.yoyomo.domain.application.presentation.constant.ResponseMessage;
 import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.global.config.dto.ResponseDto;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -75,7 +76,7 @@ public class ApplicationController {
 
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
-    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId) {
+    public ResponseDto<List<ApplicationResponse>> readApplications(@ApiParam(required = true) @RequestParam String recruitmentId) {
         List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId);
         return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
     }
