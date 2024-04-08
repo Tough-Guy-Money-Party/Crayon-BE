@@ -10,6 +10,7 @@ public record MyApplicationsResponse(
 
         String id,
         ClubResponse club,
+        // process이름 변경?
         List<Process> calendar,
         ApplicationStatus applicationStatus
 ) {

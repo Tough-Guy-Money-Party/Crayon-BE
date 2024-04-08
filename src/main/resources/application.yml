@@ -30,4 +30,3 @@ jwt:
   refresh_secret: ${JWT_REFRESH_SECRET}
 
 is-using-refresh-token: true
-

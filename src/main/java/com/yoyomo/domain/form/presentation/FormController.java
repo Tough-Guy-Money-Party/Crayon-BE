@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class FormController {
 
     @GetMapping
     @Operation(summary = "지원폼 목록 조회")
-    public ResponseDto<List<FormResponse>> readAll(@RequestParam String clubId) {
+    public ResponseDto<List<FormResponse>> readAll(@ApiParam(value = "클럽 ID", required = true) @RequestParam String clubId) {
         List<FormResponse> responses = formManageUseCase.readAll(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
