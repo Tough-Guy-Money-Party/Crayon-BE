@@ -7,11 +7,9 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import java.util.List;
 
 public record MyApplicationsResponse(
-
         String id,
         ClubResponse club,
-        // process이름 변경?
-        List<Process> calendar,
+        List<Process> process,
         ApplicationStatus applicationStatus
 ) {
 }

@@ -29,7 +29,7 @@ public class ManagerController {
 
     @PostMapping(value = "/login/{code}")
     @Operation(summary = "로그인")
-    public ResponseDto<?> login(@PathVariable String code) throws Exception {
+    public ResponseDto<ManagerResponse> login(@PathVariable String code) throws Exception {
         ManagerResponse response =  managerManageUseCase.login(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }

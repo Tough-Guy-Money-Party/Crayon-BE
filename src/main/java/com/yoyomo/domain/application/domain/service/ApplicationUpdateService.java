@@ -1,7 +1,9 @@
 package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
+import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +25,22 @@ public class ApplicationUpdateService {
     public void from(String id, ApplicationRequest request) {
         Query query = query(where(ID).is(id));
         Update update = MapperUtil.mapToUpdate(request);
+        mongoTemplate.updateFirst(query, update, Application.class);
+    }
+
+    public void from(String id, ApplicationStatusRequest request) {
+        Query query = query(
+                where(ID).is(id)
+        );
+        Update update = MapperUtil.mapToUpdate(request);
+        mongoTemplate.updateFirst(query, update, Application.class);
+    }
+
+    public void from(String id, Interview interview) {
+        Query query = query(
+                where(ID).is(id)
+        );
+        Update update = MapperUtil.mapToUpdate(interview);
         mongoTemplate.updateFirst(query, update, Application.class);
     }
 }

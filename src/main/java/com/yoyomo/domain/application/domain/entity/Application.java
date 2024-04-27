@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.domain.entity;
 
+import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import jakarta.validation.constraints.NotNull;
@@ -39,4 +40,6 @@ public class Application {
     @NotNull
     @Builder.Default
     private ApplicationStatus applicationStatus = PENDING;
+
+    private Interview interview;
 }

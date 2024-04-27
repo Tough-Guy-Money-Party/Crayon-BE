@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ApplicantInfoUseCaseImpl implements UserInfoUseCase{
+public class ApplicantInfoUseCaseImpl implements UserInfoUseCase {
+
     private final UserGetService userGetService;
+
     public Applicant get(String name, String phone) {
         return userGetService.find(name, phone).orElseThrow(UserNotFoundException::new);
     }
+
     @Override
     public Applicant get(Authentication authentication) {
         return null;
