@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ApplicantInfoUseCase implements UserInfoUseCase {
+public class ApplicantInfoUseCaseImpl implements UserInfoUseCase {
+
     private final UserGetService userGetService;
 
     public Applicant get(String name, String phone) {

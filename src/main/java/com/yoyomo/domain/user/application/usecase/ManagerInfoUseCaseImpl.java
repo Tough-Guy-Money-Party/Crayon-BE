@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ManagerInfoUseCase implements UserInfoUseCase{
+public class ManagerInfoUseCaseImpl implements UserInfoUseCase{
     private final UserGetService userGetService;
 
     @Override

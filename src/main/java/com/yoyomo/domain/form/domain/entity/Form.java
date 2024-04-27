@@ -25,6 +25,10 @@ public class Form {
 
     private String name;
 
+    private String description;
+
+    private String instruction;
+
     private List<Item> items;
 
     private LocalDateTime deletedAt;

@@ -10,5 +10,6 @@ public class ItemResponse {
     private String question;
     private Type type;
     private int order;
+    private String imageName;
     private boolean required;
 }

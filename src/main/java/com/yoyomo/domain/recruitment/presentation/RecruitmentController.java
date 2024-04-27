@@ -6,6 +6,7 @@ import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsRespo
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

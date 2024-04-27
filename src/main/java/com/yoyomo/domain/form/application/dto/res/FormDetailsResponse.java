@@ -6,6 +6,8 @@ import java.util.List;
 
 public record FormDetailsResponse(
         String name,
+        String description,
+        String instruction,
         List<ItemResponse> items
 ) {
 }

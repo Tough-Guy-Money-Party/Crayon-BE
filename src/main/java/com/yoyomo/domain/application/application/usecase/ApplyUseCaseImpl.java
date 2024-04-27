@@ -12,6 +12,7 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
+import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCaseImpl;
 import com.yoyomo.domain.user.application.usecase.ApplicantManageUseCase;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
@@ -30,7 +31,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final ApplicationMapper applicationMapper;
     private final RecruitmentGetService recruitmentGetService;
     private final ClubGetService clubGetService;
-    private final com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCase ApplicantInfoUseCase;
+    private final ApplicantInfoUseCaseImpl ApplicantInfoUseCaseImpl;
     private final ApplicantManageUseCase applicantManageUseCase;
 
     @Override
@@ -43,7 +44,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
 
     private Applicant getUserOrCreateNew(ApplicationRequest request) {
         try {
-            Applicant applicant = ApplicantInfoUseCase.get(request.name(), request.phone());
+            Applicant applicant = ApplicantInfoUseCaseImpl.get(request.name(), request.phone());
             applicationManageUseCase.checkDuplicatedApplication(applicant, request.recruitmentId());
             return applicant;
         } catch (UserNotFoundException e) {

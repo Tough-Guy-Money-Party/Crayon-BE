@@ -33,5 +33,7 @@ public class Recruitment {
 
     private List<Process> process;
 
+    private int process_stage;
+
     private LocalDateTime deletedAt;
 }

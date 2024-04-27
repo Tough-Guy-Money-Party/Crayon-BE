@@ -8,9 +8,11 @@ import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
-import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCase;
+import com.yoyomo.domain.application.presentation.constant.ResponseMessage;
+import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.global.config.dto.ResponseDto;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +31,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/applications")
 public class ApplicationController {
-    private final ApplicantInfoUseCase applicantInfoUseCase;
+    private final ApplicantInfoUseCaseImpl applicantInfoUseCaseImpl;
     private final ApplyUseCase applyUseCase;
     private final ApplicationManageUseCase applicationManageUseCase;
 
@@ -46,7 +48,7 @@ public class ApplicationController {
     public ResponseDto apply(Authentication authentication,
                              @PathVariable String applicationId,
                              @RequestBody ApplicationRequest applicationRequest) {
-        Applicant applicant = applicantInfoUseCase.get(authentication);
+        Applicant applicant = applicantInfoUseCaseImpl.get(authentication);
         applyUseCase.update(applicant, applicationId, applicationRequest);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
@@ -56,7 +58,7 @@ public class ApplicationController {
     @Operation(summary = "내 지원서 상세 조회")
     public ResponseDto<ApplicationDetailsResponse> read(Authentication authentication,
                                                         @PathVariable String applicationId) {
-        Applicant applicant = applicantInfoUseCase.get(authentication);
+        Applicant applicant = applicantInfoUseCaseImpl.get(authentication);
         ApplicationDetailsResponse response = applyUseCase.read(applicant, applicationId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
@@ -65,16 +67,16 @@ public class ApplicationController {
     @GetMapping("/me")
     @Operation(summary = "내 지원서 목록 조회")
     public ResponseDto<List<MyApplicationsResponse>> readAll(Authentication authentication) {
-        Applicant applicant = applicantInfoUseCase.get(authentication);
+        Applicant applicant = applicantInfoUseCaseImpl.get(authentication);
         List<MyApplicationsResponse> response = applyUseCase.readAll(applicant);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
-    
+
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
-    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String id) {
-        List<ApplicationResponse> responses = applicationManageUseCase.readAll(id);
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
+    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId) {
+        List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId);
+        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
     }
 
     @GetMapping("/{applicationId}")

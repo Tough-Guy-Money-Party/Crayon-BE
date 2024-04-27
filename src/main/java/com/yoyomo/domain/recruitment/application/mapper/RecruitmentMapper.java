@@ -18,6 +18,7 @@ public interface RecruitmentMapper {
     @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "clubId", source = "request.clubId")
     @Mapping(target = "form", source = "form")
+    @Mapping(target = "process_stage", expression = "java(0)")
     Recruitment from(RecruitmentRequest request, Form form);
 
     RecruitmentDetailsResponse mapToRecruitmentDetails(Recruitment recruitment);
