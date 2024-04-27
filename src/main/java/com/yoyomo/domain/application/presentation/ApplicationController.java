@@ -76,7 +76,7 @@ public class ApplicationController {
 
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
-    public ResponseDto<List<ApplicationResponse>> readApplications(@ApiParam(required = true) @RequestParam String recruitmentId) {
+    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId) {
         List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId);
         return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
     }
