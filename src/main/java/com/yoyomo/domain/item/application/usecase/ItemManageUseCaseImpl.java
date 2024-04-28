@@ -50,13 +50,17 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
     public ItemResponse getItemResponse(Item item) {
         if (item instanceof Text) {
             return itemMapper.mapToTextResponse((Text) item);
-        }else if (item instanceof Select) {
+        }
+        if (item instanceof Select) {
             return itemMapper.mapToSelectResponse((Select) item);
-        }else if (item instanceof Stage ){
+        }
+        if (item instanceof Stage) {
             return itemMapper.mapToStageResponse((Stage) item);
-        }else if (item instanceof Date ){
+        }
+        if (item instanceof Date) {
             return itemMapper.mapToDateResponse((Date) item);
-        }else if (item instanceof File ){
+        }
+        if (item instanceof File) {
             return itemMapper.mapToFileResponse((File) item);
         }
         throw new InvalidItemException();
