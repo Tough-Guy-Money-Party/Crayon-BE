@@ -1,6 +1,6 @@
-package com.yoyomo.domain.recruitment.domain.entity;
+package com.yoyomo.domain.template.domain.entity;
 
-import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.item.domain.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,29 +11,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "recruitments")
-public class Recruitment {
+@Document(collection = "templates")
+public class Template {
 
     @Id
     private String id;
 
     private String clubId;
 
-    private String title;
+    private String name;
 
-    private int generation;
+    private String passText;
 
-    private String position;
-
-    private Form form;
-
-    private List<Process> process;
-
-    private int processStage;
+    private String failText;
 
     private LocalDateTime deletedAt;
 }
+
