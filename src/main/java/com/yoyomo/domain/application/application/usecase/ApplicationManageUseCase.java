@@ -16,9 +16,9 @@ public interface ApplicationManageUseCase {
 
     void checkDuplicatedApplication(Applicant applicant, String recruitmentId);
 
-    List<ApplicationResponse> readAll(String recruitmentId);
+    List<ApplicationResponse> readAll(String recruitmentId, int pageNum);
 
-    List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name);
+    List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum);
 
     ApplicationManageResponse read(String applicationId);
 

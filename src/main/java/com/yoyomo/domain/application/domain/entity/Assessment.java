@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class Assessment {
 
     @NotBlank
     private String assessmentText;
+
+    @NotBlank
+    private LocalDateTime createdAt;
 }

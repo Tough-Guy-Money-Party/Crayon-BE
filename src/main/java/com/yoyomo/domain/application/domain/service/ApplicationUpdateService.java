@@ -5,19 +5,16 @@ import com.yoyomo.domain.application.application.dto.req.ApplicationStatusReques
 import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Assessment;
-import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
-import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -28,7 +25,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 public class ApplicationUpdateService {
     private static final String ID = "id";
     private final MongoTemplate mongoTemplate;
-    private final ApplicationRepository applicationRepository;
 
     public void from(String id, ApplicationRequest request) {
         Query query = query(where(ID).is(id));
@@ -55,6 +51,7 @@ public class ApplicationUpdateService {
                 .managerName(request.managerName())
                 .assessmentRating(request.assessmentRating())
                 .assessmentText(request.assessmentText())
+                .createdAt(LocalDateTime.now())
                 .build();
         Update update = new Update().addToSet("assessments", assessment);
         mongoTemplate.updateFirst(query, update, Application.class);

@@ -15,5 +15,5 @@ public interface ApplyUseCase {
 
     ApplicationDetailsResponse read(Applicant applicant, String applicationId);
 
-    List<MyApplicationsResponse> readAll(Applicant applicant);
+    List<MyApplicationsResponse> readAll(Applicant applicant, int pageNum);
 }

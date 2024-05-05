@@ -14,6 +14,9 @@ import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,16 +44,16 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     }
 
     @Override
-    public List<ApplicationResponse> readAll(String recruitmentId) {
-        List<Application> applications = applicationGetService.findAll(recruitmentId);
+    public List<ApplicationResponse> readAll(String recruitmentId, int pageNum) {
+        List<Application> applications = applicationGetService.findAll(recruitmentId, pageNum);
         return applications.stream()
                 .map(applicationMapper::mapToApplicationResponse)
                 .toList();
     }
 
     @Override
-    public List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name) {
-        List<Application> applications = applicationGetService.findAllByApplicantName(recruitmentId, name);
+    public List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum) {
+        List<Application> applications = applicationGetService.findAllByApplicantName(recruitmentId, name, pageNum);
         return applications.stream()
                 .map(applicationMapper::mapToApplicationResponse)
                 .toList();
