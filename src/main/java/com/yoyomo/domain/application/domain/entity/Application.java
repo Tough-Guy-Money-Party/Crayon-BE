@@ -41,5 +41,8 @@ public class Application {
     @Builder.Default
     private ApplicationStatus applicationStatus = PENDING;
 
+    @NotNull
+    private List<Assessment> assessments;
+
     private Interview interview;
 }

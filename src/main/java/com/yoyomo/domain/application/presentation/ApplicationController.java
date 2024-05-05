@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
+import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
@@ -90,6 +91,13 @@ public class ApplicationController {
     @Operation(summary = "모집 지원 단계 수정")
     public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody ApplicationStatusRequest request) {
         applicationManageUseCase.update(applicationId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @PatchMapping("/assessment/{applicationId}")
+    @Operation(summary = "평가 추가")
+    public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody AssessmentRequest request) {
+        applicationManageUseCase.addAssessment(applicationId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }

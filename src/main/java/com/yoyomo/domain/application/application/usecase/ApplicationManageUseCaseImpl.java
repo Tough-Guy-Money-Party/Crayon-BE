@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
+import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
@@ -55,6 +56,11 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
     @Override
     public void update(String id, ApplicationStatusRequest request) {
+        applicationUpdateService.from(id, request);
+    }
+
+    @Override
+    public void addAssessment(String id, AssessmentRequest request) {
         applicationUpdateService.from(id, request);
     }
 }
