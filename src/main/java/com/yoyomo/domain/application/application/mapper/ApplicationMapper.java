@@ -20,6 +20,8 @@ import org.mapstruct.ReportingPolicy;
 public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "assessments", expression = "java( new java.util.ArrayList<>() )")
+    @Mapping(target = "createdAt", expression = "java( java.time.LocalDateTime.now() )")
     Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);

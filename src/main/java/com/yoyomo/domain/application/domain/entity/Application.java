@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.yoyomo.domain.application.domain.entity.ApplicationStatus.PENDING;
@@ -41,5 +42,11 @@ public class Application {
     @Builder.Default
     private ApplicationStatus applicationStatus = PENDING;
 
+    @NotNull
+    private List<Assessment> assessments;
+
     private Interview interview;
+
+    @NotNull
+    private LocalDateTime createdAt;
 }

@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
+import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
@@ -66,16 +67,16 @@ public class ApplicationController {
     @Hidden
     @GetMapping("/me")
     @Operation(summary = "내 지원서 목록 조회")
-    public ResponseDto<List<MyApplicationsResponse>> readAll(Authentication authentication) {
+    public ResponseDto<List<MyApplicationsResponse>> readAll(Authentication authentication, @RequestParam int pageNum) {
         Applicant applicant = applicantInfoUseCaseImpl.get(authentication);
-        List<MyApplicationsResponse> response = applyUseCase.readAll(applicant);
+        List<MyApplicationsResponse> response = applyUseCase.readAll(applicant, pageNum);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
-    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId) {
-        List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId);
+    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId, @RequestParam int pageNum) {
+        List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId, pageNum);
         return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
     }
 
@@ -92,5 +93,18 @@ public class ApplicationController {
         applicationManageUseCase.update(applicationId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
-}
 
+    @GetMapping("/search")
+    @Operation(summary = "모집 지원서 검색")
+    public ResponseDto<List<ApplicationResponse>> readApplicationsByApplicantName(@RequestParam String recruitmentId, @RequestParam String name, @RequestParam int pageNum) {
+        List<ApplicationResponse> responses = applicationManageUseCase.readAllByApplicantName(recruitmentId, name, pageNum);
+        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
+    }
+
+    @PatchMapping("/assessment/{applicationId}")
+    @Operation(summary = "평가 추가")
+    public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody AssessmentRequest request) {
+        applicationManageUseCase.addAssessment(applicationId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+}

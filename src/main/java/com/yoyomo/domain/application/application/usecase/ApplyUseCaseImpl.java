@@ -19,6 +19,7 @@ import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -68,8 +69,8 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     }
 
     @Override
-    public List<MyApplicationsResponse> readAll(Applicant applicant) {
-        List<Application> applications = applicationGetService.findAll(applicant);
+    public List<MyApplicationsResponse> readAll(Applicant applicant, int pageNum) {
+        List<Application> applications = applicationGetService.findAll(applicant, pageNum);
         return applications.stream()
                 .map(application -> {
                     Club club = clubGetService.byId(application.getRecruitment().getClubId());

@@ -1,9 +1,11 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
+import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.Assessment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.domain.entity.Manager;
 
@@ -14,9 +16,13 @@ public interface ApplicationManageUseCase {
 
     void checkDuplicatedApplication(Applicant applicant, String recruitmentId);
 
-    List<ApplicationResponse> readAll(String recruitmentId);
+    List<ApplicationResponse> readAll(String recruitmentId, int pageNum);
+
+    List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum);
 
     ApplicationManageResponse read(String applicationId);
 
     void update(String id, ApplicationStatusRequest request);
+
+    public void addAssessment(String id, AssessmentRequest request);
 }
