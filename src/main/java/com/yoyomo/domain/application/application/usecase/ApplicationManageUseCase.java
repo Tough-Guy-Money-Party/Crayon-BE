@@ -18,6 +18,8 @@ public interface ApplicationManageUseCase {
 
     List<ApplicationResponse> readAll(String recruitmentId);
 
+    List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name);
+
     ApplicationManageResponse read(String applicationId);
 
     void update(String id, ApplicationStatusRequest request);

@@ -49,6 +49,14 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     }
 
     @Override
+    public List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name) {
+        List<Application> applications = applicationGetService.findAllByApplicantName(recruitmentId, name);
+        return applications.stream()
+                .map(applicationMapper::mapToApplicationResponse)
+                .toList();
+    }
+
+    @Override
     public ApplicationManageResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
         return applicationMapper.mapToApplicationManage(application);

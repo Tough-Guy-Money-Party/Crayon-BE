@@ -24,6 +24,10 @@ public class ApplicationGetService {
         return applicationRepository.findAllByRecruitmentId(recruitmentId);
     }
 
+    public List<Application> findAllByApplicantName(String recruitmentId, String name) {
+        return applicationRepository.findAllByRecruitmentIdAndApplicant_NameContaining(recruitmentId, name);
+    }
+
     public List<Application> findAll(Applicant applicant) {
         return applicationRepository.findAllByApplicant(applicant);
     }

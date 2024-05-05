@@ -10,6 +10,8 @@ import java.util.List;
 public interface ApplicationRepository extends MongoRepository<Application, String> {
     List<Application> findAllByRecruitmentId(String recruitmentId);
 
+    List<Application> findAllByRecruitmentIdAndApplicant_NameContaining(String recruitmentId, String name);
+
     List<Application> findAllByApplicant(Applicant applicant);
 
     boolean existsByApplicantAndRecruitment_Id(Applicant applicant, String recruitmentId);

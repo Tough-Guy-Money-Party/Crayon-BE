@@ -94,6 +94,13 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "모집 지원서 검색")
+    public ResponseDto<List<ApplicationResponse>> readApplicationsByApplicantName(@RequestParam String recruitmentId, @RequestParam String name) {
+        List<ApplicationResponse> responses = applicationManageUseCase.readAllByApplicantName(recruitmentId, name);
+        return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
+    }
+
     @PatchMapping("/assessment/{applicationId}")
     @Operation(summary = "평가 추가")
     public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody AssessmentRequest request) {
@@ -101,4 +108,3 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
-

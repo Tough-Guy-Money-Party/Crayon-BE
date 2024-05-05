@@ -50,21 +50,13 @@ public class ApplicationUpdateService {
 
     public void from(String id, AssessmentRequest request) {
         Query query = query(where(ID).is(id));
-        Application application = applicationRepository.findById(id)
-                .orElseThrow(ApplicationNotFoundException::new);
-
-//        List<Assessment> newAssessment = application.getAssessments();
         Assessment assessment = Assessment.builder()
                 .managerId(request.managerId())
                 .managerName(request.managerName())
                 .assessmentRating(request.assessmentRating())
                 .assessmentText(request.assessmentText())
                 .build();
-//        application.getAssessments().add(assessment);
-//        newAssessment.add(assessment);
         Update update = new Update().addToSet("assessments", assessment);
         mongoTemplate.updateFirst(query, update, Application.class);
     }
-
-
 }
