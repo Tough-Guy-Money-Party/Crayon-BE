@@ -3,10 +3,12 @@ package com.yoyomo.global.config.participation.service;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserUpdateService;
+import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.participation.exception.AlreadyParticipatedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,27 +22,35 @@ public class ParticipationService {
     private final UserUpdateService userUpdateService;
     private final UserGetService userGetService;
     private final ParticipationCodeService participationCodeService;
-    public void checkAndParticipate (String code, String userEmail) {
+
+    public void checkAndParticipate(String code, String userEmail) {
         String clubId = participationCodeService.getClubId(code);
         Manager manager = userGetService.findByEmail(userEmail);
         boolean isAlreadyParticipate = manager.getClubs()
                 .stream()
                 .anyMatch(club -> clubId.equals(club.getId()));
-        if (isAlreadyParticipate){
+        if (isAlreadyParticipate) {
             throw new AlreadyParticipatedException();
         }
         this.addToEachList(userEmail, clubId);
     }
 
-    public void addToEachList (String userEmail, String clubId) {
-        Manager manager = managerRepository.findByEmail(userEmail).get();
-        Club club = clubRepository.findById(clubId).get();
+    public void addToEachList(String userEmail, String clubId) {
+        Manager manager = managerRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
         clubUpdateService.addUser(manager, club);
         userUpdateService.addClub(manager, club);
     }
 
-    public void addToEachList (String userEmail, Club club) {
-        Manager manager = managerRepository.findByEmail(userEmail).get();
+    public void deleteToEachList(String userId, String clubId) {
+        Manager manager = managerRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(ClubNotFoundException::new);
+        clubUpdateService.deleteUser(manager, club);
+        userUpdateService.deleteClub(manager, club);
+    }
+
+    public void addToEachList(String userEmail, Club club) {
+        Manager manager = managerRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
         clubUpdateService.addUser(manager, club);
         userUpdateService.addClub(manager, club);
     }

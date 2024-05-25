@@ -30,7 +30,7 @@ jwt:
   refresh_secret: ${JWT_REFRESH_SECRET}
 
 is-using-refresh-token: true
+
 image:
-  path:
-    ${IMAGE_PATH: /Users/yangts/Documents/crayon_img/}
+  path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
 #/home/ubuntu/images/

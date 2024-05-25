@@ -52,6 +52,12 @@ public class ClubUpdateService {
         clubRepository.save(club);
     }
 
+    public void deleteUser(Manager manager, Club club) {
+        List<Manager> managers = club.getManagers();
+        managers.removeIf(m -> m.getId().equals(manager.getId()));
+        clubRepository.save(club);
+    }
+
     private void checkIsDeleted(UpdateResult result) {
         if (result.getMatchedCount() == 0) {
             throw new ClubNotFoundException();
