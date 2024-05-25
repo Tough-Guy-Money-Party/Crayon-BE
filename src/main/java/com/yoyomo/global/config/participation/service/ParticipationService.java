@@ -1,5 +1,6 @@
 package com.yoyomo.global.config.participation.service;
 
+import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
@@ -23,7 +24,7 @@ public class ParticipationService {
     private final UserGetService userGetService;
     private final ParticipationCodeService participationCodeService;
 
-    public void checkAndParticipate(String code, String userEmail) {
+    public ParticipationResponse checkAndParticipate(String code, String userEmail) {
         String clubId = participationCodeService.getClubId(code);
         Manager manager = userGetService.findByEmail(userEmail);
         boolean isAlreadyParticipate = manager.getClubs()
@@ -33,6 +34,8 @@ public class ParticipationService {
             throw new AlreadyParticipatedException();
         }
         this.addToEachList(userEmail, clubId);
+
+        return new ParticipationResponse(clubId);
     }
 
     public void addToEachList(String userEmail, String clubId) {

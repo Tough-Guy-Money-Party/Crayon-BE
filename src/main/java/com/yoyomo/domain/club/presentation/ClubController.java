@@ -5,6 +5,7 @@ import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
 import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
+import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
 
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
@@ -60,16 +61,16 @@ public class ClubController {
 
     @PatchMapping("/participation")
     @Operation(summary = "동아리 관리자 추가")
-    public ResponseDto participation(@RequestBody ParticipationRequest participationRequest, Authentication authentication) {
-        clubManageUseCase.participate(participationRequest, authentication.getName());
-        return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage());
+    public ResponseDto<ParticipationResponse> participation(@RequestBody ParticipationRequest participationRequest, Authentication authentication) {
+        ParticipationResponse response = clubManageUseCase.participate(participationRequest, authentication.getName());
+        return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage(), response);
     }
 
     @PatchMapping("/participation/remove")
     @Operation(summary = "동아리 관리자 삭제")
     public ResponseDto removeManager(@RequestBody RemoveManagerRequest removeManagerRequest) {
         clubManageUseCase.removeManager(removeManagerRequest);
-        return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_REMOVE_MANAGER.getMessage());
     }
 
     @GetMapping("/participation/code/{id}")
