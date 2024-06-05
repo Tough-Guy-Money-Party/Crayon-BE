@@ -9,7 +9,7 @@ public record RecruitmentDetailsResponse(
         String title,
         int generation,
         String position,
-        List<Process> process,
+        List<Process> processes,
         Form form
 ) {
 }

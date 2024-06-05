@@ -16,6 +16,12 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     List<Application> findAllByRecruitmentIdAndApplicationStage(String recruitmentId, int applicationStage);
 
+    int countByRecruitmentId(String recruitmentId);
+
+    int countByRecruitmentIdAndApplicationStageLessThan(String recruitmentId, int stage);
+
+    int countByRecruitmentIdAndApplicationStageGreaterThanEqual(String recruitmentId, int stage);
+
     List<Application> findAllByApplicant(Applicant applicant, Pageable pageable);
 
     boolean existsByApplicantAndRecruitment_Id(Applicant applicant, String recruitmentId);

@@ -6,6 +6,7 @@ import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -16,6 +17,13 @@ public class RecruitmentGetService {
     public Recruitment find(String id) {
         return recruitmentRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(RecruitmentNotFoundException::new);
+    }
+
+    public LocalDate getRecruitmentEndDate(String id) {
+        Recruitment recruitment = recruitmentRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(RecruitmentNotFoundException::new);
+        int lastIndex = recruitment.getProcesses().size() - 1;
+        return recruitment.getProcesses().get(lastIndex).getEndAt();
     }
 
     public List<Recruitment> findAll(String clubId) {

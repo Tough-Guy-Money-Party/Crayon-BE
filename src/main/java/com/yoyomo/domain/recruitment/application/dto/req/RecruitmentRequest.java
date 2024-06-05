@@ -11,6 +11,6 @@ public record RecruitmentRequest(
         Integer generation,
         String position,
         int processStage,
-        List<Process> process
+        List<Process> processes
 ) {
 }

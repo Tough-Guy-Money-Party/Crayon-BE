@@ -1,4 +1,4 @@
-package com.yoyomo.domain.recruitment.domain.entity.processType;
+package com.yoyomo.domain.recruitment.domain.entity;
 
 public enum processType {
     DOCUMENTATION,

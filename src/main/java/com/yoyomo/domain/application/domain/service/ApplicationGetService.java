@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.application.dto.res.ApplicantInfoDTO;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.shared.util.PageUtil;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,19 @@ public class ApplicationGetService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public int getTotalApplicantsCount(String recruitmentId) {
+        return applicationRepository.countByRecruitmentId(recruitmentId);
+    }
+
+    public int getAcceptedApplicantsCount(String recruitmentId) {
+        return applicationRepository.countByRecruitmentIdAndApplicationStageGreaterThanEqual(recruitmentId, 0);
+    }
+
+    public int getRejectedApplicantsCount(String recruitmentId) {
+        return applicationRepository.countByRecruitmentIdAndApplicationStageLessThan(recruitmentId, 0);
+    }
+
 
     public List<Application> findAll(Applicant applicant, int pageNum) {
         return applicationRepository.findAllByApplicant(applicant, PageUtil.makePageObject(pageNum));

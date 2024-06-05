@@ -1,6 +1,5 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-import com.yoyomo.domain.recruitment.domain.entity.processType.processType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
