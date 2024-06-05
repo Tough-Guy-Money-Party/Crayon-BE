@@ -6,17 +6,12 @@ import com.yoyomo.domain.application.application.dto.res.ApplicationManageRespon
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.ApplicationStatus;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.application.exception.AlreadySubmitApplicationException;
 import com.yoyomo.domain.user.domain.entity.Applicant;
-import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,7 +57,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public ApplicationManageResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
-        return applicationMapper.mapToApplicationManage(application);
+        return applicationMapper.mapToApplicationManage(application, applicationGetService);
     }
 
     @Override

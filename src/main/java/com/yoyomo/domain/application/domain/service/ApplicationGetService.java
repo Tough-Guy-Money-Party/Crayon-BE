@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.domain.service;
 
+import com.yoyomo.domain.application.application.dto.res.ApplicantInfoDTO;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,16 @@ public class ApplicationGetService {
     public List<Application> findAllByApplicantName(String recruitmentId, String name, int pageNum) {
 
         return applicationRepository.findAllByRecruitmentIdAndApplicant_NameContaining(recruitmentId, name, PageUtil.makePageObject(pageNum));
+    }
+
+    public List<ApplicantInfoDTO> findApplicantsByStage(String recruitmentId, int applicationStage) {
+        return applicationRepository.findAllByRecruitmentIdAndApplicationStage(recruitmentId, applicationStage)
+                .stream()
+                .map(application -> new ApplicantInfoDTO(
+                        application.getId(),
+                        application.getApplicant().getName()
+                ))
+                .collect(Collectors.toList());
     }
 
     public List<Application> findAll(Applicant applicant, int pageNum) {

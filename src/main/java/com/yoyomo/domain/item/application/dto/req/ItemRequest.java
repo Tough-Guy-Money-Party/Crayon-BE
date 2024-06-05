@@ -14,8 +14,8 @@ public record ItemRequest(
         // for Select
         List<String> options,
         // for Stage
-        String meaning_of_high,
-        String meaning_of_low
+        String meaningOfHigh,
+        String meaningOfLow
 ) {
 }
 

@@ -27,8 +27,8 @@ public class StageCreationStrategy implements ItemCreationStrategy {
                 .question(request.question())
                 .order(request.order())
                 .required(request.required())
-                .meaningOfHigh(request.meaning_of_high())
-                .meaningOfLow(request.meaning_of_low())
+                .meaningOfHigh(request.meaningOfHigh())
+                .meaningOfLow(request.meaningOfLow())
                 .build();
     }
 }

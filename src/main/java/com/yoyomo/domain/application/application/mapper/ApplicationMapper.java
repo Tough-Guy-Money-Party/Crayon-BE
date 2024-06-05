@@ -6,13 +6,11 @@ import com.yoyomo.domain.application.application.dto.res.ApplicationManageRespon
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -32,5 +30,6 @@ public interface ApplicationMapper {
 
     ApplicationResponse mapToApplicationResponse(Application application);
 
-    ApplicationManageResponse mapToApplicationManage(Application application);
+    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitment().getId(), application.getApplicationStage()))")
+    ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
 }

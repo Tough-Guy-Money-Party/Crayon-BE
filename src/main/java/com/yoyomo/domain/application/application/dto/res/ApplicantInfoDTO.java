@@ -2,9 +2,8 @@ package com.yoyomo.domain.application.application.dto.res;
 
 import com.yoyomo.domain.user.application.dto.res.ApplicantResponse;
 
-public record ApplicationResponse(
+public record ApplicantInfoDTO(
         String id,
-        ApplicantResponse applicant,
-        int applicationStage
+        String applicantName
 ) {
 }

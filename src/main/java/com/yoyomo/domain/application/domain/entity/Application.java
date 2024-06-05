@@ -14,8 +14,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.yoyomo.domain.application.domain.entity.ApplicationStatus.PENDING;
-
 @Getter
 @Builder
 @NoArgsConstructor
@@ -40,7 +38,7 @@ public class Application {
 
     @NotNull
     @Builder.Default
-    private ApplicationStatus applicationStatus = PENDING;
+    private int applicationStage = 0;
 
     @NotNull
     private List<Assessment> assessments;

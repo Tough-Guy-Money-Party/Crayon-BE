@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.application.dto.res;
 
 import com.yoyomo.domain.application.domain.entity.Answer;
-import com.yoyomo.domain.application.domain.entity.ApplicationStatus;
 import com.yoyomo.domain.application.domain.entity.Assessment;
 import com.yoyomo.domain.application.domain.entity.SubmitStatus;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
@@ -14,7 +13,8 @@ public record ApplicationManageResponse(
         RecruitmentDetailsResponse recruitment,
         List<Answer> answers,
         SubmitStatus submitStatus,
+        List<ApplicantInfoDTO> currentStageApplicants,
         List<Assessment> assessments,
-        ApplicationStatus applicationStatus
+        int applicationStage
 ) {
 }
