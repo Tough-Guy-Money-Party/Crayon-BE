@@ -2,8 +2,10 @@ package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
+import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
+import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -35,9 +37,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         participationService.addToEachList(userEmail, club);
         return new ClubCreateResponse(club.getId());
     }
+
     @Override
-    public void participate(ParticipationRequest participationRequest, String userEmail) {
-        participationService.checkAndParticipate(participationRequest.code(), userEmail);
+    public ParticipationResponse participate(ParticipationRequest participationRequest, String userEmail) {
+        ParticipationResponse response = participationService.checkAndParticipate(participationRequest.code(), userEmail);
+        return response;
+    }
+
+    @Override
+    public void removeManager(RemoveManagerRequest removeManagerRequest) {
+        participationService.deleteToEachList(removeManagerRequest.userId(), removeManagerRequest.clubId());
     }
 
     public void update(String id, ClubRequest request) {

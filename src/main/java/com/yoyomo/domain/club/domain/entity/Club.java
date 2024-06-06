@@ -1,5 +1,6 @@
 package com.yoyomo.domain.club.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,8 @@ public class Club {
     private String name;
     private String subDomain;
     private LocalDateTime deletedAt;
+    
     @DBRef
+    @JsonIgnore
     private List<Manager> managers = new ArrayList<>();
 }

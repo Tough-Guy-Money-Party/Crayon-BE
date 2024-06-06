@@ -4,6 +4,7 @@ import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.repository.ApplicantRepository;
 import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ public class UserGetService {
     private final ApplicantRepository applicantRepository;
 
     public Manager findByEmail(String email) {
-        return managerRepository.findByEmail(email).get();
+        return managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     public Boolean existsByEmail(String email) {

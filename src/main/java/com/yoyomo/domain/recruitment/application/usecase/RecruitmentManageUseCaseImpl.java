@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
@@ -28,6 +29,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentMapper recruitmentMapper;
     private final FormGetService formGetService;
     private final FormMapper formMapper;
+    private final ApplicationGetService applicationGetService;
     private final ItemManageUseCase itemManageUseCase;
 
     @Override
@@ -47,7 +49,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public List<RecruitmentResponse> readAll(String clubId) {
         List<Recruitment> recruitments = recruitmentGetService.findAll(clubId);
         return recruitments.stream()
-                .map(recruitmentMapper::mapToRecruitmentResponse)
+                .map(recruitment -> recruitmentMapper.mapToRecruitmentResponse(recruitment, applicationGetService, recruitmentGetService))
                 .toList();
     }
 

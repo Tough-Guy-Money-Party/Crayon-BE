@@ -13,6 +13,7 @@ public enum ResponseMessage {
     SUCCESS_GET_CODE("동아리 관리자 참여 코드 조회를 성공했습니다."),
     SUCCESS_REGENERATE_CODE("동아리 관리자 참여 재생성을 성공했습니다."),
     SUCCESS_ADD_MANAGER("동아리 관리자 추가에 성공했습니다."),
+    SUCCESS_REMOVE_MANAGER("동아리 관리자 삭제에 성공했습니다."),
 
     CLUB_NOT_FOUND("존재하지 않는 동아리입니다."),
     ;

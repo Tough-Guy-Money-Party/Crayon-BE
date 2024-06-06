@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.yoyomo.domain.recruitment.domain.entity.recruitmentStatus.PRE_RECRUITMENT;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -31,9 +33,16 @@ public class Recruitment {
 
     private Form form;
 
-    private List<Process> process;
+    private List<Process> processes;
 
-    private int processStage;
+    @Builder.Default
+    private recruitmentStatus recruitmentStatus = PRE_RECRUITMENT;
+
+    @Builder.Default
+    private int processStage = 0;
+
+    @Builder.Default
+    private Boolean isRecruitmentActive = false;
 
     private LocalDateTime deletedAt;
 }

@@ -10,7 +10,8 @@ public record RecruitmentRequest(
         String title,
         Integer generation,
         String position,
-        int process_stage,
-        List<Process> process
+
+        int processStage,
+        List<Process> processes
 ) {
 }

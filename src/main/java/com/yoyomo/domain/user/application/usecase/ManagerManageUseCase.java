@@ -3,6 +3,7 @@ package com.yoyomo.domain.user.application.usecase;
 import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
 import com.yoyomo.domain.user.application.dto.req.RegisterRequest;
 import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import com.yoyomo.domain.user.application.dto.res.ManagersClubsResponse;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
@@ -63,13 +64,13 @@ public class ManagerManageUseCase {
         } else {
             String name = kakaoInfoResponse.getName();
             redisTemplate.opsForValue().set(
-                    EMAIL_INFO_KEY_PREFIX+code,
+                    EMAIL_INFO_KEY_PREFIX + code,
                     email,
                     EXPIRATION_TIME,
                     TimeUnit.MILLISECONDS
             );
             redisTemplate.opsForValue().set(
-                    NAME_INFO_KEY_PREFIX+code,
+                    NAME_INFO_KEY_PREFIX + code,
                     name,
                     EXPIRATION_TIME,
                     TimeUnit.MILLISECONDS
@@ -79,8 +80,8 @@ public class ManagerManageUseCase {
     }
 
     public ManagerResponse register(RegisterRequest request) {
-        String email = redisTemplate.opsForValue().get(EMAIL_INFO_KEY_PREFIX+request.getCode());
-        String name = redisTemplate.opsForValue().get(NAME_INFO_KEY_PREFIX+request.getCode());
+        String email = redisTemplate.opsForValue().get(EMAIL_INFO_KEY_PREFIX + request.getCode());
+        String name = redisTemplate.opsForValue().get(NAME_INFO_KEY_PREFIX + request.getCode());
         if (userGetService.existsByEmail(email)) {
             throw new UserConflictException();
         }
@@ -116,5 +117,10 @@ public class ManagerManageUseCase {
 
     public Void delete(Authentication authentication) {
         return userUpdateService.deleteByEmail(authentication.getName());
+    }
+
+    public ManagersClubsResponse getClubs(Authentication authentication) {
+        Manager manager = userGetService.findByEmail(authentication.getName());
+        return new ManagersClubsResponse(manager.getClubs());
     }
 }

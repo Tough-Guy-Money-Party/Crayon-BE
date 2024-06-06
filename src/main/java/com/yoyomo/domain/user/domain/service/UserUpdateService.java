@@ -28,4 +28,10 @@ public class UserUpdateService {
         clubs.add(club);
         managerRepository.save(manager);
     }
+
+    public void deleteClub(Manager manager, Club club) {
+        List<Club> clubs = manager.getClubs();
+        clubs.removeIf(c -> c.getId().equals(club.getId()));
+        managerRepository.save(manager);
+    }
 }
