@@ -46,13 +46,21 @@ public class ApplicationUpdateService {
 
     public void from(String id, AssessmentRequest request) {
         Query query = query(where(ID).is(id));
-        Assessment assessment = Assessment.builder()
+
+        Assessment.AssessmentBuilder assessmentBuilder = Assessment.builder()
                 .managerId(request.managerId())
                 .managerName(request.managerName())
-                .assessmentRating(request.assessmentRating())
-                .assessmentText(request.assessmentText())
-                .createdAt(LocalDateTime.now())
-                .build();
+                .createdAt(LocalDateTime.now());
+
+        if (request.assessmentRating() != null) {
+            assessmentBuilder.assessmentRating(request.assessmentRating());
+        }
+
+        if (request.assessmentText() != null) {
+            assessmentBuilder.assessmentText(request.assessmentText());
+        }
+        Assessment assessment = assessmentBuilder.build();
+
         Update update = new Update().addToSet("assessments", assessment);
         mongoTemplate.updateFirst(query, update, Application.class);
     }

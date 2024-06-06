@@ -54,6 +54,12 @@ public class ApplicationGetService {
         return applicationRepository.countByRecruitmentIdAndApplicationStageLessThan(recruitmentId, 0);
     }
 
+    public int getAverageRating(String applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(ApplicationNotFoundException::new);
+        application.getAssessments();
+        return 0;
+    }
 
     public List<Application> findAll(Applicant applicant, int pageNum) {
         return applicationRepository.findAllByApplicant(applicant, PageUtil.makePageObject(pageNum));
