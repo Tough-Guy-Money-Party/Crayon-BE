@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.application.mapper;
 
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.domain.entity.Club;
 import org.mapstruct.Mapper;

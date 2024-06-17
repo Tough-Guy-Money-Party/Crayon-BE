@@ -4,6 +4,7 @@ import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
 import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
+import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
@@ -11,10 +12,16 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
+import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
 import com.yoyomo.global.config.participation.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,6 +49,20 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public ParticipationResponse participate(ParticipationRequest participationRequest, String userEmail) {
         ParticipationResponse response = participationService.checkAndParticipate(participationRequest.code(), userEmail);
         return response;
+    }
+
+    @Override
+    public List<ClubManagerResponse> getManagers(String clubId) {
+        Club club = clubGetService.byId(clubId);
+        return Optional.ofNullable(club.getManagers())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(manager -> ClubManagerResponse.builder()
+                        .id(manager.getId())
+                        .name(manager.getName())
+                        .email(manager.getEmail())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
