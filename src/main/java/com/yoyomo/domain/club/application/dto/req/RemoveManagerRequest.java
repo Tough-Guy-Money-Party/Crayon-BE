@@ -1,7 +1,9 @@
 package com.yoyomo.domain.club.application.dto.req;
 
+import java.util.List;
+
 public record RemoveManagerRequest(
         String clubId,
-        String userId
+        List<String> userIds
 ) {
 }

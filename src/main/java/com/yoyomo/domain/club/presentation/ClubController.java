@@ -79,7 +79,7 @@ public class ClubController {
         return ResponseDto.of(OK.value(), SUCCESS_ADD_MANAGER.getMessage(), response);
     }
 
-    @PatchMapping("/participation/remove")
+    @DeleteMapping("/participation")
     @Operation(summary = "동아리 관리자 삭제")
     public ResponseDto removeManager(@RequestBody RemoveManagerRequest removeManagerRequest) {
         clubManageUseCase.removeManager(removeManagerRequest);
