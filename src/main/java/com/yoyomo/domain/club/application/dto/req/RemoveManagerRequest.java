@@ -4,6 +4,6 @@ import java.util.List;
 
 public record RemoveManagerRequest(
         String clubId,
-        List<String> userId
+        List<String> userIds
 ) {
 }
