@@ -4,10 +4,12 @@ import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
 import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
+import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
 
+import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.participation.service.ParticipationCodeService;
@@ -16,6 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -58,6 +62,15 @@ public class ClubController {
         clubManageUseCase.delete(id);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
+
+
+    @GetMapping("/participation/{clubId}")
+    @Operation(summary = "동아리 관리자 조회")
+    public ResponseDto<List<ClubManagerResponse>> getManagers(@PathVariable String clubId) {
+        List<ClubManagerResponse> response = clubManageUseCase.getManagers(clubId);
+        return ResponseDto.of(OK.value(), SUCCESS_GET_MANAGERS.getMessage(), response);
+    }
+
 
     @PatchMapping("/participation")
     @Operation(summary = "동아리 관리자 추가")
