@@ -46,8 +46,11 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     @Override
     public void removeManager(RemoveManagerRequest removeManagerRequest) {
-        participationService.deleteToEachList(removeManagerRequest.userId(), removeManagerRequest.clubId());
+        for (String userId : removeManagerRequest.userId()) {
+            participationService.deleteToEachList(userId, removeManagerRequest.clubId());
+        }
     }
+
 
     public void update(String id, ClubRequest request) {
         clubUpdateService.from(id, request);
