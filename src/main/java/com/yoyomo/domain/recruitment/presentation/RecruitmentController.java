@@ -1,14 +1,20 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
+import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
-import io.swagger.annotations.ApiParam;
+import com.yoyomo.global.config.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +30,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/recruitments")
 public class RecruitmentController {
     private final RecruitmentManageUseCase recruitmentManageUseCase;
+    private final JwtProvider jwtProvider;
+    private final UserGetService userGetService;
+    private final ClubGetService clubGetService;
+
 
     @PostMapping
     @Operation(summary = "모집 생성")
@@ -41,7 +51,19 @@ public class RecruitmentController {
 
     @GetMapping
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<List<RecruitmentResponse>> readAll(@RequestParam String clubId) {
+    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest request) throws JsonProcessingException {
+
+        String token = jwtProvider.extractTokenFromRequest(request);
+
+        String email = jwtProvider.getEmail(token);
+        Manager manager = userGetService.findByEmail(email);
+
+        List<Club> clubs = manager.getClubs();
+        List<String> clubIds = clubGetService.extractClubIds(clubs);
+        System.out.println("clubIds = " + clubIds);
+        // 일단 첫번쨰 클럽만 넘겨 주기 - MVP
+        String clubId = clubIds.get(0);
+
         List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
