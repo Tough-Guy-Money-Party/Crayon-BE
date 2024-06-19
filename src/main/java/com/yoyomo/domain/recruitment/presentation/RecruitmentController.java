@@ -8,6 +8,7 @@ import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -31,9 +32,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class RecruitmentController {
     private final RecruitmentManageUseCase recruitmentManageUseCase;
     private final JwtProvider jwtProvider;
-    private final UserGetService userGetService;
-    private final ClubGetService clubGetService;
-
+    private final RecruitmentGetService recruitmentGetService;
 
     @PostMapping
     @Operation(summary = "모집 생성")
@@ -54,15 +53,8 @@ public class RecruitmentController {
     public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest request) throws JsonProcessingException {
 
         String token = jwtProvider.extractTokenFromRequest(request);
-
         String email = jwtProvider.getEmail(token);
-        Manager manager = userGetService.findByEmail(email);
-
-        List<Club> clubs = manager.getClubs();
-        List<String> clubIds = clubGetService.extractClubIds(clubs);
-        System.out.println("clubIds = " + clubIds);
-        // 일단 첫번쨰 클럽만 넘겨 주기 - MVP
-        String clubId = clubIds.get(0);
+        String clubId = recruitmentGetService.getClubId(email);
 
         List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
