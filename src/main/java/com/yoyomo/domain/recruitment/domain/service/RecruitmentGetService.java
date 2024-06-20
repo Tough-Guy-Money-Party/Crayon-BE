@@ -1,8 +1,12 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
+import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecruitmentGetService {
     private final RecruitmentRepository recruitmentRepository;
+    private final ClubGetService clubGetService;
+    private final UserGetService userGetService;
 
     public Recruitment find(String id) {
         return recruitmentRepository.findByIdAndDeletedAtIsNull(id)
@@ -28,5 +34,17 @@ public class RecruitmentGetService {
 
     public List<Recruitment> findAll(String clubId) {
         return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
+    }
+
+    public String getClubId(String email){
+
+        Manager manager = userGetService.findByEmail(email);
+        List<Club> clubs = manager.getClubs();
+        List<String> clubIds = clubGetService.extractClubIds(clubs);
+        System.out.println("clubIds = " + clubIds);
+
+        String clubId = clubIds.get(0);
+
+        return clubId;
     }
 }

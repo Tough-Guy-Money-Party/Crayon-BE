@@ -6,6 +6,7 @@ import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
 import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -77,6 +78,15 @@ public class JwtProvider {
                 "No Refresh Token Provided"
         );
         return tokenDto;
+    }
+
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        throw new IllegalArgumentException("Invalid Authorization header.");
     }
 
     public Authentication getAuthentication(String token) {
