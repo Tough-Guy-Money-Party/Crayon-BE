@@ -1,16 +1,16 @@
 package com.yoyomo.domain.item.domain.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Getter
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Select extends Item {
-    private List<Option> options;
+public class Option {
+    private String id;
+    private String title;
+    private boolean selected;
 }

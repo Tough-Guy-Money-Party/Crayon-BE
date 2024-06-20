@@ -23,11 +23,9 @@ public class Form {
 
     private String clubId;
 
-    private String name;
+    private String title;
 
     private String description;
-
-    private String instruction;
 
     private List<Item> items;
 

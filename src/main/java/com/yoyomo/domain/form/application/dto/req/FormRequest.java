@@ -6,9 +6,8 @@ import java.util.List;
 
 public record FormRequest(
         String clubId,
-        String name,
+        String title,
         String description,
-        String instruction,
         List<ItemRequest> itemRequests
 ) {
 }

@@ -33,7 +33,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public FormDetailsResponse read(String id) {
         Form form = formGetService.find(id);
         List<ItemResponse> itemResponses = itemManageUseCase.get(form);
-        return new FormDetailsResponse(form.getName(), form.getDescription(), form.getInstruction(), itemResponses);
+        return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public void update(String id, FormUpdateRequest request) {
-        formUpdateService.update(id, request.name());
+        formUpdateService.update(id, request.title(),request.description());
         itemManageUseCase.update(id, request.itemRequests());
     }
 

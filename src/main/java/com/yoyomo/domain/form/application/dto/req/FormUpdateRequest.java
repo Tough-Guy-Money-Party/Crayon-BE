@@ -5,7 +5,7 @@ import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import java.util.List;
 
 public record FormUpdateRequest(
-        String name,
+        String title,
         String description,
         List<ItemRequest> itemRequests
 ) {
