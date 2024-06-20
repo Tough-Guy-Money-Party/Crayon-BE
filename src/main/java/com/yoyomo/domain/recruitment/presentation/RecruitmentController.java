@@ -1,16 +1,12 @@
 package com.yoyomo.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.entity.Manager;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;

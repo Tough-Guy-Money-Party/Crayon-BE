@@ -41,7 +41,6 @@ public class RecruitmentGetService {
         Manager manager = userGetService.findByEmail(email);
         List<Club> clubs = manager.getClubs();
         List<String> clubIds = clubGetService.extractClubIds(clubs);
-        System.out.println("clubIds = " + clubIds);
 
         String clubId = clubIds.get(0);
 
