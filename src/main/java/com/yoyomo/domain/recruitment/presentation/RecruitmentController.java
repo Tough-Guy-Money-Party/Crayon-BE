@@ -32,8 +32,14 @@ public class RecruitmentController {
 
     @PostMapping
     @Operation(summary = "모집 생성")
-    public ResponseDto create(@RequestBody RecruitmentRequest request) {
-        recruitmentManageUseCase.create(request);
+    public ResponseDto create(@RequestBody RecruitmentRequest request, HttpServletRequest httpServletRequest) {
+
+        String token = jwtProvider.extractTokenFromRequest(httpServletRequest);
+        String email = jwtProvider.getEmail(token);
+        String clubId = recruitmentGetService.getClubId(email);
+
+        RecruitmentRequest updatedRequest = request.withClubId(clubId);
+        recruitmentManageUseCase.create(updatedRequest);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 
@@ -46,9 +52,9 @@ public class RecruitmentController {
 
     @GetMapping
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest request) throws JsonProcessingException {
+    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest httpServletRequest) throws JsonProcessingException {
 
-        String token = jwtProvider.extractTokenFromRequest(request);
+        String token = jwtProvider.extractTokenFromRequest(httpServletRequest);
         String email = jwtProvider.getEmail(token);
         String clubId = recruitmentGetService.getClubId(email);
 
