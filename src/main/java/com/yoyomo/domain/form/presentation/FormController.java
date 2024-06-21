@@ -10,6 +10,7 @@ import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.ApiParam;
 
@@ -42,8 +43,8 @@ public class FormController {
 
     @PostMapping
     @Operation(summary = "지원폼 생성")
-    public ResponseDto<FormCreateResponse> create(@RequestBody FormRequest request) {
-        FormCreateResponse response = formManageUseCase.create(request);
+    public ResponseDto<FormCreateResponse> create(@RequestBody FormRequest request, Authentication authentication) {
+        FormCreateResponse response = formManageUseCase.create(request,authentication);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 

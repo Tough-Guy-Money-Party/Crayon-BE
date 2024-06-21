@@ -5,7 +5,6 @@ import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import java.util.List;
 
 public record FormRequest(
-        String clubId,
         String title,
         String description,
         List<ItemRequest> itemRequests
