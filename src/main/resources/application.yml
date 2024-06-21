@@ -7,31 +7,30 @@ springdoc:
     display-request-duration: true
 spring:
   application:
-    kakao-client-id: 4a62bf0f868170d27078e92ed07f6ccf
-    kakao-redirect-uri: http://localhost:3000/kakao
+    kakao-client-id: ${KAKAO_CLIENT_ID}
+    kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
-      host: 13.209.29.51
-      port: 27017
-      database: crayon
-      username: root
-      password: tkdskawk
+      host: ${HOST:localhost}
+      port: ${PORT:27017}
+      database: ${DATABASE:crayon}
+      username: ${USERNAME}
+      password: ${PASSWORD}
       authentication-database: admin
     redis:
-      host: localhost
-      port: 6379
-      password:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASS}
   jwt:
     token:
       access-expiration-time: 43200000
       refresh-expiration-time: 604800000
 jwt:
-  access_secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345
-  refresh_secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345
+  access_secret: ${JWT_ACCESS_SECRET}
+  refresh_secret: ${JWT_REFRESH_SECRET}
 
 is-using-refresh-token: true
 
-
 image:
-  path: /Users/jeongjunhui/Documents/crayon_img
+  path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
 #/home/ubuntu/images/
