@@ -12,14 +12,8 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Option {
-    @Id
-    private String id = ObjectId.get().toHexString();
-
+    private String id;
     private String title;
     private boolean selected;
 
-    public Option(String title, boolean selected) {
-        this.title = title;
-        this.selected = selected;
-    }
 }

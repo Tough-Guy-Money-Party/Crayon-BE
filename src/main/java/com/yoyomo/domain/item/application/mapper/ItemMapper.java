@@ -32,7 +32,7 @@ public interface ItemMapper {
 
     default List<Option> optionRequestToOptionList(List<OptionRequest> optionRequests) {
         return optionRequests.stream()
-                .map(optionRequest -> new Option(optionRequest.title(), optionRequest.selected()))
+                .map(optionRequest -> new Option(optionRequest.id(), optionRequest.title(), optionRequest.selected()))
                 .collect(Collectors.toList());
     }
 
