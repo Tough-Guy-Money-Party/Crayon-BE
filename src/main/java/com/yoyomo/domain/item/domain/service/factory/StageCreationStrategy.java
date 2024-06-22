@@ -24,7 +24,8 @@ public class StageCreationStrategy implements ItemCreationStrategy {
     public Item create(ItemRequest request) {
         return Stage.builder()
                 .type(request.type())
-                .question(request.question())
+                .title(request.title())
+                .description(request.description())
                 .order(request.order())
                 .required(request.required())
                 .meaningOfHigh(request.meaningOfHigh())

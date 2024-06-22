@@ -19,7 +19,9 @@ public class Item {
     @Builder.Default
     private String id = ObjectId.get().toHexString();
 
-    private String question;
+    private String title;
+
+    private String description;
 
     private Type type;
 

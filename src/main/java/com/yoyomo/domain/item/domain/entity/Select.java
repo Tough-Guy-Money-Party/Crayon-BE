@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Select extends Item {
-    private List<String> options;
+    private List<Option> options;
 }

@@ -7,7 +7,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class ItemResponse {
-    private String question;
+    private String title;
+    private String description;
     private Type type;
     private int order;
     private String imageName;

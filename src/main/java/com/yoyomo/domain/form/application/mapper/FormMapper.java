@@ -5,9 +5,7 @@ import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.form.application.dto.res.FormResponse;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.item.domain.entity.Item;
-import org.mapstruct.Mapper;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -15,7 +13,8 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface FormMapper {
-    Form from(FormRequest request, List<Item> items);
+
+    Form from( FormRequest request,List<Item> items);
 
     Form from(FormUpdateRequest request, List<Item> items);
 

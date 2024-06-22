@@ -18,6 +18,7 @@ public interface RecruitmentMapper {
     @Mapping(target = "clubId", source = "request.clubId")
     @Mapping(target = "form", source = "form")
     @Mapping(target = "processStage", expression = "java(0)")
+    @Mapping(source = "request.title", target = "title")
     Recruitment from(RecruitmentRequest request, Form form);
 
     RecruitmentDetailsResponse mapToRecruitmentDetails(Recruitment recruitment);

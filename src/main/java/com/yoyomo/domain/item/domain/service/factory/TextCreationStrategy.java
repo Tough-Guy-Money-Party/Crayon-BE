@@ -23,7 +23,8 @@ public class TextCreationStrategy implements ItemCreationStrategy {
     public Item create(ItemRequest request) {
         return Text.builder()
                 .type(request.type())
-                .question(request.question())
+                .title(request.title())
+                .description(request.description())
                 .order(request.order())
                 .required(request.required())
                 .limit(request.limit())
