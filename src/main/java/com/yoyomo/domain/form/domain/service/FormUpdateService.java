@@ -24,13 +24,14 @@ public class FormUpdateService {
     private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
-    public void update(String id, String title, String description) {
+    public void update(String id, String title, String description, boolean active) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = new Update()
                 .set("title", title)
-                .set("description", description);
+                .set("description", description)
+                .set("active", active);
         UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
         checkIsDeleted(result);
     }

@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.ApiParam;
-
 import java.util.List;
 
 import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.*;

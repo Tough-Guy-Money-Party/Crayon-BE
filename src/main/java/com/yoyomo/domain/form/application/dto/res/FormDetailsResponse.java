@@ -7,6 +7,7 @@ import java.util.List;
 public record FormDetailsResponse(
         String title,
         String description,
-        List<ItemResponse> items
+        List<ItemResponse> items,
+        boolean active
 ) {
 }

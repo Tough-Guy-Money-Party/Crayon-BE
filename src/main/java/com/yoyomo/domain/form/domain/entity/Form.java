@@ -29,6 +29,8 @@ public class Form {
 
     private List<Item> items;
 
+    private boolean active;
+
     private LocalDateTime deletedAt;
 
     public void updateItems(List<Item> items) {
