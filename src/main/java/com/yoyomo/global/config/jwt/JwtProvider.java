@@ -80,15 +80,6 @@ public class JwtProvider {
         return tokenDto;
     }
 
-    public String extractTokenFromRequest(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        throw new IllegalArgumentException("Invalid Authorization header.");
-    }
-
     public Authentication getAuthentication(String token) {
         return new PreAuthenticatedAuthenticationToken(this.getEmail(token),null, null);
     }

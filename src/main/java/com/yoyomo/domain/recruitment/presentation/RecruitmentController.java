@@ -1,22 +1,18 @@
 package com.yoyomo.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.entity.Manager;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
-import com.yoyomo.global.config.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,13 +27,17 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/recruitments")
 public class RecruitmentController {
     private final RecruitmentManageUseCase recruitmentManageUseCase;
-    private final JwtProvider jwtProvider;
     private final RecruitmentGetService recruitmentGetService;
 
     @PostMapping
     @Operation(summary = "모집 생성")
-    public ResponseDto create(@RequestBody RecruitmentRequest request) {
-        recruitmentManageUseCase.create(request);
+    public ResponseDto create(@RequestBody RecruitmentRequest request, Authentication authentication) {
+
+        String email = authentication.getName();
+        String clubId = recruitmentGetService.getClubId(email);
+
+        RecruitmentRequest updatedRequest = request.withClubId(clubId);
+        recruitmentManageUseCase.create(updatedRequest);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 
@@ -50,10 +50,9 @@ public class RecruitmentController {
 
     @GetMapping
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest request) throws JsonProcessingException {
+    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest httpServletRequest, Authentication authentication) throws JsonProcessingException {
 
-        String token = jwtProvider.extractTokenFromRequest(request);
-        String email = jwtProvider.getEmail(token);
+        String email = authentication.getName();
         String clubId = recruitmentGetService.getClubId(email);
 
         List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId);

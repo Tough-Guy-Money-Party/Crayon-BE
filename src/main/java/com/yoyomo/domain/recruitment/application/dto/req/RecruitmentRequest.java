@@ -11,7 +11,16 @@ public record RecruitmentRequest(
         Integer generation,
         String position,
 
-        int processStage,
         List<Process> processes
 ) {
+    public RecruitmentRequest withClubId(String newClubId) {
+        return new RecruitmentRequest(
+                newClubId,
+                this.formId,
+                this.title,
+                this.generation,
+                this.position,
+                this.processes
+        );
+    }
 }
