@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
+import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
@@ -61,7 +62,7 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정", description = "지원폼을 제외한 모집 정보를 수정합니다.")
-    public ResponseDto update(@PathVariable String recruitmentId, @RequestBody RecruitmentRequest request) {
+    public ResponseDto update(@PathVariable String recruitmentId, @RequestBody RecruitmentModifyRequest request) {
         recruitmentManageUseCase.update(recruitmentId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
