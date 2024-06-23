@@ -40,7 +40,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public FormDetailsResponse read(String id) {
         Form form = formGetService.find(id);
         List<ItemResponse> itemResponses = itemManageUseCase.get(form);
-        return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses, form.isActive());
+        return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses, form.isActive(), form.getCreatedAt());
     }
 
     @Override
