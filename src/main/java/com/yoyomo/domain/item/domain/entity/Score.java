@@ -9,9 +9,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Stage extends Item {
+public class Score extends Item {
 
     private String meaningOfHigh;
 
     private String meaningOfLow;
+
+    private int score;
 }

@@ -8,7 +8,6 @@ import com.yoyomo.domain.item.domain.entity.*;
 import com.yoyomo.domain.item.domain.service.ItemUpdateService;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
 import com.yoyomo.domain.item.exception.InvalidItemException;
-import com.yoyomo.domain.item.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,20 +47,17 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
     }
 
     public ItemResponse getItemResponse(Item item) {
-        if (item instanceof Text) {
-            return itemMapper.mapToTextResponse((Text) item);
-        }
         if (item instanceof Select) {
             return itemMapper.mapToSelectResponse((Select) item);
         }
-        if (item instanceof Stage) {
-            return itemMapper.mapToStageResponse((Stage) item);
+        if (item instanceof Score) {
+            return itemMapper.mapToScoreResponse((Score) item);
         }
         if (item instanceof Date) {
             return itemMapper.mapToDateResponse((Date) item);
         }
-        if (item instanceof File) {
-            return itemMapper.mapToFileResponse((File) item);
+        if (item instanceof Answer) {
+            return itemMapper.mapToAnswerResponse((Answer) item);
         }
         throw new InvalidItemException();
     }

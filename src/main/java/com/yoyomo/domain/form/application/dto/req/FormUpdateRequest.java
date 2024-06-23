@@ -8,6 +8,6 @@ public record FormUpdateRequest(
         String title,
         String description,
         List<ItemRequest> itemRequests,
-        boolean active
+        boolean enabled
 ) {
 }

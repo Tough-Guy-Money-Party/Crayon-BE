@@ -15,5 +15,4 @@ public class Option {
     private String id;
     private String title;
     private boolean selected;
-
 }

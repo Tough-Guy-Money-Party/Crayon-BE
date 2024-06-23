@@ -40,7 +40,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public FormDetailsResponse read(String id) {
         Form form = formGetService.find(id);
         List<ItemResponse> itemResponses = itemManageUseCase.get(form);
-        return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses, form.isActive(), form.getCreatedAt());
+        return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses, form.isEnabled(), form.getCreatedAt());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
         Form form = Form.builder().clubId(clubId)
                 .title(request.title())
-                .active(false)
+                .enabled(false)
                 .description(request.description())
                 .items(items)
                 .build();
@@ -90,7 +90,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public void update(String id, FormUpdateRequest request) {
-        formUpdateService.update(id, request.title(),request.description(), request.active());
+        formUpdateService.update(id, request.title(), request.description(), request.enabled());
         itemManageUseCase.update(id, request.itemRequests());
     }
 

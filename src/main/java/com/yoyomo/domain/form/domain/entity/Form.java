@@ -30,7 +30,7 @@ public class Form {
 
     private List<Item> items;
 
-    private boolean active;
+    private boolean enabled;
 
     @CreatedDate
     private LocalDateTime createdAt;

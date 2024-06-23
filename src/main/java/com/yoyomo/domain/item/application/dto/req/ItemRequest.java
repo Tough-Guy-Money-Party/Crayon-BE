@@ -11,13 +11,18 @@ public record ItemRequest(
         String description,
         int order,
         boolean required,
-        // for Text
-        int limit,
+
         // for Select
         List<OptionRequest> options,
-        // for Stage
+        // for Answer
+        String answer,
+        int maxLength,
+        // for Score
         String meaningOfHigh,
-        String meaningOfLow
+        String meaningOfLow,
+        int score
+
+
 ) {
 }
 

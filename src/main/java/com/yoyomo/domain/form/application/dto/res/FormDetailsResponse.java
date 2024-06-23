@@ -9,7 +9,7 @@ public record FormDetailsResponse(
         String title,
         String description,
         List<ItemResponse> items,
-        boolean active,
+        boolean enabled,
         LocalDateTime createdAt
 ) {
 }
