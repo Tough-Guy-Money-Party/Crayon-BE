@@ -7,7 +7,7 @@ import java.util.List;
 
 public record RecruitmentDetailsResponse(
         String title,
-        int generation,
+        String generation,
         String position,
         List<Process> processes,
         int processStage
