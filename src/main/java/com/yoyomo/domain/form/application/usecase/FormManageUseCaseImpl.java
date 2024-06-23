@@ -74,6 +74,21 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
+    public List<FormResponse> searchByKeyword(String keyword, Authentication authentication) {
+        String email = authentication.getName();
+
+        Manager manager = userGetService.findByEmail(email);
+        List<Club> clubs = manager.getClubs();
+        List<String> clubIds = clubGetService.extractClubIds(clubs);
+        String clubId = clubIds.get(0);
+
+        List<Form> forms = formGetService.searchByKeyword(keyword ,clubId);
+        return forms.stream()
+                .map(formMapper::mapToFormResponse)
+                .toList();
+    }
+
+    @Override
     public void update(String id, FormUpdateRequest request) {
         formUpdateService.update(id, request.title(),request.description(), request.active());
         itemManageUseCase.update(id, request.itemRequests());

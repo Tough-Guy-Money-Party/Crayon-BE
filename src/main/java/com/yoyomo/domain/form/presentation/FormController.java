@@ -59,4 +59,11 @@ public class FormController {
         formManageUseCase.delete(formId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
+
+    @GetMapping("/search")
+    @Operation(summary = "지원폼 키워드 검색")
+    public ResponseDto<List<FormResponse>> searchByKeyword(@RequestParam String keyword , Authentication authentication) {
+        List<FormResponse> responses = formManageUseCase.searchByKeyword(keyword,authentication);
+        return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
+    }
 }
