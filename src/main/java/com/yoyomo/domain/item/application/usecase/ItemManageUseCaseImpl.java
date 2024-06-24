@@ -59,6 +59,7 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
         if (item instanceof Answer) {
             return itemMapper.mapToAnswerResponse((Answer) item);
         }
-        throw new InvalidItemException();
+
+        return itemMapper.mapToItemResponse(item);
     }
 }

@@ -19,7 +19,7 @@ public class ItemFactory {
                 Type.MULTI_SELECT, SelectCreationStrategy.getInstance(),
                 Type.CALENDAR, DateCreationStrategy.getInstance(),
                 Type.SCORE, ScoreCreationStrategy.getInstance(),
-                Type.ANNOUNCE, FileCreationStrategy.getInstance()
+                Type.ANNOUNCE, BaseCreationStrategy.getInstance()
         );
     }
 

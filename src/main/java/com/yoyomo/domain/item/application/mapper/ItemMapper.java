@@ -23,6 +23,8 @@ public interface ItemMapper {
 
     AnswerResponse mapToAnswerResponse(Answer answer);
 
+    ItemResponse mapToItemResponse(Item item);
+
     default List<OptionResponse> optionsToOptionResponseList(List<Option> options) {
         return options.stream()
                 .map(option -> new OptionResponse(option.getId(), option.getTitle(), option.isSelected()))

@@ -14,7 +14,6 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
-
     @Id
     @Builder.Default
     private String id = ObjectId.get().toHexString();
