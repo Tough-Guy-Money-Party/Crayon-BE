@@ -21,4 +21,8 @@ public class FormGetService {
     public List<Form> findAll(String clubId) {
         return formRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
     }
+
+    public List<Form> searchByKeyword(String keyword, String clubId) {
+        return formRepository.findByClubIdAndTitleRegexOrClubIdAndDescriptionRegex(clubId,keyword,clubId,keyword);
+    }
 }

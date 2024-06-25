@@ -14,15 +14,16 @@ import java.util.stream.Collectors;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
-    TextResponse mapToTextResponse(Text text);
 
     SelectResponse mapToSelectResponse(Select select);
 
-    StageResponse mapToStageResponse(Stage stage);
+    ScoreResponse mapToScoreResponse(Score score);
 
     DateResponse mapToDateResponse(Date date);
 
-    FileResponse mapToFileResponse(File file);
+    AnswerResponse mapToAnswerResponse(Answer answer);
+
+    ItemResponse mapToItemResponse(Item item);
 
     default List<OptionResponse> optionsToOptionResponseList(List<Option> options) {
         return options.stream()

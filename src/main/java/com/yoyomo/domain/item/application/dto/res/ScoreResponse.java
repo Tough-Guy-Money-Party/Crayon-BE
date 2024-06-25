@@ -5,8 +5,8 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class StageResponse extends ItemResponse {
+public class ScoreResponse extends ItemResponse {
     private String meaningOfHigh;
-
     private String meaningOfLow;
+    private int score;
 }

@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.ApiParam;
-
 import java.util.List;
 
 import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.*;
@@ -60,5 +58,12 @@ public class FormController {
     public ResponseDto delete(@PathVariable String formId) {
         formManageUseCase.delete(formId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "지원폼 키워드 검색")
+    public ResponseDto<List<FormResponse>> searchByKeyword(@RequestParam String keyword , Authentication authentication) {
+        List<FormResponse> responses = formManageUseCase.searchByKeyword(keyword,authentication);
+        return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
     }
 }

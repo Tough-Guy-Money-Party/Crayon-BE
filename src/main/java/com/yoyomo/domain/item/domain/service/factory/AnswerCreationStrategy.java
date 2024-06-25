@@ -1,35 +1,35 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
+import com.mongodb.annotations.Sealed;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
+import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.item.domain.entity.Option;
 import com.yoyomo.domain.item.domain.entity.Select;
-import com.yoyomo.domain.item.domain.entity.Stage;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class StageCreationStrategy implements ItemCreationStrategy {
-    private static StageCreationStrategy instance;
+public class AnswerCreationStrategy implements ItemCreationStrategy{
+    private static AnswerCreationStrategy instance;
 
-    private StageCreationStrategy() {
-    }
-
-    public static StageCreationStrategy getInstance() {
+    public static AnswerCreationStrategy getInstance() {
         if (instance == null) {
-            return instance = new StageCreationStrategy();
+            return instance = new AnswerCreationStrategy();
         }
         return instance;
     }
-
     @Override
     public Item create(ItemRequest request) {
-        return Stage.builder()
+        return Answer.builder()
                 .type(request.type())
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
                 .required(request.required())
-                .meaningOfHigh(request.meaningOfHigh())
-                .meaningOfLow(request.meaningOfLow())
+                .answer(request.answer())
+                .maxLength(request.maxLength())
                 .build();
     }
 }

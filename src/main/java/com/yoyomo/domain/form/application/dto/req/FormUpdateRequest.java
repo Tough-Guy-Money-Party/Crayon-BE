@@ -7,6 +7,7 @@ import java.util.List;
 public record FormUpdateRequest(
         String title,
         String description,
-        List<ItemRequest> itemRequests
+        List<ItemRequest> itemRequests,
+        boolean enabled
 ) {
 }
