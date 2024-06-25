@@ -7,6 +7,7 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
@@ -54,7 +55,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public void update(String recruitmentId, RecruitmentRequest request) {
+    public void update(String recruitmentId, RecruitmentModifyRequest request) {
         if (request.formId() != null) {
             Form form = formGetService.find(request.formId());
             recruitmentUpdateService.from(recruitmentId, form);

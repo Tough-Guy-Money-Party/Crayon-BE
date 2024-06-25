@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -24,7 +25,7 @@ public class RecruitmentUpdateService {
     private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
-    public void from(String id, RecruitmentRequest request) {
+    public void from(String id, RecruitmentModifyRequest request) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
