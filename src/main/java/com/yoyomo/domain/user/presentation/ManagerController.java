@@ -1,8 +1,9 @@
 package com.yoyomo.domain.user.presentation;
 
-import com.yoyomo.domain.user.application.dto.req.*;
+import com.yoyomo.domain.club.application.dto.res.ClubResponse;
+import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
+import com.yoyomo.domain.user.application.dto.req.RegisterRequest;
 import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
-import com.yoyomo.domain.user.application.dto.res.ManagersClubsResponse;
 import com.yoyomo.domain.user.application.usecase.ManagerManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
@@ -59,8 +60,10 @@ public class ManagerController {
 
     @GetMapping(value = "/clubs")
     @Operation(summary = "워크스페이스 조회")
-    public ResponseDto<ManagersClubsResponse> getWorkSpaces(Authentication authentication) throws Exception {
-        ManagersClubsResponse response = managerManageUseCase.getClubs(authentication);
+    public ResponseDto<ClubResponse> getWorkSpaces(Authentication authentication){
+        ClubResponse response = managerManageUseCase.getFirstClub(authentication);
         return ResponseDto.of(OK.value(), SUCCESS_GET_CLUBS.getMessage(), response);
     }
+
+
 }

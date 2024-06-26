@@ -1,9 +1,12 @@
 package com.yoyomo.domain.user.application.usecase;
 
+import com.yoyomo.domain.club.application.dto.res.ClubResponse;
+import com.yoyomo.domain.club.application.mapper.ClubMapper;
+import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
 import com.yoyomo.domain.user.application.dto.req.RegisterRequest;
 import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
-import com.yoyomo.domain.user.application.dto.res.ManagersClubsResponse;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
@@ -21,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -37,6 +41,8 @@ public class ManagerManageUseCase {
 
     private final KakaoService kakaoService;
     private final JwtProvider jwtProvider;
+
+    private final ClubMapper clubMapper;
 
     private final RedisTemplate<String, String> redisTemplate;
     public static final long EXPIRATION_TIME = 60 * 60 * 1000L;
@@ -119,8 +125,12 @@ public class ManagerManageUseCase {
         return userUpdateService.deleteByEmail(authentication.getName());
     }
 
-    public ManagersClubsResponse getClubs(Authentication authentication) {
+    public ClubResponse getFirstClub(Authentication authentication) {
         Manager manager = userGetService.findByEmail(authentication.getName());
-        return new ManagersClubsResponse(manager.getClubs());
+        List<Club> clubs = manager.getClubs();
+        if (clubs.isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        return clubMapper.clubToClubResponse(clubs.get(0));
     }
 }
