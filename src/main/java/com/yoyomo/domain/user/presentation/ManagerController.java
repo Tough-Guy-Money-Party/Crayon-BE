@@ -2,7 +2,6 @@ package com.yoyomo.domain.user.presentation;
 
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
-import com.yoyomo.domain.user.application.dto.req.RegisterRequest;
 import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
 import com.yoyomo.domain.user.application.usecase.ManagerManageUseCase;
 import com.yoyomo.global.config.dto.ResponseDto;
@@ -23,21 +22,26 @@ import static org.springframework.http.HttpStatus.OK;
 public class ManagerController {
     private final ManagerManageUseCase managerManageUseCase;
 
-    @PostMapping(value = "/register")
-    @Operation(summary = "회원가입")
-    public ResponseDto<ManagerResponse> register(@RequestBody RegisterRequest request) throws Exception {
-        ManagerResponse response = managerManageUseCase.register(request);
-        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(), response);
-    }
+//    @PostMapping(value = "/register")
+//    @Operation(summary = "회원가입")
+//    public ResponseDto<ManagerResponse> register(@RequestBody RegisterRequest request) throws Exception {
+//        ManagerResponse response = managerManageUseCase.register(request);
+//        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(), response);
+//    }
+//
+//    @PostMapping(value = "/login/{code}")
+//    @Operation(summary = "로그인")
+//    public ResponseDto<ManagerResponse> login(@PathVariable String code) throws Exception {
+//        ManagerResponse response = managerManageUseCase.login(code);
+//        return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
+//    }
 
     @PostMapping(value = "/login/{code}")
-    @Operation(summary = "로그인")
-    public ResponseDto<ManagerResponse> login(@PathVariable String code) throws Exception {
-        ManagerResponse response = managerManageUseCase.login(code);
+    @Operation(summary = "카카오 로그인 및 회원가입")
+    public ResponseDto<ManagerResponse> authenticate(@PathVariable String code) {
+        ManagerResponse response = managerManageUseCase.authenticate(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
-
-
 
     @PostMapping(value = "/refresh")
     @Operation(summary = "토큰 재발급")
