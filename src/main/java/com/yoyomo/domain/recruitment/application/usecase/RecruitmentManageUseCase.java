@@ -5,6 +5,8 @@ import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyReques
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ public interface RecruitmentManageUseCase {
 
     RecruitmentDetailsResponse read(String recruitmentId);
 
-    List<RecruitmentResponse> readAll(String clubId);
+    Page<RecruitmentResponse> readAll(String clubId, PageRequest pageRequest);
 
     void update(String recruitmentId, RecruitmentModifyRequest request);
 

@@ -8,6 +8,8 @@ import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,8 +34,9 @@ public class RecruitmentGetService {
         return recruitment.getProcesses().get(lastIndex).getEndAt();
     }
 
-    public List<Recruitment> findAll(String clubId) {
-        return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
+    public Page<Recruitment> findAll(String clubId, PageRequest pageRequest) {
+        System.out.println("clubId get service = " + clubId);
+        return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId, pageRequest);
     }
 
     public String getClubId(String email){
