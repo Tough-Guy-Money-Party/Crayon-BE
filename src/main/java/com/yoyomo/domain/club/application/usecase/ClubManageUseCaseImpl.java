@@ -12,7 +12,7 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
-import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.participation.service.ParticipationService;
@@ -63,9 +63,13 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Manager findManager = userGetService.findByEmail(email);
         List<Club> clubs = findManager.getClubs();
         List<String> clubIds = clubGetService.extractClubIds(clubs);
-        String clubId = clubIds.get(0);
 
-        Club club = clubGetService.byId(clubId);
+        if (clubs.isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+
+        Club club = clubGetService.byId(clubIds.get(0));
+
         return Optional.ofNullable(club.getManagers())
                 .orElse(Collections.emptyList())
                 .stream()

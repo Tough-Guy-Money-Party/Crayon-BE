@@ -2,11 +2,14 @@ package com.yoyomo.global.config.kakao;
 
 import com.yoyomo.global.config.kakao.dto.KakaoTokenResponse;
 import com.yoyomo.global.config.kakao.dto.KakaoUserInfoResponse;
+import com.yoyomo.global.config.kakao.exception.KakaoTokenException;
+import com.yoyomo.global.config.kakao.exception.KakaoUserInfoException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -40,7 +43,8 @@ public class KakaoServiceNew {
                 .retrieve()
                 .bodyToFlux(KakaoTokenResponse.class);
 
-        return response.blockFirst();
+        return response.onErrorMap(WebClientResponseException.class,
+                e -> new KakaoTokenException()).blockFirst();
     }
 
     public KakaoUserInfoResponse getUserInfo(String token) {
@@ -51,7 +55,8 @@ public class KakaoServiceNew {
                 .retrieve()
                 .bodyToFlux(KakaoUserInfoResponse.class);
 
-        return response.blockFirst();
+        return response.onErrorMap(WebClientResponseException.class,
+                e -> new KakaoUserInfoException()).blockFirst();
     }
 
 }
