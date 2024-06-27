@@ -35,7 +35,6 @@ public class RecruitmentGetService {
     }
 
     public Page<Recruitment> findAll(String clubId, PageRequest pageRequest) {
-        System.out.println("clubId get service = " + clubId);
         return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId, pageRequest);
     }
 
