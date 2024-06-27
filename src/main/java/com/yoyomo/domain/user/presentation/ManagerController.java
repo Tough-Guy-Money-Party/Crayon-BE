@@ -37,6 +37,8 @@ public class ManagerController {
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
 
+
+
     @PostMapping(value = "/refresh")
     @Operation(summary = "토큰 재발급")
     public ResponseDto<JwtResponse> refresh(@RequestBody RefreshRequest request) throws Exception {

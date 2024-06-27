@@ -8,10 +8,8 @@ import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
-
-import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
-import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.dto.ResponseDto;
+import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.participation.service.ParticipationCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -64,10 +62,10 @@ public class ClubController {
     }
 
 
-    @GetMapping("/participation/{clubId}")
+    @GetMapping("/participation")
     @Operation(summary = "동아리 관리자 조회")
-    public ResponseDto<List<ClubManagerResponse>> getManagers(@PathVariable String clubId) {
-        List<ClubManagerResponse> response = clubManageUseCase.getManagers(clubId);
+    public ResponseDto<List<ClubManagerResponse>> getManagers(Authentication authentication) {
+        List<ClubManagerResponse> response = clubManageUseCase.getManagers(authentication);
         return ResponseDto.of(OK.value(), SUCCESS_GET_MANAGERS.getMessage(), response);
     }
 
