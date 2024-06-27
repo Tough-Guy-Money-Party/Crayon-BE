@@ -14,6 +14,4 @@ public interface RecruitmentRepository extends MongoRepository<Recruitment, Stri
 
     Page<Recruitment> findAllByClubIdAndDeletedAtIsNull(String clubId, PageRequest pageRequest);
 
-    List<Recruitment> findAllByClubId(String clubId);
-
 }
