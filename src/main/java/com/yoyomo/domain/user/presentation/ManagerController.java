@@ -1,5 +1,12 @@
 package com.yoyomo.domain.user.presentation;
 
+import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_DELETE;
+import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_GET_CLUBS;
+import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_LOGIN;
+import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_REFRESH;
+import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.OK;
+
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
 import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
@@ -10,10 +17,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "USER")
 @RestController
@@ -21,20 +32,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/user")
 public class ManagerController {
     private final ManagerManageUseCase managerManageUseCase;
-
-//    @PostMapping(value = "/register")
-//    @Operation(summary = "회원가입")
-//    public ResponseDto<ManagerResponse> register(@RequestBody RegisterRequest request) throws Exception {
-//        ManagerResponse response = managerManageUseCase.register(request);
-//        return ResponseDto.of(OK.value(), SUCCESS_REGISTER.getMessage(), response);
-//    }
-//
-//    @PostMapping(value = "/login/{code}")
-//    @Operation(summary = "로그인")
-//    public ResponseDto<ManagerResponse> login(@PathVariable String code) throws Exception {
-//        ManagerResponse response = managerManageUseCase.login(code);
-//        return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
-//    }
 
     @PostMapping(value = "/login/{code}")
     @Operation(summary = "카카오 로그인 및 회원가입")

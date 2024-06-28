@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Service
@@ -34,29 +34,30 @@ public class KakaoServiceNew {
     private String userInfoUri;
 
     public KakaoTokenResponse getToken(String code) {
-        String uri = tokenUri + "?grant_type=" + grantType + "&client_id="
-                + clientId + "&redirect_uri=" + redirectUri + "&code=" + code;
+        String uri = UriComponentsBuilder.fromHttpUrl(tokenUri)
+                .queryParam("grant_type", grantType)
+                .queryParam("client_id", clientId)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("code", code)
+                .toUriString();
 
-        Flux<KakaoTokenResponse> response = webClient.post()
+        return webClient.post()
                 .uri(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToFlux(KakaoTokenResponse.class);
-
-        return response.onErrorMap(WebClientResponseException.class,
-                e -> new KakaoTokenException()).blockFirst();
+                .bodyToFlux(KakaoTokenResponse.class)
+                .onErrorMap(WebClientResponseException.class,
+                        e -> new KakaoTokenException()).blockFirst();
     }
 
     public KakaoUserInfoResponse getUserInfo(String token) {
-
-        Flux<KakaoUserInfoResponse> response = webClient.get()
+        return webClient.get()
                 .uri(userInfoUri)
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(KakaoUserInfoResponse.class);
-
-        return response.onErrorMap(WebClientResponseException.class,
-                e -> new KakaoUserInfoException()).blockFirst();
+                .bodyToFlux(KakaoUserInfoResponse.class)
+                .onErrorMap(WebClientResponseException.class,
+                        e -> new KakaoUserInfoException()).blockFirst();
     }
 
 }

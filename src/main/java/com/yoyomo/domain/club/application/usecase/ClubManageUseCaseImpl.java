@@ -57,7 +57,6 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     @Override
     public List<ClubManagerResponse> getManagers(Authentication authentication) {
-
         String email = authentication.getName();
 
         Manager findManager = userGetService.findByEmail(email);
