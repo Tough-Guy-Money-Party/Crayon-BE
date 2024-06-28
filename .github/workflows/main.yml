@@ -44,7 +44,7 @@ jobs:
             {
               "channel": "#crayon-be-ci-cd",
               "username": "github-actions",
-              "text": "CI / build 가 성공하였습니다! pull request: ${{ github.event.pull_request.title }}",
+              "text": "CI / build 성공하였습니다! pull request: ${{ github.event.pull_request.title }}",
               "icon_emoji": ":white_check_mark:"
             }
         env:
@@ -79,3 +79,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: aws deploy create-deployment --application-name crayon --deployment-group-name crayon-group --file-exists-behavior OVERWRITE --s3-location bucket=crayon-be-deploy,bundleType=zip,key=crayon.zip --region ap-northeast-2
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "channel": "#crayon-be-ci-cd",
+              "username": "github-actions",
+              "text": "CD / 배포 성공하였습니다! push: ${{ github.event.ref }}",
+              "icon_emoji": ":white_check_mark:"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
