@@ -42,7 +42,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "#crayon-be-ci-cd",
+              "channel": "#crayon-be-ci",
               "username": "github-actions",
               "text": "CI / build 성공하였습니다! pull request: ${{ github.event.pull_request.title }}",
               "icon_emoji": ":white_check_mark:"
@@ -84,7 +84,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "#crayon-be-ci-cd",
+              "channel": "#crayon-be-ci",
               "username": "github-actions",
               "text": "CD / 배포 성공하였습니다! push: ${{ github.event.ref }}",
               "icon_emoji": ":white_check_mark:"
