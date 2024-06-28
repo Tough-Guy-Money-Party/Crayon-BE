@@ -2,9 +2,9 @@ name: crayon backend server CI/CD
 
 on:
   pull_request:
-    branches: [ main, feature/ci-cd-코드수정 ]
+    branches: [ main ]
   push:
-    branches: [ main, feature/ci-cd-코드수정 ]
+    branches: [ main ]
 
 env:
   S3_BUCKET_NAME: crayon-be-deploy
