@@ -7,7 +7,7 @@ import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
-import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface ClubManageUseCase {
 
     ParticipationResponse participate(ParticipationRequest participateRequest, String userEmail);
 
-    List<ClubManagerResponse> getManagers(String clubId);
+    List<ClubManagerResponse> getManagers(Authentication authentication);
 
     void removeManager(RemoveManagerRequest removeManagerRequest);
 

@@ -34,3 +34,10 @@ is-using-refresh-token: true
 image:
   path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
 #/home/ubuntu/images/
+
+kakao:
+  token_uri: ${KAKAO_TOKEN_URI}
+  redirect_uri: ${KAKAO_REDIRECT_URI}
+  grant_type: ${KAKAO_GRANT_TYPE}
+  client_id: ${KAKAO_CLIENT_ID}
+  user_info_uri: ${KAKAO_USER_INFO_URI}

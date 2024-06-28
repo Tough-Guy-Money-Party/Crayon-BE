@@ -12,9 +12,12 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
-import com.yoyomo.domain.user.application.dto.res.ManagerResponse;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
+import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.config.participation.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubUpdateService clubUpdateService;
     private final ClubMapper clubMapper;
     private final ParticipationService participationService;
+    private final UserGetService userGetService;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -52,8 +56,19 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override
-    public List<ClubManagerResponse> getManagers(String clubId) {
-        Club club = clubGetService.byId(clubId);
+    public List<ClubManagerResponse> getManagers(Authentication authentication) {
+        String email = authentication.getName();
+
+        Manager findManager = userGetService.findByEmail(email);
+        List<Club> clubs = findManager.getClubs();
+        List<String> clubIds = clubGetService.extractClubIds(clubs);
+
+        if (clubs.isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+
+        Club club = clubGetService.byId(clubIds.get(0));
+
         return Optional.ofNullable(club.getManagers())
                 .orElse(Collections.emptyList())
                 .stream()
