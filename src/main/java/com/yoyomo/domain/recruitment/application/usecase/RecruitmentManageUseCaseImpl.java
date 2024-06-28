@@ -17,6 +17,8 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,11 +49,14 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public List<RecruitmentResponse> readAll(String clubId) {
-        List<Recruitment> recruitments = recruitmentGetService.findAll(clubId);
-        return recruitments.stream()
-                .map(recruitment -> recruitmentMapper.mapToRecruitmentResponse(recruitment, applicationGetService, recruitmentGetService))
-                .toList();
+    public Page<RecruitmentResponse> readAll(String clubId, PageRequest pageRequest) {
+        Page<Recruitment> recruitments = recruitmentGetService.findAll(clubId, pageRequest);
+
+        Page<RecruitmentResponse> responsePage = recruitments.map(recruitment ->
+                recruitmentMapper.mapToRecruitmentResponse(recruitment, applicationGetService, recruitmentGetService)
+        );
+
+        return responsePage;
     }
 
     @Override

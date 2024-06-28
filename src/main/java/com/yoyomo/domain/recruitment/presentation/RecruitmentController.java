@@ -10,9 +10,13 @@ import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCas
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,13 +55,22 @@ public class RecruitmentController {
 
     @GetMapping
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<List<RecruitmentResponse>> readAll(HttpServletRequest httpServletRequest, Authentication authentication) throws JsonProcessingException {
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호(page), Query String입니다.", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지 크기(size), Query String입니다.", in = ParameterIn.QUERY)
+    })
+    public ResponseDto<List<RecruitmentResponse>> readAll(Authentication authentication, @RequestParam(value = "page", defaultValue = "0") int page,
+                                                          @RequestParam(value = "size", defaultValue = "7") int size) throws JsonProcessingException {
 
         String email = authentication.getName();
         String clubId = recruitmentGetService.getClubId(email);
 
-        List<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId);
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        Page<RecruitmentResponse> responses = recruitmentManageUseCase.readAll(clubId, pageRequest);
+        List<RecruitmentResponse> responseList = responses.getContent();
+
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responseList);
     }
 
     @PatchMapping("/{recruitmentId}")
