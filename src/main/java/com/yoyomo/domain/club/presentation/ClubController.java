@@ -8,6 +8,7 @@ import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
+import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.participation.service.ParticipationCodeService;
@@ -31,12 +32,17 @@ import static org.springframework.http.HttpStatus.OK;
 public class ClubController {
     private final ClubManageUseCase clubManageUseCase;
     private final ParticipationCodeService participationCodeService;
+    private final ClubSaveService clubSaveService;
 
 
     @PostMapping
     @Operation(summary = "동아리 생성")
     public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest, Authentication authentication) {
+        String subDomain = clubRequest.subDomain();
+        String mySubDomain = clubSaveService.createSubDomain(subDomain);
+
         ClubCreateResponse response = clubManageUseCase.create(clubRequest, authentication.getName());
+
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);
     }
 
