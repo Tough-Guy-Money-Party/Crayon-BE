@@ -3,6 +3,7 @@ package com.yoyomo.domain.club.domain.service;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -17,12 +18,14 @@ import java.net.URL;
 public class ClubSaveService {
     private final ClubRepository clubRepository;
 
+    @Value("${lambda.uri}")
+    private String apiUrl;
+
     public Club save(Club club) {
         return clubRepository.save(club);
     }
 
     public String createSubDomain(String subDomain) {
-        String apiUrl = "https://v4s8bdxx58.execute-api.ap-northeast-2.amazonaws.com/crayon/";
         try {
             HttpURLConnection connection = getHttpURLConnection(subDomain, apiUrl);
 
