@@ -46,7 +46,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Club club = clubMapper.from(request);
         club = clubSaveService.save(club);
         participationService.addToEachList(userEmail, club);
-        return new ClubCreateResponse(club.getId());
+        return new ClubCreateResponse(club.getId(), request.subDomain());
     }
 
     @Override
