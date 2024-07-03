@@ -9,6 +9,7 @@ import com.yoyomo.domain.club.application.dto.res.ClubResponse;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.participation.service.ParticipationCodeService;
@@ -33,6 +34,7 @@ public class ClubController {
     private final ClubManageUseCase clubManageUseCase;
     private final ParticipationCodeService participationCodeService;
     private final ClubSaveService clubSaveService;
+    private final RecruitmentGetService recruitmentGetService;
 
 
     @PostMapping
@@ -90,17 +92,26 @@ public class ClubController {
         return ResponseDto.of(OK.value(), SUCCESS_REMOVE_MANAGER.getMessage());
     }
 
-    @GetMapping("/participation/code/{id}")
+    @GetMapping("/participation/code")
     @Operation(summary = "동아리 관리자 참여 코드 조회")
-    public ResponseDto<ParticipationCodeResponse> getParticipationCode(@PathVariable String id) {
-        ParticipationCodeResponse response = participationCodeService.getCode(id);
+    public ResponseDto<ParticipationCodeResponse> getParticipationCode(Authentication authentication) {
+
+        String email = authentication.getName();
+        String clubId = recruitmentGetService.getClubId(email);
+
+        ParticipationCodeResponse response = participationCodeService.getCode(clubId);
+
         return ResponseDto.of(OK.value(), SUCCESS_GET_CODE.getMessage(), response);
     }
 
-    @PostMapping("/participation/code/{id}")
+    @PostMapping("/participation/code")
     @Operation(summary = "동아리 관리자 참여 코드 재생성")
-    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(@PathVariable String id) {
-        ParticipationCodeResponse response = participationCodeService.regenerate(id);
+    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(Authentication authentication) {
+
+        String email = authentication.getName();
+        String clubId = recruitmentGetService.getClubId(email);
+
+        ParticipationCodeResponse response = participationCodeService.regenerate(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_REGENERATE_CODE.getMessage(), response);
     }
 }
