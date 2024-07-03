@@ -96,7 +96,6 @@ public class ClubController {
     @Operation(summary = "동아리 관리자 참여 코드 조회")
     public ResponseDto<ParticipationCodeResponse> getParticipationCode(Authentication authentication) {
 
-
         String email = authentication.getName();
         String clubId = recruitmentGetService.getClubId(email);
 
@@ -105,10 +104,14 @@ public class ClubController {
         return ResponseDto.of(OK.value(), SUCCESS_GET_CODE.getMessage(), response);
     }
 
-    @PostMapping("/participation/code/{id}")
+    @PostMapping("/participation/code")
     @Operation(summary = "동아리 관리자 참여 코드 재생성")
-    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(@PathVariable String id) {
-        ParticipationCodeResponse response = participationCodeService.regenerate(id);
+    public ResponseDto<ParticipationCodeResponse> regenerateParticipationCode(Authentication authentication) {
+
+        String email = authentication.getName();
+        String clubId = recruitmentGetService.getClubId(email);
+
+        ParticipationCodeResponse response = participationCodeService.regenerate(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_REGENERATE_CODE.getMessage(), response);
     }
 }
