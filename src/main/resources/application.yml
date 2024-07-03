@@ -31,6 +31,9 @@ jwt:
 
 is-using-refresh-token: true
 
+lambda:
+  uri: ${LAMBDA_URI}
+
 image:
   path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
 #/home/ubuntu/images/
