@@ -45,4 +45,8 @@ public class Recruitment {
     private Boolean isRecruitmentActive = false;
 
     private LocalDateTime deletedAt;
+
+    public void remainOnlyAnnouncedProcess() {
+        processes.removeIf(Process::isNotAnnounced);
+    }
 }
