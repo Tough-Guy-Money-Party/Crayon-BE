@@ -3,11 +3,17 @@ package com.yoyomo.domain.recruitment.application.mapper;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
+import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import org.mapstruct.*;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -28,4 +34,7 @@ public interface RecruitmentMapper {
     @Mapping(target = "acceptedApplicantsCount", expression = "java( applicationGetService.getAcceptedApplicantsCount(recruitment.getId()))")
     @Mapping(target = "rejectedApplicantsCount", expression = "java( applicationGetService.getRejectedApplicantsCount(recruitment.getId()))")
     RecruitmentResponse mapToRecruitmentResponse(Recruitment recruitment, @Context ApplicationGetService applicationGetService, @Context RecruitmentGetService recruitmentGetService);
+
+    @Mapping(target = "processTitle", source = "process.title")
+    ProcessResultsResponse mapToProcessResultsResponse(String recruitmentTitle, Process process);
 }
