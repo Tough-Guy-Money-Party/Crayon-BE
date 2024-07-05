@@ -18,7 +18,7 @@ import static java.time.LocalDateTime.now;
 public class Process {
 
     private int order;
-    private processType type;
+    private ProcessType type;
     private String title;
     private LocalDate startAt;
     private LocalDate endAt;

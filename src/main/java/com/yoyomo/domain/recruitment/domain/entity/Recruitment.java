@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.yoyomo.domain.recruitment.domain.entity.recruitmentStatus.PRE_RECRUITMENT;
+import static com.yoyomo.domain.recruitment.domain.entity.RecruitmentStatus.PRE_RECRUITMENT;
 
 @Getter
 @Builder
@@ -36,7 +36,7 @@ public class Recruitment {
     private List<Process> processes;
 
     @Builder.Default
-    private recruitmentStatus recruitmentStatus = PRE_RECRUITMENT;
+    private RecruitmentStatus recruitmentStatus = PRE_RECRUITMENT;
 
     @Builder.Default
     private int processStage = 0;

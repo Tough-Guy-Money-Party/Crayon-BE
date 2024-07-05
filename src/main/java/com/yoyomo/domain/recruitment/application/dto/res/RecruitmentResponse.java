@@ -1,6 +1,6 @@
 package com.yoyomo.domain.recruitment.application.dto.res;
 
-import com.yoyomo.domain.recruitment.domain.entity.recruitmentStatus;
+import com.yoyomo.domain.recruitment.domain.entity.RecruitmentStatus;
 
 import java.time.LocalDate;
 
@@ -9,8 +9,7 @@ public record RecruitmentResponse(
         String title,
         int generation,
         Boolean isRecruitmentActive,
-        recruitmentStatus recruitmentStatus,
-
+        RecruitmentStatus recruitmentStatus,
         LocalDate recruitmentEndDate,
         int totalApplicantsCount,
         int acceptedApplicantsCount,
