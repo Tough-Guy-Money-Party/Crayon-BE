@@ -1,5 +1,11 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
+import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.interview.domain.entity.Interview;
+import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultsResponse;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -13,7 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResultConfirmUseCaseImpl implements ResultConfirmUseCase {
 
+    private final ClubGetService clubGetService;
     private final RecruitmentGetService recruitmentGetService;
+    private final ApplicationGetService applicationGetService;
     private final RecruitmentMapper recruitmentMapper;
 
     @Override
@@ -23,5 +31,17 @@ public class ResultConfirmUseCaseImpl implements ResultConfirmUseCase {
                 .stream()
                 .map(process -> recruitmentMapper.mapToProcessResultsResponse(recruitment.getTitle(), process))
                 .toList();
+    }
+
+    @Override
+    public ProcessResultResponse read(String clubId, String name, String phone) {
+        Club club = clubGetService.byId(clubId);
+        Recruitment recruitment = recruitmentGetService.findByClubId(clubId);
+        Application application = applicationGetService.find(recruitment, name, phone);
+        if (application.hasInterview()) {
+            Interview interview = application.getInterview();
+            return recruitmentMapper.mapToProcessResultResponse(club.getName(), name, recruitment.getTitle(), interview);
+        }
+        return recruitmentMapper.mapToProcessResultResponse(club.getName(), name, recruitment.getTitle());
     }
 }

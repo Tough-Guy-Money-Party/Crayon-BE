@@ -51,9 +51,14 @@ public class RecruitmentGetService {
     }
 
     public Recruitment findAnnouncedRecruitment(String clubId) {
-        Recruitment recruitments = recruitmentRepository.findByClubId(clubId)
+        Recruitment recruitments = recruitmentRepository.findByClubIdAndIsRecruitmentActiveIsTrue(clubId)
                 .orElseThrow(ClubNotFoundException::new);
         recruitments.remainOnlyAnnouncedProcess();
         return recruitments;
+    }
+
+    public Recruitment findByClubId(String clubId) {
+        return recruitmentRepository.findByClubIdAndIsRecruitmentActiveIsTrue(clubId)
+                .orElseThrow(RecruitmentNotFoundException::new);
     }
 }

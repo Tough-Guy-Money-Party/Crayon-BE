@@ -1,13 +1,12 @@
 package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
-import com.yoyomo.domain.user.domain.entity.Manager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ApplicationRepository extends MongoRepository<Application, String> {
     List<Application> findAllByRecruitmentId(String recruitmentId, Pageable pageable);
@@ -25,4 +24,6 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
     List<Application> findAllByApplicant(Applicant applicant, Pageable pageable);
 
     boolean existsByApplicantAndRecruitment_Id(Applicant applicant, String recruitmentId);
+
+    Optional<Application> findByRecruitment_IdAndApplicant_NameAndApplicant_Phone(String recruitmentId, String name, String phone);
 }

@@ -2,7 +2,9 @@ package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
+import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
@@ -37,4 +39,8 @@ public interface RecruitmentMapper {
 
     @Mapping(target = "processTitle", source = "process.title")
     ProcessResultsResponse mapToProcessResultsResponse(String recruitmentTitle, Process process);
+
+    ProcessResultResponse mapToProcessResultResponse(String clubName, String name, String recruitmentTitle, Interview interview);
+
+    ProcessResultResponse mapToProcessResultResponse(String clubName, String name, String title);
 }
