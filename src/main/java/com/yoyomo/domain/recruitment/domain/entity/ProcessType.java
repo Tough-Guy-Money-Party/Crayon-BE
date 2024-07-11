@@ -1,6 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-public enum processType {
+public enum ProcessType {
     DOCUMENTATION,
     ASSIGNMENT,
     TEST,

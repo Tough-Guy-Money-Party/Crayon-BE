@@ -10,6 +10,7 @@ public enum ResponseMessage {
     SUCCESS_READ("모집 조회에 성공했습니다."),
     SUCCESS_UPDATE("모집 수정에 성공했습니다."),
     SUCCESS_DELETE("모집 삭제에 성공했습니다."),
+    RESULT_SUCCESS_READ("모집 결과 조회에 성공했습니다."),
 
     RECRUITMENT_NOT_FOUND("존재하지 않는 모집입니다."),
     ;

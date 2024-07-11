@@ -5,8 +5,8 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
-import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.shared.util.PageUtil;
+import com.yoyomo.domain.user.domain.entity.Applicant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -67,5 +67,10 @@ public class ApplicationGetService {
 
     public boolean exists(Applicant applicant, String recruitmentId) {
         return applicationRepository.existsByApplicantAndRecruitment_Id(applicant, recruitmentId);
+    }
+
+    public Application find(Recruitment recruitment, String name, String phone) {
+        return applicationRepository.findByRecruitment_IdAndApplicant_NameAndApplicant_Phone(recruitment.getId(), name, phone)
+                .orElseThrow(ApplicationNotFoundException::new);
     }
 }

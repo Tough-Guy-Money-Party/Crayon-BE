@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "applicants")
-public class Applicant extends User{
+public class Applicant extends User {
     private String phone;
 //    @DBRef
 //    private List<Club> clubs = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.domain.service;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -38,7 +39,7 @@ public class RecruitmentGetService {
         return recruitmentRepository.findAllByClubIdAndDeletedAtIsNull(clubId, pageRequest);
     }
 
-    public String getClubId(String email){
+    public String getClubId(String email) {
 
         Manager manager = userGetService.findByEmail(email);
         List<Club> clubs = manager.getClubs();
@@ -47,5 +48,17 @@ public class RecruitmentGetService {
         String clubId = clubIds.get(0);
 
         return clubId;
+    }
+
+    public Recruitment findAnnouncedRecruitment(String clubId) {
+        Recruitment recruitments = recruitmentRepository.findByClubIdAndIsRecruitmentActiveIsTrue(clubId)
+                .orElseThrow(ClubNotFoundException::new);
+        recruitments.remainOnlyAnnouncedProcess();
+        return recruitments;
+    }
+
+    public Recruitment findByClubId(String clubId) {
+        return recruitmentRepository.findByClubIdAndIsRecruitmentActiveIsTrue(clubId)
+                .orElseThrow(RecruitmentNotFoundException::new);
     }
 }

@@ -47,4 +47,8 @@ public class Application {
 
     @NotNull
     private LocalDateTime createdAt;
+
+    public boolean hasInterview() {
+        return interview != null;
+    }
 }
