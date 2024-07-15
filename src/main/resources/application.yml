@@ -38,6 +38,20 @@ image:
   path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
 #/home/ubuntu/images/
 
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: crayon-image-bucket
+
 kakao:
   token_uri: ${KAKAO_TOKEN_URI}
   redirect_uri: ${KAKAO_REDIRECT_URI}
