@@ -50,7 +50,7 @@ cloud:
 
 application:
   bucket:
-    name: mystackoverflows
+    name: crayon-image-bucket
 
 kakao:
   token_uri: ${KAKAO_TOKEN_URI}
