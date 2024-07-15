@@ -28,7 +28,6 @@ public class ImageService {
         if (image == null) {
             return DEFAULT_IMAGE;
         }
-
         String fileName = getFileName(image);
         String key = "image/" + fileName;
 
