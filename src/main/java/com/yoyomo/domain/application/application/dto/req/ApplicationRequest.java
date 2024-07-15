@@ -8,6 +8,7 @@ public record ApplicationRequest(
         String recruitmentId,
         String name,
         String phone,
+        String email,
         List<AnswerRequest> answers,
         SubmitStatus submitStatus
 ) {

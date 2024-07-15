@@ -35,8 +35,9 @@ public class ResultController {
     @GetMapping("/{clubId}/details")
     public ResponseDto<ProcessResultResponse> getResult(@PathVariable String clubId,
                                                         @RequestParam String name,
-                                                        @RequestParam String phone) {
-        ProcessResultResponse response = resultConfirmUseCase.read(clubId, name, phone);
+                                                        @RequestParam String phone,
+                                                        @RequestParam String email) {
+        ProcessResultResponse response = resultConfirmUseCase.read(clubId, name, phone, email);
         return ResponseDto.of(OK.value(), RESULT_SUCCESS_READ.getMessage(), response);
     }
 }

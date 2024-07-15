@@ -69,8 +69,8 @@ public class ApplicationGetService {
         return applicationRepository.existsByApplicantAndRecruitment_Id(applicant, recruitmentId);
     }
 
-    public Application find(Recruitment recruitment, String name, String phone) {
-        return applicationRepository.findByRecruitment_IdAndApplicant_NameAndApplicant_Phone(recruitment.getId(), name, phone)
+    public Application find(Recruitment recruitment, String name, String phone, String email) {
+        return applicationRepository.findByRecruitment_IdAndApplicant_NameAndApplicant_PhoneAndApplicant_Email(recruitment.getId(), name, phone, email)
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 }
