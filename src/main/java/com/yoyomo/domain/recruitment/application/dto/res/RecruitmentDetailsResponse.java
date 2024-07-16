@@ -10,6 +10,6 @@ public record RecruitmentDetailsResponse(
         String generation,
         String position,
         List<Process> processes,
-        int processStage
+        int processCount
 ) {
 }
