@@ -38,7 +38,7 @@ public class Application {
 
     @NotNull
     @Builder.Default
-    private int applicationStage = 0;
+    private int currentStage = 0;
 
     @NotNull
     private List<Assessment> assessments;

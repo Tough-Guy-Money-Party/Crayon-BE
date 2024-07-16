@@ -13,13 +13,13 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     List<Application> findAllByRecruitmentIdAndApplicant_NameContaining(String recruitmentId, String name, Pageable pageable);
 
-    List<Application> findAllByRecruitmentIdAndApplicationStage(String recruitmentId, int applicationStage);
+    List<Application> findAllByRecruitmentIdAndCurrentStage(String recruitmentId, int currentStage);
 
     int countByRecruitmentId(String recruitmentId);
 
-    int countByRecruitmentIdAndApplicationStageLessThan(String recruitmentId, int stage);
+    int countByRecruitmentIdAndCurrentStageLessThan(String recruitmentId, int stage);
 
-    int countByRecruitmentIdAndApplicationStageGreaterThanEqual(String recruitmentId, int stage);
+    int countByRecruitmentIdAndCurrentStageGreaterThanEqual(String recruitmentId, int stage);
 
     List<Application> findAllByApplicant(Applicant applicant, Pageable pageable);
 

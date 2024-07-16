@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record ApplicationResponse(
         String id,
         ApplicantResponse applicant,
-        int applicationStage,
+        int currentStage,
         LocalDate createdAt
 ) {
 }

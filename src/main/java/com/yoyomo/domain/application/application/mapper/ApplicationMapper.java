@@ -30,6 +30,6 @@ public interface ApplicationMapper {
 
     ApplicationResponse mapToApplicationResponse(Application application);
 
-    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitment().getId(), application.getApplicationStage()))")
+    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitment().getId(), application.getCurrentStage()))")
     ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
 }

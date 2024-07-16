@@ -17,6 +17,6 @@ public record ApplicationManageResponse(
         List<ApplicantInfoDTO> currentStageApplicants,
         AssessmentRating averageRating,
         List<Assessment> assessments,
-        int applicationStage
+        int currentStage
 ) {
 }
