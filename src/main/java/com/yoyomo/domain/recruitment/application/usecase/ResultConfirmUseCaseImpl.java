@@ -34,10 +34,10 @@ public class ResultConfirmUseCaseImpl implements ResultConfirmUseCase {
     }
 
     @Override
-    public ProcessResultResponse read(String clubId, String name, String phone) {
+    public ProcessResultResponse read(String clubId, String name, String phone, String email) {
         Club club = clubGetService.byId(clubId);
         Recruitment recruitment = recruitmentGetService.findByClubId(clubId);
-        Application application = applicationGetService.find(recruitment, name, phone);
+        Application application = applicationGetService.find(recruitment, name, phone, email);
         if (application.hasInterview()) {
             Interview interview = application.getInterview();
             return recruitmentMapper.mapToProcessResultResponse(club.getName(), name, recruitment.getTitle(), interview);

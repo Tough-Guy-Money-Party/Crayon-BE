@@ -9,5 +9,5 @@ public interface ResultConfirmUseCase {
 
     List<ProcessResultsResponse> read(String clubId);
 
-    ProcessResultResponse read(String clubId, String name, String phone);
+    ProcessResultResponse read(String clubId, String name, String phone, String email);
 }

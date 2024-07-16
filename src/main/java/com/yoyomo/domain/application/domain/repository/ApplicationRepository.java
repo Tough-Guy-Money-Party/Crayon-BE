@@ -25,5 +25,5 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     boolean existsByApplicantAndRecruitment_Id(Applicant applicant, String recruitmentId);
 
-    Optional<Application> findByRecruitment_IdAndApplicant_NameAndApplicant_Phone(String recruitmentId, String name, String phone);
+    Optional<Application> findByRecruitment_IdAndApplicant_NameAndApplicant_PhoneAndApplicant_Email(String recruitmentId, String name, String phone, String email);
 }
