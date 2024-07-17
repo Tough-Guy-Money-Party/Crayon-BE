@@ -22,11 +22,12 @@ public class Process {
     private String title;
     private LocalDate startAt;
     private LocalDate endAt;
-    private LocalDateTime announceAt;
+    private LocalDateTime announceStartAt;
+    private LocalDateTime announceEndAt;
     private int templateId;
 
     @JsonIgnore
     public boolean isNotAnnounced() {
-        return now().isBefore(announceAt);
+        return now().isBefore(announceEndAt);
     }
 }
