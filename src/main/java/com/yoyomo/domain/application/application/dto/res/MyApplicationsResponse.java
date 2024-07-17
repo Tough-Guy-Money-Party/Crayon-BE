@@ -9,6 +9,6 @@ public record MyApplicationsResponse(
         String id,
         ClubResponse club,
         List<Process> process,
-        int applicationStage
+        int currentStage
 ) {
 }

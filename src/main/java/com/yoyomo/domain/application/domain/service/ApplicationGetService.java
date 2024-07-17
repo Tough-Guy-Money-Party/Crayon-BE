@@ -32,8 +32,8 @@ public class ApplicationGetService {
         return applicationRepository.findAllByRecruitmentIdAndApplicant_NameContaining(recruitmentId, name, PageUtil.makePageObject(pageNum));
     }
 
-    public List<ApplicantInfoDTO> findApplicantsByStage(String recruitmentId, int applicationStage) {
-        return applicationRepository.findAllByRecruitmentIdAndApplicationStage(recruitmentId, applicationStage)
+    public List<ApplicantInfoDTO> findApplicantsByStage(String recruitmentId, int currentStage) {
+        return applicationRepository.findAllByRecruitmentIdAndCurrentStage(recruitmentId, currentStage)
                 .stream()
                 .map(application -> new ApplicantInfoDTO(
                         application.getId(),
@@ -47,11 +47,11 @@ public class ApplicationGetService {
     }
 
     public int getAcceptedApplicantsCount(String recruitmentId) {
-        return applicationRepository.countByRecruitmentIdAndApplicationStageGreaterThanEqual(recruitmentId, 0);
+        return applicationRepository.countByRecruitmentIdAndCurrentStageGreaterThanEqual(recruitmentId, 0);
     }
 
     public int getRejectedApplicantsCount(String recruitmentId) {
-        return applicationRepository.countByRecruitmentIdAndApplicationStageLessThan(recruitmentId, 0);
+        return applicationRepository.countByRecruitmentIdAndCurrentStageLessThan(recruitmentId, 0);
     }
 
     public int getAverageRating(String applicationId) {

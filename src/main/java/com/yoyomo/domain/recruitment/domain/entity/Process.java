@@ -17,7 +17,7 @@ import static java.time.LocalDateTime.now;
 @AllArgsConstructor
 public class Process {
 
-    private int order;
+    private int stage;
     private ProcessType type;
     private String title;
     private LocalDate startAt;
