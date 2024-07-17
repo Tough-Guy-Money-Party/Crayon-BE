@@ -10,6 +10,7 @@ import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCaseImpl;
@@ -19,7 +20,6 @@ import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,6 +41,9 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         Recruitment recruitment = recruitmentGetService.find(request.recruitmentId());
         Application application = applicationMapper.from(applicant, recruitment, request);
         applicationSaveService.save(application);
+
+        Process process = recruitment.getProcesses().getFirst();
+        process.addApplication(application);
     }
 
     private Applicant getUserOrCreateNew(ApplicationRequest request) {

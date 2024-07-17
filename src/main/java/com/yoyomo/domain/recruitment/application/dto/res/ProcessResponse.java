@@ -12,5 +12,6 @@ public record ProcessResponse(
         LocalDate startAt,
         LocalDate endAt,
         LocalDateTime announceStartAt,
-        LocalDateTime announceEndAt
+        LocalDateTime announceEndAt,
+        Integer applicantCount
 ) {}
