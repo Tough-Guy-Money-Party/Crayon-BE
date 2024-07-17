@@ -50,6 +50,10 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
         Manager manager = userGetService.findByEmail(email);
 
+        if (manager.getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+
         List<Form> forms = formGetService.findAll(manager.getClubs().get(0).getId());
         return forms.stream()
                 .map(formMapper::mapToFormResponse)
