@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.user.domain.entity.Applicant;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ApplicationRepository extends MongoRepository<Application, String> {
-    List<Application> findAllByRecruitmentId(String recruitmentId, Pageable pageable);
+    Page<Application> findAllByRecruitmentIdAndCurrentStage(String recruitmentId, Integer stage, Pageable pageable);
 
     List<Application> findAllByRecruitmentIdAndApplicant_NameContaining(String recruitmentId, String name, Pageable pageable);
 

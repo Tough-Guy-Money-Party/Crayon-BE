@@ -13,11 +13,12 @@ import com.yoyomo.domain.application.presentation.constant.ResponseMessage;
 import com.yoyomo.domain.user.application.usecase.ApplicantInfoUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.global.config.dto.ResponseDto;
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,8 +76,8 @@ public class ApplicationController {
 
     @GetMapping
     @Operation(summary = "모집 지원서 목록 조회")
-    public ResponseDto<List<ApplicationResponse>> readApplications(@RequestParam String recruitmentId, @RequestParam int pageNum) {
-        List<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId, pageNum);
+    public ResponseDto<Page<ApplicationResponse>> readApplications(@RequestParam String recruitmentId, @RequestParam Integer stage, @RequestParam int page, @RequestParam int size) {
+        Page<ApplicationResponse> responses = applicationManageUseCase.readAll(recruitmentId, stage, PageRequest.of(page, size));
         return ResponseDto.of(OK.value(), ResponseMessage.SUCCESS_READ.getMessage(), responses);
     }
 

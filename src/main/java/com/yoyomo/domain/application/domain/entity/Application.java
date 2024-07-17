@@ -36,6 +36,8 @@ public class Application {
     @NotNull
     private SubmitStatus submitStatus;
 
+    private AssessmentStatus assessmentStatus;
+
     @NotNull
     @Builder.Default
     private int currentStage = 0;
