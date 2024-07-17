@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ApplicantResponse {
     private String name;
     private String phone;
+    private String email;
 }
