@@ -42,7 +42,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         Application application = applicationMapper.from(applicant, recruitment, request);
         applicationSaveService.save(application);
 
-        Process process = recruitment.getProcesses().getFirst();
+        Process process = recruitment.getProcesses().get(0);
         process.addApplication(application);
     }
 
