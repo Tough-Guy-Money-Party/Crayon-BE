@@ -5,9 +5,9 @@ import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.Assessment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface ApplicationManageUseCase {
 
     void checkDuplicatedApplication(Applicant applicant, String recruitmentId);
 
-    List<ApplicationResponse> readAll(String recruitmentId, int pageNum);
+    Page<ApplicationResponse> readAll(String recruitmentId, Integer stage, Pageable pageable);
 
     List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum);
 

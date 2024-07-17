@@ -8,6 +8,8 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.shared.util.PageUtil;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +25,8 @@ public class ApplicationGetService {
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
-    public List<Application> findAll(String recruitmentId, int pageNum) {
-        return applicationRepository.findAllByRecruitmentId(recruitmentId, PageUtil.makePageObject(pageNum));
+    public Page<Application> findAll(String recruitmentId, Integer stage, Pageable pageable) {
+        return applicationRepository.findAllByRecruitmentIdAndCurrentStage(recruitmentId, stage, pageable);
     }
 
     public List<Application> findAllByApplicantName(String recruitmentId, String name, int pageNum) {
