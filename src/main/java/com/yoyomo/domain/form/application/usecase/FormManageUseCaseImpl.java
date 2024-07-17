@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.form.application.dto.req.FormRequest;
 import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
 import com.yoyomo.domain.form.application.dto.res.FormCreateResponse;
@@ -44,8 +45,16 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
-    public List<FormResponse> readAll(String clubId) {
-        List<Form> forms = formGetService.findAll(clubId);
+    public List<FormResponse> readAll(Authentication authentication) {
+        String email = authentication.getName();
+
+        Manager manager = userGetService.findByEmail(email);
+
+        if (manager.getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+
+        List<Form> forms = formGetService.findAll(manager.getClubs().get(0).getId());
         return forms.stream()
                 .map(formMapper::mapToFormResponse)
                 .toList();
