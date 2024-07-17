@@ -12,7 +12,7 @@ import java.util.List;
 public interface FormManageUseCase {
     FormDetailsResponse read(String id);
 
-    List<FormResponse> readAll(String clubId);
+    List<FormResponse> readAll(Authentication authentication);
 
     FormCreateResponse create(FormRequest request, Authentication authentication);
 

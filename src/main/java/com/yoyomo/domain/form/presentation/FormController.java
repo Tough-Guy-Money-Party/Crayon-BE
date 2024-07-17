@@ -34,8 +34,8 @@ public class FormController {
 
     @GetMapping
     @Operation(summary = "지원폼 목록 조회")
-    public ResponseDto<List<FormResponse>> readAll(@RequestParam String clubId) {
-        List<FormResponse> responses = formManageUseCase.readAll(clubId);
+    public ResponseDto<List<FormResponse>> readAll(Authentication authentication) {
+        List<FormResponse> responses = formManageUseCase.readAll(authentication);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
