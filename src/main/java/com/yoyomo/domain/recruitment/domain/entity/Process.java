@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -26,7 +27,7 @@ public class Process {
     private LocalDate endAt;
     private LocalDateTime announceStartAt;
     private LocalDateTime announceEndAt;
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
     private int templateId;
 
     @JsonIgnore
