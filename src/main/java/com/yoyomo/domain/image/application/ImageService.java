@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,26 +23,26 @@ public class ImageService {
     @Value("${application.bucket.name}")
     private String BUCKETNAME;
 
-    public String DEFAULT_IMAGE = "default.png";
     private final AmazonS3Client s3Client;
 
-    public String save(MultipartFile image) {
-        if (image == null) {
-            return DEFAULT_IMAGE;
+    public List<String> save(List<MultipartFile> images) {
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            String fileName = getFileName(image);
+            String key = "image/" + fileName;
+
+            try (InputStream inputStream = image.getInputStream()) {
+                s3Client.putObject(new PutObjectRequest(BUCKETNAME, key, inputStream, getMetadataByImage(image))
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+            } catch (IOException e) {
+                throw new ImageSaveFailureException();
+            }
+
+            urls.add(s3Client.getUrl(BUCKETNAME, key).getPath());
         }
-        String fileName = getFileName(image);
-        String key = "image/" + fileName;
 
-        try (InputStream inputStream = image.getInputStream()) {
-            s3Client.putObject(new PutObjectRequest(BUCKETNAME, key, inputStream, getMetadataByImage(image))
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new ImageSaveFailureException();
-        }
-
-        String storeFileUrl = s3Client.getUrl(BUCKETNAME, key).getPath();
-
-        return storeFileUrl;
+        return urls;
     }
 
     private String getFileName(MultipartFile image) {
