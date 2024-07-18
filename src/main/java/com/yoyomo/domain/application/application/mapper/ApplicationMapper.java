@@ -6,6 +6,7 @@ import com.yoyomo.domain.application.application.dto.res.ApplicationManageRespon
 import com.yoyomo.domain.application.application.dto.res.ApplicationResponse;
 import com.yoyomo.domain.application.application.dto.res.MyApplicationsResponse;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.AssessmentStatus;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -20,6 +21,7 @@ public interface ApplicationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "assessments", expression = "java( new java.util.ArrayList<>() )")
     @Mapping(target = "createdAt", expression = "java( java.time.LocalDateTime.now() )")
+    @Mapping(target = "assessmentStatus" , expression = "java(AssessmentStatus.BEFORE)")
     Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
