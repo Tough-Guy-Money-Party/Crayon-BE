@@ -25,4 +25,6 @@ public interface ClubManageUseCase {
     void update(String id, ClubRequest request);
 
     void delete(String id);
+
+    void create(Authentication authentication, String notionPageLink);
 }
