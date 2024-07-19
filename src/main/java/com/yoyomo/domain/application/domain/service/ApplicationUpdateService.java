@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.application.dto.req.ApplicationStatusReques
 import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Assessment;
+import com.yoyomo.domain.application.domain.entity.AssessmentStatus;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,7 @@ public class ApplicationUpdateService {
         }
         Assessment assessment = assessmentBuilder.build();
 
-        Update update = new Update().addToSet("assessments", assessment);
+        Update update = new Update().addToSet("assessments", assessment).set("assessmentStatus", request.assessmentStatus());
         mongoTemplate.updateFirst(query, update, Application.class);
     }
 }
