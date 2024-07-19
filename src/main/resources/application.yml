@@ -11,6 +11,7 @@ spring:
     kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
+      uri: mongodb://root:root@localhost:27017/crayon
       host: ${HOST:localhost}
       port: ${PORT:27017}
       database: ${DATABASE:crayon}
@@ -23,7 +24,7 @@ spring:
       password: ${REDIS_PASS}
   jwt:
     token:
-      access-expiration-time: 43200000
+      access-expiration-time: 922337203685477599
       refresh-expiration-time: 604800000
 jwt:
   access_secret: ${JWT_ACCESS_SECRET}
@@ -33,10 +34,6 @@ is-using-refresh-token: true
 
 lambda:
   uri: ${LAMBDA_URI}
-
-image:
-  path: ${IMAGE_PATH:/Users/yangts/Documents/crayon_img/}
-#/home/ubuntu/images/
 
 cloud:
   aws:
