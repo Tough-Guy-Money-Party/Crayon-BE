@@ -39,8 +39,8 @@ jobs:
       - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/apro .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/apro
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/crayon
 
       # EC2 ssh 연결 후 이미지 pull
       - name: Deploy to server
@@ -62,14 +62,22 @@ jobs:
               sudo docker rm $EXISTING_CONTAINER_ID
             fi
 
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apro
-            echo "DB_URL=${{ secrets.DB_URL }}" > apro.env
-            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> apro.env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> apro.env
-            echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> apro.env
-            echo "ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}" >> apro.env
-            echo "ACCESS_EXP=${{ secrets.ACCESS_EXP }}" >> apro.env
-            echo "REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}" >> apro.env
-            echo "REFRESH_EXP=${{ secrets.REFRESH_EXP }}" >> apro.env
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./apro.env ${{ secrets.DOCKERHUB_USERNAME }}/apro
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon
+            echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" > crayon.env
+            echo "KAKAO_REDIRECT_URL=${{ secrets.KAKAO_REDIRECT_URL }}" >> crayon.env
+            echo "USERNAME=${{ secrets.USERNAME }}" >> crayon.env
+            echo "PASSWORD=${{ secrets.PASSWORD }}" >> crayon.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> crayon.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> crayon.env
+            echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> crayon.env
+            echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> crayon.env
+            echo "LAMBDA_URI=${{ secrets.LAMBDA_URI }}" >> crayon.env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> crayon.env
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> crayon.env
+            echo "KAKAO_TOKEN_URI=${{ secrets.KAKAO_TOKEN_URI }}" >> crayon.env
+            echo "KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> crayon.env
+            echo "KAKAO_GRANT_TYPE=${{ secrets.KAKAO_GRANT_TYPE }}" >> crayon.env
+            echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> crayon.env
+            echo "KAKAO_USER_INFO_URI=${{ secrets.KAKAO_USER_INFO_URI }}" >> crayon.env
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
             sudo docker image prune -a -f
