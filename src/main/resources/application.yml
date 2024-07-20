@@ -11,7 +11,7 @@ spring:
     kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
-      uri: mongodb://root:root@localhost:27017/crayon
+      uri: mongodb://${USERNAME}:${PASSWORD}@${HOST:localhost}:${PORT:27017}/${DATABASE:crayon}
       host: ${HOST:localhost}
       port: ${PORT:27017}
       database: ${DATABASE:crayon}
