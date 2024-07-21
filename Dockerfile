@@ -1,7 +1,7 @@
 # open jdk 17 버전의 alpine 리눅스 환경을 구성
 FROM openjdk:17-alpine
 
-ENV USERNAME=$USERNAME \
+ENV USERNAME=${USERNAME} \
     PASSWORD=$PASSWORD \
     REDIS_HOST=$REDIS_HOST \
     REDIS_PORT=$REDIS_PORT \
