@@ -14,7 +14,9 @@ import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.participation.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubMapper clubMapper;
     private final ParticipationService participationService;
     private final UserGetService userGetService;
+    private final ManagerRepository managerRepository;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -94,5 +97,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     public void delete(String id) {
         clubUpdateService.delete(id);
+    }
+
+    public void create(Authentication authentication, String notionPageLink){
+        String email = authentication.getName();
+        Manager manager = managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+
+        if (manager.getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        Club club = manager.getClubs().get(0);
+        clubUpdateService.from(club.getId(),notionPageLink);
     }
 }

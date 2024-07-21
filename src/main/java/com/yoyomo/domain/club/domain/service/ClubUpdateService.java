@@ -37,6 +37,15 @@ public class ClubUpdateService {
         checkIsDeleted(result);
     }
 
+    public void from(String id , String notionPageLink) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = mapToUpdate(notionPageLink);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
+    }
+
     public void delete(String id) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
