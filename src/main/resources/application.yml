@@ -17,7 +17,7 @@ spring:
       database: ${DATABASE:crayon}
       username: ${USERNAME}
       password: ${PASSWORD}
-      authentication-database: crayon
+      authentication-database: admin
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
