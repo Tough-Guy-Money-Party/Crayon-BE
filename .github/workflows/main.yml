@@ -63,8 +63,7 @@ jobs:
             fi
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon
-            echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" > crayon.env
-            echo "KAKAO_REDIRECT_URL=${{ secrets.KAKAO_REDIRECT_URL }}" >> crayon.env
+            
             echo "USERNAME=${{ secrets.USERNAME }}" >> crayon.env
             echo "PASSWORD=${{ secrets.PASSWORD }}" >> crayon.env
             echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> crayon.env
@@ -79,5 +78,6 @@ jobs:
             echo "KAKAO_GRANT_TYPE=${{ secrets.KAKAO_GRANT_TYPE }}" >> crayon.env
             echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> crayon.env
             echo "KAKAO_USER_INFO_URI=${{ secrets.KAKAO_USER_INFO_URI }}" >> crayon.env
+            
             sudo docker run --name spring -d -p 8080:8080 --env-file ./crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
             sudo docker image prune -a -f
