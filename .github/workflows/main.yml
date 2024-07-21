@@ -42,18 +42,6 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/crayon
 
-      - name: Check if crayon.env exists
-        run: ls -la ./crayon.env
-
-      # 환경변수 파일을 서버로 전송
-      - name: Copy env file to server
-        uses: appleboy/scp-action@master
-        with:
-          source: "~/crayon.env"
-          target: "~/crayon.env"
-          host: ${{ secrets.SERVER_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SERVER_PASSWORD }}
 
       # EC2 ssh 연결 후 이미지 pull
       - name: Deploy to server
@@ -76,5 +64,5 @@ jobs:
             fi
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon
-            sudo docker run --name spring -d -p 8080:8080 --env-file ~/crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
             sudo docker image prune -a -f
