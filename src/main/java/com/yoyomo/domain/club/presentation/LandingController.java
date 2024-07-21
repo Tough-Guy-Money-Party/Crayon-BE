@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_CREATE;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static org.springframework.http.HttpStatus.*;
 
