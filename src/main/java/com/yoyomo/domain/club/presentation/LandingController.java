@@ -10,7 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_CREATE;
-import static org.springframework.http.HttpStatus.CREATED;
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.*;
 
 @Tag(name = "Landing")
 @RestController
@@ -22,6 +23,6 @@ public class LandingController {
     @Operation(summary = "노션 링크 등록")
     public ResponseDto create(Authentication authentication, @RequestParam String notionPageLink) {
         clubManageUseCase.create(authentication,notionPageLink);
-        return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
