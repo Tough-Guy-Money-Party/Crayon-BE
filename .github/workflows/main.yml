@@ -42,6 +42,9 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/crayon
 
+      - name: Check if crayon.env exists
+        run: ls -la ./crayon.env
+
       # 환경변수 파일을 서버로 전송
       - name: Copy env file to server
         uses: appleboy/scp-action@master
