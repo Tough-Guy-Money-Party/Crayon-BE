@@ -106,7 +106,6 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         if (manager.getClubs().isEmpty()) {
             throw new ClubNotFoundException();
         }
-
         Club club = manager.getClubs().get(0);
         clubUpdateService.from(club.getId(),notionPageLink);
     }

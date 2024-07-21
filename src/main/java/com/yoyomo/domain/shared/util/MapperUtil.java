@@ -37,6 +37,10 @@ public class MapperUtil {
         return update;
     }
 
+    public static Update mapToUpdate(String notionPageLink) {
+        return new Update().set(notionPageLink, notionPageLink);
+    }
+
     public static Update mapToUpdate(Form form) {
         return new Update().set(form.getClass().getSimpleName(), form);
     }
