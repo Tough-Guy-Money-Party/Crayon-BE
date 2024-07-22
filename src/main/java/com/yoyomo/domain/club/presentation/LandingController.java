@@ -27,7 +27,7 @@ public class LandingController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
-    @PatchMapping
+    @PatchMapping("/general")
     @Operation(summary = "동아리 포괄설정")
     public ResponseDto update(Authentication authentication, @RequestBody UpdateGeneralSettingsRequest updateGeneralSettingsRequest) {
         clubManageUseCase.update(authentication,updateGeneralSettingsRequest);
