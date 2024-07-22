@@ -93,5 +93,5 @@ jobs:
             fi
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
+            sudo docker run --network host --name spring -d -p 8080:8080 --env-file ./crayon.env ${{ secrets.DOCKERHUB_USERNAME }}/crayon
             sudo docker image prune -a -f
