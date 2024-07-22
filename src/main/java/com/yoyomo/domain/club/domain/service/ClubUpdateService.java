@@ -2,6 +2,7 @@ package com.yoyomo.domain.club.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
@@ -29,6 +30,15 @@ public class ClubUpdateService {
     private final ClubRepository clubRepository;
 
     public void from(String id, ClubRequest request) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = mapToUpdate(request);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
+    }
+
+    public void from(String id, UpdateGeneralSettingsRequest request) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
