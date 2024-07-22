@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_READ;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static org.springframework.http.HttpStatus.*;
 
@@ -27,10 +28,16 @@ public class LandingController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
-    @PatchMapping
-    @Operation(summary = "동아리 포괄설정")
+    @PatchMapping("/general")
+    @Operation(summary = "동아리 포괄 설정")
     public ResponseDto update(Authentication authentication, @RequestBody UpdateGeneralSettingsRequest updateGeneralSettingsRequest) {
         clubManageUseCase.update(authentication,updateGeneralSettingsRequest);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @GetMapping("/general")
+    @Operation(summary = "동아리 포괄 설정 가져오기")
+    public ResponseDto getGeneralSettings(Authentication authentication) {
+        return ResponseDto.of(OK.value(),SUCCESS_READ.getMessage(),clubManageUseCase.getGeneralSetting(authentication));
     }
 }

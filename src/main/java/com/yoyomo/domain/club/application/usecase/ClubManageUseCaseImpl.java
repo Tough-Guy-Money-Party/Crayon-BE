@@ -4,10 +4,7 @@ import com.yoyomo.domain.club.application.dto.req.ClubRequest;
 import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
 import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
 import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
-import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
-import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
-import com.yoyomo.domain.club.application.dto.res.ClubResponse;
-import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
+import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -82,6 +79,17 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
                         .email(manager.getEmail())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ClubGeneralSettingResponse getGeneralSetting(Authentication authentication) {
+        Manager manager = managerRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
+        if (manager.getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        Club club = manager.getClubs().get(0);
+        return clubMapper.clubToClubGeneralSettingResponse(club);
     }
 
     @Override
