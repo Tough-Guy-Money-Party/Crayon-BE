@@ -25,6 +25,9 @@ public class Club {
     private String name;
     private String subDomain;
     private String notionPageLink;
+    private String favicon;
+    private String image;
+    private String siteTitle;
     private LocalDateTime deletedAt;
     
     @DBRef
