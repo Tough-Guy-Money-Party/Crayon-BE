@@ -35,6 +35,16 @@ public class FormUpdateService {
         checkIsDeleted(result);
     }
 
+    public void update(String id, Boolean enabled) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = new Update()
+                .set("enabled", enabled);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
+        checkIsDeleted(result);
+    }
+
     public void from(String id, FormRequest request) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()

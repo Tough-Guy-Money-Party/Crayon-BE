@@ -18,6 +18,8 @@ public interface FormManageUseCase {
 
     void update(String id, FormUpdateRequest request);
 
+    void update(String id, Boolean enabled);
+
     void delete(String formId);
 
     List<FormResponse> searchByKeyword(String keyword, Authentication authentication);
