@@ -1,6 +1,8 @@
 package com.yoyomo.domain.club.domain.service;
 
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.entity.ClubLandingStyle;
+import com.yoyomo.domain.club.domain.repository.ClubLandingStyleRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class ClubSaveService {
     private final ClubRepository clubRepository;
+    private final ClubLandingStyleRepository clubLandingStyleRepository;
 
     @Value("${lambda.uri}")
     private String apiUrl;
@@ -64,5 +67,9 @@ public class ClubSaveService {
             os.write(input, 0, input.length);
         }
         return connection;
+    }
+
+    public ClubLandingStyle save(ClubLandingStyle clubLandingStyle) {
+        return clubLandingStyleRepository.save(clubLandingStyle);
     }
 }

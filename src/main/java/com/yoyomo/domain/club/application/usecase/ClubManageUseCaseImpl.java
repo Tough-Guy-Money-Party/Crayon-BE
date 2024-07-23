@@ -1,11 +1,9 @@
 package com.yoyomo.domain.club.application.usecase;
 
-import com.yoyomo.domain.club.application.dto.req.ClubRequest;
-import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
-import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
-import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
+import com.yoyomo.domain.club.application.dto.req.*;
 import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
+import com.yoyomo.domain.club.application.mapper.ClubStyleMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
@@ -36,7 +34,6 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubMapper clubMapper;
     private final ParticipationService participationService;
     private final UserGetService userGetService;
-    private final ManagerRepository managerRepository;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -82,17 +79,6 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override
-    public ClubGeneralSettingResponse getGeneralSetting(Authentication authentication) {
-        Manager manager = managerRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
-        return clubMapper.clubToClubGeneralSettingResponse(club);
-    }
-
-    @Override
     public void removeManager(RemoveManagerRequest removeManagerRequest) {
         for (String userId : removeManagerRequest.userIds()) {
             participationService.deleteToEachList(userId, removeManagerRequest.clubId());
@@ -104,29 +90,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         clubUpdateService.from(id, request);
     }
 
-    public void update(Authentication authentication, UpdateGeneralSettingsRequest request) {
-        String email = authentication.getName();
-        Manager manager = managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
-        clubUpdateService.from(club.getId(), request);
-    }
-
     public void delete(String id) {
         clubUpdateService.delete(id);
-    }
-
-    public void create(Authentication authentication, String notionPageLink){
-        String email = authentication.getName();
-        Manager manager = managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
-        clubUpdateService.from(club.getId(),notionPageLink);
     }
 }

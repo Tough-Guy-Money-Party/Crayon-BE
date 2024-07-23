@@ -28,6 +28,7 @@ public class Club {
     private String favicon;
     private String image;
     private String siteTitle;
+    private ClubLandingStyle clubLandingStyle;
     private LocalDateTime deletedAt;
     
     @DBRef
