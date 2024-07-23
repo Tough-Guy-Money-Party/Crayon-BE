@@ -25,50 +25,29 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LandingManageUseCaseImpl implements LandingManageUseCase{
     private final ClubUpdateService clubUpdateService;
+    private final ClubGetService clubGetService;
     private final ClubMapper clubMapper;
     private final ManagerRepository managerRepository;
+    private final UserGetService userGetService;
     private final ClubStyleMapper clubStyleMapper;
 
     @Override
-    public ClubGeneralSettingResponse getGeneralSetting(Authentication authentication) {
-        Manager manager = managerRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
-        return clubMapper.clubToClubGeneralSettingResponse(club);
+    public ClubGeneralSettingResponse getGeneralSetting(String email) {
+        return clubMapper.clubToClubGeneralSettingResponse(clubGetService.byUserEmail(email));
     }
 
-    public void update(Authentication authentication, UpdateGeneralSettingsRequest request) {
-        String email = authentication.getName();
-        Manager manager = managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
+    public void update(String email, UpdateGeneralSettingsRequest request) {
+        Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
     }
 
-    public void update(UpdateStyleSettingsRequest request, String userEmail) {
-        Manager manager = managerRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
+    public void update(UpdateStyleSettingsRequest request, String email) {
+        Club club = clubGetService.byUserEmail(email);
         clubUpdateService.addStyle(club.getId(),clubStyleMapper.from(request));
     }
 
-    public void create(Authentication authentication, String notionPageLink){
-        String email = authentication.getName();
-        Manager manager = managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
-        if (manager.getClubs().isEmpty()) {
-            throw new ClubNotFoundException();
-        }
-        Club club = manager.getClubs().get(0);
+    public void create(String email, String notionPageLink){
+        Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(),notionPageLink);
     }
 }

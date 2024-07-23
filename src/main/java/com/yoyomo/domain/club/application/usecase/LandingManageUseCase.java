@@ -2,13 +2,12 @@ package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.req.UpdateStyleSettingsRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubGeneralSettingResponse;
-import org.springframework.security.core.Authentication;
 
 public interface LandingManageUseCase {
 
-    void update(UpdateStyleSettingsRequest request, String userEmail);
+    void update(UpdateStyleSettingsRequest request, String email);
 
-    ClubGeneralSettingResponse getGeneralSetting(Authentication authentication);
+    ClubGeneralSettingResponse getGeneralSetting(String email);
 
-    void create(Authentication authentication, String notionPageLink);
+    void create(String email, String notionPageLink);
 }

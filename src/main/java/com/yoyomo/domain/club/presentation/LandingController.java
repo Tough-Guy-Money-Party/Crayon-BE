@@ -26,21 +26,21 @@ public class LandingController {
     @PostMapping
     @Operation(summary = "노션 링크 등록")
     public ResponseDto create(Authentication authentication, @RequestParam String notionPageLink) {
-        landingManageUseCase.create(authentication, notionPageLink);
+        landingManageUseCase.create(authentication.getName(), notionPageLink);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @PatchMapping("/general")
     @Operation(summary = "동아리 포괄 설정")
     public ResponseDto update(Authentication authentication, @RequestBody UpdateGeneralSettingsRequest updateGeneralSettingsRequest) {
-        landingManageUseCase.update(authentication, updateGeneralSettingsRequest);
+        landingManageUseCase.update(authentication.getName(), updateGeneralSettingsRequest);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @GetMapping("/general")
     @Operation(summary = "동아리 포괄 설정 가져오기")
     public ResponseDto getGeneralSettings(Authentication authentication) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUseCase.getGeneralSetting(authentication));
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUseCase.getGeneralSetting(authentication.getName()));
     }
 
     @PatchMapping("/style")
