@@ -49,4 +49,10 @@ public class LandingController {
         landingManageUseCase.update(updateStyleSettingsRequest, authentication.getName());
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
+
+    @GetMapping
+    @Operation(summary = "랜딩 스타일 불러오기")
+    public ResponseDto getStyleSettings(Authentication authentication) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(),landingManageUseCase.getStyleSetting(authentication.getName()));
+    }
 }
