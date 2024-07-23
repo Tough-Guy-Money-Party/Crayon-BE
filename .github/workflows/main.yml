@@ -81,7 +81,7 @@ jobs:
           key: ${{ secrets.SERVER_PASSWORD }}
           envs: GITHUB_SHA
           script: |
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=running")
             if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
               sudo docker stop $EXISTING_CONTAINER_ID
               sudo docker rm $EXISTING_CONTAINER_ID
