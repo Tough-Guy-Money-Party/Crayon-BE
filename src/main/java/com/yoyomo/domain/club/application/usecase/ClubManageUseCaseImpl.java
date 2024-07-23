@@ -1,11 +1,9 @@
 package com.yoyomo.domain.club.application.usecase;
 
-import com.yoyomo.domain.club.application.dto.req.ClubRequest;
-import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
-import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
-import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
+import com.yoyomo.domain.club.application.dto.req.*;
 import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
+import com.yoyomo.domain.club.application.mapper.ClubStyleMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
@@ -37,6 +35,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ParticipationService participationService;
     private final UserGetService userGetService;
     private final ManagerRepository managerRepository;
+    private final ClubStyleMapper clubStyleMapper;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -113,6 +112,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         }
         Club club = manager.getClubs().get(0);
         clubUpdateService.from(club.getId(), request);
+    }
+
+    public void update(UpdateStyleSettingsRequest request, String userEmail) {
+        Manager manager = managerRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
+
+        if (manager.getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        Club club = manager.getClubs().get(0);
+        clubUpdateService.addStyle(club.getId(),clubStyleMapper.from(request));
     }
 
     public void delete(String id) {
