@@ -14,13 +14,9 @@ public interface ClubManageUseCase {
 
     ClubCreateResponse create(ClubRequest request, String userEmail);
 
-    void update(UpdateStyleSettingsRequest request, String userEmail);
-
     ParticipationResponse participate(ParticipationRequest participateRequest, String userEmail);
 
     List<ClubManagerResponse> getManagers(Authentication authentication);
-
-    ClubGeneralSettingResponse getGeneralSetting(Authentication authentication);
 
     void removeManager(RemoveManagerRequest removeManagerRequest);
 
@@ -28,5 +24,4 @@ public interface ClubManageUseCase {
 
     void delete(String id);
 
-    void create(Authentication authentication, String notionPageLink);
 }
