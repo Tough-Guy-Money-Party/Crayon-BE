@@ -4,6 +4,7 @@ import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyRequest;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.shared.util.MapperUtil;
@@ -13,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -39,6 +42,16 @@ public class RecruitmentUpdateService {
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = MapperUtil.mapToUpdate(form);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
+        checkIsDeleted(result);
+    }
+
+    public void from(String id, List<Process> processes) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = new Update()
+                .set("processes", processes);
         UpdateResult result = mongoTemplate.updateFirst(query, update, Recruitment.class);
         checkIsDeleted(result);
     }

@@ -24,5 +24,7 @@ public interface ApplicationManageUseCase {
 
     void update(String id, ApplicationStatusRequest request);
 
-    public void addAssessment(String id, AssessmentRequest request);
+    void addAssessment(String id, AssessmentRequest request);
+
+    void update(String id, Integer from, Integer to);
 }

@@ -1,7 +1,5 @@
 package com.yoyomo.domain.shared.util;
 
-import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
-import com.yoyomo.domain.application.domain.entity.Assessment;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import org.springframework.beans.BeanWrapper;
