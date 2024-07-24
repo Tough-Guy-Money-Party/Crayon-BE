@@ -2,7 +2,9 @@ package com.yoyomo.domain.club.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.club.application.dto.req.ClubRequest;
+import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.entity.ClubLandingStyle;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -37,6 +39,24 @@ public class ClubUpdateService {
         checkIsDeleted(result);
     }
 
+    public void from(String id, UpdateGeneralSettingsRequest request) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = mapToUpdate(request);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
+    }
+
+    public void from(String id , String notionPageLink) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = mapToUpdate(notionPageLink);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
+    }
+
     public void delete(String id) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
@@ -50,6 +70,15 @@ public class ClubUpdateService {
         List<Manager> managers = club.getManagers();
         managers.add(manager);
         clubRepository.save(club);
+    }
+
+    public void addStyle(String id , ClubLandingStyle clubLandingStyle) {
+        Query query = query(
+                where(ID).is(id).and(DELETED_AT).isNull()
+        );
+        Update update = mapToUpdate(clubLandingStyle);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Club.class);
+        checkIsDeleted(result);
     }
 
     public void deleteUser(Manager manager, Club club) {

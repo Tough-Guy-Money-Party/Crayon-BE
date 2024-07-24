@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubGetService {
     private final ClubRepository clubRepository;
+    private final UserGetService userGetService;
 
     public Club byId(String id) {
         return clubRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(ClubNotFoundException::new);
@@ -29,5 +31,12 @@ public class ClubGetService {
         return clubs.stream()
                 .map(Club::getId)
                 .collect(Collectors.toList());
+    }
+
+    public Club byUserEmail(String email) {
+        if (userGetService.findByEmail(email).getClubs().isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        return userGetService.findByEmail(email).getClubs().get(0);
     }
 }

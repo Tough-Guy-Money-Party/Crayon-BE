@@ -1,5 +1,8 @@
 package com.yoyomo.domain.shared.util;
 
+import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
+import com.yoyomo.domain.application.domain.entity.Assessment;
+import com.yoyomo.domain.club.domain.entity.ClubLandingStyle;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import org.springframework.beans.BeanWrapper;
@@ -33,6 +36,14 @@ public class MapperUtil {
             }
         });
         return update;
+    }
+
+    public static Update mapToUpdate(String notionPageLink) {
+        return new Update().set("notionPageLink", notionPageLink);
+    }
+
+    public static Update mapToUpdate(ClubLandingStyle clubLandingStyle) {
+        return new Update().set(clubLandingStyle.getClass().getSimpleName(), clubLandingStyle);
     }
 
     public static Update mapToUpdate(Form form) {

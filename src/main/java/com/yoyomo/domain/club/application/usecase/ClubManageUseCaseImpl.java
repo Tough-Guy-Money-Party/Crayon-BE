@@ -1,20 +1,18 @@
 package com.yoyomo.domain.club.application.usecase;
 
-import com.yoyomo.domain.club.application.dto.req.ClubRequest;
-import com.yoyomo.domain.club.application.dto.req.ParticipationRequest;
-import com.yoyomo.domain.club.application.dto.req.RemoveManagerRequest;
-import com.yoyomo.domain.club.application.dto.res.ClubCreateResponse;
-import com.yoyomo.domain.club.application.dto.res.ClubManagerResponse;
-import com.yoyomo.domain.club.application.dto.res.ClubResponse;
-import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
+import com.yoyomo.domain.club.application.dto.req.*;
+import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
+import com.yoyomo.domain.club.application.mapper.ClubStyleMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.participation.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

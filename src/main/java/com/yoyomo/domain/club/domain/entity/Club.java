@@ -24,6 +24,11 @@ public class Club {
     private String id;
     private String name;
     private String subDomain;
+    private String notionPageLink;
+    private String favicon;
+    private String image;
+    private String siteTitle;
+    private ClubLandingStyle clubLandingStyle = new ClubLandingStyle();
     private LocalDateTime deletedAt;
     
     @DBRef

@@ -53,6 +53,13 @@ public class FormController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    @PatchMapping("/{formId}")
+    @Operation(summary = "지원폼 활성화/비활성화")
+    public ResponseDto update(@PathVariable String formId, @RequestParam Boolean enabled) {
+        formManageUseCase.update(formId, enabled);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
     @DeleteMapping("/{formId}")
     @Operation(summary = "지원폼 삭제")
     public ResponseDto delete(@PathVariable String formId) {
