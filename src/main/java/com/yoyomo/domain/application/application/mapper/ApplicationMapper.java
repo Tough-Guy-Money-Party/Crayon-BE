@@ -22,7 +22,7 @@ public interface ApplicationMapper {
     @Mapping(target = "assessments", expression = "java( new java.util.ArrayList<>() )")
     @Mapping(target = "createdAt", expression = "java( java.time.LocalDateTime.now() )")
     @Mapping(target = "assessmentStatus" , expression = "java(AssessmentStatus.BEFORE)")
-    Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
+    Application from(Applicant applicant, String recruitmentId, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
 
@@ -32,6 +32,6 @@ public interface ApplicationMapper {
 
     ApplicationResponse mapToApplicationResponse(Application application);
 
-    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitment().getId(), application.getCurrentStage()))")
+    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitmentId(), application.getCurrentStage()))")
     ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
 }
