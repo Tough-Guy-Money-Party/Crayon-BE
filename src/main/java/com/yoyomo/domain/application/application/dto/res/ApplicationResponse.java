@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.application.dto.res;
 
 import com.yoyomo.domain.application.domain.entity.Assessment;
+import com.yoyomo.domain.application.domain.entity.AssessmentRating;
 import com.yoyomo.domain.application.domain.entity.AssessmentStatus;
 import com.yoyomo.domain.user.application.dto.res.ApplicantResponse;
 
@@ -11,6 +12,7 @@ public record ApplicationResponse(
         String id,
         ApplicantResponse applicant,
         AssessmentStatus assessmentStatus,
+        AssessmentRating averageAssessmentRating,
         List<Assessment> assessments,
         int currentStage,
         String currentStageTitle,

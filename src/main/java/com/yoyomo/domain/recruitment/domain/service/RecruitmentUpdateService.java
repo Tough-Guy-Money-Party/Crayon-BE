@@ -3,7 +3,6 @@ package com.yoyomo.domain.recruitment.domain.service;
 import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentModifyRequest;
-import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
