@@ -62,7 +62,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public ApplicationManageResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
-        return applicationMapper.mapToApplicationManage(application, applicationGetService);
+        return applicationMapper.mapToApplicationManage(application);
     }
 
     @Override
