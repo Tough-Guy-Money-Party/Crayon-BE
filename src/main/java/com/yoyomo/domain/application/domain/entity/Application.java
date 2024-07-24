@@ -37,6 +37,8 @@ public class Application {
 
     private AssessmentStatus assessmentStatus;
 
+    private AssessmentRating averageAssessmentRating;
+
     @NotNull
     @Builder.Default
     private int currentStage = 0;

@@ -6,9 +6,11 @@ import com.yoyomo.domain.application.application.dto.req.ApplicationStatusReques
 import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Assessment;
+import com.yoyomo.domain.application.domain.entity.AssessmentRating;
 import com.yoyomo.domain.form.exception.FormNotFoundException;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.shared.util.MapperUtil;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -46,12 +48,12 @@ public class ApplicationUpdateService {
         mongoTemplate.updateFirst(query, update, Application.class);
     }
 
-    public void from(String id, AssessmentRequest request) {
+    public void from(String id, AssessmentRequest request, Manager manager, AssessmentRating assessmentRating) {
         Query query = query(where(ID).is(id));
 
         Assessment.AssessmentBuilder assessmentBuilder = Assessment.builder()
-                .managerId(request.managerId())
-                .managerName(request.managerName())
+                .managerId(manager.getId())
+                .managerName(manager.getName())
                 .createdAt(LocalDateTime.now());
 
         if (request.assessmentRating() != null) {
@@ -63,7 +65,11 @@ public class ApplicationUpdateService {
         }
         Assessment assessment = assessmentBuilder.build();
 
-        Update update = new Update().addToSet("assessments", assessment).set("assessmentStatus", request.assessmentStatus());
+        Update update = new Update()
+                .addToSet("assessments", assessment)
+                .set("assessmentStatus", request.assessmentStatus())
+                .set("averageAssessmentRating", assessmentRating);
+
         mongoTemplate.updateFirst(query, update, Application.class);
     }
 

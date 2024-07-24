@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
-import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.application.dto.res.ApplicationDetailsResponse;
 import com.yoyomo.domain.application.application.dto.res.ApplicationManageResponse;
@@ -16,6 +15,7 @@ import com.yoyomo.global.config.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ public class ApplicationController {
 
     @PostMapping
     @Operation(summary = "지원서 작성")
-    public ResponseDto apply(@RequestBody ApplicationRequest request) {
+    public ResponseDto<Void> apply(@RequestBody ApplicationRequest request) {
         applyUseCase.create(request);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
@@ -47,7 +47,7 @@ public class ApplicationController {
     @Hidden
     @PutMapping("/{applicationId}")
     @Operation(summary = "지원서 수정")
-    public ResponseDto apply(Authentication authentication,
+    public ResponseDto<Void> apply(Authentication authentication,
                              @PathVariable String applicationId,
                              @RequestBody ApplicationRequest applicationRequest) {
         Applicant applicant = applicantInfoUseCaseImpl.get(authentication);
@@ -97,8 +97,8 @@ public class ApplicationController {
 
     @PatchMapping("/assessment/{applicationId}")
     @Operation(summary = "평가 추가")
-    public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody AssessmentRequest request) {
-        applicationManageUseCase.addAssessment(applicationId, request);
+    public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody @Valid AssessmentRequest request, Authentication authentication) {
+        applicationManageUseCase.addAssessment(applicationId, request, authentication);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 

@@ -26,7 +26,7 @@ public interface ApplicationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "assessments", expression = "java( new java.util.ArrayList<>() )")
     @Mapping(target = "createdAt", expression = "java( java.time.LocalDateTime.now() )")
-    @Mapping(target = "assessmentStatus" , expression = "java(AssessmentStatus.BEFORE)")
+    @Mapping(target = "assessmentStatus" , expression = "java(AssessmentStatus.PENDING)")
     Application from(Applicant applicant, String recruitmentId, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
@@ -38,8 +38,9 @@ public interface ApplicationMapper {
     @Mapping(target = "currentStageTitle", expression = "java( findStageTitle(application, recruitment) )")
     ApplicationResponse mapToApplicationResponse(Application application, Recruitment recruitment);
 
-    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitmentId(), application.getCurrentStage()))")
-    ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
+    @Mapping(target = "items", expression = "java( getItemResponses(recruitment) )")
+    @Mapping(target = "interview", expression = "java( getInterviewResponseDto(application) )")
+    ApplicationManageResponse mapToApplicationManage(Application application, Recruitment recruitment);
 
     @Named("findStageTitle")
     default String findStageTitle(Application application, Recruitment recruitment) {
@@ -58,8 +59,8 @@ public interface ApplicationMapper {
     }
 
     @Named("getItemResponses")
-    default List<ItemResponse> getItemResponses(Application application) {
-        return application.getRecruitment().getForm().getItems().stream()
+    default List<ItemResponse> getItemResponses(Recruitment recruitment) {
+        return recruitment.getForm().getItems().stream()
                 .map(ItemResponse::new)
                 .toList();
     }

@@ -8,6 +8,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface ApplicationManageUseCase {
 
     void update(String id, ApplicationStatusRequest request);
 
-    void addAssessment(String id, AssessmentRequest request);
+    void addAssessment(String id, AssessmentRequest request, Authentication authentication);
 
     void update(String id, Integer from, Integer to);
 }
