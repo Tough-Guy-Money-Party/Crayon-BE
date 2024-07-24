@@ -9,6 +9,9 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.application.exception.AlreadySubmitApplicationException;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import com.yoyomo.domain.user.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
     private final ApplicationMapper applicationMapper;
+    private final RecruitmentUpdateService recruitmentUpdateService;
+    private final RecruitmentGetService recruitmentGetService;
 
     @Override
     public void checkReadPermission(Applicant applicant, Application application) {
@@ -43,14 +48,14 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public Page<ApplicationResponse> readAll(String recruitmentId, Integer stage, Pageable pageable) {
         return applicationGetService.findAll(recruitmentId, stage, pageable)
-                .map(applicationMapper::mapToApplicationResponse);
+                .map(application -> applicationMapper.mapToApplicationResponse(application, recruitmentGetService.find(application.getRecruitmentId())));
     }
 
     @Override
     public List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum) {
         List<Application> applications = applicationGetService.findAllByApplicantName(recruitmentId, name, pageNum);
         return applications.stream()
-                .map(applicationMapper::mapToApplicationResponse)
+                .map(application -> applicationMapper.mapToApplicationResponse(application, recruitmentGetService.find(application.getRecruitmentId())))
                 .toList();
     }
 
@@ -68,5 +73,30 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public void addAssessment(String id, AssessmentRequest request) {
         applicationUpdateService.from(id, request);
+    }
+
+    @Override
+    public void update(String id, Integer from, Integer to) {
+        // [Application] currentStage update -> ApplicationUpdateService
+        Application application = applicationGetService.find(id);
+        Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
+
+        // [Process] applications update 1
+        recruitment.getProcesses().stream()
+                .filter(process -> process.getStage() == from)
+                .findFirst()
+                .ifPresent(process -> process.getApplications().removeIf(app -> app.getId().equals(id)));
+
+        applicationUpdateService.from(id, to);
+        application.updateStage(to);
+
+        // [Process] applications update 2
+        recruitment.getProcesses().stream()
+                .filter(process -> process.getStage() == to)
+                .findFirst()
+                .ifPresent(process -> process.getApplications().add(application));
+
+        // [Recruitment] processes update
+        recruitmentUpdateService.from(recruitment.getId(), recruitment.getProcesses());
     }
 }

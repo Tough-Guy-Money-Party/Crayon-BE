@@ -1,11 +1,12 @@
 package com.yoyomo.domain.application.domain.service;
 
+import com.mongodb.client.result.UpdateResult;
 import com.yoyomo.domain.application.application.dto.req.ApplicationRequest;
 import com.yoyomo.domain.application.application.dto.req.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.req.AssessmentRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Assessment;
-import com.yoyomo.domain.application.domain.entity.AssessmentStatus;
+import com.yoyomo.domain.form.exception.FormNotFoundException;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.shared.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +65,21 @@ public class ApplicationUpdateService {
 
         Update update = new Update().addToSet("assessments", assessment).set("assessmentStatus", request.assessmentStatus());
         mongoTemplate.updateFirst(query, update, Application.class);
+    }
+
+    public void from(String id, Integer to) {
+        Query query = query(where(ID).is(id));
+
+        Update update = new Update()
+                .set("currentStage", to);
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Application.class);
+        checkIsDeleted(result);
+    }
+
+    private void checkIsDeleted(UpdateResult result) {
+        if (result.getMatchedCount() == 0) {
+            throw new FormNotFoundException();
+        }
     }
 }

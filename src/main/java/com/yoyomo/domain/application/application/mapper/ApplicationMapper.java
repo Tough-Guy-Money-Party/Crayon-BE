@@ -27,26 +27,23 @@ public interface ApplicationMapper {
     @Mapping(target = "assessments", expression = "java( new java.util.ArrayList<>() )")
     @Mapping(target = "createdAt", expression = "java( java.time.LocalDateTime.now() )")
     @Mapping(target = "assessmentStatus" , expression = "java(AssessmentStatus.BEFORE)")
-    Application from(Applicant applicant, Recruitment recruitment, ApplicationRequest request);
+    Application from(Applicant applicant, String recruitmentId, ApplicationRequest request);
 
     ApplicationDetailsResponse mapToApplicationDetails(Application application);
 
-    //    @Mapping(target = "calendar", source = "application.recruitment.calendar")
     @Mapping(target = "id", source = "application.id")
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 
-    @Mapping(target = "currentStageTitle", source = "application", qualifiedByName = "getStageTitle")
-    ApplicationResponse mapToApplicationResponse(Application application);
+    @Mapping(target = "id", source = "application.id")
+    @Mapping(target = "currentStageTitle", expression = "java( findStageTitle(application, recruitment) )")
+    ApplicationResponse mapToApplicationResponse(Application application, Recruitment recruitment);
 
-    @Mappings({
-            @Mapping(target = "interview", source = "application", qualifiedByName = "getInterviewResponseDto"),
-            @Mapping(target = "items", source = "application", qualifiedByName = "getItemResponses")
-    })
-    ApplicationManageResponse mapToApplicationManage(Application application);
+    @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitmentId(), application.getCurrentStage()))")
+    ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
 
-    @Named("getStageTitle")
-    default String getStageTitle(Application application) {
-        return application.getRecruitment().getProcesses().stream()
+    @Named("findStageTitle")
+    default String findStageTitle(Application application, Recruitment recruitment) {
+        return recruitment.getProcesses().stream()
                 .filter(process -> process.getStage() == application.getCurrentStage())
                 .findAny()
                 .map(Process::getTitle)

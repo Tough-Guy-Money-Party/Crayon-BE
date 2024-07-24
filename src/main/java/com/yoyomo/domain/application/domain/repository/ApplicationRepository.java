@@ -24,7 +24,7 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     List<Application> findAllByApplicant(Applicant applicant, Pageable pageable);
 
-    boolean existsByApplicantAndRecruitment_Id(Applicant applicant, String recruitmentId);
+    boolean existsByApplicantAndRecruitmentId(Applicant applicant, String recruitmentId);
 
-    Optional<Application> findByRecruitment_IdAndApplicant_NameAndApplicant_PhoneAndApplicant_Email(String recruitmentId, String name, String phone, String email);
+    Optional<Application> findByRecruitmentIdAndApplicant_NameAndApplicant_PhoneAndApplicant_Email(String recruitmentId, String name, String phone, String email);
 }

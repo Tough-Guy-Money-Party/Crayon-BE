@@ -88,13 +88,6 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
-    @PatchMapping("/{applicationId}")
-    @Operation(summary = "모집 지원 단계 수정")
-    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody ApplicationStatusRequest request) {
-        applicationManageUseCase.update(applicationId, request);
-        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
-    }
-
     @GetMapping("/search")
     @Operation(summary = "모집 지원서 검색")
     public ResponseDto<List<ApplicationResponse>> readApplicationsByApplicantName(@RequestParam String recruitmentId, @RequestParam String name, @RequestParam int pageNum) {
@@ -106,6 +99,13 @@ public class ApplicationController {
     @Operation(summary = "평가 추가")
     public ResponseDto<Void> addAssessment(@PathVariable String applicationId, @RequestBody AssessmentRequest request) {
         applicationManageUseCase.addAssessment(applicationId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @PatchMapping("/{applicationId}")
+    @Operation(summary = "모집 지원 단계 수정")
+    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestParam Integer from, @RequestParam Integer to) {
+        applicationManageUseCase.update(applicationId, from, to);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
