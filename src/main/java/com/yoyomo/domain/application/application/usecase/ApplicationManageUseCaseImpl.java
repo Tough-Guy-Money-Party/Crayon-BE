@@ -48,14 +48,14 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     @Override
     public Page<ApplicationResponse> readAll(String recruitmentId, Integer stage, Pageable pageable) {
         return applicationGetService.findAll(recruitmentId, stage, pageable)
-                .map(applicationMapper::mapToApplicationResponse);
+                .map(application -> applicationMapper.mapToApplicationResponse(application, recruitmentGetService.find(application.getRecruitmentId())));
     }
 
     @Override
     public List<ApplicationResponse> readAllByApplicantName(String recruitmentId, String name, int pageNum) {
         List<Application> applications = applicationGetService.findAllByApplicantName(recruitmentId, name, pageNum);
         return applications.stream()
-                .map(applicationMapper::mapToApplicationResponse)
+                .map(application -> applicationMapper.mapToApplicationResponse(application, recruitmentGetService.find(application.getRecruitmentId())))
                 .toList();
     }
 

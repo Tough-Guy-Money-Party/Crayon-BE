@@ -31,15 +31,16 @@ public interface ApplicationMapper {
     @Mapping(target = "id", source = "application.id")
     MyApplicationsResponse mapToMyApplications(Application application, Club club);
 
-    @Mapping(target = "currentStageTitle", source = "application", qualifiedByName = "findStageTitle")
-    ApplicationResponse mapToApplicationResponse(Application application);
+    @Mapping(target = "id", source = "application.id")
+    @Mapping(target = "currentStageTitle", expression = "java( findStageTitle(application, recruitment) )")
+    ApplicationResponse mapToApplicationResponse(Application application, Recruitment recruitment);
 
     @Mapping(target = "currentStageApplicants", expression = "java( applicationGetService.findApplicantsByStage(application.getRecruitmentId(), application.getCurrentStage()))")
     ApplicationManageResponse mapToApplicationManage(Application application, @Context ApplicationGetService applicationGetService);
 
     @Named("findStageTitle")
-    default String findStageTitle(Application application) {
-        return application.getRecruitment().getProcesses().stream()
+    default String findStageTitle(Application application, Recruitment recruitment) {
+        return recruitment.getProcesses().stream()
                 .filter(process -> process.getStage() == application.getCurrentStage())
                 .findAny()
                 .map(Process::getTitle)
