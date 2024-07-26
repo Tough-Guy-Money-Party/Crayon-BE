@@ -35,6 +35,13 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable);
 
         http
+                .authorizeHttpRequests((auth) ->
+                        auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                                .requestMatchers("/applications").permitAll()
+                                .requestMatchers("/results/{clubId}/details").permitAll()
+                                .anyRequest().authenticated());
+
+        http
                 .addFilterBefore(new JwtFilter(jwtProvider), AbstractPreAuthenticatedProcessingFilter.class);
         return http.build();
     }
