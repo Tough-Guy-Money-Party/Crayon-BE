@@ -42,5 +42,5 @@ public interface RecruitmentMapper {
 
     ProcessResultResponse mapToProcessResultResponse(String clubName, String name, String recruitmentTitle, Interview interview);
 
-    ProcessResultResponse mapToProcessResultResponse(String clubName, String name, String title);
+    ProcessResultResponse mapToProcessResultResponse(String clubName, String name, String recruitmentTitle);
 }
