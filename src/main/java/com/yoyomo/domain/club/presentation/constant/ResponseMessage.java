@@ -17,6 +17,7 @@ public enum ResponseMessage {
     SUCCESS_GET_MANAGERS("동아리 관리자 조회에 성공했습니다."),
 
     CLUB_NOT_FOUND("존재하지 않는 동아리입니다."),
+    DEPLICATED_SUBDOMAIN("중복된 서브도메인입니다."),
     ;
     private String message;
 }
