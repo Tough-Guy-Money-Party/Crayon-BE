@@ -1,19 +1,21 @@
 package com.yoyomo.domain.application.domain.entity;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.yoyomo.domain.item.application.dto.res.OptionResponse;
+import com.yoyomo.domain.item.domain.entity.type.Type;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Answer {
-    @NotBlank
-    private String itemId;
+import java.util.List;
 
-    @NotBlank
-    private String reply;
+public record Answer(
+        String title,
+        Type type,
+        String description,
+        Integer order,
+        Boolean required,
+        List<OptionResponse> options,
+        String answer,
+        Integer maxLength,
+        String meaningOfHigh,
+        String meaningOfLow,
+        Integer score
+) {
 }

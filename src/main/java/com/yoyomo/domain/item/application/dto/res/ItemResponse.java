@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class ItemResponse {
+    private String id;
     private String title;
     private String description;
     private Type type;
@@ -16,6 +17,7 @@ public class ItemResponse {
     private boolean required;
 
     public ItemResponse(Item item) {
+        this.id = item.getId();
         this.title = item.getTitle();
         this.description = item.getDescription();
         this.type = item.getType();

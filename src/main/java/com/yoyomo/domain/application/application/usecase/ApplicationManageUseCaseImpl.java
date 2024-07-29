@@ -10,6 +10,7 @@ import com.yoyomo.domain.application.domain.entity.AssessmentRating;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.application.exception.AlreadySubmitApplicationException;
+import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
@@ -36,6 +37,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final RecruitmentUpdateService recruitmentUpdateService;
     private final RecruitmentGetService recruitmentGetService;
     private final ManagerInfoUseCaseImpl managerInfoUseCaseImpl;
+    private final ItemManageUseCase itemManageUseCase;
 
     @Override
     public void checkReadPermission(Applicant applicant, Application application) {
@@ -70,6 +72,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     public ApplicationManageResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
+
         return applicationMapper.mapToApplicationManage(application, recruitment);
     }
 
