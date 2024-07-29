@@ -18,6 +18,8 @@ public interface ClubManageUseCase {
 
     List<ClubManagerResponse> getManagers(Authentication authentication);
 
+    String checkDuplicate(String subDomain);
+
     void removeManager(RemoveManagerRequest removeManagerRequest);
 
     void update(String id, ClubRequest request);
