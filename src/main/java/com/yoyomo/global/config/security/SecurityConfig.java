@@ -39,6 +39,7 @@ public class SecurityConfig {
                         auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
+                                .requestMatchers("/user/login/**").permitAll()
                                 .anyRequest().authenticated());
 
         http
