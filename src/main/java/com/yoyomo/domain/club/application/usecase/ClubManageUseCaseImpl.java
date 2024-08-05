@@ -5,10 +5,12 @@ import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.application.mapper.ClubStyleMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
+import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -34,6 +36,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubMapper clubMapper;
     private final ParticipationService participationService;
     private final UserGetService userGetService;
+    private final ClubRepository clubRepository;
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -83,6 +86,13 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         for (String userId : removeManagerRequest.userIds()) {
             participationService.deleteToEachList(userId, removeManagerRequest.clubId());
         }
+    }
+
+    public String checkDuplicate(String subDomain) {
+        if (clubRepository.findBySubDomain(subDomain).size()>0) {
+            throw new DuplicatedSubDomainException();
+        }
+        return subDomain;
     }
 
 

@@ -40,7 +40,7 @@ public class ClubController {
     @PostMapping
     @Operation(summary = "동아리 생성")
     public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest, Authentication authentication) {
-        String subDomain = clubRequest.subDomain();
+        String subDomain = clubManageUseCase.checkDuplicate(clubRequest.subDomain());
         String mySubDomain = clubSaveService.createSubDomain(subDomain);
 
         ClubCreateResponse response = clubManageUseCase.create(clubRequest, authentication.getName());
