@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseDto handleApplicationException(ApplicationException ex) {
+    public ResponseDto<Void> handleApplicationException(ApplicationException ex) {
         log.error(LOG_FORMAT, ex.getClass().getSimpleName(), ex.getErrorCode(), ex.getMessage());
         return ResponseDto.of(ex.getErrorCode(), ex.getMessage());
     }

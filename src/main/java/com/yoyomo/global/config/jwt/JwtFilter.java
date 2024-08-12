@@ -23,7 +23,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final ManagerRepository managerRepository;
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private final String EMPTY_ROLE = "EMPTY_ROLE";
     private final String EMPTY_PASSWORD = "EMPTY_PASSWORD";
 
