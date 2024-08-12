@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.domain.user.application.dto.ManagerDTO.Response;
+import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.Response;
 import static com.yoyomo.domain.user.presentation.constant.ResponseMessage.SUCCESS_LOGIN;
 import static org.springframework.http.HttpStatus.OK;
 

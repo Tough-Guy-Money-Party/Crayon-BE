@@ -1,8 +1,8 @@
-package com.yoyomo.domain.user.application.dto;
+package com.yoyomo.domain.user.application.dto.response;
 
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 
-public class ManagerDTO {
+public class ManagerResponseDTO {
 
     public record Response(
             Long id,
@@ -10,4 +10,5 @@ public class ManagerDTO {
             String email,
             JwtResponse token
     ) {}
+
 }

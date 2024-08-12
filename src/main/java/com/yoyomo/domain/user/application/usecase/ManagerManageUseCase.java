@@ -1,6 +1,6 @@
 package com.yoyomo.domain.user.application.usecase;
 
-import com.yoyomo.domain.user.application.dto.ManagerDTO;
+import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -26,14 +26,14 @@ public class ManagerManageUseCase {
     private final JwtProvider jwtProvider;
     private final ManagerMapper mapper;
 
-    public ManagerDTO.Response authenticate(String code) {
+    public ManagerResponseDTO.Response authenticate(String code) {
         KakaoTokenResponse tokenResponse = kakaoServiceNew.getToken(code);
         KakaoUserInfoResponse userInfo = kakaoServiceNew.getUserInfo(tokenResponse.getAccess_token());
 
         return registerMemberIfNew(userInfo);
     }
 
-    private ManagerDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
+    private ManagerResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
         String email = userInfo.getKakao_account().getEmail();
 
         if (userGetService.existsByEmail(email)) {
@@ -43,7 +43,7 @@ public class ManagerManageUseCase {
         return registerNewManager(userInfo.getKakao_account());
     }
 
-    private ManagerDTO.Response registerNewManager(KakaoAccount account) {
+    private ManagerResponseDTO.Response registerNewManager(KakaoAccount account) {
         Manager manager = mapper.from(account);
         userSaveService.save(manager);
 
@@ -55,7 +55,7 @@ public class ManagerManageUseCase {
         return mapper.to(manager, tokenDto);
     }
 
-    private ManagerDTO.Response getManagerResponse(String email) {
+    private ManagerResponseDTO.Response getManagerResponse(String email) {
         Manager manager = userGetService.findByEmail(email);
         JwtResponse tokenDto = new JwtResponse(
                 jwtProvider.createAccessToken(manager.getId(), manager.getEmail()),
