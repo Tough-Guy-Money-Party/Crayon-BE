@@ -1,6 +1,7 @@
 package com.yoyomo.domain.user.presentation;
 
 import com.yoyomo.domain.user.application.usecase.ManagerManageUseCase;
+import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +28,8 @@ public class ManagerController {
     }
 
     @GetMapping
-    public ResponseDto<Void> test() {
+    public ResponseDto<Void> test(@CurrentUser Long userId) {
+        System.out.println(userId);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage());
     }
 }

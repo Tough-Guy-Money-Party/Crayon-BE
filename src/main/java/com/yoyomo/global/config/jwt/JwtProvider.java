@@ -97,13 +97,13 @@ public class JwtProvider {
         }
     }
 
-    public Optional<String> extractId(String accessToken) {
+    public Optional<Long> extractId(String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
                     .build()
                     .verify(accessToken)
                     .getClaim(ID_CLAIM)
-                    .asString());
+                    .asLong());
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
