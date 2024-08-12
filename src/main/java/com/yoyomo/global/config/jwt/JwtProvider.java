@@ -1,107 +1,130 @@
 package com.yoyomo.global.config.jwt;
 
-import com.yoyomo.domain.user.application.dto.req.RefreshRequest;
-import com.yoyomo.global.config.exception.ApplicationException;
-import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
-import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
-import com.yoyomo.global.config.jwt.presentation.JwtResponse;
-import io.jsonwebtoken.*;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
+@Slf4j
+@Getter
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    private final RedisTemplate<String, String> redisTemplate;
+    @Value("${crayon.jwt.key}")
+    private String key;
 
-    @Value("${jwt.access_secret}")
-    private String accessSecret;
+    @Value("${crayon.jwt.access.expiration}")
+    private Long accessTokenExpirationPeriod;
 
-    @Value("${jwt.refresh_secret}")
-    private String refreshSecret;
+    @Value("${crayon.jwt.refresh.expiration}")
+    private Long refreshTokenExpirationPeriod;
 
-    @Value("${spring.jwt.token.access-expiration-time}")
-    private long accessExpirationTime;
+    @Value("${crayon.jwt.access.header}")
+    private String accessHeader;
 
-    @Value("${spring.jwt.token.refresh-expiration-time}")
-    private long refreshExpirationTime;
+    @Value("${crayon.jwt.refresh.header}")
+    private String refreshHeader;
 
-    public String createAccessToken(String email) {
+    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+    private static final String EMAIL_CLAIM = "email";
+    private static final String ID_CLAIM = "id";
+    private static final String BEARER = "Bearer ";
+
+    public String createAccessToken(Long id, String email) {
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + accessExpirationTime);
-        return Jwts.builder()
-                .setSubject(email)
-                .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS256, accessSecret)
-                .compact();
+        return JWT.create()
+                .withSubject(ACCESS_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+                .withClaim(ID_CLAIM, id)
+                .withClaim(EMAIL_CLAIM, email)
+                .sign(Algorithm.HMAC512(key));
     }
 
-    public String createRefreshToken(String email){
+    public String createRefreshToken() {
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + refreshExpirationTime);
-        String refreshToken = Jwts.builder()
-                .setSubject(email)
-                .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS256, refreshSecret)
-                .compact();
-
-        redisTemplate.opsForValue().set(
-                email,
-                refreshToken,
-                refreshExpirationTime,
-                TimeUnit.MILLISECONDS
-        );
-
-        return refreshToken;
+        return JWT.create()
+                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .sign(Algorithm.HMAC512(key));
     }
 
-    public JwtResponse reissueToken(String refreshToken, String email) throws ApplicationException {
-        this.validateToken(refreshToken, true);
-        Authentication authentication = this.getAuthentication(refreshToken);
-        if(!email.equals(authentication.getName()))
-            throw new InvalidTokenException();
+    public void sendAccessToken(HttpServletResponse response, String accessToken) {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader(accessHeader, accessToken);
 
-        String redisRefreshToken = redisTemplate.opsForValue().get(authentication.getName());
-
-        if(!redisRefreshToken.equals(refreshToken))
-            throw new InvalidTokenException();
-        JwtResponse tokenDto = new JwtResponse(
-                this.createAccessToken(authentication.getName()),
-                "No Refresh Token Provided"
-        );
-        return tokenDto;
+        log.info("재발급된 Access Token : {}", accessToken);
     }
 
-    public Authentication getAuthentication(String token) {
-        return new PreAuthenticatedAuthenticationToken(this.getEmail(token),null, null);
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setStatus(HttpServletResponse.SC_OK);
+        setAccessTokenHeader(response, accessToken);
+        setRefreshTokenHeader(response, refreshToken);
+
+        log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
-    public String getEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(accessSecret).build().parseClaimsJws(token).getBody().getSubject();
+
+    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(refreshHeader))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-    public void validateToken(String token, boolean isRefreshToken) {
+
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(accessHeader))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    }
+
+    public Optional<String> extractEmail(String accessToken) {
         try {
-            parseClaims(token, isRefreshToken);
-        } catch (SignatureException | UnsupportedJwtException | IllegalArgumentException | MalformedJwtException e) {
-            throw new InvalidTokenException();
-        } catch (ExpiredJwtException e) {
-            throw new ExpiredTokenException();
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(accessToken)
+                    .getClaim(EMAIL_CLAIM)
+                    .asString());
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
         }
     }
 
-    public Claims parseClaims(String accessToken, boolean isRefreshToken) {
+    public Optional<String> extractId(String accessToken) {
         try {
-            JwtParser parser = Jwts.parser().setSigningKey(isRefreshToken ? refreshSecret : accessSecret);
-            return parser.parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(accessToken)
+                    .getClaim(ID_CLAIM)
+                    .asString());
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
+        response.setHeader(accessHeader, accessToken);
+    }
+
+    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
+        response.setHeader(refreshHeader, refreshToken);
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
+            return true;
+        } catch (Exception e) {
+            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            return false;
         }
     }
 }

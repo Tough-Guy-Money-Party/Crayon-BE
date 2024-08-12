@@ -1,6 +1,6 @@
 package com.yoyomo.global.config.exception;
 
-import com.yoyomo.global.config.dto.ResponseDto;
+import com.yoyomo.global.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
