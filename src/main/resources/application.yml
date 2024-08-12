@@ -47,8 +47,6 @@ crayon:
       expiration: 604800000
       header: Authorization-refresh
 
-is-using-refresh-token: true
-
 lambda:
   uri: ${LAMBDA_URI}
 

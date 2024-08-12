@@ -15,10 +15,10 @@ public class ResponseDto<T> {
     private T data;
 
     public static <T> ResponseDto<T> of(int code, String message) {
-        return new ResponseDto(code, message, null);
+        return new ResponseDto<>(code, message, null);
     }
 
     public static <T> ResponseDto<T> of(int code, String message, T dto) {
-        return new ResponseDto(code, message, dto);
+        return new ResponseDto<>(code, message, dto);
     }
 }
