@@ -1,5 +1,6 @@
 package com.yoyomo.global.config.security;
 
+import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.global.config.jwt.JwtFilter;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
+    private final ManagerRepository managerRepository;
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
@@ -43,7 +45,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated());
 
         http
-                .addFilterBefore(new JwtFilter(jwtProvider), AbstractPreAuthenticatedProcessingFilter.class);
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class);
         return http.build();
     }
 
@@ -58,5 +60,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    public JwtFilter jwtAuthenticationProcessingFilter() {
+        return new JwtFilter(jwtProvider, managerRepository);
     }
 }

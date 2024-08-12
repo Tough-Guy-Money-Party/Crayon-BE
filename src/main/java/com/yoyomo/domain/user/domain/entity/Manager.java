@@ -1,25 +1,28 @@
 package com.yoyomo.domain.user.domain.entity;
 
-import com.yoyomo.domain.club.domain.entity.Club;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.yoyomo.global.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
-@SuperBuilder
-@NoArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Document(collection = "managers")
-public class Manager extends User{
+@Entity
+public class Manager extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "manager_id")
+    private Long id;
+
+    private String name;
+
     private String email;
-    @DBRef
-    private List<Club> clubs = new ArrayList<>();
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
