@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @NoArgsConstructor
@@ -18,5 +16,5 @@ public class Interview {
     private String place;
 
     @NotNull
-    private LocalDateTime date;
+    private String date;
 }
