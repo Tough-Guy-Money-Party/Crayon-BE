@@ -9,5 +9,6 @@ import java.util.List;
 public record ApplicationManageResponse(
         SubmitStatus submitStatus,
         List<Answer> answers,
-        InterviewResponse interview
+        InterviewResponse interview,
+        Boolean isBefore
 ) {}
