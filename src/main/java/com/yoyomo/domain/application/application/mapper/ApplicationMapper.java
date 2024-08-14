@@ -7,10 +7,12 @@ import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.interview.application.dto.InterviewResponse;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.ProcessType;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.Applicant;
 import org.mapstruct.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper(componentModel = "spring",
@@ -34,9 +36,19 @@ public interface ApplicationMapper {
     ApplicationResponse mapToApplicationResponse(Application application, Recruitment recruitment);
 
     @Mapping(target = "interview", expression = "java( getInterviewResponseDto(application) )")
+    @Mapping(target = "isBefore", expression = "java( isBefore(recruitment, application) )")
     ApplicationManageResponse mapToApplicationManage(Application application, Recruitment recruitment);
 
+    default Boolean isBefore(Recruitment recruitment, Application application) {
+        List<ProcessType> types = recruitment.getProcesses().stream()
+                .map(Process::getType)
+                .toList();
 
+        if(!types.contains(ProcessType.INTERVIEW))
+            return false;
+
+        return types.indexOf(ProcessType.INTERVIEW) + 1 > application.getCurrentStage();
+    }
 
     @Named("findStageTitle")
     default String findStageTitle(Application application, Recruitment recruitment) {

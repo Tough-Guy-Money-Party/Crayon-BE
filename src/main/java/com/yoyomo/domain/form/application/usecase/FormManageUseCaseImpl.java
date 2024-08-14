@@ -40,6 +40,10 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public FormDetailsResponse read(String id) {
         Form form = formGetService.find(id);
+
+        if(!form.isEnabled())
+            throw new ClubNotFoundException();
+
         List<ItemResponse> itemResponses = itemManageUseCase.get(form);
         return new FormDetailsResponse(form.getTitle(), form.getDescription(), itemResponses, form.isEnabled(), form.getCreatedAt());
     }
