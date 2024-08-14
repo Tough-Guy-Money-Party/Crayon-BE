@@ -20,6 +20,7 @@ public class Process extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "process_id")
     private UUID id;
 
     private String title;
@@ -37,6 +38,7 @@ public class Process extends BaseEntity {
     private LocalDateTime announceEndAt;
 
     @ManyToOne
+    @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
 
     @OneToMany(mappedBy = "process")

@@ -3,6 +3,7 @@ package com.yoyomo.domain.recruitment.domain.entity;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
+import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Recruitment {
+public class Recruitment extends BaseEntity {
 
     @Id
     @Column(name = "recruitment_id")
