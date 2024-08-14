@@ -19,7 +19,7 @@ public class Interview extends BaseEntity {
     @Column(name = "interview_id")
     private Long id;
 
-    private LocalDateTime date;
+    private String date;
 
     private String place;
 }
