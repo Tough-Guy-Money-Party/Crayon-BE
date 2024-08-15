@@ -1,8 +1,11 @@
 package com.yoyomo.domain.user.domain.entity;
 
+import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,6 +24,9 @@ public class Manager extends BaseEntity {
     private String email;
 
     private String refreshToken;
+
+    @OneToMany(mappedBy = "manager")
+    private List<ClubManager> clubManagers;
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
