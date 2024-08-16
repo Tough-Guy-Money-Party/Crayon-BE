@@ -11,4 +11,9 @@ public class ManagerResponseDTO {
             JwtResponse token
     ) {}
 
+    public record ManagerInfo(
+            Long id,
+            String name,
+            String email
+    ) {}
 }

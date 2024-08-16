@@ -8,11 +8,15 @@ import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
+import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
+import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
@@ -27,6 +31,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubMapper clubMapper;
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
+    private final ManagerMapper managerMapper;
 
     @Override @Transactional
     public Response save(Save dto, Long userId) {
@@ -57,6 +62,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public void delete(String clubId) {
         Club club = clubGetService.find(clubId);
         clubUpdateService.delete(club);
+    }
+
+    @Override
+    public List<ManagerResponseDTO.ManagerInfo> getManagers(String clubId) {
+        Club club = clubGetService.find(clubId);
+
+        return club.getClubManagers().stream()
+                .map(ClubManager::getManager)
+                .map(managerMapper::toManagerInfoDTO)
+                .toList();
     }
 
     private void checkDuplicatedSubDomain(String subDomain) {

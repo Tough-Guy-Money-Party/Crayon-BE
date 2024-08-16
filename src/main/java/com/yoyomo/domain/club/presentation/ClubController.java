@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.presentation;
 
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
+import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,9 +11,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
+import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "CLUB")
@@ -47,5 +51,11 @@ public class ClubController {
     public ResponseDto<Void> delete(@PathVariable String clubId) {
         clubManageUseCase.delete(clubId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @GetMapping("/participation/{clubId}")
+    @Operation(summary = "동아리 관리자 조회")
+    public ResponseDto<List<ManagerInfo>> getManagers(@PathVariable String clubId) {
+        return ResponseDto.of(OK.value(), SUCCESS_GET_MANAGERS.getMessage(), clubManageUseCase.getManagers(clubId));
     }
 }
