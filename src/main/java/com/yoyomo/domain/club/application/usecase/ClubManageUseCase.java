@@ -11,4 +11,6 @@ public interface ClubManageUseCase {
     Response read(String clubId);
 
     void update(String clubId, Save dto);
+
+    void delete(String clubId);
 }

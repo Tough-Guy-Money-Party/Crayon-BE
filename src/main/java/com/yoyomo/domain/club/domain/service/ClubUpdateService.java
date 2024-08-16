@@ -14,4 +14,8 @@ public class ClubUpdateService {
     public void update(Club club, ClubRequestDTO.Save dto) {
         club.update(dto);
     }
+
+    public void delete(Club club) {
+        club.delete();
+    }
 }

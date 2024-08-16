@@ -41,4 +41,11 @@ public class ClubController {
         clubManageUseCase.update(clubId, dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
+
+    @DeleteMapping("/{clubId}")
+    @Operation(summary = "동아리 삭제")
+    public ResponseDto<Void> delete(@PathVariable String clubId) {
+        clubManageUseCase.delete(clubId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
 }

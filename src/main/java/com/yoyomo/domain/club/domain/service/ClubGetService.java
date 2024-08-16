@@ -15,7 +15,11 @@ public class ClubGetService {
     private final ClubRepository clubRepository;
 
     public Club find(String clubId) {
-        return clubRepository.findById(UUID.fromString(clubId))
+        return clubRepository.findByIdAndDeletedAtIsNull(UUID.fromString(clubId))
                 .orElseThrow(ClubNotFoundException::new);
+    }
+
+    public boolean checkSubDomain(String subDomain) {
+        return clubRepository.existsBySubDomain(subDomain);
     }
 }
