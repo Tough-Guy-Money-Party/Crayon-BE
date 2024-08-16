@@ -52,8 +52,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     @Override
     public ParticipationResponse participate(ParticipationRequest participationRequest, String userEmail) {
-        ParticipationResponse response = participationService.checkAndParticipate(participationRequest.code(), userEmail);
-        return response;
+        return participationService.checkAndParticipate(participationRequest.code(), userEmail);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.yoyomo.global.config.participation.service;
 import com.yoyomo.domain.club.application.dto.res.ParticipationResponse;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -23,6 +24,7 @@ public class ParticipationService {
     private final UserUpdateService userUpdateService;
     private final UserGetService userGetService;
     private final ParticipationCodeService participationCodeService;
+    private final ClubGetService clubGetService;
 
     public ParticipationResponse checkAndParticipate(String code, String userEmail) {
         String clubId = participationCodeService.getClubId(code);
@@ -34,8 +36,9 @@ public class ParticipationService {
             throw new AlreadyParticipatedException();
         }
         this.addToEachList(userEmail, clubId);
+        Club club = clubGetService.byId(clubId);
 
-        return new ParticipationResponse(clubId);
+        return new ParticipationResponse(clubId, club.getName());
     }
 
     public void addToEachList(String userEmail, String clubId) {
