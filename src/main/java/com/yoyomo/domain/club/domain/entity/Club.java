@@ -30,7 +30,7 @@ public class Club extends BaseEntity {
 
     private String code;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ClubManager> clubManagers;
 
     private LocalDateTime deletedAt;

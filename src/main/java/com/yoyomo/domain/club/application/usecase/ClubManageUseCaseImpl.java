@@ -4,10 +4,7 @@ import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
-import com.yoyomo.domain.club.domain.service.ClubGetService;
-import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
-import com.yoyomo.domain.club.domain.service.ClubSaveService;
-import com.yoyomo.domain.club.domain.service.ClubUpdateService;
+import com.yoyomo.domain.club.domain.service.*;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
@@ -35,6 +32,8 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final ManagerMapper managerMapper;
+    private final ClubManagerGetService clubManagerGetService;
+    private final ClubManagerDeleteService clubManagerDeleteService;
 
     @Override @Transactional
     public Response save(Save dto, Long userId) {
@@ -100,6 +99,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Manager manager = userGetService.find(userId);
         checkAuthority(club, manager);
         return new Code(clubUpdateService.update(club));
+    }
+
+    @Override
+    public void deleteManagers(ClubRequestDTO.Delete dto) {
+        Club club = clubGetService.find(dto.clubId());
+        for (Long userId : dto.userIds()) {
+            Manager manager = userGetService.find(userId);
+            ClubManager clubManager = clubManagerGetService.find(club, manager);
+            clubManagerDeleteService.delete(clubManager);
+        }
     }
 
     private static void checkAuthority(Club club, Manager manager) {

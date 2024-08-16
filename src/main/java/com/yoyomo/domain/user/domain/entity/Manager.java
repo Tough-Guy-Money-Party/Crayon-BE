@@ -26,7 +26,7 @@ public class Manager extends BaseEntity {
 
     private String refreshToken;
 
-    @OneToMany(mappedBy = "manager")
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ClubManager> clubManagers;
 
     @PrePersist
