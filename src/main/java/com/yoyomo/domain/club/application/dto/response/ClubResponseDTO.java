@@ -12,4 +12,8 @@ public class ClubResponseDTO {
             String id,
             String name
     ) {}
+
+    public record Code(
+            String code
+    ) {}
 }

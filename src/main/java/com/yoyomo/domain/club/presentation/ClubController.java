@@ -65,4 +65,10 @@ public class ClubController {
     public ResponseDto<ClubResponseDTO.Participation> participation(@RequestBody @Valid ClubRequestDTO.Participation dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_PARTICIPATION.getMessage(), clubManageUseCase.participate(dto, userId));
     }
+
+    @GetMapping("/participation/code/{clubId}")
+    @Operation(summary = "동아리 관리자 참여 코드 조회")
+    public ResponseDto<ClubResponseDTO.Code> readCode(@PathVariable String clubId, @CurrentUser Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ_CODE.getMessage(), clubManageUseCase.readCode(clubId, userId));
+    }
 }

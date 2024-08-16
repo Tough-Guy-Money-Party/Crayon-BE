@@ -1,7 +1,6 @@
 package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
-import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
@@ -9,6 +8,7 @@ import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
+import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.*;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +76,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override @Transactional
-    public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
+    public Participation participate(ClubRequestDTO.Participation dto, Long userId) {
         Club club = clubGetService.findByCode(dto.code());
         Manager manager = userGetService.find(userId);
 
@@ -84,6 +84,17 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         mapFK(manager, club);
 
         return clubMapper.toParticipation(club);
+    }
+
+    @Override
+    public Code readCode(String clubId, Long userId) {
+        Club club = clubGetService.find(clubId);
+        Manager manager = userGetService.find(userId);
+
+        if(!club.contains(manager))
+            throw new ClubAccessDeniedException();
+
+        return new Code(club.getCode());
     }
 
     private void checkDuplicatedSubDomain(String subDomain) {
