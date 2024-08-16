@@ -1,7 +1,6 @@
 package com.yoyomo.domain.club.presentation;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
-import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.*;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
 import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.ManagerInfo;
 import static org.springframework.http.HttpStatus.OK;
@@ -62,13 +61,19 @@ public class ClubController {
 
     @PostMapping("/participation")
     @Operation(summary = "동아리 관리자 추가")
-    public ResponseDto<ClubResponseDTO.Participation> participation(@RequestBody @Valid ClubRequestDTO.Participation dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Participation> participation(@RequestBody @Valid ClubRequestDTO.Participation dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_PARTICIPATION.getMessage(), clubManageUseCase.participate(dto, userId));
     }
 
     @GetMapping("/participation/code/{clubId}")
     @Operation(summary = "동아리 관리자 참여 코드 조회")
-    public ResponseDto<ClubResponseDTO.Code> readCode(@PathVariable String clubId, @CurrentUser Long userId) {
+    public ResponseDto<Code> readCode(@PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_CODE.getMessage(), clubManageUseCase.readCode(clubId, userId));
+    }
+
+    @PatchMapping("/participation/code/{clubId}")
+    @Operation(summary = "동아리 관리자 참여 코드 재생성")
+    public ResponseDto<Code> updateCode(@PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_CODE.getMessage(), clubManageUseCase.updateCode(clubId, userId));
     }
 }

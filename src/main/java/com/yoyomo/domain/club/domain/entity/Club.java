@@ -38,7 +38,12 @@ public class Club extends BaseEntity {
     @PrePersist
     public void init() {
         clubManagers = new ArrayList<>();
+        initCode();
+    }
+
+    public String initCode() {
         code = UUID.randomUUID().toString();
+        return code;
     }
 
     public void addClubManager(ClubManager clubManager) {

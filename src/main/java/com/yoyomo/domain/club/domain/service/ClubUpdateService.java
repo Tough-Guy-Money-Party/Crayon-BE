@@ -18,4 +18,8 @@ public class ClubUpdateService {
     public void delete(Club club) {
         club.delete();
     }
+
+    public String update(Club club) {
+        return club.initCode();
+    }
 }

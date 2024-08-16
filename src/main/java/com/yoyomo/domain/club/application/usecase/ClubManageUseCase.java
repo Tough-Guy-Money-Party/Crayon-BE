@@ -25,4 +25,6 @@ public interface ClubManageUseCase {
     Participation participate(ClubRequestDTO.Participation dto, Long userId);
 
     Code readCode(String clubId, Long userId);
+
+    Code updateCode(String clubId, Long userId);
 }

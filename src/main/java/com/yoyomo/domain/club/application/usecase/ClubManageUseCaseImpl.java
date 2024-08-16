@@ -90,11 +90,21 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public Code readCode(String clubId, Long userId) {
         Club club = clubGetService.find(clubId);
         Manager manager = userGetService.find(userId);
+        checkAuthority(club, manager);
+        return new Code(club.getCode());
+    }
 
+    @Override
+    public Code updateCode(String clubId, Long userId) {
+        Club club = clubGetService.find(clubId);
+        Manager manager = userGetService.find(userId);
+        checkAuthority(club, manager);
+        return new Code(clubUpdateService.update(club));
+    }
+
+    private static void checkAuthority(Club club, Manager manager) {
         if(!club.contains(manager))
             throw new ClubAccessDeniedException();
-
-        return new Code(club.getCode());
     }
 
     private void checkDuplicatedSubDomain(String subDomain) {
