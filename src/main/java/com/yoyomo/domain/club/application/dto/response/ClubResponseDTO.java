@@ -7,4 +7,9 @@ public class ClubResponseDTO {
             String name,
             String subDomain
     ) {}
+
+    public record Participation(
+            String id,
+            String name
+    ) {}
 }

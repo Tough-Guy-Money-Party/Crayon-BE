@@ -21,7 +21,7 @@ public class UserGetService {
         return managerRepository.existsByEmail(email);
     }
 
-    public Manager findById(Long id) {
+    public Manager find(Long id) {
         return managerRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

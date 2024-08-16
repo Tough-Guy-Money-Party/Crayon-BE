@@ -22,4 +22,9 @@ public class ClubGetService {
     public boolean checkSubDomain(String subDomain) {
         return clubRepository.existsBySubDomain(subDomain);
     }
+
+    public Club findByCode(String code) {
+        return clubRepository.findByCode(code)
+                .orElseThrow(ClubNotFoundException::new);
+    }
 }

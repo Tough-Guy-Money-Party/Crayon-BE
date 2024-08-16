@@ -1,13 +1,15 @@
 package com.yoyomo.domain.user.application.mapper;
 
-import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.ManagerInfo;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.dto.KakaoAccount;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.*;
+import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,

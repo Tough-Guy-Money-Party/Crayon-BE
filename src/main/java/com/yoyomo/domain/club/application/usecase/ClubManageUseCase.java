@@ -1,12 +1,13 @@
 package com.yoyomo.domain.club.application.usecase;
 
+import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
-import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 
 import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.*;
+import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO.ManagerInfo;
 
 public interface ClubManageUseCase {
 
@@ -19,4 +20,6 @@ public interface ClubManageUseCase {
     void delete(String clubId);
 
     List<ManagerInfo> getManagers(String clubId);
+
+    ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId);
 }

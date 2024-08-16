@@ -11,4 +11,6 @@ public interface ClubRepository extends JpaRepository<Club, UUID> {
     boolean existsBySubDomain(String subDomain);
 
     Optional<Club> findByIdAndDeletedAtIsNull(UUID id);
+
+    Optional<Club> findByCode(String code);
 }

@@ -8,4 +8,8 @@ public class ClubRequestDTO {
             @NotEmpty String name,
             @NotEmpty String subDomain
     ) {}
+
+    public record Participation(
+            @NotEmpty String code
+    ) {}
 }

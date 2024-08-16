@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.domain.entity;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,8 @@ public class Club extends BaseEntity {
 
     private String subDomain;
 
+    private String code;
+
     @OneToMany(mappedBy = "club")
     private List<ClubManager> clubManagers;
 
@@ -35,6 +38,7 @@ public class Club extends BaseEntity {
     @PrePersist
     public void init() {
         clubManagers = new ArrayList<>();
+        code = UUID.randomUUID().toString();
     }
 
     public void addClubManager(ClubManager clubManager) {
@@ -50,7 +54,8 @@ public class Club extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public boolean isDeleted() {
-        return this.deletedAt != null;
+    public boolean contains(Manager manager) {
+        return this.getClubManagers().stream()
+                .anyMatch(clubManager -> clubManager.getManager().equals(manager));
     }
 }

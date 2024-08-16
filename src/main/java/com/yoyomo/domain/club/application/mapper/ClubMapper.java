@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Participation;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
@@ -15,5 +16,7 @@ public interface ClubMapper {
 
     Club from(ClubRequestDTO.Save dto);
 
-    Response to(Club club);
+    Response toResponse(Club club);
+
+    Participation toParticipation(Club club);
 }
