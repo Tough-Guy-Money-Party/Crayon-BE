@@ -6,6 +6,7 @@ import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
 import com.yoyomo.domain.club.domain.service.ClubSaveService;
+import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubManagerSaveService clubManagerSaveService;
     private final ClubMapper clubMapper;
     private final ClubGetService clubGetService;
+    private final ClubUpdateService clubUpdateService;
 
     @Override @Transactional
     public Response save(Save dto, Long userId) {
@@ -40,7 +42,13 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     @Override
     public Response read(String clubId) {
-        Club club = clubGetService.find(UUID.fromString(clubId));
+        Club club = clubGetService.find(clubId);
         return clubMapper.to(club);
+    }
+
+    @Override
+    public void update(String clubId, Save dto) {
+        Club club = clubGetService.find(clubId);
+        clubUpdateService.update(club, dto);
     }
 }

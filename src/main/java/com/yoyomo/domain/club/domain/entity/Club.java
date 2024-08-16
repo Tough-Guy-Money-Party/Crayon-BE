@@ -1,5 +1,6 @@
 package com.yoyomo.domain.club.domain.entity;
 
+import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,5 +36,10 @@ public class Club extends BaseEntity {
 
     public void addClubManager(ClubManager clubManager) {
         this.clubManagers.add(clubManager);
+    }
+
+    public void update(ClubRequestDTO.Save dto) {
+        this.name = dto.name();
+        this.subDomain = dto.subDomain();
     }
 }

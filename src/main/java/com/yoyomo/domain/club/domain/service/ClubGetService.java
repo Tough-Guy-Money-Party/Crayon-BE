@@ -14,8 +14,8 @@ public class ClubGetService {
 
     private final ClubRepository clubRepository;
 
-    public Club find(UUID clubId) {
-        return clubRepository.findById(clubId)
+    public Club find(String clubId) {
+        return clubRepository.findById(UUID.fromString(clubId))
                 .orElseThrow(ClubNotFoundException::new);
     }
 }

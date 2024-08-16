@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
-import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "CLUB")
@@ -34,5 +33,12 @@ public class ClubController {
     @Operation(summary = "동아리 조회")
     public ResponseDto<Response> read(@PathVariable String clubId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), clubManageUseCase.read(clubId));
+    }
+
+    @PatchMapping("/{clubId}")
+    @Operation(summary = "동아리 수정")
+    public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Save dto) {
+        clubManageUseCase.update(clubId, dto);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }

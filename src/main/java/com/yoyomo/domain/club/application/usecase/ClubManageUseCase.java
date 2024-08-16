@@ -9,4 +9,6 @@ public interface ClubManageUseCase {
     Response save(Save dto, Long userId);
 
     Response read(String clubId);
+
+    void update(String clubId, Save dto);
 }
