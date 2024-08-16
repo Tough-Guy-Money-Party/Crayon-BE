@@ -5,6 +5,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,7 +29,16 @@ public class Manager extends BaseEntity {
     @OneToMany(mappedBy = "manager")
     private List<ClubManager> clubManagers;
 
+    @PrePersist
+    public void init() {
+        clubManagers = new ArrayList<>();
+    }
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void addClubManager(ClubManager clubManager) {
+        this.clubManagers.add(clubManager);
     }
 }

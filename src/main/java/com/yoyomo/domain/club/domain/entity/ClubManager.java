@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
@@ -22,4 +21,9 @@ public class ClubManager {
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private Manager manager;
+
+    public ClubManager(Manager manager, Club club) {
+        this.manager = manager;
+        this.club = club;
+    }
 }

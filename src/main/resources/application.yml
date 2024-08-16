@@ -46,6 +46,7 @@ crayon:
     refresh:
       expiration: 604800000
       header: Authorization-refresh
+    masterToken: ${MASTER_TOKEN}
 
 lambda:
   uri: ${LAMBDA_URI}

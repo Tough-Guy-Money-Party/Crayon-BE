@@ -4,6 +4,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@ToString
 public class Club extends BaseEntity {
 
     @Id
@@ -25,4 +27,13 @@ public class Club extends BaseEntity {
 
     @OneToMany(mappedBy = "club")
     private List<ClubManager> clubManagers;
+
+    @PrePersist
+    public void init() {
+        clubManagers = new ArrayList<>();
+    }
+
+    public void addClubManager(ClubManager clubManager) {
+        this.clubManagers.add(clubManager);
+    }
 }
