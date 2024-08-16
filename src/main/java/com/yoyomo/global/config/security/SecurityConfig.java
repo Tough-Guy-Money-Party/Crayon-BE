@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()
+                                .requestMatchers("/health-check").permitAll()
                                 .anyRequest().authenticated());
 
         http
