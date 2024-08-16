@@ -52,7 +52,7 @@ public class ManagerManageUseCase {
                 jwtProvider.createRefreshToken()
         );
 
-        return mapper.to(manager, tokenDto);
+        return mapper.toResponseDTO(manager, tokenDto);
     }
 
     private ManagerResponseDTO.Response getManagerResponse(String email) {
@@ -62,7 +62,7 @@ public class ManagerManageUseCase {
                 jwtProvider.createRefreshToken()
         );
 
-        return mapper.to(manager, tokenDto);
+        return mapper.toResponseDTO(manager, tokenDto);
     }
 
 }

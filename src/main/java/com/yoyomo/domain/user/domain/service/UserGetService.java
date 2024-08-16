@@ -20,4 +20,8 @@ public class UserGetService {
     public Boolean existsByEmail(String email) {
         return managerRepository.existsByEmail(email);
     }
+
+    public Manager find(Long id) {
+        return managerRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
 }
