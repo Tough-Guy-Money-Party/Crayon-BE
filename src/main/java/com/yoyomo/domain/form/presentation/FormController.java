@@ -7,6 +7,7 @@ import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class FormController {
 
     @PostMapping("/{clubId}")
     @Operation(summary = "폼 생성")
-    public ResponseDto<FormResponseDTO.SaveResponse> save(@RequestBody FormRequestDTO.Save dto, @PathVariable String clubId, @CurrentUser Long userId) {
+    public ResponseDto<FormResponseDTO.SaveResponse> save(@RequestBody FormRequestDTO.Save dto, @PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_CREATE.getMessage(), formManageUseCase.create(dto, clubId, userId));
     }
 }

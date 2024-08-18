@@ -47,4 +47,8 @@ public class Recruitment extends BaseEntity {
         processes = new ArrayList<>();
         isActive = true;
     }
+
+    public void addProcesses(List<Process> processes) {
+        this.processes = processes;
+    }
 }
