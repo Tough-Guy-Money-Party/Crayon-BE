@@ -44,6 +44,11 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+    route53:
+      hostedZoneId: ${HOSTED_ZONE_ID}
+    accountId: ${AWS_ACCOUNT_ID}
+    acm : ${ACM}
+
 
 application:
   bucket:
