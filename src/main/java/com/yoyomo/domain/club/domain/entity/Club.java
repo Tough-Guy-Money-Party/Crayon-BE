@@ -1,6 +1,8 @@
 package com.yoyomo.domain.club.domain.entity;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
+import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -59,7 +61,17 @@ public class Club extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public boolean contains(Manager manager) {
+    public static void checkDuplicateParticipate(Club club, Manager manager) {
+        if(club.contains(manager))
+            throw new DuplicatedParticipationException();
+    }
+
+    public static void checkAuthority(Club club, Manager manager) {
+        if(!club.contains(manager))
+            throw new ClubAccessDeniedException();
+    }
+
+    private boolean contains(Manager manager) {
         return this.getClubManagers().stream()
                 .anyMatch(clubManager -> clubManager.getManager().equals(manager));
     }

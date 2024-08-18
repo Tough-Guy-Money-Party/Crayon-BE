@@ -7,6 +7,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,4 +41,10 @@ public class Recruitment extends BaseEntity {
 
     @OneToMany(mappedBy = "recruitment")
     private List<Process> processes;
+
+    @PrePersist
+    public void init() {
+        processes = new ArrayList<>();
+        isActive = true;
+    }
 }
