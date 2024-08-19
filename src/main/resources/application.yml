@@ -60,3 +60,8 @@ kakao:
   grant_type: ${KAKAO_GRANT_TYPE}
   client_id: ${KAKAO_CLIENT_ID}
   user_info_uri: ${KAKAO_USER_INFO_URI}
+
+server:
+  servlet:
+    session:
+      timeout: 18000
