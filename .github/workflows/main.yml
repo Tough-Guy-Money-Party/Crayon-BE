@@ -71,12 +71,7 @@ jobs:
       # Install dependencies using pnpm
       - name: Install dependencies
         run: pnpm install
-        working-directory: ./your_pnpm_project_directory
-
-      # Build the project using pnpm
-      - name: Build with pnpm
-        run: pnpm run build
-        working-directory: ./your_pnpm_project_directory
+        working-directory: ./app/vite-notion-to-site
 
       # Gradle caching
       - name: Gradle Caching
