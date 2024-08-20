@@ -30,16 +30,6 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      # Install dependencies using pnpm
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: ./your_pnpm_project_directory
-
-      # Build the project using pnpm
-      - name: Build with pnpm
-        run: pnpm run build
-        working-directory: ./your_pnpm_project_directory
-
       # Gradle caching
       - name: Gradle Caching
         uses: actions/cache@v3
