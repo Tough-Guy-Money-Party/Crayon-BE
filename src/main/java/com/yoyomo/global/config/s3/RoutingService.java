@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.model.PublicAccessBlockConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -138,7 +139,7 @@ public class RoutingService {
 
         updateBucketPolicyWithOAI(bucketName, oaiId, distributionId);
 
-        updateCloudFrontDistributionWithOAI(distributionId, oaiId);
+        updateCloudFrontDistributionWithOAIAndCustomErrorPage(distributionId, oaiId);
 
         invalidateCache(distributionId, "/*");
 
@@ -172,12 +173,14 @@ public class RoutingService {
         System.out.println("Lambda function invoked with response: " + responsePayload);
     }
 
-    private void updateCloudFrontDistributionWithOAI(String distributionId, String oaiId) {
+    private void updateCloudFrontDistributionWithOAIAndCustomErrorPage(String distributionId, String oaiId) {
+        // 기존 배포 구성 요청
         GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
                 .id(distributionId)
                 .build();
         GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(getDistributionConfigRequest);
 
+        // 기존 Origin 설정 업데이트
         DistributionConfig distributionConfig = getDistributionConfigResponse.distributionConfig().toBuilder()
                 .origins(origins -> origins.items(
                         getDistributionConfigResponse.distributionConfig().origins().items().stream()
@@ -193,17 +196,30 @@ public class RoutingService {
                                 })
                                 .collect(Collectors.toList())
                 ).quantity(getDistributionConfigResponse.distributionConfig().origins().items().size()))
+                .customErrorResponses(customErrorResponses -> customErrorResponses.items(
+                        Arrays.asList(
+                                CustomErrorResponse.builder()
+                                        .errorCode(403)
+                                        .responsePagePath("/index.html")
+                                        .responseCode("200")
+                                        .errorCachingMinTTL(300L) // 캐싱 시간, 필요에 따라 조정
+                                        .build()
+                        )
+                ).quantity(1)) // 커스텀 오류 페이지 수량
                 .build();
 
+        // 배포 업데이트 요청
         UpdateDistributionRequest updateDistributionRequest = UpdateDistributionRequest.builder()
                 .id(distributionId)
                 .distributionConfig(distributionConfig)
                 .ifMatch(getDistributionConfigResponse.eTag())
                 .build();
 
+        // CloudFront 배포 업데이트
         cloudFrontClient.updateDistribution(updateDistributionRequest);
-        System.out.println("CloudFront 배포의 OAI가 업데이트되었습니다.");
+        System.out.println("CloudFront 배포의 OAI 및 커스텀 오류 페이지가 업데이트되었습니다.");
     }
+
 
     private String createOriginAccessIdentity() {
         CreateCloudFrontOriginAccessIdentityRequest request = CreateCloudFrontOriginAccessIdentityRequest.builder()
