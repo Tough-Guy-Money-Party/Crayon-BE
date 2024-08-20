@@ -31,6 +31,7 @@ import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+import static com.yoyomo.domain.recruitment.domain.entity.Recruitment.checkEnabled;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +61,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        checkEnabled(recruitment);
 
         List<ProcessResponseDTO.Response> processes = recruitment.getProcesses().stream()
                 .map(process -> {
@@ -84,6 +86,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override @Transactional
     public void update(String recruitmentId, Update dto) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        checkEnabled(recruitment);
 
         processDeleteService.deleteAll(recruitment.getProcesses());
         recruitment.clearProcesses();
@@ -97,5 +100,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
         recruitmentUpdateService.update(recruitment, dto);
 
         recruitment.getProcesses().listIterator().forEachRemaining(System.out::println);
+    }
+
+    @Override
+    public void delete(String recruitmentId) {
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        checkEnabled(recruitment);
+        recruitmentUpdateService.delete(recruitment);
     }
 }

@@ -10,13 +10,13 @@ import java.util.List;
 public class RecruitmentRequestDTO {
 
     public record Save(
-        String title,
-        String position,
-        String generation,
-        Status status,
-        String formId,
-        String clubId,
-        List<ProcessRequestDTO.Save> processes
+        @NotEmpty String title,
+        @NotEmpty String position,
+        @NotEmpty Integer generation,
+        @NotNull Status status,
+        @NotEmpty String formId,
+        @NotEmpty String clubId,
+        @NotNull List<ProcessRequestDTO.Save> processes
     ) {}
 
     public record Update(

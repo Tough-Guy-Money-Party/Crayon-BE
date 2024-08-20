@@ -15,4 +15,8 @@ public class RecruitmentUpdateService {
     public void update(Recruitment recruitment, Update dto) {
         recruitment.update(dto);
     }
+
+    public void delete(Recruitment recruitment) {
+        recruitment.delete();
+    }
 }

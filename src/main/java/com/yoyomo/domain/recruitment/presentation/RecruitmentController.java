@@ -29,7 +29,7 @@ public class RecruitmentController {
 
     @PostMapping
     @Operation(summary = "모집 생성")
-    public ResponseDto<Void> save(@RequestBody Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> save(@RequestBody @Valid Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.save(dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
     }
@@ -51,5 +51,12 @@ public class RecruitmentController {
     public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto) {
         recruitmentManageUseCase.update(recruitmentId, dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @DeleteMapping("/{recruitmentId}")
+    @Operation(summary = "모집 삭제")
+    public ResponseDto<Void> delete(@PathVariable String recruitmentId) {
+        recruitmentManageUseCase.delete(recruitmentId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 }

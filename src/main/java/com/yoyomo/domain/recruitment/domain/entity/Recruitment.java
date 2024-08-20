@@ -3,6 +3,7 @@ package com.yoyomo.domain.recruitment.domain.entity;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
+import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -77,5 +78,14 @@ public class Recruitment extends BaseEntity {
 
     public void clearProcesses() {
         this.processes.clear();
+    }
+
+    public void delete() {
+        isActive = false;
+    }
+
+    public static void checkEnabled(Recruitment recruitment) {
+        if(!recruitment.isActive)
+            throw new RecruitmentNotFoundException();
     }
 }

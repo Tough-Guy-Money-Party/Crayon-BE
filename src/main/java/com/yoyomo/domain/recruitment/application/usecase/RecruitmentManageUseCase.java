@@ -14,4 +14,6 @@ public interface RecruitmentManageUseCase {
     Page<Response> readAll(Pageable pageable);
 
     void update(String recruitmentId, RecruitmentRequestDTO.Update dto);
+
+    void delete(String recruitmentId);
 }
