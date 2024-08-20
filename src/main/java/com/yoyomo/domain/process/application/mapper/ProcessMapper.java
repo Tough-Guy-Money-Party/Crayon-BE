@@ -1,12 +1,16 @@
 package com.yoyomo.domain.process.application.mapper;
 
+import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
 import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO.Save;
+import com.yoyomo.domain.process.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -16,4 +20,7 @@ public interface ProcessMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "title", source = "dto.title")
     Process from(Save dto, Recruitment recruitment);
+
+    @Mapping(target = "applications", source = "applications")
+    ProcessResponseDTO.Response toResponse(Process process, List<ApplicationResponseDTO.Response> applications);
 }
