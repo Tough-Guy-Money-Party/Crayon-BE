@@ -46,7 +46,7 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
         clubUpdateService.from(club.getId(), request);
         s3Service.createBucket(subdomain);
         routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
-        s3Service.save(subdomain);
+        s3Service.save(subdomain, request.notionPageLink());
     }
 
     public void update(UpdateStyleSettingsRequest request, String email) {

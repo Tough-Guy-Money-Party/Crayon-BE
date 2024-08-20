@@ -49,6 +49,8 @@ cloud:
     accountId: ${AWS_ACCOUNT_ID}
     acm : ${ACM}
 
+vite :
+  uri: ${VITE_PUBLIC_API_URL}
 
 application:
   bucket:
