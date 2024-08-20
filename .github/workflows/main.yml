@@ -21,7 +21,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # gradle caching
+      # Install Node.js and pnpm
+      - name: Set up Node.js 18 and pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # Install dependencies using pnpm
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ./your_pnpm_project_directory
+
+      # Build the project using pnpm
+      - name: Build with pnpm
+        run: pnpm run build
+        working-directory: ./your_pnpm_project_directory
+
+      # Gradle caching
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -32,7 +51,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # gradle 빌드
+      # Build with Gradle Wrapper
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
@@ -50,7 +69,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # gradle caching
+      # Install Node.js and pnpm
+      - name: Set up Node.js 18 and pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # Install dependencies using pnpm
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ./your_pnpm_project_directory
+
+      # Build the project using pnpm
+      - name: Build with pnpm
+        run: pnpm run build
+        working-directory: ./your_pnpm_project_directory
+
+      # Gradle caching
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -61,18 +99,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # gradle 빌드
+      # Build with Gradle Wrapper
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-      # 도커 이미지 생성 후 이미지 push
+      # Docker build & push to dev
       - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/crayon
 
-      # EC2 ssh 연결 후 이미지 pull
+      # Deploy to server
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
