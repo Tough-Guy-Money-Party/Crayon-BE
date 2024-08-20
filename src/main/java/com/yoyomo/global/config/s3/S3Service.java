@@ -47,7 +47,7 @@ public class S3Service {
     public void save(String bucketName) throws IOException {
 
         log.info("현재 경로" + System.getProperty("user.dir"));
-        String distFolderPath = "../vite-notion-to-site/dist";
+        String distFolderPath = "/app/vite-notion-to-site/dist";
         File distDir = new File(distFolderPath);
 
         String canonicalPath = distDir.getCanonicalPath();
