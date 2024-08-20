@@ -28,6 +28,7 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     private final ClubStyleMapper clubStyleMapper;
     private final S3Service s3Service;
     private final RoutingService routingService;
+    private final String BASEURL = ".crayon.land";
 
     @Override
     public ClubGeneralSettingResponse getGeneralSetting(String email) {
@@ -40,11 +41,12 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     }
 
     public void update(String email, UpdateGeneralSettingsRequest request) throws IOException  {
+        String subdomain = request.subDomain() + BASEURL;
         Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
-        s3Service.createBucket( request.subDomain()+ ".crayon.land");
-        routingService.handleS3Upload(request.subDomain() + ".crayon.land","ap-northeast-2",request.subDomain() + ".crayon.land");
-        s3Service.save(request.subDomain()+".crayon.land");
+        s3Service.createBucket(subdomain);
+        routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
+        s3Service.save(subdomain);
     }
 
     public void update(UpdateStyleSettingsRequest request, String email) {
