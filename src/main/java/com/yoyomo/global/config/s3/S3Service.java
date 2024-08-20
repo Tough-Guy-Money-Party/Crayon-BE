@@ -55,12 +55,12 @@ public class S3Service {
 
         log.info("현재 경로" + System.getProperty("user.dir"));
         // 1. .env 파일 생성
-        String envFilePath = "/app/vite-notion-to-site/.env";
+        String envFilePath = "../vite-notion-to-site/.env";
         String canonicalEnvPath = new File(envFilePath).getCanonicalPath();
         createEnvFile(canonicalEnvPath, notionPageId);
 
         // 2. 빌드 작업 수행
-        String projectPath = "/app/vite-notion-to-site";
+        String projectPath = "../vite-notion-to-site";
         String canonicalProjectPath = new File(projectPath).getCanonicalPath();
         buildProject(canonicalProjectPath);
 
@@ -105,6 +105,7 @@ public class S3Service {
         String key = distFolderPath.relativize(filePath).toString().replace("\\", "/");
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .cacheControl("no-cache, no-store, must-revalidate")
                 .bucket(bucketName)
                 .key(key)
                 .build();

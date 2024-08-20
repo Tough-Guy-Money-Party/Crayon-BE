@@ -10,9 +10,7 @@ import software.amazon.awssdk.services.lambda.model.InvokeResponse;
 import software.amazon.awssdk.services.route53.Route53Client;
 import software.amazon.awssdk.services.route53.model.*;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutBucketPolicyRequest;
-import software.amazon.awssdk.services.s3.model.PublicAccessBlockConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +34,32 @@ public class RoutingService {
 
     @Value("${cloud.aws.route53.hostedZoneId}")
     private String hostedId;
+
+    public void handleS3Upload(String bucketName, String region, String subdomain) {
+        // 1. Origin Access Identity(OAI) 생성
+        String oaiId = createOriginAccessIdentity();
+
+        // 2. CloudFront 배포 생성
+        String distributionId = createCloudFrontDistribution(bucketName, region, oaiId, acm, region, subdomain);
+
+        // 3. S3 버킷 정책에 OAI 추가
+        updateBucketPolicyWithOAI(bucketName, oaiId, distributionId);
+
+        // 4. CloudFront 배포에 OAI 및 커스텀 오류 페이지 적용
+        updateCloudFrontDistributionWithOAIAndCustomErrorPage(distributionId, oaiId);
+
+        // 5. CloudFront 캐시 무효화 (모든 경로)
+        invalidateCache(distributionId, "/*");
+
+        // 6. CloudFront 배포 도메인 이름 가져오기
+        String cloudFrontDomainName = getCloudFrontDomainName(distributionId);
+
+        // 7. Route 53에 레코드 생성
+        createRoute53Record(hostedId, subdomain, cloudFrontDomainName);
+
+        // 8. S3 업로드 후 람다 함수 호출
+        invokeLambdaOnS3Upload(distributionId, bucketName, oaiId, "updateOAI");
+    }
 
     private String createCloudFrontDistribution(String bucketName, String region, String oaiId, String acmCertificateArn, String originShieldRegion, String alternateDomainName) {
         String callerReference = Long.toString(System.currentTimeMillis());
@@ -70,6 +94,7 @@ public class RoutingService {
                 .targetOriginId(bucketName)
                 .viewerProtocolPolicy(ViewerProtocolPolicy.REDIRECT_TO_HTTPS)
                 .minTTL(0L)
+                .maxTTL(0L)
                 .forwardedValues(forwardedValues)
                 .build();
 
@@ -132,47 +157,6 @@ public class RoutingService {
         System.out.println("Bucket policy updated for OAI: " + oaiId);
     }
 
-    public void handleS3Upload(String bucketName, String region, String subdomain) {
-        String oaiId = createOriginAccessIdentity();
-
-        String distributionId = createCloudFrontDistribution(bucketName, region, oaiId, acm, region, subdomain);
-
-        updateBucketPolicyWithOAI(bucketName, oaiId, distributionId);
-
-        updateCloudFrontDistributionWithOAIAndCustomErrorPage(distributionId, oaiId);
-
-        invalidateCache(distributionId, "/*");
-
-        String cloudFrontDomainName = getCloudFrontDomainName(distributionId);
-
-        createRoute53Record(hostedId, subdomain, cloudFrontDomainName);
-
-        invokeLambdaOnS3Upload(distributionId, bucketName, oaiId, "updateOAI");
-    }
-
-    private String getCloudFrontDomainName(String distributionId) {
-        GetDistributionRequest getDistributionRequest = GetDistributionRequest.builder()
-                .id(distributionId)
-                .build();
-
-        GetDistributionResponse getDistributionResponse = cloudFrontClient.getDistribution(getDistributionRequest);
-        return getDistributionResponse.distribution().domainName();
-    }
-
-    public void invokeLambdaOnS3Upload(String distributionId, String bucketName, String oaiId, String functionName) {
-        String payload = String.format("{ \"distributionId\": \"%s\", \"bucketName\": \"%s\", \"oaiId\": \"%s\" }", distributionId, bucketName, oaiId);
-
-        InvokeRequest invokeRequest = InvokeRequest.builder()
-                .functionName(functionName)
-                .payload(SdkBytes.fromUtf8String(payload))
-                .build();
-
-        InvokeResponse invokeResponse = lambdaClient.invoke(invokeRequest);
-        String responsePayload = invokeResponse.payload().asUtf8String();
-
-        System.out.println("Lambda function invoked with response: " + responsePayload);
-    }
-
     private void updateCloudFrontDistributionWithOAIAndCustomErrorPage(String distributionId, String oaiId) {
         // 기존 배포 구성 요청
         GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
@@ -202,10 +186,10 @@ public class RoutingService {
                                         .errorCode(403)
                                         .responsePagePath("/index.html")
                                         .responseCode("200")
-                                        .errorCachingMinTTL(300L) // 캐싱 시간, 필요에 따라 조정
+                                        .errorCachingMinTTL(300L)
                                         .build()
                         )
-                ).quantity(1)) // 커스텀 오류 페이지 수량
+                ).quantity(1))
                 .build();
 
         // 배포 업데이트 요청
@@ -219,7 +203,6 @@ public class RoutingService {
         cloudFrontClient.updateDistribution(updateDistributionRequest);
         System.out.println("CloudFront 배포의 OAI 및 커스텀 오류 페이지가 업데이트되었습니다.");
     }
-
 
     private String createOriginAccessIdentity() {
         CreateCloudFrontOriginAccessIdentityRequest request = CreateCloudFrontOriginAccessIdentityRequest.builder()
@@ -251,6 +234,15 @@ public class RoutingService {
         System.out.println("Invalidation created with ID: " + response.invalidation().id());
     }
 
+    private String getCloudFrontDomainName(String distributionId) {
+        GetDistributionRequest getDistributionRequest = GetDistributionRequest.builder()
+                .id(distributionId)
+                .build();
+
+        GetDistributionResponse getDistributionResponse = cloudFrontClient.getDistribution(getDistributionRequest);
+        return getDistributionResponse.distribution().domainName();
+    }
+
     public void createRoute53Record(String hostedZoneId, String subdomain, String cloudFrontDomainName) {
         ChangeBatch changeBatch = ChangeBatch.builder()
                 .changes(Change.builder()
@@ -274,5 +266,19 @@ public class RoutingService {
 
         ChangeResourceRecordSetsResponse response = route53Client.changeResourceRecordSets(request);
         System.out.println("Route 53 record created: " + response.changeInfo().statusAsString());
+    }
+
+    public void invokeLambdaOnS3Upload(String distributionId, String bucketName, String oaiId, String functionName) {
+        String payload = String.format("{ \"distributionId\": \"%s\", \"bucketName\": \"%s\", \"oaiId\": \"%s\" }", distributionId, bucketName, oaiId);
+
+        InvokeRequest invokeRequest = InvokeRequest.builder()
+                .functionName(functionName)
+                .payload(SdkBytes.fromUtf8String(payload))
+                .build();
+
+        InvokeResponse invokeResponse = lambdaClient.invoke(invokeRequest);
+        String responsePayload = invokeResponse.payload().asUtf8String();
+
+        System.out.println("Lambda function invoked with response: " + responsePayload);
     }
 }
