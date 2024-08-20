@@ -116,7 +116,7 @@ public class S3Service {
 
     private void buildProject(String canonicalProjectPath) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("pnpm", "run", "build");
+            ProcessBuilder processBuilder = new ProcessBuilder("npm", "run", "build");
             processBuilder.directory(new File(canonicalProjectPath));
             processBuilder.inheritIO();
             Process process = processBuilder.start();

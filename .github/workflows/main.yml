@@ -40,14 +40,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      # Install Node.js and npm
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18' # Node.js 버전은 필요에 따라 조정
-      # Install pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
       # gradle caching
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -87,5 +79,4 @@ jobs:
             fi
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon
             sudo docker run --network host --name spring -d -p 8080:8080 --env-file ./crayon.env -v ${{ secrets.EC2_DIR }}:${{ secrets.DOCKER_DIR }} ${{ secrets.DOCKERHUB_USERNAME }}/crayon
-
             sudo docker image prune -a -f
