@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_READ;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static org.springframework.http.HttpStatus.*;
@@ -32,7 +34,7 @@ public class LandingController {
 
     @PatchMapping("/general")
     @Operation(summary = "동아리 포괄 설정")
-    public ResponseDto update(Authentication authentication, @RequestBody UpdateGeneralSettingsRequest updateGeneralSettingsRequest) {
+    public ResponseDto update(Authentication authentication, @RequestBody UpdateGeneralSettingsRequest updateGeneralSettingsRequest) throws IOException {
         landingManageUseCase.update(authentication.getName(), updateGeneralSettingsRequest);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }

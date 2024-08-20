@@ -16,6 +16,8 @@ import lombok.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     private final ClubStyleMapper clubStyleMapper;
     private final S3Service s3Service;
     private final RoutingService routingService;
+    private final String BASEURL = ".crayon.land";
 
     @Override
     public ClubGeneralSettingResponse getGeneralSetting(String email) {
@@ -33,15 +36,15 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     }
 
     @Override
-    public ClubStyleSettingsResponse getStyleSetting(String email) {
+    public ClubStyleSettingsResponse getStyleSetting(String email){
         return clubStyleMapper.ClubLandingStyleToClubStyleSettingsResponse(clubGetService.byUserEmail(email).getClubLandingStyle());
     }
 
-    public void update(String email, UpdateGeneralSettingsRequest request) {
+    public void update(String email, UpdateGeneralSettingsRequest request) throws IOException  {
+        String subdomain = request.subDomain() + BASEURL;
         Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
-        s3Service.createBucket(club.getSubDomain() + ".crayon.land");
-        routingService.handleS3Upload(club.getSubDomain() + ".crayon.land","ap-northeast-2",club.getSubDomain() + ".crayon.land");
+        s3Service.save(subdomain, request.notionPageLink());
     }
 
     public void update(UpdateStyleSettingsRequest request, String email) {
