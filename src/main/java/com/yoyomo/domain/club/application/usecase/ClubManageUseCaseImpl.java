@@ -49,13 +49,15 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     public ClubCreateResponse create(ClubRequest request, String userEmail) {
+
+        //도메인 체크
         String subdomain = request.subDomain() + BASEURL;
+        String subDoamin = checkDuplicate(request.subDomain());
 
         Club club = clubMapper.from(request);
         club = clubSaveService.save(club);
 
-        //도메인 체크 및 배포
-        String subDoamin = checkDuplicate(request.subDomain());
+        //배포
         s3Service.createBucket(subDoamin);
         routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
 
