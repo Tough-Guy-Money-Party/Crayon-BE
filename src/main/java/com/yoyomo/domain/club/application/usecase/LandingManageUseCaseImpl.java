@@ -16,6 +16,8 @@ import lombok.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,15 +35,16 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     }
 
     @Override
-    public ClubStyleSettingsResponse getStyleSetting(String email) {
+    public ClubStyleSettingsResponse getStyleSetting(String email){
         return clubStyleMapper.ClubLandingStyleToClubStyleSettingsResponse(clubGetService.byUserEmail(email).getClubLandingStyle());
     }
 
-    public void update(String email, UpdateGeneralSettingsRequest request) {
+    public void update(String email, UpdateGeneralSettingsRequest request) throws IOException  {
         Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
-        s3Service.createBucket(club.getSubDomain() + ".crayon.land");
-        routingService.handleS3Upload(club.getSubDomain() + ".crayon.land","ap-northeast-2",club.getSubDomain() + ".crayon.land");
+        s3Service.createBucket( request.subDomain()+ ".crayon.land");
+        routingService.handleS3Upload(request.subDomain() + ".crayon.land","ap-northeast-2",request.subDomain() + ".crayon.land");
+        s3Service.save(request.subDomain()+".crayon.land");
     }
 
     public void update(UpdateStyleSettingsRequest request, String email) {
