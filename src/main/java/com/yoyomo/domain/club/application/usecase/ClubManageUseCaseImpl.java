@@ -16,6 +16,7 @@ import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.participation.service.ParticipationService;
+import com.yoyomo.global.config.s3.RoutingService;
 import com.yoyomo.global.config.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -39,6 +40,8 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final UserGetService userGetService;
     private final ClubRepository clubRepository;
     private final S3Service s3Service;
+    private final RoutingService routingService;
+    private final String BASEURL = ".crayon.land";
 
     public ClubResponse read(String id) {
         Club club = clubGetService.byId(id);
@@ -46,10 +49,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     public ClubCreateResponse create(ClubRequest request, String userEmail) {
+        String subdomain = request.subDomain() + BASEURL;
+
         Club club = clubMapper.from(request);
         club = clubSaveService.save(club);
+
+        //도메인 체크 및 배포
         String subDoamin = checkDuplicate(request.subDomain());
         s3Service.createBucket(subDoamin);
+        routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
+
         participationService.addToEachList(userEmail, club);
         return new ClubCreateResponse(club.getId(), request.subDomain());
     }
