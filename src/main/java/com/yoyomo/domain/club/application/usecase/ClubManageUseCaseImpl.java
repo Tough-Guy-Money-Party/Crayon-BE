@@ -3,7 +3,6 @@ package com.yoyomo.domain.club.application.usecase;
 import com.yoyomo.domain.club.application.dto.req.*;
 import com.yoyomo.domain.club.application.dto.res.*;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
-import com.yoyomo.domain.club.application.mapper.ClubStyleMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -12,9 +11,7 @@ import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.domain.entity.Manager;
-import com.yoyomo.domain.user.domain.repository.ManagerRepository;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.participation.service.ParticipationService;
 import com.yoyomo.global.config.s3.RoutingService;
 import com.yoyomo.global.config.s3.S3Service;
@@ -51,15 +48,15 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public ClubCreateResponse create(ClubRequest request, String userEmail) {
 
         //도메인 체크
-        String subdomain = request.subDomain() + BASEURL;
-        String subDoamin = checkDuplicate(request.subDomain());
+        String subDomain = checkDuplicate(request.subDomain());
+        String subDomainName = subDomain + BASEURL;
 
         Club club = clubMapper.from(request);
         club = clubSaveService.save(club);
 
         //배포
-        s3Service.createBucket(subDoamin);
-        routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
+        s3Service.createBucket(subDomainName);
+        routingService.handleS3Upload(subDomainName,"ap-northeast-2", subDomainName);
 
         participationService.addToEachList(userEmail, club);
         return new ClubCreateResponse(club.getId(), request.subDomain());
