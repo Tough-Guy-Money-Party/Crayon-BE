@@ -12,4 +12,6 @@ public interface RecruitmentManageUseCase {
     DetailResponse read(String recruitmentId);
 
     Page<Response> readAll(Pageable pageable);
+
+    void update(String recruitmentId, RecruitmentRequestDTO.Update dto);
 }

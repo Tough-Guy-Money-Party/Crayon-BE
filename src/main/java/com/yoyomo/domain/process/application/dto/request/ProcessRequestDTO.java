@@ -15,4 +15,14 @@ public class ProcessRequestDTO {
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt
     ) {}
+
+    public record Update(
+            String title,
+            Integer stage,
+            Type type,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
+            LocalDateTime announceStartAt,
+            LocalDateTime announceEndAt
+    ) {}
 }

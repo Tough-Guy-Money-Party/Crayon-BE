@@ -8,8 +8,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 
 @Getter
 @Builder
@@ -53,5 +56,26 @@ public class Recruitment extends BaseEntity {
 
     public void addProcesses(List<Process> processes) {
         this.processes = processes;
+    }
+
+    public void addProcess(Process process) {
+        this.processes.add(process);
+    }
+
+    public void sortProcess() {
+        this.processes.sort(Comparator.comparing(Process::getStage));
+    }
+
+
+    public void update(Update dto) {
+        this.title = dto.title();
+        this.position = dto.position();
+        this.generation = dto.generation();
+        this.isActive = dto.isActive();
+        this.formId = dto.formId();
+    }
+
+    public void clearProcesses() {
+        this.processes.clear();
     }
 }

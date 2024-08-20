@@ -16,7 +16,8 @@ public class RecruitmentResponseDTO {
             Status status,
             Boolean isActive,
             LocalDate recruitmentEndDate,   // 모집 마지막 프로세스의 마감 일자
-            Integer totalApplicantsCount
+            Integer totalApplicantsCount,
+            String formId
     ) {}
 
     public record DetailResponse(

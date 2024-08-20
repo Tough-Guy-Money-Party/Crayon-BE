@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO.Save;
+import static com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO.Update;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +25,9 @@ public class ProcessSaveService {
                         .map(save -> processMapper.from(save, recruitment))
                         .toList()
         );
+    }
+
+    public Process save(Update dto, Recruitment recruitment) {
+        return processRepository.save(processMapper.from(dto, recruitment));
     }
 }

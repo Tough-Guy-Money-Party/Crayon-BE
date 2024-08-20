@@ -1,6 +1,7 @@
 package com.yoyomo.domain.process.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO;
 import com.yoyomo.domain.process.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.global.common.entity.BaseEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@ToString
 public class Process extends BaseEntity {
 
     @Id
@@ -43,4 +45,14 @@ public class Process extends BaseEntity {
 
     @OneToMany(mappedBy = "process")
     private List<Application> applications;
+
+    public void update(ProcessRequestDTO.Update update) {
+        this.title = update.title();
+        this.stage = update.stage();
+        this.type = update.type();
+        this.startAt = update.startAt();
+        this.endAt = update.endAt();
+        this.announceStartAt = update.announceStartAt();
+        this.announceEndAt = update.announceEndAt();
+    }
 }
