@@ -13,6 +13,7 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.global.config.dto.ResponseDto;
 import com.yoyomo.global.config.participation.dto.ParticipationCodeResponse;
 import com.yoyomo.global.config.participation.service.ParticipationCodeService;
+import com.yoyomo.global.config.s3.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +36,11 @@ public class ClubController {
     private final ParticipationCodeService participationCodeService;
     private final ClubSaveService clubSaveService;
     private final RecruitmentGetService recruitmentGetService;
-
+    private final S3Service s3Service;
 
     @PostMapping
     @Operation(summary = "동아리 생성")
     public ResponseDto<ClubCreateResponse> create(@RequestBody ClubRequest clubRequest, Authentication authentication) {
-        String subDomain = clubManageUseCase.checkDuplicate(clubRequest.subDomain());
-        String mySubDomain = clubSaveService.createSubDomain(subDomain);
-
         ClubCreateResponse response = clubManageUseCase.create(clubRequest, authentication.getName());
 
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage(), response);

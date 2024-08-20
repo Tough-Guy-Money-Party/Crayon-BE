@@ -44,7 +44,6 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
         String subdomain = request.subDomain() + BASEURL;
         Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
-        s3Service.createBucket(subdomain);
         routingService.handleS3Upload(subdomain,"ap-northeast-2",subdomain);
         s3Service.save(subdomain, request.notionPageLink());
     }
