@@ -35,6 +35,8 @@ public class Recruitment extends BaseEntity {
 
     private String formId;
 
+    private Integer totalApplicantsCount;
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
@@ -44,8 +46,9 @@ public class Recruitment extends BaseEntity {
 
     @PrePersist
     public void init() {
-        processes = new ArrayList<>();
+        processes = new ArrayList<>();  // 수정: 추후 필드에 init
         isActive = true;
+        totalApplicantsCount = 0;
     }
 
     public void addProcesses(List<Process> processes) {

@@ -9,6 +9,8 @@ import com.yoyomo.domain.process.application.mapper.ProcessMapper;
 import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.process.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO;
+import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO;
+import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
@@ -17,13 +19,15 @@ import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +53,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public Response read(String recruitmentId) {
+    public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
 
         List<ProcessResponseDTO.Response> processes = recruitment.getProcesses().stream()
@@ -63,6 +67,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
                 .sorted(Comparator.comparingInt(ProcessResponseDTO.Response::stage))
                 .toList();
 
-        return recruitmentMapper.toResponse(recruitment, processes);
+        return recruitmentMapper.toDetailResponse(recruitment, processes);
+    }
+
+    @Override
+    public Page<RecruitmentResponseDTO.Response> readAll(Pageable pageable) {
+        return recruitmentGetService.findAll(pageable)
+                .map(recruitmentMapper::toResponse);
     }
 }

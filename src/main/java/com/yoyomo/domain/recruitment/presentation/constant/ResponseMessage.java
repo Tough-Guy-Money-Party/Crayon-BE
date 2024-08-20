@@ -10,6 +10,7 @@ public enum ResponseMessage {
     SUCCESS_READ("모집 조회에 성공했습니다."),
 
     RECRUITMENT_NOT_FOUND("존재하지 않는 모집입니다."),
+    EMPTY_PROCESS("프로세스가 존재하지 않는 모집입니다."),
     ACCESS_DENIED("권한이 없습니다.");
     private final String message;
 }
