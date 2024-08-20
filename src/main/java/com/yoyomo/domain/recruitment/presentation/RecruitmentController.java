@@ -1,7 +1,6 @@
 package com.yoyomo.domain.recruitment.presentation;
 
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;

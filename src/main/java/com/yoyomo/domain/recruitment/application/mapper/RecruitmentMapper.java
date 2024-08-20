@@ -4,7 +4,6 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.process.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.exception.ProcessEmptyException;
@@ -14,11 +13,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.*;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
