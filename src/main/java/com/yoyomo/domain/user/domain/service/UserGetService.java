@@ -14,7 +14,8 @@ public class UserGetService {
     private final ManagerRepository managerRepository;
 
     public Manager findByEmail(String email) {
-        return managerRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        return managerRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public Boolean existsByEmail(String email) {
@@ -22,6 +23,7 @@ public class UserGetService {
     }
 
     public Manager find(Long id) {
-        return managerRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return managerRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
     }
 }
