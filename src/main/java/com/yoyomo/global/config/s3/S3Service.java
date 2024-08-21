@@ -3,9 +3,12 @@ package com.yoyomo.global.config.s3;
 
 
 
+import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -18,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.PublicAccessBlockConfiguration;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,21 +39,25 @@ public class S3Service {
     private String VITE_PUBLIC_API_URL;
 
     public void createBucket(String bucketName) {
-        CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
-                .bucket(bucketName)
-                .build();
+        try {
+            CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
+                    .bucket(bucketName)
+                    .build();
 
-        s3Client.createBucket(createBucketRequest);
+            s3Client.createBucket(createBucketRequest);
 
-        s3Client.putPublicAccessBlock(b -> b.bucket(bucketName)
-                .publicAccessBlockConfiguration(PublicAccessBlockConfiguration.builder()
-                        .blockPublicAcls(false)
-                        .ignorePublicAcls(false)
-                        .blockPublicPolicy(false)
-                        .restrictPublicBuckets(false)
-                        .build()));
+            s3Client.putPublicAccessBlock(b -> b.bucket(bucketName)
+                    .publicAccessBlockConfiguration(PublicAccessBlockConfiguration.builder()
+                            .blockPublicAcls(false)
+                            .ignorePublicAcls(false)
+                            .blockPublicPolicy(false)
+                            .restrictPublicBuckets(false)
+                            .build()));
 
-        log.info("Bucket created: " + bucketName);
+            log.info("Bucket created: " + bucketName);
+        } catch (S3Exception e) {
+                throw new UnavailableSubdomainException(e.statusCode(), e.getMessage());
+        }
     }
 
     public void save(String bucketName , String notionPageId) throws IOException {
