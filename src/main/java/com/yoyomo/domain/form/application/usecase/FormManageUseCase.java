@@ -2,9 +2,7 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
-import com.yoyomo.domain.form.application.dto.response.FormResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
-import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -18,11 +16,11 @@ public interface FormManageUseCase {
 
     SaveResponse create(FormRequestDTO.Save dto, String clubId, Long userId);
 
-    void update(String id, Update dto);
+    void update(String id, Update dto, Long userId);
 
-    void update(String id, Boolean enabled);
+    void update(String id, Boolean enabled, Long userId);
 
-    void delete(String formId);
+    void delete(String formId, Long userId);
 
-    List<FormResponse> searchByKeyword(String keyword, Authentication authentication);
+    List<Response> search(String keyword, String clubId, Long userId);
 }

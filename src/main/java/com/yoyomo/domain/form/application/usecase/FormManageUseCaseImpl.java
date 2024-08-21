@@ -4,7 +4,6 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
-import com.yoyomo.domain.form.application.dto.response.FormResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
@@ -18,7 +17,6 @@ import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,14 +38,13 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public DetailResponse read(String id) {
         Form form = formGetService.find(id);
+
         return formMapper.toDetailResponse(form);
     }
 
     @Override
     public List<Response> readAll(Long userId, String clubId) {
-        Manager manager = userGetService.find(userId);
-        Club club = clubGetService.find(clubId);
-        checkAuthority(club, manager);
+        checkAuthorityByClubId(userId, clubId);
 
         return formGetService.findAll(clubId).stream()
                 .map(formMapper::toResponse)
@@ -56,33 +53,50 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public SaveResponse create(Save dto, String clubId, Long userId) {
-        Club club = clubGetService.find(clubId);
-        Manager manager = userGetService.find(userId);
-        checkAuthority(club, manager);
-
+        checkAuthorityByClubId(userId, clubId);
         List<Item> items = itemManageUseCase.create(dto.itemRequests());
         Form form = formSaveService.save(formMapper.from(dto, items, clubId));
+
         return new SaveResponse(form.getId());
     }
 
     @Override
-    public void update(String id, Update dto) {
-        formUpdateService.update(id, dto);
-        itemManageUseCase.update(id, dto.itemRequests());
+    public void update(String formId, Update dto, Long userId) {
+        checkAuthorityByFormId(userId, formId);
+        formUpdateService.update(formId, dto);
+        itemManageUseCase.update(formId, dto.itemRequests());
     }
 
     @Override
-    public void update(String id, Boolean enabled) {
-        formUpdateService.update(id, enabled);
+    public void update(String formId, Boolean enabled, Long userId) {
+        checkAuthorityByFormId(userId, formId);
+        formUpdateService.update(formId, enabled);
     }
 
     @Override
-    public void delete(String formId) {
+    public void delete(String formId, Long userId) {
+        checkAuthorityByFormId(userId, formId);
         formUpdateService.delete(formId);
     }
 
     @Override
-    public List<FormResponse> searchByKeyword(String keyword, Authentication authentication) {
-        return List.of();
+    public List<Response> search(String keyword, String clubId, Long userId) {
+        checkAuthorityByClubId(userId, clubId);
+
+        return formGetService.searchByKeyword(keyword, clubId).stream()
+                .filter(form -> form.getDeletedAt() == null)    // JPA 메서드에서 해결하려 해봤지만 안돼서 스트림으로 해결
+                .map(formMapper::toResponse)
+                .toList();
+    }
+
+    private void checkAuthorityByFormId(Long userId, String formId) {
+        Form form = formGetService.find(formId);
+        checkAuthorityByClubId(userId, form.getClubId());
+    }
+
+    private void checkAuthorityByClubId(Long userId, String clubId) {
+        Manager manager = userGetService.find(userId);
+        Club club = clubGetService.find(clubId);
+        checkAuthority(club, manager);
     }
 }

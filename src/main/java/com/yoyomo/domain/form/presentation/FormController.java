@@ -50,22 +50,28 @@ public class FormController {
 
     @PutMapping("/{formId}")
     @Operation(summary = "폼 수정")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto) {
-        formManageUseCase.update(formId, dto);
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto, @CurrentUser Long userId) {
+        formManageUseCase.update(formId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @PatchMapping("/{formId}")
     @Operation(summary = "폼 활성화/비활성화")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled) {
-        formManageUseCase.update(formId, enabled);
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled, @CurrentUser Long userId) {
+        formManageUseCase.update(formId, enabled, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{formId}")
     @Operation(summary = "폼 삭제")
-    public ResponseDto<Void> delete(@PathVariable String formId) {
-        formManageUseCase.delete(formId);
+    public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser Long userId) {
+        formManageUseCase.delete(formId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @GetMapping("/{clubId}/search")
+    @Operation(summary = "내 동아리의 폼 목록 검색")
+    public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), formManageUseCase.search(keyword, clubId, userId));
     }
 }
