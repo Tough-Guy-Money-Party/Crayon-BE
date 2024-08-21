@@ -18,8 +18,7 @@ import java.util.List;
 import static com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
-import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static com.yoyomo.domain.form.presentation.constant.ResponseMessage.*;
 import static com.yoyomo.domain.item.presentation.constant.ResponseMessage.SUCCESS_CREATE;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -49,11 +48,24 @@ public class FormController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), formManageUseCase.readAll(userId, clubId));
     }
 
-    @PatchMapping("/{formId}")
+    @PutMapping("/{formId}")
     @Operation(summary = "폼 수정")
     public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto) {
         formManageUseCase.update(formId, dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    @PatchMapping("/{formId}")
+    @Operation(summary = "폼 활성화/비활성화")
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled) {
+        formManageUseCase.update(formId, enabled);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @DeleteMapping("/{formId}")
+    @Operation(summary = "폼 삭제")
+    public ResponseDto<Void> delete(@PathVariable String formId) {
+        formManageUseCase.delete(formId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
 }

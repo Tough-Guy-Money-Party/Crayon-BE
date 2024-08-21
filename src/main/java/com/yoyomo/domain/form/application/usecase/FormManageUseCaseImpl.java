@@ -73,12 +73,12 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public void update(String id, Boolean enabled) {
-
+        formUpdateService.update(id, enabled);
     }
 
     @Override
     public void delete(String formId) {
-
+        formUpdateService.delete(formId);
     }
 
     @Override
