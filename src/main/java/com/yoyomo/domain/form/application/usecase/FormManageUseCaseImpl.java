@@ -2,14 +2,17 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
-import com.yoyomo.domain.form.application.dto.req.FormRequestDTO.Save;
-import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
-import com.yoyomo.domain.form.application.dto.res.FormDetailsResponse;
-import com.yoyomo.domain.form.application.dto.res.FormResponse;
-import com.yoyomo.domain.form.application.dto.res.FormResponseDTO.SaveResponse;
+import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
+import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
+import com.yoyomo.domain.form.application.dto.response.FormResponse;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
 import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
+import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -31,15 +34,24 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormMapper formMapper;
     private final ClubGetService clubGetService;
     private final UserGetService userGetService;
+    private final FormGetService formGetService;
+    private final FormUpdateService formUpdateService;
 
     @Override
-    public FormDetailsResponse read(String id) {
-        return null;
+    public DetailResponse read(String id) {
+        Form form = formGetService.find(id);
+        return formMapper.toDetailResponse(form);
     }
 
     @Override
-    public List<FormResponse> readAll(Authentication authentication) {
-        return List.of();
+    public List<Response> readAll(Long userId, String clubId) {
+        Manager manager = userGetService.find(userId);
+        Club club = clubGetService.find(clubId);
+        checkAuthority(club, manager);
+
+        return formGetService.findAll(clubId).stream()
+                .map(formMapper::toResponse)
+                .toList();
     }
 
     @Override
@@ -54,8 +66,9 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
-    public void update(String id, FormUpdateRequest request) {
-
+    public void update(String id, Update dto) {
+        formUpdateService.update(id, dto);
+        itemManageUseCase.update(id, dto.itemRequests());
     }
 
     @Override

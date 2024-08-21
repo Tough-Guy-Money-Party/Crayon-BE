@@ -1,22 +1,24 @@
 package com.yoyomo.domain.form.application.usecase;
 
-import com.yoyomo.domain.form.application.dto.req.FormRequestDTO;
-import com.yoyomo.domain.form.application.dto.req.FormUpdateRequest;
-import com.yoyomo.domain.form.application.dto.res.FormDetailsResponse;
-import com.yoyomo.domain.form.application.dto.res.FormResponse;
-import com.yoyomo.domain.form.application.dto.res.FormResponseDTO;
+import com.yoyomo.domain.form.application.dto.request.FormRequestDTO;
+import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
+import com.yoyomo.domain.form.application.dto.response.FormResponse;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
+
 public interface FormManageUseCase {
-    FormDetailsResponse read(String id);
+    DetailResponse read(String id);
 
-    List<FormResponse> readAll(Authentication authentication);
+    List<Response> readAll(Long userId, String clubId);
 
-    FormResponseDTO.SaveResponse create(FormRequestDTO.Save dto, String clubId, Long userId);
+    SaveResponse create(FormRequestDTO.Save dto, String clubId, Long userId);
 
-    void update(String id, FormUpdateRequest request);
+    void update(String id, Update dto);
 
     void update(String id, Boolean enabled);
 

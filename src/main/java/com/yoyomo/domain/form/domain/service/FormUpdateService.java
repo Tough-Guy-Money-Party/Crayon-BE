@@ -1,7 +1,8 @@
 package com.yoyomo.domain.form.domain.service;
 
 import com.mongodb.client.result.UpdateResult;
-import com.yoyomo.domain.form.application.dto.req.FormRequest;
+import com.yoyomo.domain.form.application.dto.request.FormRequest;
+import com.yoyomo.domain.form.application.dto.request.FormRequestDTO;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.exception.FormNotFoundException;
 import com.yoyomo.domain.shared.util.MapperUtil;
@@ -23,14 +24,14 @@ public class FormUpdateService {
     private static final String DELETED_AT = "deletedAt";
     private final MongoTemplate mongoTemplate;
 
-    public void update(String id, String title, String description, boolean enabled) {
+    public void update(String id, FormRequestDTO.Update dto) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = new Update()
-                .set("title", title)
-                .set("description", description)
-                .set("enabled", enabled);
+                .set("title", dto.title())
+                .set("description", dto.description())
+                .set("enabled", dto.enabled());
         UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
         checkIsDeleted(result);
     }

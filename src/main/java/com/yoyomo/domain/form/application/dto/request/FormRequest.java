@@ -1,4 +1,4 @@
-package com.yoyomo.domain.form.application.dto.req;
+package com.yoyomo.domain.form.application.dto.request;
 
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 

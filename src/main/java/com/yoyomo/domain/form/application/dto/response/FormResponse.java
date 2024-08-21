@@ -1,4 +1,4 @@
-package com.yoyomo.domain.form.application.dto.res;
+package com.yoyomo.domain.form.application.dto.response;
 
 import java.time.LocalDateTime;
 
