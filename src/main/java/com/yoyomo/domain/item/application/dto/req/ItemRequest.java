@@ -1,15 +1,19 @@
 package com.yoyomo.domain.item.application.dto.req;
 
+import com.yoyomo.domain.item.domain.entity.Image;
 import com.yoyomo.domain.item.domain.entity.type.Type;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public record ItemRequest(
-        String title,
-        Type type,
-        String description,
-        int order,
-        boolean required,
+        @NotEmpty String title,
+        @NotNull Type type,
+        @NotEmpty String description,
+        @NotNull int order,
+        @NotNull boolean required,
+        Image image,
 
         // for Select
         List<OptionRequest> options,

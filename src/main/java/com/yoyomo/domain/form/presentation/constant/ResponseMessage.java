@@ -14,5 +14,5 @@ public enum ResponseMessage {
     FORM_NOT_FOUND("존재하지 않는 지원폼입니다."),
     SUCCESS_SEARCH("성공적으로 검색되었습니다."),
     ;
-    private String message;
+    private final String message;
 }
