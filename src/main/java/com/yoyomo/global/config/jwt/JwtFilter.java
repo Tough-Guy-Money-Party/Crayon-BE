@@ -34,11 +34,30 @@ public class JwtFilter extends OncePerRequestFilter {
                 .orElse(null);
 
         if (refreshToken != null) {
-            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+            checkAccessTokenAndRefreshToken(request, response, filterChain, refreshToken);
             return;
         }
 
         checkAccessTokenAndAuthentication(request, response, filterChain);
+    }
+
+    public void checkAccessTokenAndRefreshToken(HttpServletRequest request, HttpServletResponse response,
+                                                FilterChain filterChain, String refreshToken) throws ServletException, IOException {
+        log.info("checkAccessTokenAndRefreshToken() 호출");
+
+        String validAccessToken = jwtProvider.extractAccessToken(request)
+                .filter(jwtProvider::isTokenValid)
+                .orElse(null);
+
+        if (validAccessToken == null) {
+            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+        } else {
+            jwtProvider.extractEmail(validAccessToken)
+                    .ifPresent(email -> managerRepository.findByEmail(email)
+                            .ifPresent(this::saveAuthentication));
+
+            filterChain.doFilter(request, response);
+        }
     }
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
