@@ -5,8 +5,6 @@ import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.service.*;
-import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
-import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
@@ -20,6 +18,8 @@ import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.*;
+import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
+import static com.yoyomo.domain.club.domain.entity.Club.checkDuplicateParticipate;
 
 @Service
 @RequiredArgsConstructor
@@ -111,19 +111,9 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         }
     }
 
-    private static void checkAuthority(Club club, Manager manager) {
-        if(!club.contains(manager))
-            throw new ClubAccessDeniedException();
-    }
-
     private void checkDuplicatedSubDomain(String subDomain) {
         if(clubGetService.checkSubDomain(subDomain))
             throw new DuplicatedSubDomainException();
-    }
-
-    private void checkDuplicateParticipate(Club club, Manager manager) {
-        if(club.contains(manager))
-            throw new DuplicatedParticipationException();
     }
 
     private void mapFK(Manager manager, Club club) {
