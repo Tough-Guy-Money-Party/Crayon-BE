@@ -51,12 +51,12 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         String subDomain = checkDuplicate(request.subDomain());
         String subDomainName = subDomain + BASEURL;
 
-        Club club = clubMapper.from(request);
-        club = clubSaveService.save(club);
-
-        //배포
+        //버킷 생성
         s3Service.createBucket(subDomainName);
         routingService.handleS3Upload(subDomainName,"ap-northeast-2", subDomainName);
+
+        Club club = clubMapper.from(request);
+        club = clubSaveService.save(club);
 
         participationService.addToEachList(userEmail, club);
         return new ClubCreateResponse(club.getId(), request.subDomain());
