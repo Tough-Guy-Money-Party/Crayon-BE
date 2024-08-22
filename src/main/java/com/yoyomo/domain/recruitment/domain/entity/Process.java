@@ -1,16 +1,14 @@
-package com.yoyomo.domain.process.domain.entity;
+package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO;
-import com.yoyomo.domain.process.domain.entity.enums.Type;
-import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -21,9 +19,9 @@ import java.util.UUID;
 public class Process extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "process_id")
-    private UUID id;
+    private Long id;
 
     private String title;
 

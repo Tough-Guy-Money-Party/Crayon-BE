@@ -1,7 +1,9 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -13,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
@@ -26,12 +30,20 @@ import static org.springframework.http.HttpStatus.OK;
 public class RecruitmentController {
 
     private final RecruitmentManageUseCase recruitmentManageUseCase;
+    private final ProcessManageUseCase processManageUseCase;
 
     @PostMapping
     @Operation(summary = "모집 생성")
     public ResponseDto<Void> save(@RequestBody @Valid Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.save(dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
+    }
+
+    @PatchMapping("/{recruitmentId}/{formId}")
+    @Operation(summary = "모집 활성화 (Recruitment - Form 매핑)")
+    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId) {
+        recruitmentManageUseCase.activate(recruitmentId, formId);
+        return ResponseDto.of(OK.value(), SUCCESS_ACTIVATE.getMessage());
     }
 
     @GetMapping("/{recruitmentId}")
@@ -58,5 +70,11 @@ public class RecruitmentController {
     public ResponseDto<Void> delete(@PathVariable String recruitmentId) {
         recruitmentManageUseCase.delete(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
+    }
+
+    @GetMapping("/processes/{recruitmentId}")
+    @Operation(summary = "모집 프로세스 목록 조회")
+    public ResponseDto<List<ProcessResponseDTO.Response>> readAll(@PathVariable String recruitmentId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ_PROCESSES.getMessage(), processManageUseCase.readAll(recruitmentId));
     }
 }

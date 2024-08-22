@@ -16,6 +16,10 @@ public class RecruitmentUpdateService {
         recruitment.update(dto);
     }
 
+    public void update(Recruitment recruitment, String formId) {
+        recruitment.activate(formId);
+    }
+
     public void delete(Recruitment recruitment) {
         recruitment.delete();
     }

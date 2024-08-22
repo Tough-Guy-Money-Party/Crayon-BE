@@ -1,15 +1,14 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.process.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +40,8 @@ public class Recruitment extends BaseEntity {
 
     private Integer totalApplicantsCount;
 
+    private LocalDateTime deletedAt;
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
@@ -51,7 +52,7 @@ public class Recruitment extends BaseEntity {
     @PrePersist
     public void init() {
         processes = new ArrayList<>();  // 수정: 추후 필드에 init
-        isActive = true;
+        isActive = false;
         totalApplicantsCount = 0;
     }
 
@@ -59,21 +60,16 @@ public class Recruitment extends BaseEntity {
         this.processes = processes;
     }
 
-    public void addProcess(Process process) {
-        this.processes.add(process);
-    }
-
-    public void sortProcess() {
-        this.processes.sort(Comparator.comparing(Process::getStage));
-    }
-
-
     public void update(Update dto) {
         this.title = dto.title();
         this.position = dto.position();
         this.generation = dto.generation();
         this.isActive = dto.isActive();
-        this.formId = dto.formId();
+    }
+
+    public void activate(String formId) {
+        this.formId = formId;
+        this.isActive = true;
     }
 
     public void clearProcesses() {
@@ -81,11 +77,11 @@ public class Recruitment extends BaseEntity {
     }
 
     public void delete() {
-        isActive = false;
+        this.deletedAt = LocalDateTime.now();
     }
 
     public static void checkEnabled(Recruitment recruitment) {
-        if(!recruitment.isActive)
+        if(recruitment.deletedAt != null)
             throw new RecruitmentNotFoundException();
     }
 }

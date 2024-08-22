@@ -1,8 +1,8 @@
-package com.yoyomo.domain.process.application.mapper;
+package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
-import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO.Save;
-import com.yoyomo.domain.process.domain.entity.Process;
+import com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,8 +11,8 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-import static com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO.Update;
-import static com.yoyomo.domain.process.application.dto.response.ProcessResponseDTO.Response;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -28,5 +28,6 @@ public interface ProcessMapper {
     Process from(Update dto, Recruitment recruitment);
 
     @Mapping(target = "applications", source = "applications")
+    @Mapping(target = "applicantCount", expression = "java( applications.size() )")
     Response toResponse(Process process, List<ApplicationResponseDTO.Response> applications);
 }
