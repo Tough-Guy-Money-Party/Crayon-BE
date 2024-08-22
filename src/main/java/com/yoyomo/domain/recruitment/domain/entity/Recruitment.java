@@ -52,7 +52,7 @@ public class Recruitment extends BaseEntity {
     @PrePersist
     public void init() {
         processes = new ArrayList<>();  // 수정: 추후 필드에 init
-        isActive = true;
+        isActive = false;
         totalApplicantsCount = 0;
     }
 
@@ -65,7 +65,11 @@ public class Recruitment extends BaseEntity {
         this.position = dto.position();
         this.generation = dto.generation();
         this.isActive = dto.isActive();
-        this.formId = dto.formId();
+    }
+
+    public void activate(String formId) {
+        this.formId = formId;
+        this.isActive = true;
     }
 
     public void clearProcesses() {

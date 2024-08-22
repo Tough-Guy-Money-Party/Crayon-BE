@@ -22,6 +22,6 @@ public class RecruitmentGetService {
     }
 
     public Page<Recruitment> findAll(Pageable pageable) {
-        return recruitmentRepository.findAllByIsActiveIsTrue(pageable);
+        return recruitmentRepository.findAll(pageable);
     }
 }
