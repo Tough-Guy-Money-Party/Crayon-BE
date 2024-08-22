@@ -1,7 +1,6 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.application.dto.req.RecruitmentRequest;
 import com.yoyomo.domain.recruitment.application.dto.res.ProcessResultResponse;
@@ -11,11 +10,7 @@ import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -23,11 +18,8 @@ import org.mapstruct.ReportingPolicy;
 public interface RecruitmentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
-    @Mapping(target = "clubId", source = "request.clubId")
-    @Mapping(target = "form", source = "form")
-    @Mapping(target = "processCount", expression = "java(0)")
-    @Mapping(source = "request.title", target = "title")
-    Recruitment from(RecruitmentRequest request, Form form);
+    @Mapping(target = "processCount", expression = "java( request.getProcessCount() )")
+    Recruitment from(RecruitmentRequest request, String clubId);
 
     RecruitmentDetailsResponse mapToRecruitmentDetails(Recruitment recruitment);
 

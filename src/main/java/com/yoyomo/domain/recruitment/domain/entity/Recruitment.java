@@ -39,7 +39,7 @@ public class Recruitment {
     private RecruitmentStatus recruitmentStatus = PRE_RECRUITMENT;
 
     @Builder.Default
-    private int processCount = 0;
+    private Integer processCount = 0;
 
     @Builder.Default
     private Boolean isRecruitmentActive = false;

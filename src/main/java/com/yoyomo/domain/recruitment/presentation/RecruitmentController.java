@@ -36,13 +36,8 @@ public class RecruitmentController {
 
     @PostMapping
     @Operation(summary = "모집 생성")
-    public ResponseDto create(@RequestBody RecruitmentRequest request, Authentication authentication) {
-
-        String email = authentication.getName();
-        String clubId = recruitmentGetService.getClubId(email);
-
-        RecruitmentRequest updatedRequest = request.withClubId(clubId);
-        recruitmentManageUseCase.create(updatedRequest);
+    public ResponseDto<Void> create(@RequestBody RecruitmentRequest request, Authentication authentication) {
+        recruitmentManageUseCase.create(request, authentication);
         return ResponseDto.of(CREATED.value(), SUCCESS_CREATE.getMessage());
     }
 
@@ -75,21 +70,21 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정", description = "지원폼을 제외한 모집 정보를 수정합니다.")
-    public ResponseDto update(@PathVariable String recruitmentId, @RequestBody RecruitmentModifyRequest request) {
+    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody RecruitmentModifyRequest request) {
         recruitmentManageUseCase.update(recruitmentId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @PutMapping("/{recruitmentId}/forms")
     @Operation(summary = "모집 내부 지원폼 수정", description = "모집의 지원폼을 수정합니다. [지원폼 관리]의 지원폼과는 별도로 관리됩니다.")
-    public ResponseDto update(@PathVariable String recruitmentId, @RequestBody FormUpdateRequest request) {
+    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody FormUpdateRequest request) {
         recruitmentManageUseCase.update(recruitmentId, request);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{recruitmentId}")
     @Operation(summary = "모집 삭제")
-    public ResponseDto update(@PathVariable String recruitmentId) {
+    public ResponseDto<Void> update(@PathVariable String recruitmentId) {
         recruitmentManageUseCase.delete(recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
