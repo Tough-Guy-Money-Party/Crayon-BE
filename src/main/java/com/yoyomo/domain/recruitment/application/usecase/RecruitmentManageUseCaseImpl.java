@@ -3,9 +3,9 @@ package com.yoyomo.domain.recruitment.application.usecase;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
@@ -75,5 +75,11 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         checkEnabled(recruitment);
         recruitmentUpdateService.delete(recruitment);
+    }
+
+    @Override
+    public void activate(String recruitmentId, String formId) {
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        recruitmentUpdateService.update(recruitment, formId);
     }
 }

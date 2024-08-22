@@ -24,6 +24,8 @@ import static com.yoyomo.domain.recruitment.application.dto.response.Recruitment
 public interface RecruitmentMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "club", source = "club")
     Recruitment from(RecruitmentRequestDTO.Save dto, Club club);
 
     @Mapping(target = "processes", source = "processes")

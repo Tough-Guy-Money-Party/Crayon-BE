@@ -16,4 +16,6 @@ public interface RecruitmentManageUseCase {
     void update(String recruitmentId, RecruitmentRequestDTO.Update dto);
 
     void delete(String recruitmentId);
+
+    void activate(String recruitmentId, String formId);
 }

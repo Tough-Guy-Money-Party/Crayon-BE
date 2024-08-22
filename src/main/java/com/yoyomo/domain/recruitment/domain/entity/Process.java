@@ -9,7 +9,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -20,9 +19,9 @@ import java.util.UUID;
 public class Process extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "process_id")
-    private UUID id;    // 수정: UUID -> Long
+    private Long id;
 
     private String title;
 

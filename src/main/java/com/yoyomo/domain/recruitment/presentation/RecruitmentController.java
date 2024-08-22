@@ -39,6 +39,13 @@ public class RecruitmentController {
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
     }
 
+    @PatchMapping("/{recruitmentId}/{formId}")
+    @Operation(summary = "모집 활성화 (Recruitment - Form 매핑)")
+    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId) {
+        recruitmentManageUseCase.activate(recruitmentId, formId);
+        return ResponseDto.of(OK.value(), SUCCESS_ACTIVATE.getMessage());
+    }
+
     @GetMapping("/{recruitmentId}")
     @Operation(summary = "모집 상세 조회")
     public ResponseDto<DetailResponse> read(@PathVariable String recruitmentId) {
