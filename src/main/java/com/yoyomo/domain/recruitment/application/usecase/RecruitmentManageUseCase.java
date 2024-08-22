@@ -7,11 +7,10 @@ import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentDetailsRespo
 import com.yoyomo.domain.recruitment.application.dto.res.RecruitmentResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
+import org.springframework.security.core.Authentication;
 
 public interface RecruitmentManageUseCase {
-    void create(RecruitmentRequest request);
+    void create(RecruitmentRequest request, Authentication authentication);
 
     RecruitmentDetailsResponse read(String recruitmentId);
 

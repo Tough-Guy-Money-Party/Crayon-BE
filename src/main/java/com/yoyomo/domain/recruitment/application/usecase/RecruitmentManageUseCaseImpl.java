@@ -16,9 +16,12 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
+import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +37,14 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final FormMapper formMapper;
     private final ApplicationGetService applicationGetService;
     private final ItemManageUseCase itemManageUseCase;
+    private final UserGetService userGetService;
 
     @Override
-    public void create(RecruitmentRequest request) {
-        Form form = formGetService.find(request.formId());
-        Recruitment recruitment = recruitmentMapper.from(request, form);
+    public void create(RecruitmentRequest request, Authentication authentication) {
+        String email = authentication.getName();
+        Manager manager = userGetService.findByEmail(email);
+        String clubId = manager.getClubs().get(0).getId();
+        Recruitment recruitment = recruitmentMapper.from(request, clubId);
         recruitmentSaveService.save(recruitment);
     }
 
@@ -52,11 +58,9 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public Page<RecruitmentResponse> readAll(String clubId, PageRequest pageRequest) {
         Page<Recruitment> recruitments = recruitmentGetService.findAll(clubId, pageRequest);
 
-        Page<RecruitmentResponse> responsePage = recruitments.map(recruitment ->
+        return recruitments.map(recruitment ->
                 recruitmentMapper.mapToRecruitmentResponse(recruitment, applicationGetService, recruitmentGetService)
         );
-
-        return responsePage;
     }
 
     @Override
