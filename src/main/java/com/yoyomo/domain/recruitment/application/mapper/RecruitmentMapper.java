@@ -1,8 +1,8 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.process.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.process.domain.entity.Process;
+import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;

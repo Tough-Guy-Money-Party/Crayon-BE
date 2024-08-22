@@ -1,7 +1,7 @@
-package com.yoyomo.domain.process.application.dto.response;
+package com.yoyomo.domain.recruitment.application.dto.response;
 
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
-import com.yoyomo.domain.process.domain.entity.enums.Type;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ public class ProcessResponseDTO {
             LocalDate endAt,
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt,
-            List<ApplicationResponseDTO.Response> applications
+            List<ApplicationResponseDTO.Response> applications,
+            Integer applicantCount
     ) {}
 }

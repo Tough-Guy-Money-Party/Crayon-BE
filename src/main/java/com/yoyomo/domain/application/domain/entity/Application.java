@@ -4,7 +4,7 @@ package com.yoyomo.domain.application.domain.entity;
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.interview.domain.entity.Interview;
-import com.yoyomo.domain.process.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;

@@ -1,8 +1,8 @@
-package com.yoyomo.domain.process.domain.service;
+package com.yoyomo.domain.recruitment.domain.service;
 
-import com.yoyomo.domain.process.domain.entity.Process;
-import com.yoyomo.domain.process.domain.repository.ProcessRepository;
-import com.yoyomo.domain.process.exception.ProcessNotFoundException;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
+import com.yoyomo.domain.recruitment.exception.ProcessNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

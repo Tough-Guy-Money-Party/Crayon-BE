@@ -1,7 +1,7 @@
 package com.yoyomo.domain.recruitment.application.dto.request;
 
-import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,7 +16,7 @@ public class RecruitmentRequestDTO {
         @NotNull Status status,
         @NotEmpty String formId,
         @NotEmpty String clubId,
-        @NotNull List<ProcessRequestDTO.Save> processes
+        @Valid List<ProcessRequestDTO.Save> processes
     ) {}
 
     public record Update(
@@ -25,6 +25,6 @@ public class RecruitmentRequestDTO {
             @NotNull Integer generation,
             @NotNull Boolean isActive,
             @NotEmpty String formId,
-            @NotNull List<ProcessRequestDTO.Update> processes
+            @Valid List<ProcessRequestDTO.Update> processes
     ) {}
 }

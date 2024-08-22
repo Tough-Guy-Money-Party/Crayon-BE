@@ -1,9 +1,8 @@
-package com.yoyomo.domain.process.domain.entity;
+package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.process.application.dto.request.ProcessRequestDTO;
-import com.yoyomo.domain.process.domain.entity.enums.Type;
-import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +22,7 @@ public class Process extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "process_id")
-    private UUID id;
+    private UUID id;    // 수정: UUID -> Long
 
     private String title;
 

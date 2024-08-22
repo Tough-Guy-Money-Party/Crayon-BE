@@ -1,6 +1,5 @@
 package com.yoyomo.domain.recruitment.application.dto.response;
 
-import com.yoyomo.domain.process.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
 
 import java.time.LocalDate;
