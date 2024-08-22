@@ -3,6 +3,7 @@ package com.yoyomo.global.config.s3;
 
 
 
+import com.yoyomo.domain.club.exception.InvalidNotionLinkException;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import software.amazon.awssdk.services.s3.model.PublicAccessBlockConfiguration;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.nio.file.Files;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.io.IOException;
@@ -61,12 +64,11 @@ public class S3Service {
     }
 
     public void save(String bucketName , String notionPageId) throws IOException {
-
         log.info("현재 경로" + System.getProperty("user.dir"));
         // 1. .env 파일 생성
         String envFilePath = "app/vite-notion-to-site/.env";
         String canonicalEnvPath = new File(envFilePath).getCanonicalPath();
-        createEnvFile(canonicalEnvPath, notionPageId);
+        createEnvFile(canonicalEnvPath, notionParser(notionPageId));
 
         // 2. 빌드 작업 수행
         String projectPath = "app/vite-notion-to-site";
@@ -95,6 +97,18 @@ public class S3Service {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private String notionParser(String notionLink) {
+        String patternString = "^https:\\/\\/(www\\.notion\\.so|[^\\/]+\\.notion\\.site)\\/[^\\?\\/]*([0-9a-fA-F]{32})";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(notionLink);
+
+        if (matcher.find()) {
+            return matcher.group(2);
+        } else {
+            throw new InvalidNotionLinkException();
         }
     }
 

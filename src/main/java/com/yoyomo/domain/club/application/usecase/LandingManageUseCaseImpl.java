@@ -41,10 +41,8 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
     }
 
     public void update(String email, UpdateGeneralSettingsRequest request) throws IOException  {
-        String subdomain = request.subDomain() + BASEURL;
         Club club = clubGetService.byUserEmail(email);
         clubUpdateService.from(club.getId(), request);
-        s3Service.save(subdomain, request.notionPageLink());
     }
 
     public void update(UpdateStyleSettingsRequest request, String email) {
@@ -52,8 +50,9 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase{
         clubUpdateService.addStyle(club.getId(),clubStyleMapper.from(request));
     }
 
-    public void create(String email, String notionPageLink){
+    public void create(String email, String notionPageLink) throws IOException{
         Club club = clubGetService.byUserEmail(email);
+        s3Service.save(club.getSubDomain() + BASEURL,notionPageLink);
         clubUpdateService.from(club.getId(),notionPageLink);
     }
 }

@@ -4,6 +4,8 @@ import com.yoyomo.domain.club.application.dto.req.UpdateStyleSettingsRequest;
 import com.yoyomo.domain.club.application.dto.res.ClubGeneralSettingResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubStyleSettingsResponse;
 
+import java.io.IOException;
+
 public interface LandingManageUseCase {
 
     void update(UpdateStyleSettingsRequest request, String email);
@@ -12,5 +14,5 @@ public interface LandingManageUseCase {
 
     ClubStyleSettingsResponse getStyleSetting(String email);
 
-    void create(String email, String notionPageLink);
+    void create(String email, String notionPageLink) throws IOException;
 }
