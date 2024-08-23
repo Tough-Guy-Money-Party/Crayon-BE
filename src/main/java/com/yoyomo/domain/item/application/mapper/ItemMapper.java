@@ -36,5 +36,4 @@ public interface ItemMapper {
                 .map(optionRequest -> new Option(optionRequest.id(), optionRequest.title(), optionRequest.selected()))
                 .collect(Collectors.toList());
     }
-
 }

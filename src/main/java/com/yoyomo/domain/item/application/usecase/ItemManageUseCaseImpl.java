@@ -45,7 +45,7 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
                 .toList();
     }
 
-    public ItemResponse getItemResponse(Item item) {
+    private ItemResponse getItemResponse(Item item) {
         if (item instanceof Select) {
             return itemMapper.mapToSelectResponse((Select) item);
         }

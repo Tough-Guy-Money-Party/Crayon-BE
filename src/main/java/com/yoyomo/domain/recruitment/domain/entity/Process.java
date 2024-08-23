@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -43,7 +44,11 @@ public class Process extends BaseEntity {
     private Recruitment recruitment;
 
     @OneToMany(mappedBy = "process")
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
+
+    public void addApplication(Application application) {
+        this.applications.add(application);
+    }
 
     public void update(ProcessRequestDTO.Update update) {
         this.title = update.title();

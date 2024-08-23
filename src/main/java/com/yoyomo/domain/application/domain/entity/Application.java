@@ -10,6 +10,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,5 +44,15 @@ public class Application extends BaseEntity {
     private Interview interview;
 
     @OneToMany(mappedBy = "application")
-    private List<Evaluation> evaluations;
+    private List<Evaluation> evaluations = new ArrayList<>();
+
+    @PrePersist
+    public void init() {
+        this.status = Status.PENDING;
+        this.averageRating = Rating.PENDING;
+    }
+
+    public void mapToAnswer(String answerId) {
+        this.answerId = answerId;
+    }
 }

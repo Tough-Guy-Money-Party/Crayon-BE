@@ -22,7 +22,6 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
-    @Enumerated(EnumType.STRING)
     private String memo;
 
     @ManyToOne

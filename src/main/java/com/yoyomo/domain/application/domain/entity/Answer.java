@@ -1,0 +1,27 @@
+package com.yoyomo.domain.application.domain.entity;
+
+import com.yoyomo.domain.item.domain.entity.Item;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "answers")
+public class Answer {
+
+    @Id
+    private String id;
+
+    private String applicationId;
+
+    private List<Item> items;
+
+}
