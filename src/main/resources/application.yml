@@ -54,7 +54,7 @@ vite :
 
 application:
   bucket:
-    name: crayon-image-bucket
+    name: crayon-image
 
 kakao:
   token_uri: ${KAKAO_TOKEN_URI}
