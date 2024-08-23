@@ -19,7 +19,8 @@ public enum ResponseMessage {
     CLUB_NOT_FOUND("존재하지 않는 동아리입니다."),
     DEPLICATED_SUBDOMAIN("중복된 서브도메인입니다."),
     UNUSABLE_SUBDOMAIN("사용 할 수 없는 서브도메인 입니다."),
-    USABLE_SUBDOMAIN("사용 가능한 서브도메인 입니다.")
+    USABLE_SUBDOMAIN("사용 가능한 서브도메인 입니다."),
+    INVALID_NOTION_URL("유효하지 않은 노션 링크입니다.")
     ;
     private String message;
 }

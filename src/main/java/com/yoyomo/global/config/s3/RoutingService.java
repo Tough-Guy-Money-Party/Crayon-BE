@@ -14,20 +14,14 @@ import software.amazon.awssdk.services.s3.model.PutBucketPolicyRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RoutingService {
     private final S3Client s3Client;
     private final CloudFrontClient cloudFrontClient;
-    private final LambdaClient lambdaClient;
     private final Route53Client route53Client;
-
-    @Value("${cloud.aws.accountId}")
-    private String accountId;
 
     @Value("${cloud.aws.acm}")
     private String acm;
@@ -36,32 +30,51 @@ public class RoutingService {
     private String hostedId;
 
     public void handleS3Upload(String bucketName, String region, String subdomain) {
-        // 1. Origin Access Identity(OAI) 생성
-        String oaiId = createOriginAccessIdentity();
+        // 1. S3 버킷에 PublicRead 정책 추가
+        applyBucketPolicy(bucketName);
 
         // 2. CloudFront 배포 생성
-        String distributionId = createCloudFrontDistribution(bucketName, region, oaiId, acm, region, subdomain);
+        String distributionId = createCloudFrontDistribution(bucketName, region, acm, region, subdomain);
 
-        // 3. S3 버킷 정책에 OAI 추가
-        updateBucketPolicyWithOAI(bucketName, oaiId, distributionId);
+        // 3. CloudFront 배포에 커스텀 오류 페이지 적용
+        updateCloudFrontDistributionWithCustomErrorPage(distributionId);
 
-        // 4. CloudFront 배포에 OAI 및 커스텀 오류 페이지 적용
-        updateCloudFrontDistributionWithOAIAndCustomErrorPage(distributionId, oaiId);
-
-        // 5. CloudFront 캐시 무효화 (모든 경로)
+        // 4. CloudFront 캐시 무효화 (모든 경로)
         invalidateCache(distributionId, "/*");
 
-        // 6. CloudFront 배포 도메인 이름 가져오기
+        // 5. CloudFront 배포 도메인 이름 가져오기
         String cloudFrontDomainName = getCloudFrontDomainName(distributionId);
 
-        // 7. Route 53에 레코드 생성
+        // 6. Route 53에 레코드 생성
         createRoute53Record(hostedId, subdomain, cloudFrontDomainName);
 
-        // 8. S3 업로드 후 람다 함수 호출
-        invokeLambdaOnS3Upload(distributionId, bucketName, oaiId, "updateOAI");
     }
 
-    private String createCloudFrontDistribution(String bucketName, String region, String oaiId, String acmCertificateArn, String originShieldRegion, String alternateDomainName) {
+    private void applyBucketPolicy(String bucketName) {
+        String policyJson = String.format(
+                "{\n" +
+                        "  \"Version\": \"2012-10-17\",\n" +
+                        "  \"Statement\": [\n" +
+                        "    {\n" +
+                        "      \"Sid\": \"PublicReadGetObject\",\n" +
+                        "      \"Effect\": \"Allow\",\n" +
+                        "      \"Principal\": \"*\",\n" +
+                        "      \"Action\": \"s3:GetObject\",\n" +
+                        "      \"Resource\": \"arn:aws:s3:::%s/*\"\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}", bucketName);
+
+        PutBucketPolicyRequest policyRequest = PutBucketPolicyRequest.builder()
+                .bucket(bucketName)
+                .policy(policyJson)
+                .build();
+
+        s3Client.putBucketPolicy(policyRequest);
+        System.out.println("Bucket policy applied for bucket: " + bucketName);
+    }
+
+    private String createCloudFrontDistribution(String bucketName, String region, String acmCertificateArn, String originShieldRegion, String alternateDomainName) {
         String callerReference = Long.toString(System.currentTimeMillis());
 
         String domainName = bucketName + ".s3." + region + ".amazonaws.com";
@@ -71,12 +84,16 @@ public class RoutingService {
                 .originShieldRegion(originShieldRegion)
                 .build();
 
+        CustomOriginConfig customOriginConfig = CustomOriginConfig.builder()
+                .originProtocolPolicy(OriginProtocolPolicy.HTTP_ONLY) // 또는 HTTPS_ONLY 사용 가능
+                .httpPort(80)
+                .httpsPort(443)
+                .build();
+
         Origin origin = Origin.builder()
                 .domainName(domainName)
                 .id(bucketName)
-                .s3OriginConfig(S3OriginConfig.builder()
-                        .originAccessIdentity("origin-access-identity/cloudfront/" + oaiId)
-                        .build())
+                .customOriginConfig(customOriginConfig) // CustomOriginConfig 사용
                 .originShield(originShield)
                 .build();
 
@@ -126,38 +143,7 @@ public class RoutingService {
         return distributionResponse.distribution().id();
     }
 
-    private void updateBucketPolicyWithOAI(String bucketName, String oaiId, String distributionId) {
-        String policyJson = String.format(
-                "{\n" +
-                        "  \"Version\": \"2008-10-17\",\n" +
-                        "  \"Id\": \"PolicyForCloudFrontPrivateContent\",\n" +
-                        "  \"Statement\": [\n" +
-                        "    {\n" +
-                        "      \"Sid\": \"AllowCloudFrontServicePrincipal\",\n" +
-                        "      \"Effect\": \"Allow\",\n" +
-                        "      \"Principal\": {\n" +
-                        "        \"Service\": \"cloudfront.amazonaws.com\"\n" +
-                        "      },\n" +
-                        "      \"Action\": \"s3:GetObject\",\n" +
-                        "      \"Resource\": \"arn:aws:s3:::%s/*\",\n" +
-                        "      \"Condition\": {\n" +
-                        "        \"StringEquals\": {\n" +
-                        "          \"AWS:SourceArn\": \"arn:aws:cloudfront::%s:distribution/%s\"\n" +
-                        "        }\n" +
-                        "      }\n" +
-                        "    }\n" +
-                        "  ]\n" +
-                        "}", bucketName, accountId, distributionId);
-
-        s3Client.putBucketPolicy(PutBucketPolicyRequest.builder()
-                .bucket(bucketName)
-                .policy(policyJson)
-                .build());
-
-        System.out.println("Bucket policy updated for OAI: " + oaiId);
-    }
-
-    private void updateCloudFrontDistributionWithOAIAndCustomErrorPage(String distributionId, String oaiId) {
+    private void updateCloudFrontDistributionWithCustomErrorPage(String distributionId) {
         // 기존 배포 구성 요청
         GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
                 .id(distributionId)
@@ -166,22 +152,8 @@ public class RoutingService {
 
         // 기존 Origin 설정 업데이트
         DistributionConfig distributionConfig = getDistributionConfigResponse.distributionConfig().toBuilder()
-                .origins(origins -> origins.items(
-                        getDistributionConfigResponse.distributionConfig().origins().items().stream()
-                                .map(origin -> {
-                                    if (origin.s3OriginConfig() != null) {
-                                        return origin.toBuilder()
-                                                .s3OriginConfig(origin.s3OriginConfig().toBuilder()
-                                                        .originAccessIdentity("origin-access-identity/cloudfront/" + oaiId)
-                                                        .build())
-                                                .build();
-                                    }
-                                    return origin;
-                                })
-                                .collect(Collectors.toList())
-                ).quantity(getDistributionConfigResponse.distributionConfig().origins().items().size()))
                 .customErrorResponses(customErrorResponses -> customErrorResponses.items(
-                        Arrays.asList(
+                        Collections.singletonList(
                                 CustomErrorResponse.builder()
                                         .errorCode(403)
                                         .responsePagePath("/index.html")
@@ -201,20 +173,7 @@ public class RoutingService {
 
         // CloudFront 배포 업데이트
         cloudFrontClient.updateDistribution(updateDistributionRequest);
-        System.out.println("CloudFront 배포의 OAI 및 커스텀 오류 페이지가 업데이트되었습니다.");
-    }
-
-    private String createOriginAccessIdentity() {
-        CreateCloudFrontOriginAccessIdentityRequest request = CreateCloudFrontOriginAccessIdentityRequest.builder()
-                .cloudFrontOriginAccessIdentityConfig(
-                        CloudFrontOriginAccessIdentityConfig.builder()
-                                .callerReference(Long.toString(System.currentTimeMillis()))
-                                .comment("OAI for accessing S3 bucket from CloudFront")
-                                .build()
-                ).build();
-
-        CreateCloudFrontOriginAccessIdentityResponse response = cloudFrontClient.createCloudFrontOriginAccessIdentity(request);
-        return response.cloudFrontOriginAccessIdentity().id();
+        System.out.println("CloudFront 배포의 커스텀 오류 페이지가 업데이트되었습니다.");
     }
 
     public void invalidateCache(String distributionId, String path) {
@@ -266,19 +225,5 @@ public class RoutingService {
 
         ChangeResourceRecordSetsResponse response = route53Client.changeResourceRecordSets(request);
         System.out.println("Route 53 record created: " + response.changeInfo().statusAsString());
-    }
-
-    public void invokeLambdaOnS3Upload(String distributionId, String bucketName, String oaiId, String functionName) {
-        String payload = String.format("{ \"distributionId\": \"%s\", \"bucketName\": \"%s\", \"oaiId\": \"%s\" }", distributionId, bucketName, oaiId);
-
-        InvokeRequest invokeRequest = InvokeRequest.builder()
-                .functionName(functionName)
-                .payload(SdkBytes.fromUtf8String(payload))
-                .build();
-
-        InvokeResponse invokeResponse = lambdaClient.invoke(invokeRequest);
-        String responsePayload = invokeResponse.payload().asUtf8String();
-
-        System.out.println("Lambda function invoked with response: " + responsePayload);
     }
 }

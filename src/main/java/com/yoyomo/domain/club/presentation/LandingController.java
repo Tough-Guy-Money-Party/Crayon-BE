@@ -6,6 +6,8 @@ import com.yoyomo.domain.club.application.dto.req.UpdateStyleSettingsRequest;
 import com.yoyomo.domain.club.application.usecase.ClubManageUseCaseImpl;
 import com.yoyomo.domain.club.application.usecase.LandingManageUseCaseImpl;
 import com.yoyomo.global.config.dto.ResponseDto;
+import com.yoyomo.global.config.s3.RoutingDeleteService;
+import com.yoyomo.global.config.s3.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class LandingController {
 
     @PostMapping
     @Operation(summary = "노션 링크 등록")
-    public ResponseDto create(Authentication authentication, @RequestParam String notionPageLink) {
+    public ResponseDto create(Authentication authentication, @RequestParam String notionPageLink) throws IOException{
         landingManageUseCase.create(authentication.getName(), notionPageLink);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
