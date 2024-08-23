@@ -32,6 +32,7 @@ public class Recruitment extends BaseEntity {
 
     private Integer generation;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private Boolean isActive;

@@ -27,6 +27,7 @@ public class Process extends BaseEntity {
 
     private Integer stage;
 
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     private LocalDateTime startAt;
