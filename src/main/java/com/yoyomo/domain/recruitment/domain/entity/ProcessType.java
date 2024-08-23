@@ -5,7 +5,7 @@ public enum ProcessType {
     ASSIGNMENT,
     TEST,
     INTERVIEW,
-    FINAL_ACCEPTANCE,
+    FINAL,
     COMPLETION,
     STOP
 }
