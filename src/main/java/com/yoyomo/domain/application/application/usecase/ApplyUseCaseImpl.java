@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
-import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import com.yoyomo.domain.application.application.mapper.AnswerMapper;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 
 @Service
@@ -37,6 +37,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final UserMapper userMapper;
     private final AnswerGetService answerGetService;
     private final AnswerUpdateService answerUpdateService;
+    private final ApplicationUpdateService applicationUpdateService;
 
 
     @Override @Transactional
@@ -58,7 +59,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     }
 
     @Override
-    public ApplicationResponseDTO.MyResponse read(String applicationId) {
+    public MyResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
         return applicationMapper.toMyResponse(application, answerGetService.find(application.getAnswerId()));
     }
@@ -68,6 +69,12 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         Application application = applicationGetService.find(applicationId);
         List<Item> items = itemManageUseCase.create(dto.answers());
         answerUpdateService.from(application.getAnswerId(), items);
+    }
+
+    @Override
+    public void delete(String applicationId) {
+        Application application = applicationGetService.find(applicationId);
+        applicationUpdateService.delete(application);
     }
 
 }

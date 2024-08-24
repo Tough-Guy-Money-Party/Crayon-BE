@@ -18,4 +18,6 @@ public interface ApplyUseCase {
     MyResponse read(String applicationId);
 
     void update(String applicationId, Update dto);
+
+    void delete(String applicationId);
 }

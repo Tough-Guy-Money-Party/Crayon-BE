@@ -58,6 +58,13 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    @DeleteMapping("/{applicationId}")
+    @Operation(summary = "[Applicant] 지원서 삭제")
+    public ResponseDto<Void> delete(@PathVariable String applicationId) {
+        applyUseCase.delete(applicationId);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
     // Manager
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")

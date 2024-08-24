@@ -18,16 +18,16 @@ public class ApplicationGetService {
     private final ApplicationRepository applicationRepository;
 
     public List<Application> findAll(User user) {
-        return applicationRepository.findAllByUser(user);
+        return applicationRepository.findAllByUserAndDeletedAtIsNull(user);
     }
 
     public Application find(String id) {
-        return applicationRepository.findById(UUID.fromString(id))
+        return applicationRepository.findByIdAndDeletedAtIsNull(UUID.fromString(id))
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
     public List<Application> findByName(Recruitment recruitment, String name) {
-        return applicationRepository.findAllByUser_Name(name).stream()
+        return applicationRepository.findAllByUser_NameAndDeletedAtIsNull(name).stream()
                 .filter(application -> application.containsInRecruitment(recruitment))
                 .toList();
     }

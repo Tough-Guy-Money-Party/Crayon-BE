@@ -10,6 +10,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +45,8 @@ public class Application extends BaseEntity {
     @Embedded
     private Interview interview;
 
+    private LocalDateTime deletedAt;
+
     @OneToMany(mappedBy = "application")
     private List<Evaluation> evaluations = new ArrayList<>();
 
@@ -59,5 +62,9 @@ public class Application extends BaseEntity {
 
     public boolean containsInRecruitment(Recruitment recruitment) {
         return this.process.getRecruitment().equals(recruitment);
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
