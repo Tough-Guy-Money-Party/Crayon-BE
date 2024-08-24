@@ -15,4 +15,5 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     List<Application> findAllByUser_NameAndDeletedAtIsNull(String name);
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
+
 }

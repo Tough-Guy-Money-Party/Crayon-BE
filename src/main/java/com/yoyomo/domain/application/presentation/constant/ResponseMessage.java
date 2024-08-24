@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum ResponseMessage {
 
     SUCCESS_SAVE("모집 지원에 성공했습니다."),
-    SUCCESS_READ_ALL("내 지원 목록 조회에 성공했습니다."),
+    SUCCESS_READ_ALL("지원서 목록 조회에 성공했습니다."),
     SUCCESS_READ("지원서 조회에 성공했습니다."),
     SUCCESS_SEARCH("지원서 검색에 성공했습니다."),
     SUCCESS_UPDATE("지원서 수정에 성공했습니다."),

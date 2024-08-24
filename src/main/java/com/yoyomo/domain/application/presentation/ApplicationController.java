@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,7 +67,14 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+
     // Manager
+    @GetMapping("/manager/{recruitmentId}/all")
+    @Operation(summary = "[Manager] 지원서 목록 조회")
+    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId, @CurrentUser Long userId, @RequestParam Integer stage, @RequestParam Integer page, @RequestParam Integer size) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), applicationManageUseCase.readAll(recruitmentId, stage, userId, PageRequest.of(page, size)));
+    }
+
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")
     public ResponseDto<Detail> read(@PathVariable String applicationId, @CurrentUser Long userId) {
