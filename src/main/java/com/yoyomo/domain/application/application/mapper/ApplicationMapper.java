@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.application.mapper;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import com.yoyomo.domain.application.application.dto.response.EvaluationResponseDTO;
 import com.yoyomo.domain.application.application.dto.response.ResultResponseDTO.Result;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -12,6 +13,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.*;
 
@@ -26,7 +29,8 @@ public interface ApplicationMapper {
 
     // 수정: Interview, Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
-    Detail toDetail(Application application, Answer answer);
+    @Mapping(target = "evaluations", source = "evaluations")
+    Detail toDetail(Application application, Answer answer, List<EvaluationResponseDTO.Response> evaluations);
 
     @Mapping(target = "result", expression = "java( getResult(application) )")
     Result toResult(Application application);

@@ -17,8 +17,8 @@ public class ApplicationResponseDTO {
         Status status,
         Rating averageRating,
         AnswerResponseDTO.Response answer,
-        Interview interview
-        // List<Evaluation>
+        Interview interview,
+        List<EvaluationResponseDTO.Response> evaluations
     ) {}
 
     public record Response(

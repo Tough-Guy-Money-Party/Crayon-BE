@@ -1,5 +1,6 @@
 package com.yoyomo.domain.user.domain.entity;
 
+import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -30,11 +31,19 @@ public class Manager extends BaseEntity {
     @OneToMany(mappedBy = "manager", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ClubManager> clubManagers = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Evaluation> evaluations = new ArrayList<>();
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     public void addClubManager(ClubManager clubManager) {
         this.clubManagers.add(clubManager);
+    }
+
+    public void addEvaluation(Evaluation evaluation) {
+        this.evaluations.add(evaluation);
     }
 }

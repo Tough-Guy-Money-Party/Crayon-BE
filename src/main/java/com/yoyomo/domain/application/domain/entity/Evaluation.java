@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -22,6 +23,8 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
+    private Status status;
+
     private String memo;
 
     @ManyToOne
@@ -31,4 +34,8 @@ public class Evaluation extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;
+
+    public static boolean isAfterEvaluation(Evaluation evaluation) {
+        return evaluation.getRating() != Rating.PENDING;
+    }
 }

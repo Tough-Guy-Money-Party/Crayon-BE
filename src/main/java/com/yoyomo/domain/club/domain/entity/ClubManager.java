@@ -12,6 +12,7 @@ public class ClubManager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "club_manager_id")
     private Long id;
 
     @ManyToOne

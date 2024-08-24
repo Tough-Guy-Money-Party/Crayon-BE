@@ -1,7 +1,9 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
+import com.yoyomo.domain.application.application.dto.response.EvaluationResponseDTO;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
+import com.yoyomo.domain.application.application.mapper.EvaluationMapper;
 import com.yoyomo.domain.application.application.mapper.InterviewMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Interview;
@@ -41,13 +43,15 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final ProcessUpdateService processUpdateService;
     private final InterviewMapper interviewMapper;
     private final ApplicationUpdateService applicationUpdateService;
+    private final EvaluationMapper evaluationMapper;
 
     @Override
     public Detail read(String applicationId, Long userId) {
         Application application = checkAuthorityByApplication(applicationId, userId);
-        return applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()));
-    }
+        List<EvaluationResponseDTO.Response> evaluations = getEvaluations(application);
 
+        return applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), evaluations);
+    }
 
     @Override
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
@@ -66,7 +70,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
         Process process = processGetService.find(recruitment, stage);
 
         List<Detail> details = process.getApplications().stream()
-                .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId())))
+                .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
                 .toList();
 
         return new PageImpl<>(details, pageable, details.size());
@@ -106,5 +110,11 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
         checkAuthority(application.getProcess().getRecruitment().getClub(), manager);
 
         return application;
+    }
+
+    private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
+        return application.getEvaluations().stream()
+                .map(evaluationMapper::toResponse)
+                .toList();
     }
 }
