@@ -59,4 +59,8 @@ public class Process extends BaseEntity {
         this.announceStartAt = update.announceStartAt();
         this.announceEndAt = update.announceEndAt();
     }
+
+    public void removeApplication(Application application) {
+        this.applications.remove(application);
+    }
 }

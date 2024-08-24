@@ -67,4 +67,8 @@ public class Application extends BaseEntity {
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void update(Process process) {
+        this.process = process;
+    }
 }

@@ -7,6 +7,7 @@ import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
+import com.yoyomo.domain.recruitment.domain.service.ProcessUpdateService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
@@ -32,6 +34,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final ApplicationMapper applicationMapper;
     private final AnswerGetService answerGetService;
     private final ProcessGetService processGetService;
+    private final ProcessUpdateService processUpdateService;
 
     @Override
     public Detail read(String applicationId, Long userId) {
@@ -59,6 +62,19 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
                 .toList();
 
         return new PageImpl<>(details, pageable, details.size());
+    }
+
+    @Override
+    public void update(Stage dto, Long userId, String recruitmentId) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+
+        dto.ids().stream()
+                .map(applicationGetService::find)
+                .forEach(application -> {
+                    Process from = processGetService.find(recruitment, dto.from());
+                    Process to = processGetService.find(recruitment, dto.to());
+                    processUpdateService.update(from, to, application);
+                });
     }
 
     private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {

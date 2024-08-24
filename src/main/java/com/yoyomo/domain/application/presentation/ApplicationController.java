@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.presentation;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
@@ -85,5 +86,12 @@ public class ApplicationController {
     @Operation(summary = "[Manager] 이름으로 지원서 검색")  // 수정: List -> Page
     public ResponseDto<List<Response>> search(@RequestParam String name, @PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), applicationManageUseCase.search(name, recruitmentId, userId));
+    }
+
+    @PatchMapping("/manager/{recruitmentId}")
+    @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
+    public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser Long userId, @PathVariable String recruitmentId) {
+        applicationManageUseCase.update(dto, userId, recruitmentId);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
