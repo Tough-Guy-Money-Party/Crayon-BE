@@ -24,7 +24,7 @@ public interface ApplicationMapper {
     @Mapping(target = "user", expression = "java( getUser(dto) )")
     Application from(Save dto, Process process);
 
-    // 수정: Application 도메인 생성 시 개발
+    // 수정: Interview, Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
     Detail toDetail(Application application, Answer answer);
 
@@ -47,6 +47,7 @@ public interface ApplicationMapper {
         return new User(dto.name(), dto.email(), dto.tel());
     }
 
+    // 수정: Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
     MyResponse toMyResponse(Application application, Answer answer);
 }

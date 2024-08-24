@@ -48,11 +48,10 @@ public class Recruitment extends BaseEntity {
     private Club club;
 
     @OneToMany(mappedBy = "recruitment")
-    private List<Process> processes;
+    private List<Process> processes = new ArrayList<>();
 
     @PrePersist
     public void init() {
-        processes = new ArrayList<>();  // 수정: 추후 필드에 init
         isActive = false;
         totalApplicantsCount = 0;
     }

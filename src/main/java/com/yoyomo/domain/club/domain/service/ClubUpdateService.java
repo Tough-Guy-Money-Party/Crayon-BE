@@ -20,6 +20,6 @@ public class ClubUpdateService {
     }
 
     public String update(Club club) {
-        return club.initCode();
+        return club.generateCode();
     }
 }

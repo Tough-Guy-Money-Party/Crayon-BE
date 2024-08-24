@@ -83,7 +83,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/manager/{recruitmentId}/search")
-    @Operation(summary = "[Manager] 이름으로 지원서 검색")  // 수정: List -> Page
+    @Operation(summary = "[Manager] 이름으로 지원서 검색")
     public ResponseDto<Page<Response>> search(@RequestParam String name, @PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId, @RequestParam Integer page, @RequestParam Integer size) {
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), applicationManageUseCase.search(name, recruitmentId, userId, PageRequest.of(page, size)));
     }
