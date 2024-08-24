@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.application.mapper.AnswerMapper;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.AnswerSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 
@@ -35,6 +37,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final AnswerSaveService answerSaveService;
     private final ApplicationGetService applicationGetService;
     private final UserMapper userMapper;
+    private final AnswerGetService answerGetService;
 
     @Override @Transactional
     public void apply(Save dto, String recruitmentId) {
@@ -52,5 +55,11 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         return applicationGetService.findAll(userMapper.from(dto)).stream()
                 .map(applicationMapper::toMyResponses)
                 .toList();
+    }
+
+    @Override
+    public Detail read(String applicationId) {
+        Application application = applicationGetService.find(applicationId);
+        return applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()));
     }
 }

@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
+import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.recruitment.application.mapper.ProcessMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -27,6 +28,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
     private final ProcessMapper processMapper;
     private final ProcessDeleteService processDeleteService;
     private final RecruitmentGetService recruitmentGetService;
+    private final AnswerGetService answerGetService;
 
     @Override
     public List<Process> save(List<Save> dto, Recruitment recruitment) {
@@ -40,7 +42,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
         return recruitment.getProcesses().stream()
                 .map(process -> {
                     List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
-                            .map(applicationMapper::toResponse)
+                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId())))
                             .toList();
 
                     return processMapper.toResponse(process, applications);

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
@@ -33,8 +33,14 @@ public class ApplicationController {
     }
 
     @GetMapping
-    @Operation(summary = "내 지원 목록 조회")
+    @Operation(summary = "내 지원서 목록 조회")
     public ResponseDto<List<MyResponse>> readAll(@RequestBody @Valid Find dto) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), applyUseCase.readAll(dto));
+    }
+
+    @GetMapping("/{applicationId}")
+    @Operation(summary = "지원서 상세 조회")
+    public ResponseDto<Detail> read(@PathVariable String applicationId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), applyUseCase.read(applicationId));
     }
 }

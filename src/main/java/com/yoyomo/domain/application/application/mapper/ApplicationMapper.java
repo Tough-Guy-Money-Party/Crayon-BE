@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.application.mapper;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
 import com.yoyomo.domain.application.application.dto.response.ResultResponseDTO.Result;
+import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -25,7 +26,8 @@ public interface ApplicationMapper {
     Application from(Save dto, Process process);
 
     // 수정: Application 도메인 생성 시 개발
-    Detail toResponse(Application application);
+    @Mapping(target = "id", source = "application.id")
+    Detail toDetail(Application application, Answer answer);
 
     @Mapping(target = "result", expression = "java( getResult(application) )")
     Result toResult(Application application);
