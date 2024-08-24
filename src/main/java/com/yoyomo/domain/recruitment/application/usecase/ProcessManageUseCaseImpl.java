@@ -39,7 +39,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
 
         return recruitment.getProcesses().stream()
                 .map(process -> {
-                    List<ApplicationResponseDTO.Response> applications = process.getApplications().stream()
+                    List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
                             .map(applicationMapper::toResponse)
                             .toList();
 

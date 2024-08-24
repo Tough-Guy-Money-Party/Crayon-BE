@@ -6,12 +6,14 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.user.domain.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -19,10 +21,11 @@ import static com.yoyomo.domain.application.application.dto.response.Application
 public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", expression = "java( getUser(dto) )")
     Application from(Save dto, Process process);
 
     // 수정: Application 도메인 생성 시 개발
-    Response toResponse(Application application);
+    Detail toResponse(Application application);
 
     @Mapping(target = "result", expression = "java( getResult(application) )")
     Result toResult(Application application);
@@ -33,5 +36,13 @@ public interface ApplicationMapper {
         if(recruitment.getProcesses().size() - 1 == application.getProcess().getStage())
             return application.getStatus();
         return Status.PENDING;
+    }
+
+    @Mapping(target = "club", source = "application.process.recruitment.club")
+    @Mapping(target = "processes", source = "application.process.recruitment.processes")
+    MyResponse toMyResponses(Application application);
+
+    default User getUser(Save dto) {
+        return new User(dto.name(), dto.email(), dto.tel());
     }
 }

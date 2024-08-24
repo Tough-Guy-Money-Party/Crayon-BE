@@ -10,7 +10,7 @@ public class ApplicationRequestDTO {
 
     public record Save(
             @NotEmpty String name,
-            @NotEmpty String phone,
+            @NotEmpty String tel,
             @NotEmpty String email,
             @Valid List<ItemRequest> answers
     ) {}

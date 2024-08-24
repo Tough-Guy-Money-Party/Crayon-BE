@@ -29,8 +29,10 @@ public class Application extends BaseEntity {
     @Embedded
     private User user;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
     private Rating averageRating;
 
     private String answerId;
