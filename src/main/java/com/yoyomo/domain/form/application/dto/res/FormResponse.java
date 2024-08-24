@@ -6,6 +6,7 @@ public record FormResponse(
         String id,
         String title,
         String description,
+        Boolean enabled,
         LocalDateTime createdAt
 ) {
 }
