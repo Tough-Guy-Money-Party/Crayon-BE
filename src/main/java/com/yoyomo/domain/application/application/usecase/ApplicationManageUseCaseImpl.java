@@ -44,12 +44,14 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
 
     @Override
-    public List<Response> search(String name, String recruitmentId, Long userId) {
+    public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        return applicationGetService.findByName(recruitment, name).stream()
+        List<Response> result = applicationGetService.findByName(recruitment, name).stream()
                 .map(applicationMapper::toResponses)
                 .toList();
+
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     @Override

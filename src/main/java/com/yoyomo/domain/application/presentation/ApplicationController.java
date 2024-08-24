@@ -43,7 +43,7 @@ public class ApplicationController {
     }
 
     @GetMapping
-    @Operation(summary = "[Applicant] 내 지원서 목록 조회") // 수정: List -> Page
+    @Operation(summary = "[Applicant] 내 지원서 목록 조회")
     public ResponseDto<List<Response>> readAll(@RequestBody @Valid Find dto) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), applyUseCase.readAll(dto));
     }
@@ -84,8 +84,8 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/search")
     @Operation(summary = "[Manager] 이름으로 지원서 검색")  // 수정: List -> Page
-    public ResponseDto<List<Response>> search(@RequestParam String name, @PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
-        return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), applicationManageUseCase.search(name, recruitmentId, userId));
+    public ResponseDto<Page<Response>> search(@RequestParam String name, @PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId, @RequestParam Integer page, @RequestParam Integer size) {
+        return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), applicationManageUseCase.search(name, recruitmentId, userId, PageRequest.of(page, size)));
     }
 
     @PatchMapping("/manager/{recruitmentId}")
