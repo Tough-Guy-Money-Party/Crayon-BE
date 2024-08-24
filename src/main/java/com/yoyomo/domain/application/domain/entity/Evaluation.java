@@ -19,6 +19,7 @@ public class Evaluation extends BaseEntity {
     @Column(name = "evaluation_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private Rating rating;
 
     private String memo;

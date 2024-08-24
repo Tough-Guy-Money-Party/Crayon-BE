@@ -18,7 +18,6 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-@ToString
 public class Club extends BaseEntity {
 
     @Id
@@ -32,18 +31,18 @@ public class Club extends BaseEntity {
 
     private String code;
 
+    @Builder.Default
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ClubManager> clubManagers;
+    private List<ClubManager> clubManagers = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
     @PrePersist
     public void init() {
-        clubManagers = new ArrayList<>();
-        initCode();
+        generateCode();
     }
 
-    public String initCode() {
+    public String generateCode() {
         code = UUID.randomUUID().toString();
         return code;
     }

@@ -1,6 +1,6 @@
 package com.yoyomo.domain.user.application.mapper;
 
-import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Announce;
+import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.domain.user.domain.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -12,5 +12,5 @@ import org.mapstruct.ReportingPolicy;
 
 public interface UserMapper {
 
-    User from(Announce dto);
+    User from(Find dto);
 }

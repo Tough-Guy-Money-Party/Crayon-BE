@@ -29,5 +29,5 @@ public interface ProcessMapper {
 
     @Mapping(target = "applications", source = "applications")
     @Mapping(target = "applicantCount", expression = "java( applications.size() )")
-    Response toResponse(Process process, List<ApplicationResponseDTO.Response> applications);
+    Response toResponse(Process process, List<ApplicationResponseDTO.Detail> applications);
 }

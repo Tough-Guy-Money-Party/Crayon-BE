@@ -3,13 +3,15 @@ package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
-import com.yoyomo.domain.interview.domain.entity.Interview;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,8 +30,10 @@ public class Application extends BaseEntity {
     @Embedded
     private User user;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
     private Rating averageRating;
 
     private String answerId;
@@ -38,10 +42,33 @@ public class Application extends BaseEntity {
     @JoinColumn(name = "process_id")
     private Process process;
 
-    @OneToOne
-    @JoinColumn(name = "interview_id")
+    @Embedded
     private Interview interview;
 
+    private LocalDateTime deletedAt;
+
     @OneToMany(mappedBy = "application")
-    private List<Evaluation> evaluations;
+    private List<Evaluation> evaluations = new ArrayList<>();
+
+    @PrePersist
+    public void init() {
+        this.status = Status.PENDING;
+        this.averageRating = Rating.PENDING;
+    }
+
+    public void mapToAnswer(String answerId) {
+        this.answerId = answerId;
+    }
+
+    public boolean containsInRecruitment(Recruitment recruitment) {
+        return this.process.getRecruitment().equals(recruitment);
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void update(Process process) {
+        this.process = process;
+    }
 }

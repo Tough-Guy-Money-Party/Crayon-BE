@@ -44,7 +44,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
         Manager manager = userGetService.find(userId);
         checkAuthority(club, manager);
         Recruitment recruitment = recruitmentSaveService.save(recruitmentMapper.from(dto, club));
-        processManageUseCase.save(dto.processes(), recruitment);
+        List<Process> processes = processManageUseCase.save(dto.processes(), recruitment);
+        recruitment.addProcesses(processes);
     }
 
     @Override

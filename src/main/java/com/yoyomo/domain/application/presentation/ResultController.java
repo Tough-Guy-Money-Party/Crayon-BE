@@ -2,9 +2,10 @@ package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.response.ResultResponseDTO.Result;
 import com.yoyomo.domain.application.application.usecase.ResultManageUseCase;
-import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Announce;
+import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class ResultController {
     private final ResultManageUseCase resultManageUseCase;
 
     @GetMapping
-    public ResponseDto<List<Result>> announce(@RequestBody Announce dto) {
+    public ResponseDto<List<Result>> announce(@RequestBody @Valid Find dto) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_RESULT.getMessage(), resultManageUseCase.announce(dto));
     }
 }

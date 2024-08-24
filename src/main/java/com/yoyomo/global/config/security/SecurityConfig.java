@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()
-                                .anyRequest().authenticated());
+                                .anyRequest().permitAll());
 
         http
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class);

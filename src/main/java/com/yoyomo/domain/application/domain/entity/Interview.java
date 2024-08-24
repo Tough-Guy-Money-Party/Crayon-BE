@@ -1,4 +1,5 @@
-package com.yoyomo.domain.user.domain.entity;
+package com.yoyomo.domain.application.domain.entity;
+
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -11,11 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class Interview {
 
-    private String name;
+    private String date;
 
-    private String email;
-
-    private String tel;
+    private String place;
 }

@@ -1,10 +1,12 @@
 package com.yoyomo.domain.user.application.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class UserRequestDTO {
 
-    public record Announce(
-            String name,
-            String email,
-            String tel
+    public record Find(
+            @NotEmpty String name,
+            @NotEmpty String email,
+            @NotEmpty String tel
     ) {}
 }
