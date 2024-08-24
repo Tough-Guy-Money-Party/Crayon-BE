@@ -13,8 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -42,9 +41,12 @@ public interface ApplicationMapper {
 
     @Mapping(target = "club", source = "application.process.recruitment.club")
     @Mapping(target = "processes", source = "application.process.recruitment.processes")
-    MyResponse toMyResponses(Application application);
+    Response toResponses(Application application);
 
     default User getUser(Save dto) {
         return new User(dto.name(), dto.email(), dto.tel());
     }
+
+    @Mapping(target = "id", source = "application.id")
+    MyResponse toMyResponse(Application application, Answer answer);
 }

@@ -14,4 +14,8 @@ public class ApplicationRequestDTO {
             @NotEmpty String email,
             @Valid List<ItemRequest> answers
     ) {}
+
+    public record Update(
+            @Valid List<ItemRequest> answers
+    ) {}
 }

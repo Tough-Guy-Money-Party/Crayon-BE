@@ -16,7 +16,7 @@ public class ProcessResponseDTO {
             LocalDateTime endAt,
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt,
-            List<ApplicationResponseDTO.MyResponse> applications,
+            List<ApplicationResponseDTO.Response> applications,
             Integer applicantCount
     ) {}
 

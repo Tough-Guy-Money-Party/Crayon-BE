@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
     List<Application> findAllByUser(User user);
+
+    List<Application> findAllByUser_Name(String name);
 }

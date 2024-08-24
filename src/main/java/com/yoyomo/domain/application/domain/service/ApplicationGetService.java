@@ -3,6 +3,7 @@ package com.yoyomo.domain.application.domain.service;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,11 @@ public class ApplicationGetService {
     public Application find(String id) {
         return applicationRepository.findById(UUID.fromString(id))
                 .orElseThrow(ApplicationNotFoundException::new);
+    }
+
+    public List<Application> findByName(Recruitment recruitment, String name) {
+        return applicationRepository.findAllByUser_Name(name).stream()
+                .filter(application -> application.containsInRecruitment(recruitment))
+                .toList();
     }
 }

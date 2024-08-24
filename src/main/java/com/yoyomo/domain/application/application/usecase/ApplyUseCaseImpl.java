@@ -1,13 +1,13 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
+import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
+import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import com.yoyomo.domain.application.application.mapper.AnswerMapper;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.service.AnswerGetService;
-import com.yoyomo.domain.application.domain.service.AnswerSaveService;
-import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
+import com.yoyomo.domain.application.domain.service.*;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -21,8 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 
 @Service
@@ -38,6 +36,8 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     private final ApplicationGetService applicationGetService;
     private final UserMapper userMapper;
     private final AnswerGetService answerGetService;
+    private final AnswerUpdateService answerUpdateService;
+
 
     @Override @Transactional
     public void apply(Save dto, String recruitmentId) {
@@ -51,15 +51,23 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     }
 
     @Override
-    public List<MyResponse> readAll(Find dto) {
+    public List<Response> readAll(Find dto) {
         return applicationGetService.findAll(userMapper.from(dto)).stream()
-                .map(applicationMapper::toMyResponses)
+                .map(applicationMapper::toResponses)
                 .toList();
     }
 
     @Override
-    public Detail read(String applicationId) {
+    public ApplicationResponseDTO.MyResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
-        return applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()));
+        return applicationMapper.toMyResponse(application, answerGetService.find(application.getAnswerId()));
     }
+
+    @Override
+    public void update(String applicationId, Update dto) {
+        Application application = applicationGetService.find(applicationId);
+        List<Item> items = itemManageUseCase.create(dto.answers());
+        answerUpdateService.from(application.getAnswerId(), items);
+    }
+
 }

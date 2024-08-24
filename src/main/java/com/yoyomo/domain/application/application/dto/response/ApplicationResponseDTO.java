@@ -8,8 +8,6 @@ import com.yoyomo.domain.user.domain.entity.User;
 
 import java.util.List;
 
-import static com.yoyomo.domain.application.application.dto.response.AnswerResponseDTO.*;
-
 public class ApplicationResponseDTO {
 
     public record Detail(
@@ -17,15 +15,22 @@ public class ApplicationResponseDTO {
         User user,
         Status status,
         Rating averageRating,
-        Response answer
+        AnswerResponseDTO.Response answer
         // Interview
         // List<Evaluation>
     ) {}
 
-    public record MyResponse(
+    public record Response(
             String id,
             ClubResponseDTO.Response club,
             List<ProcessResponseDTO.Info> processes,
             Integer currentStage
+    ) {}
+
+    public record MyResponse(
+            String id,
+            User user,
+            AnswerResponseDTO.Response answer
+            // Interview
     ) {}
 }
