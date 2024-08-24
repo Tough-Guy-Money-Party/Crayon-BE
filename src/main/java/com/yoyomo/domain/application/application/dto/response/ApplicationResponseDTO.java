@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.application.dto.response;
 
+import com.yoyomo.domain.application.domain.entity.Interview;
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
@@ -15,8 +16,8 @@ public class ApplicationResponseDTO {
         User user,
         Status status,
         Rating averageRating,
-        AnswerResponseDTO.Response answer
-        // Interview
+        AnswerResponseDTO.Response answer,
+        Interview interview
         // List<Evaluation>
     ) {}
 
@@ -30,7 +31,7 @@ public class ApplicationResponseDTO {
     public record MyResponse(
             String id,
             User user,
-            AnswerResponseDTO.Response answer
-            // Interview
+            AnswerResponseDTO.Response answer,
+            Interview interview
     ) {}
 }

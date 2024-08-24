@@ -1,9 +1,13 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
+import com.yoyomo.domain.application.application.mapper.InterviewMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.Interview;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
@@ -35,6 +39,8 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final AnswerGetService answerGetService;
     private final ProcessGetService processGetService;
     private final ProcessUpdateService processUpdateService;
+    private final InterviewMapper interviewMapper;
+    private final ApplicationUpdateService applicationUpdateService;
 
     @Override
     public Detail read(String applicationId, Long userId) {
@@ -77,6 +83,13 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
                     Process to = processGetService.find(recruitment, dto.to());
                     processUpdateService.update(from, to, application);
                 });
+    }
+
+    @Override
+    public void saveInterview(String applicationId, InterviewRequestDTO.Save dto, Long userId) {
+        Application application = checkAuthorityByApplication(applicationId, userId);
+        Interview from = interviewMapper.from(dto);
+        applicationUpdateService.update(application, from);
     }
 
     private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {

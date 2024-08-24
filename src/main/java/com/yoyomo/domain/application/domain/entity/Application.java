@@ -71,4 +71,8 @@ public class Application extends BaseEntity {
     public void update(Process process) {
         this.process = process;
     }
+
+    public void addInterview(Interview interview) {
+        this.interview = interview;
+    }
 }
