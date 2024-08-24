@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
+import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
@@ -93,5 +94,12 @@ public class ApplicationController {
     public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser Long userId, @PathVariable String recruitmentId) {
         applicationManageUseCase.update(dto, userId, recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @PatchMapping("/{applicationId}/interview")
+    @Operation(summary = "[Manager] 면접 일정 설정")
+    public ResponseDto<Void> saveInterview(@PathVariable String applicationId, @RequestBody InterviewRequestDTO.Save dto, @CurrentUser Long userId) {
+        applicationManageUseCase.saveInterview(applicationId, dto, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW.getMessage());
     }
 }

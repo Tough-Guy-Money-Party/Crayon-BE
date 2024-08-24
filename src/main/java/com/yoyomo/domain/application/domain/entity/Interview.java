@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Interview {
 
-    private String date;
-
     private String place;
+    private String date;
 }
