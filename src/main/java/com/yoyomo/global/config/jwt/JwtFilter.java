@@ -1,7 +1,10 @@
 package com.yoyomo.global.config.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.global.common.dto.ResponseDto;
+import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +20,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
+
+import static jakarta.servlet.http.HttpServletResponse.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -80,11 +86,18 @@ public class JwtFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtProvider.extractAccessToken(request)
-                .filter(jwtProvider::isTokenValid)
-                .ifPresent(accessToken -> jwtProvider.extractEmail(accessToken)
-                        .ifPresent(email -> managerRepository.findByEmailAndDeletedAtIsNull(email)
-                                .ifPresent(this::saveAuthentication)));
+        Optional<String> accessToken = jwtProvider.extractAccessToken(request)
+                .filter(jwtProvider::isTokenValid);
+
+        if (accessToken.isEmpty()) {
+            jwtExceptionHandler(response);
+            return;
+        }
+
+        accessToken
+                .flatMap(jwtProvider::extractEmail)
+                .flatMap(managerRepository::findByEmailAndDeletedAtIsNull)
+                .ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -101,5 +114,19 @@ public class JwtFilter extends OncePerRequestFilter {
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    public void jwtExceptionHandler(HttpServletResponse response) {
+        response.setStatus(SC_OK);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            InvalidTokenException error = new InvalidTokenException();
+            String json = new ObjectMapper().writeValueAsString(ResponseDto.of(error.getErrorCode(), error.getMessage()));
+            response.getWriter().write(json);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }
