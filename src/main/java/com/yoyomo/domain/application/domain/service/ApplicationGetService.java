@@ -4,7 +4,8 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
-import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.application.dto.request.UserRequestDTO;
+import com.yoyomo.domain.user.application.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,10 @@ import java.util.UUID;
 public class ApplicationGetService {
 
     private final ApplicationRepository applicationRepository;
+    private final UserMapper userMapper;
 
-    public List<Application> findAll(User user) {
-        return applicationRepository.findAllByUserAndDeletedAtIsNull(user);
+    public List<Application> findAll(UserRequestDTO.Find dto) {
+        return applicationRepository.findAllByUserAndDeletedAtIsNull(userMapper.from(dto));
     }
 
     public Application find(String id) {

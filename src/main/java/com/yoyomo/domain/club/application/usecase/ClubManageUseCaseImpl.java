@@ -39,7 +39,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     public Response save(Save dto, Long userId) {
         checkDuplicatedSubDomain(dto.subDomain());
         Manager manager = userGetService.find(userId);
-        Club club = clubSaveService.save(clubMapper.from(dto));
+        Club club = clubSaveService.save(dto);
         mapFK(manager, club);
 
         return clubMapper.toResponse(club);

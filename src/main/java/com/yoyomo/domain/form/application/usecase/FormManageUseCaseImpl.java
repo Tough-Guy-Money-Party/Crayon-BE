@@ -55,7 +55,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public SaveResponse create(Save dto, String clubId, Long userId) {
         checkAuthorityByClubId(userId, clubId);
         List<Item> items = itemManageUseCase.create(dto.itemRequests());
-        Form form = formSaveService.save(formMapper.from(dto, items, clubId));
+        Form form = formSaveService.save(dto, items, clubId);
 
         return new SaveResponse(form.getId());
     }

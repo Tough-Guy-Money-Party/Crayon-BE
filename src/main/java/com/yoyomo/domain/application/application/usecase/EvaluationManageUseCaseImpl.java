@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
-import com.yoyomo.domain.application.application.mapper.EvaluationMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EvaluationManageUseCaseImpl implements EvaluationManageUseCase {
 
-    private final EvaluationMapper evaluationMapper;
     private final ApplicationGetService applicationGetService;
     private final UserGetService userGetService;
     private final EvaluationSaveService evaluationSaveService;
@@ -33,7 +31,7 @@ public class EvaluationManageUseCaseImpl implements EvaluationManageUseCase {
         Manager manager = userGetService.find(userId);
         Club.checkAuthority(application.getProcess().getRecruitment().getClub(), manager);
 
-        Evaluation evaluation = evaluationSaveService.save(evaluationMapper.from(dto, manager, application));
+        Evaluation evaluation = evaluationSaveService.save(dto, manager, application);
         manager.addEvaluation(evaluation);
         application.evaluate(evaluation);
     }
