@@ -29,4 +29,6 @@ public interface ClubManageUseCase {
     Code updateCode(String clubId, Long userId);
 
     void deleteManagers(ClubRequestDTO.Delete dto);
+
+    List<Response> readAll(Long userId);
 }

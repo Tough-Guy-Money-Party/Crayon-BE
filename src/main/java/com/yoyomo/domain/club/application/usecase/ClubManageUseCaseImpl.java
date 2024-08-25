@@ -111,6 +111,16 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         }
     }
 
+    @Override
+    public List<Response> readAll(Long userId) {
+        Manager manager = userGetService.find(userId);
+
+        return manager.getClubManagers().stream()
+                .map(ClubManager::getClub)
+                .map(clubMapper::toResponse)
+                .toList();
+    }
+
     private void checkDuplicatedSubDomain(String subDomain) {
         if(clubGetService.checkSubDomain(subDomain))
             throw new DuplicatedSubDomainException();

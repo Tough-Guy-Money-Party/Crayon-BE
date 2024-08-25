@@ -41,6 +41,12 @@ public class ClubController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), clubManageUseCase.read(clubId));
     }
 
+    @GetMapping
+    @Operation(summary = "워크 스페이스 조회")
+    public ResponseDto<List<Response>> readAll(@CurrentUser Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), clubManageUseCase.readAll(userId));
+    }
+
     @PatchMapping("/{clubId}")
     @Operation(summary = "동아리 수정")
     public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Save dto) {
