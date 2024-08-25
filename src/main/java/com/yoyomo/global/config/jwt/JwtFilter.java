@@ -53,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
         } else {
             jwtProvider.extractEmail(validAccessToken)
-                    .ifPresent(email -> managerRepository.findByEmail(email)
+                    .ifPresent(email -> managerRepository.findByEmailAndDeletedAtIsNull(email)
                             .ifPresent(this::saveAuthentication));
 
             filterChain.doFilter(request, response);
@@ -83,7 +83,7 @@ public class JwtFilter extends OncePerRequestFilter {
         jwtProvider.extractAccessToken(request)
                 .filter(jwtProvider::isTokenValid)
                 .ifPresent(accessToken -> jwtProvider.extractEmail(accessToken)
-                        .ifPresent(email -> managerRepository.findByEmail(email)
+                        .ifPresent(email -> managerRepository.findByEmailAndDeletedAtIsNull(email)
                                 .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
