@@ -21,10 +21,18 @@ public interface ProcessMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "title", source = "dto.title")
+    @Mapping(target = "startAt", source = "dto.period.evaluation.time.startAt")
+    @Mapping(target = "endAt", source = "dto.period.evaluation.time.endAt")
+    @Mapping(target = "announceStartAt", source = "dto.period.announcement.time.startAt")
+    @Mapping(target = "announceEndAt", source = "dto.period.announcement.time.endAt")
     Process from(Save dto, Recruitment recruitment);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "title", source = "dto.title")
+    @Mapping(target = "startAt", source = "dto.period.evaluation.time.startAt")
+    @Mapping(target = "endAt", source = "dto.period.evaluation.time.endAt")
+    @Mapping(target = "announceStartAt", source = "dto.period.announcement.time.startAt")
+    @Mapping(target = "announceEndAt", source = "dto.period.announcement.time.endAt")
     Process from(Update dto, Recruitment recruitment);
 
     @Mapping(target = "applications", source = "applications")
