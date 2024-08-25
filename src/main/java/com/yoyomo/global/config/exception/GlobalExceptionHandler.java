@@ -1,6 +1,7 @@
 package com.yoyomo.global.config.exception;
 
 import com.yoyomo.global.common.dto.ResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -25,16 +26,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseDto<List<ExceptionDTO>> handle(BindException ex) {
+    public ResponseDto<List<ExceptionDTO>> handle(BindException ex, HttpServletRequest request) {
         int status = 400;
         List<ExceptionDTO> dto = new ArrayList<>();
+        String url = request.getMethod() + " " + request.getRequestURL().toString();
 
         if (ex instanceof ErrorResponse) {
             status = ((ErrorResponse) ex).getStatusCode().value();
             ex.getBindingResult().getFieldErrors()
-                    .forEach(error -> dto.add(new ExceptionDTO(error.getField(), error.getDefaultMessage(), error.getRejectedValue())));
+                    .forEach(error -> dto.add(new ExceptionDTO(url, error.getField(), error.getDefaultMessage(), error.getRejectedValue())));
         } else {
-            dto.add(new ExceptionDTO(null, ex.getMessage(), null));
+            dto.add(new ExceptionDTO(url, null, ex.getMessage(), null));
         }
         log.error(LOG_FORMAT, ex.getClass().getSimpleName(), status, dto);
 
