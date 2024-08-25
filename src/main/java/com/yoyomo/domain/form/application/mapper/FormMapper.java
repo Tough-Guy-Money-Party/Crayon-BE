@@ -19,6 +19,7 @@ import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Re
 public interface FormMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
     Form from(FormRequestDTO.Save dto, List<Item> items, String clubId);
 
     DetailResponse toDetailResponse(Form form);

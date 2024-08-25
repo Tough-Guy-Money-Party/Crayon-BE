@@ -25,6 +25,7 @@ import static com.yoyomo.domain.application.application.dto.response.Application
 public interface ApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "user", expression = "java( getUser(dto) )")
     Application from(Save dto, Process process);
 

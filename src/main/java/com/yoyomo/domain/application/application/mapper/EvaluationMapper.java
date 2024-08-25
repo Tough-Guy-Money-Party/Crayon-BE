@@ -16,6 +16,7 @@ import org.mapstruct.ReportingPolicy;
 public interface EvaluationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "status", source = "dto.status")
     Evaluation from(Save dto, Manager manager, Application application);
 
