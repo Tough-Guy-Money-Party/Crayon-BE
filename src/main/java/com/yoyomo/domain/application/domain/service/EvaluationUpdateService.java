@@ -15,4 +15,8 @@ public class EvaluationUpdateService {
     public void update(Evaluation evaluation, Save dto) {
         evaluation.update(dto);
     }
+
+    public void delete(Evaluation evaluation) {
+        evaluation.delete();
+    }
 }

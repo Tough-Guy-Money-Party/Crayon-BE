@@ -11,8 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_EVALUATION;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE_EVALUATION;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "EVALUATION")
@@ -39,4 +38,10 @@ public class EvaluationController {
     }
 
     // 삭제
+    @DeleteMapping("/{evaluationId}")
+    @Operation(summary = "평가 삭제")
+    public ResponseDto<Void> delete(@PathVariable Long evaluationId, @CurrentUser Long userId) {
+        evaluationManageUseCase.delete(evaluationId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE_EVALUATION.getMessage());
+    }
 }

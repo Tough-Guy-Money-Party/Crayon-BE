@@ -7,4 +7,6 @@ public interface EvaluationManageUseCase {
     void save(String applicationId, Save dto, Long userId);
 
     void update(Long evaluationId, Save dto, Long userId);
+
+    void delete(Long evaluationId, Long userId);
 }

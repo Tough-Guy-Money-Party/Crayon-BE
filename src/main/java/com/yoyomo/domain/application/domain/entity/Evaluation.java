@@ -7,6 +7,8 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 import static com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
 
 
@@ -30,6 +32,8 @@ public class Evaluation extends BaseEntity {
 
     private String memo;
 
+    private LocalDateTime deletedAt;
+
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private Manager manager;
@@ -46,5 +50,9 @@ public class Evaluation extends BaseEntity {
         this.rating = dto.rating();
         this.status = dto.status();
         this.memo = dto.memo();
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }

@@ -13,7 +13,7 @@ public class EvaluationGetService {
     private final EvaluationRepository evaluationRepository;
 
     public Evaluation find(Long id) {
-        return evaluationRepository.findById(id)
+        return evaluationRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(EvaluationNotFoundException::new);
     }
 }

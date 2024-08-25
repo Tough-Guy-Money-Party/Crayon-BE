@@ -45,6 +45,13 @@ public class EvaluationManageUseCaseImpl implements EvaluationManageUseCase {
         evaluationUpdateService.update(evaluation, dto);
     }
 
+    @Override
+    public void delete(Long evaluationId, Long userId) {
+        Evaluation evaluation = evaluationGetService.find(evaluationId);
+        checkAuthority(evaluation, userId);
+        evaluationUpdateService.delete(evaluation);
+    }
+
     private void checkAuthority(Evaluation evaluation, Long userId) {
         if(!evaluation.getManager().getId().equals(userId))
             throw new AccessDeniedException();

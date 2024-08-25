@@ -15,6 +15,7 @@ public enum ResponseMessage {
     SUCCESS_SAVE_INTERVIEW("면접 설정에 성공했습니다."),
     SUCCESS_SAVE_EVALUATION("평가 생성에 성공했습니다."),
     SUCCESS_UPDATE_EVALUATION("평가 수정에 성공했습니다."),
+    SUCCESS_DELETE_EVALUATION("평가 삭제에 성공했습니다."),
 
     SUCCESS_READ_RESULT("모집 결과 조회에 성공했습니다."),
     APPLICATION_NOT_FOUND("지원 이력이 존재하지 않습니다."),
