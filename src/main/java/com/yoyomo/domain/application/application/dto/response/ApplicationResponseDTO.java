@@ -18,7 +18,8 @@ public class ApplicationResponseDTO {
         Rating averageRating,
         AnswerResponseDTO.Response answer,
         Interview interview,
-        List<EvaluationResponseDTO.Response> evaluations
+        List<EvaluationResponseDTO.Response> evaluations,
+        Boolean isBeforeInterview
     ) {}
 
     public record Response(

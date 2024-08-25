@@ -8,6 +8,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -30,6 +31,7 @@ public interface ApplicationMapper {
     // 수정: Interview, Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
     @Mapping(target = "evaluations", source = "evaluations")
+    @Mapping(target = "isBeforeInterview", expression = "java( isBefore(application) )")
     Detail toDetail(Application application, Answer answer, List<EvaluationResponseDTO.Response> evaluations);
 
     @Mapping(target = "result", expression = "java( getResult(application) )")
@@ -54,4 +56,16 @@ public interface ApplicationMapper {
     // 수정: Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
     MyResponse toMyResponse(Application application, Answer answer);
+
+    default Boolean isBefore(Application application) {
+        List<Type> types = application.getProcess().getRecruitment().getProcesses().stream()
+                .map(Process::getType)
+                .toList();
+
+        if(!types.contains(Type.INTERVIEW))
+            return false;
+
+        return types.indexOf(Type.INTERVIEW) > application.getProcess().getStage();
+    }
+
 }
