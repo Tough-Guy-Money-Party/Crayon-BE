@@ -43,7 +43,7 @@ public class ClubController {
 
     @GetMapping
     @Operation(summary = "워크 스페이스 조회")
-    public ResponseDto<List<Response>> readAll(@CurrentUser Long userId) {
+    public ResponseDto<List<Response>> readAll(@CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), clubManageUseCase.readAll(userId));
     }
 

@@ -73,13 +73,13 @@ public class ApplicationController {
     // Manager
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회")
-    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId, @CurrentUser Long userId, @RequestParam Integer stage, @RequestParam Integer page, @RequestParam Integer size) {
+    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId, @RequestParam Integer stage, @RequestParam Integer page, @RequestParam Integer size) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), applicationManageUseCase.readAll(recruitmentId, stage, userId, PageRequest.of(page, size)));
     }
 
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")
-    public ResponseDto<Detail> read(@PathVariable String applicationId, @CurrentUser Long userId) {
+    public ResponseDto<Detail> read(@PathVariable String applicationId, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), applicationManageUseCase.read(applicationId, userId));
     }
 
@@ -91,14 +91,14 @@ public class ApplicationController {
 
     @PatchMapping("/manager/{recruitmentId}")
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
-    public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser Long userId, @PathVariable String recruitmentId) {
+    public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser @Parameter(hidden = true) Long userId, @PathVariable String recruitmentId) {
         applicationManageUseCase.update(dto, userId, recruitmentId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @PatchMapping("/{applicationId}/interview")
     @Operation(summary = "[Manager] 면접 일정 설정")
-    public ResponseDto<Void> saveInterview(@PathVariable String applicationId, @RequestBody InterviewRequestDTO.Save dto, @CurrentUser Long userId) {
+    public ResponseDto<Void> saveInterview(@PathVariable String applicationId, @RequestBody InterviewRequestDTO.Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         applicationManageUseCase.saveInterview(applicationId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW.getMessage());
     }

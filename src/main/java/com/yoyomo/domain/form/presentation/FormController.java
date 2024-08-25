@@ -44,34 +44,34 @@ public class FormController {
 
     @GetMapping("/all/{clubId}")
     @Operation(summary = "내 동아리의 폼 목록 조회")
-    public ResponseDto<List<Response>> readAll(@CurrentUser Long userId, @PathVariable String clubId) {
+    public ResponseDto<List<Response>> readAll(@CurrentUser @Parameter(hidden = true) Long userId, @PathVariable String clubId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), formManageUseCase.readAll(userId, clubId));
     }
 
     @PutMapping("/{formId}")
     @Operation(summary = "폼 수정")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto, @CurrentUser Long userId) {
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto, @CurrentUser @Parameter(hidden = true) Long userId) {
         formManageUseCase.update(formId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @PatchMapping("/{formId}")
     @Operation(summary = "폼 활성화/비활성화")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled, @CurrentUser Long userId) {
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled, @CurrentUser @Parameter(hidden = true) Long userId) {
         formManageUseCase.update(formId, enabled, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{formId}")
     @Operation(summary = "폼 삭제")
-    public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser Long userId) {
+    public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser @Parameter(hidden = true) Long userId) {
         formManageUseCase.delete(formId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 
     @GetMapping("/{clubId}/search")
     @Operation(summary = "내 동아리의 폼 목록 검색")
-    public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser Long userId) {
+    public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), formManageUseCase.search(keyword, clubId, userId));
     }
 }
