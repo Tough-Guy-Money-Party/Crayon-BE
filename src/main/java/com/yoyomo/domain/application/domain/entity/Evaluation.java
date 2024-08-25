@@ -7,6 +7,8 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
+
 
 @Getter
 @Builder
@@ -23,6 +25,7 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private String memo;
@@ -37,5 +40,11 @@ public class Evaluation extends BaseEntity {
 
     public static boolean isAfterEvaluation(Evaluation evaluation) {
         return evaluation.getRating() != Rating.PENDING;
+    }
+
+    public void update(Save dto) {
+        this.rating = dto.rating();
+        this.status = dto.status();
+        this.memo = dto.memo();
     }
 }

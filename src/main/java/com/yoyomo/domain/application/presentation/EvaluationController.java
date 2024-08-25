@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_EVALUATION;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE_EVALUATION;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "EVALUATION")
@@ -30,6 +31,12 @@ public class EvaluationController {
     }
 
     // 수정
+    @PatchMapping("/{evaluationId}")
+    @Operation(summary = "평가 수정")
+    public ResponseDto<Void> update(@PathVariable Long evaluationId, @RequestBody @Valid Save dto, @CurrentUser Long userId) {
+        evaluationManageUseCase.update(evaluationId, dto, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_EVALUATION.getMessage());
+    }
 
     // 삭제
 }
