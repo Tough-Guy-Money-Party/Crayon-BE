@@ -8,6 +8,9 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Slf4j
 @RestControllerAdvice
@@ -22,16 +25,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseDto<Void> handle(BindException ex) {
+    public ResponseDto<List<ExceptionDTO>> handle(BindException ex) {
         int status = 400;
-        String message = ex.getMessage();
+        List<ExceptionDTO> dto = new ArrayList<>();
 
         if (ex instanceof ErrorResponse) {
             status = ((ErrorResponse) ex).getStatusCode().value();
-            message = ex.getBindingResult().getFieldErrors().get(0).getField() + " " + ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+            ex.getBindingResult().getFieldErrors()
+                    .forEach(error -> dto.add(new ExceptionDTO(error.getField(), error.getDefaultMessage(), error.getRejectedValue())));
+        } else {
+            dto.add(new ExceptionDTO(null, ex.getMessage(), null));
         }
-        log.error(LOG_FORMAT, ex.getClass().getSimpleName(), status, message);
+        log.error(LOG_FORMAT, ex.getClass().getSimpleName(), status, dto);
 
-        return ResponseDto.of(status, message);
+        return ResponseDto.of(status, ex.getMessage(), dto);
     }
 }
