@@ -34,16 +34,4 @@ public class GlobalExceptionHandler {
 
         return ResponseDto.of(status, message);
     }
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseDto<Void> handle(MethodArgumentNotValidException ex) {
-//        int status = 400;
-//
-//        if (ex instanceof ErrorResponse) {
-//            status = ((ErrorResponse) ex).getStatusCode().value();
-//        }
-//        log.error(LOG_FORMAT, ex.getClass().getSimpleName(), status, ex.getMessage());
-//
-//        return ResponseDto.of(status, ex.get);
-//    }
 }
