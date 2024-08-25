@@ -16,6 +16,6 @@ public class TimeCheckValidator implements ConstraintValidator<TimeCheck, Time> 
     @Override
     public boolean isValid(Time time, ConstraintValidatorContext constraintValidatorContext) {
         // 마감 시간이 시작 시간보다 이른지 검사
-        return time.endAt().isBefore(time.startAt().plusMinutes(1));
+        return time.startAt().isBefore(time.endAt().plusMinutes(1));
     }
 }

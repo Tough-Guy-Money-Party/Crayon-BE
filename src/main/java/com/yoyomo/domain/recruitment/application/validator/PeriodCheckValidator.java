@@ -16,7 +16,7 @@ public class PeriodCheckValidator implements ConstraintValidator<PeriodCheck, Pe
     @Override
     public boolean isValid(Period period, ConstraintValidatorContext constraintValidatorContext) {
         // 심사 마감 일자가 발표 시작 일자보다 이른지 검사
-        return period.evaluation().time().startAt()
-                .isBefore(period.announcement().time().endAt().plusMinutes(1));
+        return period.evaluation().time().endAt()
+                .isBefore(period.announcement().time().startAt().plusMinutes(1));
     }
 }
