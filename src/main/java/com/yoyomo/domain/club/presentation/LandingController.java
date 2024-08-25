@@ -47,6 +47,12 @@ public class LandingController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUseCase.getGeneralSetting(authentication.getName()));
     }
 
+    @GetMapping("/general-for-react")
+    @Operation(summary = "리액트에서 랜딩 세팅 불러오기")
+    public ResponseDto getLandingSettings(@RequestParam String subDomain) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUseCase.getAllSettings(subDomain));
+    }
+
     @PatchMapping("/style")
     @Operation(summary = "동아리 스타일 설정")
     public ResponseDto update(Authentication authentication, @RequestBody UpdateStyleSettingsRequest updateStyleSettingsRequest) {

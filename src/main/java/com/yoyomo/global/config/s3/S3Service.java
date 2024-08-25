@@ -100,7 +100,7 @@ public class S3Service {
         }
     }
 
-    private String notionParser(String notionLink) {
+    public static String notionParser(String notionLink) {
         String patternString = "^https:\\/\\/(www\\.notion\\.so|[^\\/]+\\.notion\\.site)\\/[^\\?\\/]*([0-9a-fA-F]{32})";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(notionLink);

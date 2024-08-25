@@ -2,6 +2,7 @@ package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.req.UpdateGeneralSettingsRequest;
 import com.yoyomo.domain.club.application.dto.req.UpdateStyleSettingsRequest;
+import com.yoyomo.domain.club.application.dto.res.ClubAllSettingsResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubGeneralSettingResponse;
 import com.yoyomo.domain.club.application.dto.res.ClubStyleSettingsResponse;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
@@ -40,6 +41,12 @@ public class LandingManageUseCaseImpl implements LandingManageUseCase {
     @Override
     public ClubStyleSettingsResponse getStyleSetting(String email) {
         return clubStyleMapper.ClubLandingStyleToClubStyleSettingsResponse(clubGetService.byUserEmail(email).getClubLandingStyle());
+    }
+
+    @Override
+    public ClubAllSettingsResponse getAllSettings(String subDomain) {
+        Club club = clubGetService.bySubDomain(subDomain);
+        return ClubAllSettingsResponse.of(club,club.getClubLandingStyle());
     }
 
     public void update(String email, UpdateGeneralSettingsRequest request) throws IOException {
