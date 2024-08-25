@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.yoyomo.domain.application.domain.entity.enums.Rating.*;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,7 +55,7 @@ public class Application extends BaseEntity {
     @PrePersist
     public void init() {
         this.status = Status.PENDING;
-        this.averageRating = Rating.PENDING;
+        this.averageRating = PENDING;
     }
 
     public void mapToAnswer(String answerId) {
@@ -75,4 +77,12 @@ public class Application extends BaseEntity {
     public void addInterview(Interview interview) {
         this.interview = interview;
     }
+
+    public void evaluate(Evaluation evaluation) {
+        this.evaluations.add(evaluation);
+        this.averageRating = calculate(this);
+        this.status = evaluation.getStatus();
+    }
+
+
 }

@@ -1,7 +1,10 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
+import com.yoyomo.domain.application.application.dto.response.EvaluationResponseDTO;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
+import com.yoyomo.domain.application.application.mapper.EvaluationMapper;
+import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.recruitment.application.mapper.ProcessMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -29,6 +32,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
     private final ProcessDeleteService processDeleteService;
     private final RecruitmentGetService recruitmentGetService;
     private final AnswerGetService answerGetService;
+    private final EvaluationMapper evaluationMapper;
 
     @Override
     public List<Process> save(List<Save> dto, Recruitment recruitment) {
@@ -42,7 +46,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
         return recruitment.getProcesses().stream()
                 .map(process -> {
                     List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
-                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId())))
+                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
                             .toList();
 
                     return processMapper.toResponse(process, applications);
@@ -59,6 +63,12 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
         return dto.stream()
                 .map(update -> processSaveService.save(update, recruitment))
                 .sorted(Comparator.comparing(Process::getStage))
+                .toList();
+    }
+
+    private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
+        return application.getEvaluations().stream()
+                .map(evaluationMapper::toResponse)
                 .toList();
     }
 }
