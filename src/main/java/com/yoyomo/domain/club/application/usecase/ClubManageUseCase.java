@@ -5,6 +5,7 @@ import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
 
 import java.util.List;
 
+import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.*;
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Code;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Participation;
@@ -16,11 +17,11 @@ public interface ClubManageUseCase {
 
     Response read(String clubId);
 
-    void update(String clubId, Save dto);
+    void update(String clubId, Save dto, Long userId);
 
-    void delete(String clubId);
+    void delete(String clubId, Long userId);
 
-    List<ManagerInfo> getManagers(String clubId);
+    List<ManagerInfo> getManagers(String clubId, Long userId);
 
     Participation participate(ClubRequestDTO.Participation dto, Long userId);
 
@@ -28,7 +29,7 @@ public interface ClubManageUseCase {
 
     Code updateCode(String clubId, Long userId);
 
-    void deleteManagers(ClubRequestDTO.Delete dto);
+    void deleteManagers(Delete dto, Long userId);
 
     List<Response> readAll(Long userId);
 }

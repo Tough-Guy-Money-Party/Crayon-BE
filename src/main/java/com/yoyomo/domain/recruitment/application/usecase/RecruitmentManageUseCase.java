@@ -13,9 +13,9 @@ public interface RecruitmentManageUseCase {
 
     Page<Response> readAll(Pageable pageable);
 
-    void update(String recruitmentId, RecruitmentRequestDTO.Update dto);
+    void update(String recruitmentId, RecruitmentRequestDTO.Update dto, Long userId);
 
-    void delete(String recruitmentId);
+    void delete(String recruitmentId, Long userId);
 
-    void activate(String recruitmentId, String formId);
+    void activate(String recruitmentId, String formId, Long userId);
 }

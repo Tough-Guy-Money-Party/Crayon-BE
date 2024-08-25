@@ -1,7 +1,6 @@
 package com.yoyomo.global.config.exception;
 
 import com.yoyomo.global.common.dto.ResponseDto;
-import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -21,12 +20,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseDto<Void> handle(ApplicationException ex) {
-        log.error(LOG_FORMAT, ex.getClass().getSimpleName(), ex.getErrorCode(), ex.getMessage());
-        return ResponseDto.of(ex.getErrorCode(), ex.getMessage());
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseDto<Void> handle(InvalidTokenException ex) {
         log.error(LOG_FORMAT, ex.getClass().getSimpleName(), ex.getErrorCode(), ex.getMessage());
         return ResponseDto.of(ex.getErrorCode(), ex.getMessage());
     }

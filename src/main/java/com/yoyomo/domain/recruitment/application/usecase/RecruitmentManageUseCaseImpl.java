@@ -63,8 +63,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override @Transactional
-    public void update(String recruitmentId, Update dto) {
-        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+    public void update(String recruitmentId, Update dto, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         checkEnabled(recruitment);
         List<Process> processes = processManageUseCase.update(dto.processes(), recruitment);
         recruitment.addProcesses(processes);
@@ -72,15 +72,23 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public void delete(String recruitmentId) {
-        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+    public void delete(String recruitmentId, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         checkEnabled(recruitment);
         recruitmentUpdateService.delete(recruitment);
     }
 
     @Override
-    public void activate(String recruitmentId, String formId) {
-        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+    public void activate(String recruitmentId, String formId, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitmentUpdateService.update(recruitment, formId);
+    }
+
+    private Recruitment checkAuthorityByRecruitment(String recruitmentId, Long userId) {
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        Manager manager = userGetService.find(userId);
+        checkAuthority(recruitment.getClub(), manager);
+
+        return recruitment;
     }
 }

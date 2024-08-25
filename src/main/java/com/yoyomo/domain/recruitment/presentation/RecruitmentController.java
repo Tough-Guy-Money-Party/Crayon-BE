@@ -41,8 +41,8 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}/{formId}")
     @Operation(summary = "모집 활성화 (Recruitment - Form 매핑)")
-    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId) {
-        recruitmentManageUseCase.activate(recruitmentId, formId);
+    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.activate(recruitmentId, formId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_ACTIVATE.getMessage());
     }
 
@@ -60,15 +60,15 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정")
-    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto) {
-        recruitmentManageUseCase.update(recruitmentId, dto);
+    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.update(recruitmentId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{recruitmentId}")
     @Operation(summary = "모집 삭제")
-    public ResponseDto<Void> delete(@PathVariable String recruitmentId) {
-        recruitmentManageUseCase.delete(recruitmentId);
+    public ResponseDto<Void> delete(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.delete(recruitmentId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 

@@ -49,22 +49,22 @@ public class ClubController {
 
     @PatchMapping("/{clubId}")
     @Operation(summary = "동아리 수정")
-    public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Save dto) {
-        clubManageUseCase.update(clubId, dto);
+    public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Save dto , @CurrentUser @Parameter(hidden = true) Long userId) {
+        clubManageUseCase.update(clubId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{clubId}")
     @Operation(summary = "동아리 삭제")
-    public ResponseDto<Void> delete(@PathVariable String clubId) {
-        clubManageUseCase.delete(clubId);
+    public ResponseDto<Void> delete(@PathVariable String clubId , @CurrentUser @Parameter(hidden = true) Long userId) {
+        clubManageUseCase.delete(clubId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 
     @GetMapping("/participation/{clubId}")
     @Operation(summary = "동아리 관리자 조회")
-    public ResponseDto<List<ManagerInfo>> getManagers(@PathVariable String clubId) {
-        return ResponseDto.of(OK.value(), SUCCESS_GET_MANAGERS.getMessage(), clubManageUseCase.getManagers(clubId));
+    public ResponseDto<List<ManagerInfo>> getManagers(@PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_GET_MANAGERS.getMessage(), clubManageUseCase.getManagers(clubId, userId));
     }
 
     @PostMapping("/participation")
@@ -75,8 +75,8 @@ public class ClubController {
 
     @DeleteMapping("/participation")
     @Operation(summary = "동아리 관리자 삭제")
-    public ResponseDto<Void> deleteManagers(@RequestBody @Valid Delete dto) {
-        clubManageUseCase.deleteManagers(dto);
+    public ResponseDto<Void> deleteManagers(@RequestBody @Valid Delete dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+        clubManageUseCase.deleteManagers(dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE_MANAGERS.getMessage());
     }
 

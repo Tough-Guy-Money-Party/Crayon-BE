@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.application.usecase;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.*;
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
 import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.*;
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
@@ -52,21 +54,21 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override
-    public void update(String clubId, Save dto) {
+    public void update(String clubId, Save dto, Long userId) {
         checkDuplicatedSubDomain(dto.subDomain());
-        Club club = clubGetService.find(clubId);
+        Club club = checkAuthorityByClub(clubId, userId);
         clubUpdateService.update(club, dto);
     }
 
     @Override
-    public void delete(String clubId) {
-        Club club = clubGetService.find(clubId);
+    public void delete(String clubId, Long userId) {
+        Club club = checkAuthorityByClub(clubId, userId);
         clubUpdateService.delete(club);
     }
 
     @Override
-    public List<ManagerResponseDTO.ManagerInfo> getManagers(String clubId) {
-        Club club = clubGetService.find(clubId);
+    public List<ManagerResponseDTO.ManagerInfo> getManagers(String clubId, Long userId) {
+        Club club = checkAuthorityByClub(clubId, userId);
 
         return club.getClubManagers().stream()
                 .map(ClubManager::getManager)
@@ -75,7 +77,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override @Transactional
-    public Participation participate(ClubRequestDTO.Participation dto, Long userId) {
+    public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
         Club club = clubGetService.findByCode(dto.code());
         Manager manager = userGetService.find(userId);
 
@@ -102,10 +104,10 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override
-    public void deleteManagers(ClubRequestDTO.Delete dto) {
-        Club club = clubGetService.find(dto.clubId());
-        for (Long userId : dto.userIds()) {
-            Manager manager = userGetService.find(userId);
+    public void deleteManagers(Delete dto, Long userId) {
+        Club club = checkAuthorityByClub(dto.clubId(), userId);
+        for (Long id : dto.userIds()) {
+            Manager manager = userGetService.find(id);
             ClubManager clubManager = clubManagerGetService.find(club, manager);
             clubManagerDeleteService.delete(clubManager);
         }
@@ -130,5 +132,13 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         ClubManager clubManager = clubManagerSaveService.save(manager, club);
         manager.addClubManager(clubManager);
         club.addClubManager(clubManager);
+    }
+
+    private Club checkAuthorityByClub(String clubId, Long userId) {
+        Club club = clubGetService.find(clubId);
+        Manager manager = userGetService.find(userId);
+        checkAuthority(club, manager);
+
+        return club;
     }
 }
