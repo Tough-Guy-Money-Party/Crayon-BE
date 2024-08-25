@@ -11,6 +11,7 @@ public enum ResponseMessage {
     SUCCESS_UPDATE("지원폼 수정에 성공했습니다."),
     SUCCESS_DELETE("지원폼 삭제에 성공했습니다."),
 
+    FORM_UNMODIFIABLE("활성화된 지원폼은 수정할 수 없습니다."),
     FORM_NOT_FOUND("존재하지 않는 지원폼입니다."),
     SUCCESS_SEARCH("성공적으로 검색되었습니다."),
     ;

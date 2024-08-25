@@ -12,6 +12,7 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
+import com.yoyomo.domain.form.exception.FormUnmodifiableException;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -62,7 +63,11 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public void update(String formId, Update dto, Long userId) {
-        checkAuthorityByFormId(userId, formId);
+        Form form = checkAuthorityByFormId(userId, formId);
+
+        if(form.getEnabled())
+            throw new FormUnmodifiableException();
+
         formUpdateService.update(formId, dto);
         itemManageUseCase.update(formId, dto.itemRequests());
     }
@@ -89,9 +94,11 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
                 .toList();
     }
 
-    private void checkAuthorityByFormId(Long userId, String formId) {
+    private Form checkAuthorityByFormId(Long userId, String formId) {
         Form form = formGetService.find(formId);
         checkAuthorityByClubId(userId, form.getClubId());
+
+        return form;
     }
 
     private void checkAuthorityByClubId(Long userId, String clubId) {
