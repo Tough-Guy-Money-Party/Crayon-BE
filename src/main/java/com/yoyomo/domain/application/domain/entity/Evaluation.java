@@ -30,6 +30,8 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    private Integer stage;
+
     private String memo;
 
     private LocalDateTime deletedAt;
