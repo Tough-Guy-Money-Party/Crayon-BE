@@ -17,7 +17,7 @@ public class RecruitmentGetService {
     private final RecruitmentRepository recruitmentRepository;
 
     public Recruitment find(String recruitmentId) {
-        return recruitmentRepository.findById(UUID.fromString(recruitmentId))
+        return recruitmentRepository.findByIdAndDeletedAtIsNull(UUID.fromString(recruitmentId))
                 .orElseThrow(RecruitmentNotFoundException::new);
     }
 

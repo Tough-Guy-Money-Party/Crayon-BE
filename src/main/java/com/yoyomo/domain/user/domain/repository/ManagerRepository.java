@@ -8,8 +8,10 @@ import java.util.Optional;
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
     Boolean existsByEmail(String email);
 
-    Optional<Manager> findByEmail(String email);
+    Optional<Manager> findByEmailAndDeletedAtIsNull(String email);
 
     Optional<Manager> findByRefreshToken(String token);
+
+    Optional<Manager> findByIdAndDeletedAtIsNull(Long id);
 }
 

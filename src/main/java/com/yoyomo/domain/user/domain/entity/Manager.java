@@ -6,6 +6,7 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class Manager extends BaseEntity {
     private String email;
 
     private String refreshToken;
+
+    private LocalDateTime deletedAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "manager", cascade = CascadeType.REMOVE, orphanRemoval = true)

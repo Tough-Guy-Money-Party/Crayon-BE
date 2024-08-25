@@ -14,7 +14,7 @@ public class UserGetService {
     private final ManagerRepository managerRepository;
 
     public Manager findByEmail(String email) {
-        return managerRepository.findByEmail(email)
+        return managerRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(UserNotFoundException::new);
     }
 
@@ -23,7 +23,7 @@ public class UserGetService {
     }
 
     public Manager find(Long id) {
-        return managerRepository.findById(id)
+        return managerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(UserNotFoundException::new);
     }
 }
