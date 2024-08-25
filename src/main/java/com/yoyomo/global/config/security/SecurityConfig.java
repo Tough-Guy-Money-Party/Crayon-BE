@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()
                                 .requestMatchers("/health-check").permitAll()
+                                .requestMatchers(("/landing/general-for-react")).permitAll()
                                 .anyRequest().authenticated());
 
         http
