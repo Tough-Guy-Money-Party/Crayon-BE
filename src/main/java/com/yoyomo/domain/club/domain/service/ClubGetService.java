@@ -39,4 +39,11 @@ public class ClubGetService {
         }
         return userGetService.findByEmail(email).getClubs().get(0);
     }
+
+    public Club bySubDomain(String subDomain) {
+        if (clubRepository.findBySubDomain(subDomain).isEmpty()) {
+            throw new ClubNotFoundException();
+        }
+        return clubRepository.findBySubDomain(subDomain).get(0);
+    }
 }
