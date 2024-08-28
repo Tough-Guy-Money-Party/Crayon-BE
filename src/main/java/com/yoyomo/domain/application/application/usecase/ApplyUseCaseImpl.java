@@ -39,9 +39,10 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     @Override @Transactional
     public void apply(Save dto, String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        recruitment.checkAvailable();
         Process process = recruitment.getProcesses().get(0);
-        List<Item> items = itemManageUseCase.create(dto.answers());
         Application application = applicationSaveService.save(dto, process);
+        List<Item> items = itemManageUseCase.create(dto.answers());
         Answer answer = answerSaveService.save(items, application);
         application.mapToAnswer(answer.getId());
         process.addApplication(application);
@@ -64,6 +65,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
     @Override
     public void update(String applicationId, Update dto) {
         Application application = applicationGetService.find(applicationId);
+        application.getProcess().getRecruitment().checkAvailable();
         List<Item> items = itemManageUseCase.create(dto.answers());
         answerUpdateService.from(application.getAnswerId(), items);
     }

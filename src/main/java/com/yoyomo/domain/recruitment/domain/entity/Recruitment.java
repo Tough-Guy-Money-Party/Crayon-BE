@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
 
 @Getter
 @Builder
@@ -104,5 +107,10 @@ public class    Recruitment extends BaseEntity {
 
     public void minusApplicantsCount() {
         this.totalApplicantsCount--;
+    }
+
+    public void checkAvailable() {
+        if(getStatus(this) != RECRUITING)
+            throw new OutOfDeadlineException();
     }
 }
