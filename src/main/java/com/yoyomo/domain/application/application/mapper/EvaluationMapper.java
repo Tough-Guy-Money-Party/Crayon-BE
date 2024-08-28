@@ -19,6 +19,7 @@ public interface EvaluationMapper {
     @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "stage", source = "application.process.stage")
     @Mapping(target = "status", source = "dto.status")
+    @Mapping(target = "application", source = "application")
     Evaluation from(Save dto, Manager manager, Application application);
 
     @Mapping(target = "managerName", source = "evaluation.manager.name")

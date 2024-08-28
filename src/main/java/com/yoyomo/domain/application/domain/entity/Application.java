@@ -83,6 +83,4 @@ public class Application extends BaseEntity {
         this.averageRating = calculate(this);
         this.status = evaluation.getStatus();
     }
-
-
 }

@@ -17,6 +17,7 @@ import static com.yoyomo.domain.application.application.dto.request.EvaluationRe
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@ToString
 public class Evaluation extends BaseEntity {
 
     @Id

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -20,13 +21,25 @@ public enum Rating {
     private final Integer high;
 
     public static Rating calculate(Application application) {
-        double sum = (double) application.getEvaluations().stream()
+        List<Evaluation> evaluations = application.getEvaluations().stream()
+                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
+                .toList();
+
+        double sum = (double) evaluations.stream()
                 .map(assessment -> assessment.getRating().getValue())
                 .reduce(0, Integer::sum);
 
         double average = sum / application.getEvaluations().stream()
+                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
                 .filter(Evaluation::isAfterEvaluation)
                 .count();
+
+        System.out.println(sum);
+
+        System.out.println(application.getEvaluations().stream()
+                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
+                .filter(Evaluation::isAfterEvaluation)
+                .count());
 
         return Arrays.stream(values())
                 .filter(rating -> rating.low <= average && average <= rating.high)
