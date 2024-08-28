@@ -18,8 +18,6 @@ public interface FormManageUseCase {
 
     void update(String id, Update dto, Long userId);
 
-    void update(String id, Boolean enabled, Long userId);
-
     void delete(String formId, Long userId);
 
     List<Response> search(String keyword, String clubId, Long userId);

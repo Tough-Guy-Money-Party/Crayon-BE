@@ -2,6 +2,9 @@ package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.form.domain.service.FormGetService;
+import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
@@ -38,6 +41,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentUpdateService recruitmentUpdateService;
     private final ProcessManageUseCase processManageUseCase;
     private final RecruitmentDeleteService recruitmentDeleteService;
+    private final FormUpdateService formUpdateService;
+    private final FormGetService formGetService;
 
     @Override @Transactional
     public void save(Save dto, Long userId) {
@@ -80,6 +85,9 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public void activate(String recruitmentId, String formId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+        Form form = formGetService.find(formId);
+        form.getRecruitmentIds().add(recruitmentId);
+        formUpdateService.update(formId, form.getRecruitmentIds());
         recruitmentUpdateService.update(recruitment, formId);
     }
 

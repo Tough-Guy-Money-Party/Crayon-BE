@@ -55,13 +55,6 @@ public class FormController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
-    @PatchMapping("/{formId}")
-    @Operation(summary = "폼 활성화/비활성화")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestParam Boolean enabled, @CurrentUser @Parameter(hidden = true) Long userId) {
-        formManageUseCase.update(formId, enabled, userId);
-        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
-    }
-
     @DeleteMapping("/{formId}")
     @Operation(summary = "폼 삭제")
     public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser @Parameter(hidden = true) Long userId) {

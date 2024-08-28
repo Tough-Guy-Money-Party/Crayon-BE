@@ -1,10 +1,7 @@
 package com.yoyomo.domain.form.domain.entity;
 
-import com.yoyomo.domain.form.domain.entity.event.FormEntityListener;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "forms")
-@EntityListeners(FormEntityListener.class)
 public class Form extends BaseEntity {
 
     @Id
@@ -35,16 +31,12 @@ public class Form extends BaseEntity {
 
     private List<Item> items = new ArrayList<>();
 
-    private Boolean enabled;
-
     private LocalDateTime deletedAt;
+
+    private List<String> recruitmentIds = new ArrayList<>();
 
     public void updateItems(List<Item> items) {
         this.items = items;
     }
 
-    @PrePersist
-    public void init() {
-        this.enabled = false;
-    }
 }

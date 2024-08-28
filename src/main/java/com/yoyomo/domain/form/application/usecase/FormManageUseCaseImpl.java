@@ -65,17 +65,11 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public void update(String formId, Update dto, Long userId) {
         Form form = checkAuthorityByFormId(userId, formId);
 
-        if(form.getEnabled())
+        if(form.getRecruitmentIds() != null)
             throw new FormUnmodifiableException();
 
         formUpdateService.update(formId, dto);
         itemManageUseCase.update(formId, dto.itemRequests());
-    }
-
-    @Override
-    public void update(String formId, Boolean enabled, Long userId) {
-        checkAuthorityByFormId(userId, formId);
-        formUpdateService.update(formId, enabled);
     }
 
     @Override
