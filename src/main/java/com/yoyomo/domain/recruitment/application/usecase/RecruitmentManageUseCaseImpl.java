@@ -7,6 +7,7 @@ import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentRespons
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
@@ -24,7 +25,6 @@ import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
-import static com.yoyomo.domain.recruitment.domain.entity.Recruitment.checkEnabled;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final RecruitmentSaveService recruitmentSaveService;
     private final RecruitmentUpdateService recruitmentUpdateService;
     private final ProcessManageUseCase processManageUseCase;
+    private final RecruitmentDeleteService recruitmentDeleteService;
 
     @Override @Transactional
     public void save(Save dto, Long userId) {
@@ -51,7 +52,6 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        checkEnabled(recruitment);
         List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
         return recruitmentMapper.toDetailResponse(recruitment, processes);
     }
@@ -65,7 +65,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override @Transactional
     public void update(String recruitmentId, Update dto, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
-        checkEnabled(recruitment);
+        recruitment.checkModifiable();
         List<Process> processes = processManageUseCase.update(dto.processes(), recruitment);
         recruitment.addProcesses(processes);
         recruitmentUpdateService.update(recruitment, dto);
@@ -74,7 +74,6 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public void close(String recruitmentId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
-        checkEnabled(recruitment);
         recruitmentUpdateService.delete(recruitment);
     }
 
@@ -82,6 +81,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public void activate(String recruitmentId, String formId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitmentUpdateService.update(recruitment, formId);
+    }
+
+    @Override
+    public void cancel(String recruitmentId, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+        recruitmentDeleteService.delete(recruitment);
     }
 
     private Recruitment checkAuthorityByRecruitment(String recruitmentId, Long userId) {

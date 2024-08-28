@@ -18,4 +18,6 @@ public interface RecruitmentManageUseCase {
     void close(String recruitmentId, Long userId);
 
     void activate(String recruitmentId, String formId, Long userId);
+
+    void cancel(String recruitmentId, Long userId);
 }

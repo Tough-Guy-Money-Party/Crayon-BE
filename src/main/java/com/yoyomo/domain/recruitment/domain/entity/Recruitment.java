@@ -2,7 +2,7 @@ package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
-import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -76,6 +76,11 @@ public class    Recruitment extends BaseEntity {
         this.isActive = true;
     }
 
+    public void checkModifiable() {
+        if(this.isActive)
+            throw new RecruitmentUnmodifiableException();
+    }
+
     public void clearProcesses() {
         this.processes.clear();
     }
@@ -92,10 +97,6 @@ public class    Recruitment extends BaseEntity {
         return this.endAt.isBefore(LocalDateTime.now());
     }
 
-    public static void checkEnabled(Recruitment recruitment) {
-        if(recruitment.deletedAt != null)
-            throw new RecruitmentNotFoundException();
-    }
 
     public void plusApplicantsCount() {
         this.totalApplicantsCount++;

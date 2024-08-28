@@ -72,6 +72,13 @@ public class RecruitmentController {
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 
+    @DeleteMapping("/{recruitmentId}/force")
+    @Operation(summary = "모집 취소")
+    public ResponseDto<Void> cancel(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.cancel(recruitmentId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_CANCEL.getMessage());
+    }
+
     @GetMapping("/processes/{recruitmentId}")
     @Operation(summary = "모집 프로세스 목록 조회")
     public ResponseDto<List<ProcessResponseDTO.Response>> readAll(@PathVariable String recruitmentId) {
