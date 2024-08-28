@@ -1,7 +1,7 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -19,7 +19,7 @@ import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentR
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Recruitment extends BaseEntity {
+public class    Recruitment extends BaseEntity {
 
     @Id
     @Column(name = "recruitment_id")
@@ -33,9 +33,13 @@ public class Recruitment extends BaseEntity {
     private String generation;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Submit submit;
 
     private Boolean isActive;
+
+    private LocalDateTime startAt;
+
+    private LocalDateTime endAt;
 
     private String formId;
 
@@ -76,12 +80,28 @@ public class Recruitment extends BaseEntity {
         this.processes.clear();
     }
 
-    public void delete() {
+    public void close() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isBefore() {
+        return this.startAt.isAfter(LocalDateTime.now());
+    }
+
+    public boolean isAfter() {
+        return this.endAt.isBefore(LocalDateTime.now());
     }
 
     public static void checkEnabled(Recruitment recruitment) {
         if(recruitment.deletedAt != null)
             throw new RecruitmentNotFoundException();
+    }
+
+    public void plusApplicantsCount() {
+        this.totalApplicantsCount++;
+    }
+
+    public void minusApplicantsCount() {
+        this.totalApplicantsCount--;
     }
 }

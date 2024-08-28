@@ -72,7 +72,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public void delete(String recruitmentId, Long userId) {
+    public void close(String recruitmentId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         checkEnabled(recruitment);
         recruitmentUpdateService.delete(recruitment);

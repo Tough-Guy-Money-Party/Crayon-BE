@@ -66,9 +66,9 @@ public class RecruitmentController {
     }
 
     @DeleteMapping("/{recruitmentId}")
-    @Operation(summary = "모집 삭제")
-    public ResponseDto<Void> delete(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
-        recruitmentManageUseCase.delete(recruitmentId, userId);
+    @Operation(summary = "모집 마감")
+    public ResponseDto<Void> close(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.close(recruitmentId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 

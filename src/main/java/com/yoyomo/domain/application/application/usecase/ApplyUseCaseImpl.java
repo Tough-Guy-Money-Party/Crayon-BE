@@ -45,6 +45,7 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         Answer answer = answerSaveService.save(items, application);
         application.mapToAnswer(answer.getId());
         process.addApplication(application);
+        recruitment.plusApplicantsCount();
     }
 
     @Override
@@ -67,9 +68,11 @@ public class ApplyUseCaseImpl implements ApplyUseCase {
         answerUpdateService.from(application.getAnswerId(), items);
     }
 
-    @Override
+    @Override @Transactional
     public void delete(String applicationId) {
         Application application = applicationGetService.find(applicationId);
+        Recruitment recruitment = application.getProcess().getRecruitment();
+        recruitment.minusApplicantsCount();
         applicationUpdateService.delete(application);
     }
 

@@ -21,6 +21,6 @@ public class RecruitmentUpdateService {
     }
 
     public void delete(Recruitment recruitment) {
-        recruitment.delete();
+        recruitment.close();
     }
 }
