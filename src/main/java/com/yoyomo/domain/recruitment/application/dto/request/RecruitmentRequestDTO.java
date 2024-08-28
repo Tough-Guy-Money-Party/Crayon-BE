@@ -12,7 +12,7 @@ public class RecruitmentRequestDTO {
     public record Save(
         @NotEmpty String title,
         @NotEmpty String position,
-        @NotNull Integer generation,
+        @NotEmpty String generation,
         @NotNull Status status,
         @NotEmpty String clubId,
         @Valid List<ProcessRequestDTO.Save> processes
@@ -21,7 +21,7 @@ public class RecruitmentRequestDTO {
     public record Update(
             @NotEmpty String title,
             @NotEmpty String position,
-            @NotNull Integer generation,
+            @NotEmpty String generation,
             @NotNull Boolean isActive,
             @Valid List<ProcessRequestDTO.Update> processes
     ) {}

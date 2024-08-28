@@ -30,7 +30,7 @@ public class Recruitment extends BaseEntity {
 
     private String position;
 
-    private Integer generation;
+    private String generation;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -39,7 +39,7 @@ public class Recruitment extends BaseEntity {
 
     private String formId;
 
-    private Integer totalApplicantsCount;
+    private Integer totalApplicantsCount;   // 수정: applicant++
 
     private LocalDateTime deletedAt;
 
