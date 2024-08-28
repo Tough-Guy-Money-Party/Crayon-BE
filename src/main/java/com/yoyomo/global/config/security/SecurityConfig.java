@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final ManagerRepository managerRepository;
 
     @Bean
-    protected SecurityFilterChain config(HttpSecurity http) throws Exception {
+    public SecurityFilterChain config(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsConfigurer ->
@@ -37,8 +37,9 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable);
 
         http
-                .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()

@@ -44,6 +44,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Club club = clubSaveService.save(dto);
         mapFK(manager, club);
 
+
         return clubMapper.toResponse(club);
     }
 
