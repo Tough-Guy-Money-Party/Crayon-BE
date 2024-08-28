@@ -3,6 +3,7 @@ package com.yoyomo.domain.recruitment.domain.entity;
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
+import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -112,5 +113,8 @@ public class    Recruitment extends BaseEntity {
     public void checkAvailable() {
         if(getStatus(this) != RECRUITING)
             throw new OutOfDeadlineException();
+
+        if(this.deletedAt != null)
+            throw new RecruitmentNotFoundException();
     }
 }
