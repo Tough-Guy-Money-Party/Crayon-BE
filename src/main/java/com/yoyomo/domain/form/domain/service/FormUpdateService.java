@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -28,18 +30,18 @@ public class FormUpdateService {
         );
         Update update = new Update()
                 .set("title", dto.title())
-                .set("description", dto.description())
-                .set("enabled", dto.enabled());
+                .set("description", dto.description());
+
         UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
         checkIsDeleted(result);
     }
 
-    public void update(String id, Boolean enabled) {
+    public void update(String id, List<String> recruitmentIds) {
         Query query = query(
                 where(ID).is(id).and(DELETED_AT).isNull()
         );
         Update update = new Update()
-                .set("enabled", enabled);
+                .set("recruitmentIds", recruitmentIds);
         UpdateResult result = mongoTemplate.updateFirst(query, update, Form.class);
         checkIsDeleted(result);
     }

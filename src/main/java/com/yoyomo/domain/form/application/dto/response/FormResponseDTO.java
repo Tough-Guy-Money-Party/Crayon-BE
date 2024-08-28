@@ -15,7 +15,7 @@ public class FormResponseDTO {
             String title,
             String description,
             List<ItemResponse> items,
-            Boolean enabled,
+            List<String> recruitmentIds,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
@@ -24,6 +24,7 @@ public class FormResponseDTO {
             String id,
             String title,
             String description,
+            List<String> recruitmentIds,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
