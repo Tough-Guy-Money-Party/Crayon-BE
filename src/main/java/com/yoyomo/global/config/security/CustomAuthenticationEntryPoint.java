@@ -2,7 +2,7 @@ package com.yoyomo.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoyomo.global.common.dto.ResponseDto;
-import com.yoyomo.global.config.jwt.exception.JwtError;
+import com.yoyomo.global.config.jwt.presentation.constant.JwtError;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
