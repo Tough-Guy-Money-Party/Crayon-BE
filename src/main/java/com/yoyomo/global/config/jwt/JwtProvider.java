@@ -2,6 +2,7 @@ package com.yoyomo.global.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -122,6 +123,9 @@ public class JwtProvider {
         try {
             JWT.require(Algorithm.HMAC512(key)).build().verify(token);
             return true;
+        } catch (TokenExpiredException e) {
+            log.error("토큰이 만료되었습니다. {}", e.getMessage());
+            return false;
         } catch (Exception e) {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
