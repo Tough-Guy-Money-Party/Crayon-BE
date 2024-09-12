@@ -46,7 +46,11 @@ public class SecurityConfig {
                                 .anyRequest().permitAll());
 
         http
-                .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class);
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customAuthenticationEntryPoint())
+                );
         return http.build();
     }
 
@@ -65,5 +69,9 @@ public class SecurityConfig {
 
     public JwtFilter jwtAuthenticationProcessingFilter() {
         return new JwtFilter(jwtProvider, managerRepository);
+    }
+
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
     }
 }
