@@ -78,6 +78,6 @@ jobs:
               sudo docker rm $EXISTING_CONTAINER_ID
             fi
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev
-            sudo docker run --network host --name spring-dev -d -p 8080:8080 --env-file ./crayon-dev.env -v ${{ secrets.EC2_DIR }}:${{ secrets.DOCKER_DIR }} -e TZ=Asia/Seoul ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev
+            sudo docker run --network host --name spring-dev -d -p 8080:8080 --env-file ./crayon.env -v ${{ secrets.EC2_DIR }}:${{ secrets.DOCKER_DIR }} -e TZ=Asia/Seoul ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev
             sudo docker image prune -a -f
 
