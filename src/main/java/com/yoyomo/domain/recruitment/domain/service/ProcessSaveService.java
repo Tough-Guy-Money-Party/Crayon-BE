@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.*;
 
 @Service
 @RequiredArgsConstructor
