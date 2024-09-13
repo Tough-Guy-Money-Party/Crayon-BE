@@ -1,8 +1,12 @@
 package com.yoyomo.global.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.global.config.jwt.JwtFilter;
 import com.yoyomo.global.config.jwt.JwtProvider;
+import com.yoyomo.global.config.jwt.presentation.constant.ResponseMessage;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -46,7 +51,11 @@ public class SecurityConfig {
                                 .anyRequest().permitAll());
 
         http
-                .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class);
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customAuthenticationEntryPoint())
+                );
         return http.build();
     }
 
@@ -61,6 +70,19 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    // 인증정보 없이 요청시 예외처리
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            String json = new ObjectMapper().writeValueAsString(ResponseDto.of(401, ResponseMessage.INVALID_TOKEN.getMessage()));
+            response.getWriter().write(json);
+        };
     }
 
     public JwtFilter jwtAuthenticationProcessingFilter() {
