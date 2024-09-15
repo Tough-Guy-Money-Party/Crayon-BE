@@ -32,7 +32,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();     // 인증 객체 가져오기
 
-        if (authentication instanceof AnonymousAuthenticationToken) {   // 익명 인증 토큰의 인스턴스라면 0 반환
+        if (authentication instanceof AnonymousAuthenticationToken) {   // 익명 인증 토큰의 인스턴스라면 예외 반환
             throw new AnonymousAuthenticationException();
         }
 
