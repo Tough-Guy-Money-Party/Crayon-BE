@@ -1,5 +1,6 @@
 package com.yoyomo.global.common.resolver;
 
+import com.yoyomo.domain.user.exception.AnonymousAuthenticationException;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.config.jwt.JwtProvider;
@@ -32,7 +33,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();     // 인증 객체 가져오기
 
         if (authentication instanceof AnonymousAuthenticationToken) {   // 익명 인증 토큰의 인스턴스라면 0 반환
-            return 0;
+            throw new AnonymousAuthenticationException();
         }
 
         String token = Optional.ofNullable(webRequest.getHeader("Authorization"))
