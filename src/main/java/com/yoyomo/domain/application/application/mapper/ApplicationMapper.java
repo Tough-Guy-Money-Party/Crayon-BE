@@ -48,6 +48,7 @@ public interface ApplicationMapper {
 
     @Mapping(target = "club", source = "application.process.recruitment.club")
     @Mapping(target = "processes", source = "application.process.recruitment.processes")
+    @Mapping(target = "currentStage", source = "application.process.stage")
     Response toResponses(Application application);
 
     default User getUser(Save dto) {
