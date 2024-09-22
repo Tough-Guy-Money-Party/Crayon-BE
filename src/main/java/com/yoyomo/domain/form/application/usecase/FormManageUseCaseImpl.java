@@ -65,7 +65,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public void update(String formId, Update dto, Long userId) {
         Form form = checkAuthorityByFormId(userId, formId);
 
-        if(form.getRecruitmentIds() != null)
+        if(!form.getRecruitmentIds().isEmpty())
             throw new FormUnmodifiableException();
 
         formUpdateService.update(formId, dto);
