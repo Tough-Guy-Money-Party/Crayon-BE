@@ -39,14 +39,34 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
         return processSaveService.saveAll(dto, recruitment);
     }
 
+    /*
+        해당 DTO는 List<ApplicationResponseDTO.Response> applications를 지니고 있음에도 해당 메서드는 .Detail을 사용해 매핑하고 있음
+        해당 로직이 왜 필요한지가 불분명해 일단 주석처리 하고 아래 새로운 메서드를 구현하였음
+    */
+//    @Override
+//    public List<Response> readAll(String recruitmentId) {
+//        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+//
+//        return recruitment.getProcesses().stream()
+//                .map(process -> {
+//                    List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
+//                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
+//                            .toList();
+//
+//                    return processMapper.toResponse(process, applications);
+//                })
+//                .sorted(Comparator.comparingInt(Response::stage))
+//                .toList();
+//    }
+
     @Override
     public List<Response> readAll(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
 
         return recruitment.getProcesses().stream()
                 .map(process -> {
-                    List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
-                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
+                    List<ApplicationResponseDTO.Response> applications = process.getApplications().stream()
+                            .map(applicationMapper::toResponses)
                             .toList();
 
                     return processMapper.toResponse(process, applications);
