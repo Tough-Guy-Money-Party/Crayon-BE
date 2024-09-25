@@ -114,6 +114,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
         return application.getEvaluations().stream()
+                .filter(evaluation -> evaluation.getDeletedAt()==null)
                 .map(evaluationMapper::toResponse)
                 .toList();
     }
