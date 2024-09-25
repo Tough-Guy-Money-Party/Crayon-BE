@@ -40,3 +40,20 @@ crayon:
       expiration: 604800000
       header: Authorization-refresh
     masterToken: ${MASTER_TOKEN}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    route53:
+      hostedZoneId: ${HOSTED_ZONE_ID}
+    accountId: ${AWS_ACCOUNT_ID}
+    acm : ${ACM}
+
+vite :
+  uri: ${VITE_PUBLIC_API_URL}
