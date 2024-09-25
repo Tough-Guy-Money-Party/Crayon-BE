@@ -22,7 +22,6 @@ public class RecruitmentRequestDTO {
             @NotEmpty String title,
             @NotEmpty String position,
             @NotEmpty String generation,
-            @NotNull Boolean isActive,
             @NotNull Submit submit,
             @Valid @NotNull List<ProcessRequestDTO.Update> processes
     ) {}

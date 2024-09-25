@@ -72,7 +72,6 @@ public class    Recruitment extends BaseEntity {
         this.title = dto.title();
         this.position = dto.position();
         this.generation = dto.generation();
-        this.isActive = dto.isActive();
     }
 
     public void activate(String formId) {
