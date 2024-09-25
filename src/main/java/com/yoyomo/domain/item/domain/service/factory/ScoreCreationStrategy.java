@@ -26,6 +26,7 @@ public class ScoreCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
+                .image(request.image())
                 .required(request.required())
                 .meaningOfHigh(request.meaningOfHigh())
                 .meaningOfLow(request.meaningOfLow())

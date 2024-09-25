@@ -28,6 +28,7 @@ public class DateCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
+                .image(request.image())
                 .answer(request.answer())
                 .required(request.required())
                 .build();

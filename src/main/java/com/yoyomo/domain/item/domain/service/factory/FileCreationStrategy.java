@@ -33,6 +33,7 @@ public class FileCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
+                .image(request.image())
                 .options(options)
                 .required(request.required())
                 .build();

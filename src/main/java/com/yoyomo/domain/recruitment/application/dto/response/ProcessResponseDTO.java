@@ -16,6 +16,18 @@ public class ProcessResponseDTO {
             LocalDateTime endAt,
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt,
+            Integer applicantCount
+    ) {}
+
+    // 기존 Response를 DetailResponse로 변경
+    public record DetailResponse(
+            Integer stage,
+            Type type,
+            String title,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
+            LocalDateTime announceStartAt,
+            LocalDateTime announceEndAt,
             List<ApplicationResponseDTO.Response> applications,
             Integer applicantCount
     ) {}
@@ -29,4 +41,5 @@ public class ProcessResponseDTO {
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt
     ) {}
+
 }

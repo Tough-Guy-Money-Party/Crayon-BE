@@ -10,6 +10,7 @@ import com.yoyomo.domain.application.domain.entity.Interview;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
+import com.yoyomo.domain.application.domain.service.EvaluationGetService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
@@ -44,6 +45,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private final InterviewMapper interviewMapper;
     private final ApplicationUpdateService applicationUpdateService;
     private final EvaluationMapper evaluationMapper;
+    private final EvaluationGetService evaluationGetService;
 
     @Override
     public Detail read(String applicationId, Long userId) {
@@ -113,7 +115,8 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     }
 
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
-        return application.getEvaluations().stream()
+        return evaluationGetService.findAll(application.getId()).stream()
+                .filter(evaluation -> evaluation.getDeletedAt()==null)
                 .map(evaluationMapper::toResponse)
                 .toList();
     }

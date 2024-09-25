@@ -1,7 +1,6 @@
 package com.yoyomo.domain.recruitment.presentation;
 
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
@@ -20,6 +19,7 @@ import java.util.List;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.OK;
 

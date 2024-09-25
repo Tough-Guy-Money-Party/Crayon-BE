@@ -33,6 +33,7 @@ public class SelectCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
+                .image(request.image())
                 .required(request.required())
                 .options(options)
                 .build();

@@ -21,6 +21,7 @@ public class BaseCreationStrategy implements ItemCreationStrategy {
                 .description(request.description())
                 .type(request.type())
                 .order(request.order())
+                .image(request.image())
                 .required(request.required())
                 .build();
     }

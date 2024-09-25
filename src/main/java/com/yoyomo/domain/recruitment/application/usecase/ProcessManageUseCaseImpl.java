@@ -39,14 +39,17 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
         return processSaveService.saveAll(dto, recruitment);
     }
 
+    /*
+        기존 로직이 ApplicationDTO.Detail로 데이터 변환을 하고 있었는데 필요성을 느끼지 못해 Response로 간소화 하여 구현하였음
+    */
     @Override
     public List<Response> readAll(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
 
         return recruitment.getProcesses().stream()
                 .map(process -> {
-                    List<ApplicationResponseDTO.Detail> applications = process.getApplications().stream()
-                            .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
+                    List<ApplicationResponseDTO.Response> applications = process.getApplications().stream()
+                            .map(applicationMapper::toResponses)
                             .toList();
 
                     return processMapper.toResponse(process, applications);
@@ -66,6 +69,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
                 .toList();
     }
 
+    // 얜 여기 왜 있음??
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
         return application.getEvaluations().stream()
                 .map(evaluationMapper::toResponse)

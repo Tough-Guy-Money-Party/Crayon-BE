@@ -2,7 +2,6 @@ package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
@@ -18,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
