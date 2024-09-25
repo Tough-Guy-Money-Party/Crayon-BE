@@ -74,7 +74,7 @@ public class S3Service {
     }
 
     public void save(String bucketName) throws IOException {
-        String projectPath = "../notion-to-site";
+        String projectPath = "app/notion-to-site";
         String canonicalProjectPath = new File(projectPath).getCanonicalPath();
 
         String distFolderPath = canonicalProjectPath + "/out";
