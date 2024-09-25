@@ -62,6 +62,14 @@ dependencies {
 
     //S3 추가
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //cloudfront 추가
+    implementation 'software.amazon.awssdk:cloudfront:2.20.12'
+
+    //route53추가
+    implementation 'software.amazon.awssdk:route53:2.20.12'
+    implementation 'software.amazon.awssdk:core:2.20.2'
+    implementation 'software.amazon.awssdk:regions:2.20.2'
 }
 
 //tasks.named('test') {

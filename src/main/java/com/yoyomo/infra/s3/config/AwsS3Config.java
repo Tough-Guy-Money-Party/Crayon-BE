@@ -1,4 +1,4 @@
-package com.yoyomo.global.config.s3;
+package com.yoyomo.infra.s3.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
