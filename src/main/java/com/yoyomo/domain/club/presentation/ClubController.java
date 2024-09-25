@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.*;
@@ -31,7 +32,7 @@ public class ClubController {
 
     @PostMapping
     @Operation(summary = "동아리 생성")
-    public ResponseDto<Response> save(@RequestBody @Valid Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Response> save(@RequestBody @Valid Save dto, @CurrentUser @Parameter(hidden = true) Long userId) throws IOException {
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage(), clubManageUseCase.save(dto, userId));
     }
 

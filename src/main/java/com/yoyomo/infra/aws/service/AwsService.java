@@ -17,5 +17,6 @@ public class AwsService {
 
         String distributeId = cloudfrontService.create(subDomain);
         route53Service.create(subDomain, cloudfrontService.getCloudfrontDomainName(distributeId));
+
     }
 }
