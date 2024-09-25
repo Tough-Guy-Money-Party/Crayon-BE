@@ -1,5 +1,6 @@
 package com.yoyomo.infra.aws.s3.service;
 
+import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,12 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+
     private final S3Client s3Client;
-    @Value("${vite.uri}")
-    private String VITE_PUBLIC_API_URL;
 
     public void createBucket(String bucketName) {
         try {
@@ -74,42 +75,35 @@ public class S3Service {
     }
 
     public void save(String bucketName) throws IOException {
-        // 프로젝트 경로 계산
+
         String projectPath = "app/notion-to-site";
         String distFolderPath = new File(projectPath, "out").getCanonicalPath();
         Path distPath = Paths.get(distFolderPath);
 
-        // 폴더가 존재하는지 체크
         if (!Files.exists(distPath)) {
-            throw new FileNotFoundException("Distribution folder not found at " + distFolderPath);
+            throw new FileNotFoundException();
         }
 
-        // 파일 탐색 및 업로드
         try (Stream<Path> paths = Files.walk(distPath)) {
             List<Path> filePaths = paths.filter(Files::isRegularFile).collect(Collectors.toList());
 
-            // 병렬 스트림으로 S3 업로드 처리
             filePaths.parallelStream().forEach(filePath -> {
                 try {
                     uploadFileToS3(bucketName, filePath, distFolderPath);
                 } catch (IOException e) {
-                    // 파일 업로드 중 발생하는 예외를 처리
-                    System.err.println("Failed to upload file: " + filePath + ", error: " + e.getMessage());
+                    throw new com.yoyomo.infra.aws.exception.FileNotFoundException();
                 }
             });
 
-        } catch (IOException e) {
-            // 파일 탐색 중 발생하는 예외를 처리
-            throw new IOException("Error while walking through the dist folder", e);
+        } catch (S3Exception e) {
+            throw new UnavailableSubdomainException(e.statusCode(),e.getMessage());
         }
     }
 
     private void uploadFileToS3(String bucketName, Path filePath, String distFolderPathString) throws IOException {
         Path distFolderPath = Paths.get(distFolderPathString);
 
-
         String key = distFolderPath.relativize(filePath).toString().replace(File.separator, "/");
-
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .cacheControl("no-cache, no-store, must-revalidate")
@@ -117,7 +111,33 @@ public class S3Service {
                 .key(key)
                 .build();
 
-
         s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath.toFile()));
+    }
+
+    public void delete(String subDomain) {
+
+        ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
+                .bucket(subDomain)
+                .build();
+
+        ListObjectsV2Response listObjectsResponse;
+
+        do {
+            listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
+            listObjectsResponse.contents().forEach(s3Object -> {
+                s3Client.deleteObject(builder -> builder.bucket(subDomain).key(s3Object.key()).build());
+            });
+
+            listObjectsRequest = listObjectsRequest.toBuilder()
+                    .continuationToken(listObjectsResponse.nextContinuationToken())
+                    .build();
+
+        } while (listObjectsResponse.isTruncated());
+
+
+        s3Client.deleteBucket(DeleteBucketRequest.builder()
+                .bucket(subDomain)
+                .build());
+        System.out.println("S3 bucket deleted: " + subDomain);
     }
 }
