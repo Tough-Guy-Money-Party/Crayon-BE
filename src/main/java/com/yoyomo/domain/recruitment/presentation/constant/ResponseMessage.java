@@ -17,6 +17,7 @@ public enum ResponseMessage {
     RECRUITMENT_CANNOT_UPDATE("진행중인 모집은 수정할 수 없습니다."),
     PROCESS_NOT_FOUND("존재하지 않는 모집입니다."),
     RECRUITMENT_NOT_FOUND("존재하지 않는 모집입니다."),
+    RECRUITMENT_DELETED("마감된 모집입니다."),
     EMPTY_PROCESS("프로세스가 존재하지 않는 모집입니다."),
     ACCESS_DENIED("권한이 없습니다.");
     private final String message;

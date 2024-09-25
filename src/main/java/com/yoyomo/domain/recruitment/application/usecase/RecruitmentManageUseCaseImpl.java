@@ -13,6 +13,7 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
+import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
@@ -84,6 +85,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
 
     @Override
     public void activate(String recruitmentId, String formId, Long userId) {
+        checkDeletedRecruitment(recruitmentId);
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         Form form = formGetService.find(formId);
         form.getRecruitmentIds().add(recruitmentId);
@@ -103,5 +105,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
         checkAuthority(recruitment.getClub(), manager);
 
         return recruitment;
+    }
+
+    private void checkDeletedRecruitment(String recruitmentId) {
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        if(!(recruitment.getDeletedAt()==null)){
+            throw new RecruitmentDeletedException();
+        }
     }
 }
