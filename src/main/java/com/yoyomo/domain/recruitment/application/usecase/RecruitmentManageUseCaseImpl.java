@@ -57,7 +57,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        List<ProcessResponseDTO.DetailResponse> processes = processManageUseCase.readAll(recruitmentId);
+        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
         return recruitmentMapper.toDetailResponse(recruitment, processes);
     }
 

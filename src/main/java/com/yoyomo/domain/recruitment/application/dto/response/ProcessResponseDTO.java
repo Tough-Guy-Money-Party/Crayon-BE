@@ -19,6 +19,7 @@ public class ProcessResponseDTO {
             Integer applicantCount
     ) {}
 
+    // 기존 Response를 DetailResponse로 변경
     public record DetailResponse(
             Integer stage,
             Type type,

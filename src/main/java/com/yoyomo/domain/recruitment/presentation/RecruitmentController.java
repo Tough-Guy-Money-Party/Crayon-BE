@@ -81,7 +81,7 @@ public class RecruitmentController {
 
     @GetMapping("/processes/{recruitmentId}")
     @Operation(summary = "모집 프로세스 목록 조회")
-    public ResponseDto<List<ProcessResponseDTO.DetailResponse>> readAll(@PathVariable String recruitmentId) {
+    public ResponseDto<List<ProcessResponseDTO.Response>> readAll(@PathVariable String recruitmentId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_PROCESSES.getMessage(), processManageUseCase.readAll(recruitmentId));
     }
 }

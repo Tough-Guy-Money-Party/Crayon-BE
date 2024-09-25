@@ -6,7 +6,6 @@ import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.application.mapper.EvaluationMapper;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
-import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.mapper.ProcessMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -21,8 +20,7 @@ import java.util.List;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.*;
-import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +60,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
 //    }
 
     @Override
-    public List<DetailResponse> readAll(String recruitmentId) {
+    public List<Response> readAll(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
 
         return recruitment.getProcesses().stream()
@@ -73,7 +71,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
 
                     return processMapper.toResponse(process, applications);
                 })
-                .sorted(Comparator.comparingInt(DetailResponse::stage))
+                .sorted(Comparator.comparingInt(Response::stage))
                 .toList();
     }
 
