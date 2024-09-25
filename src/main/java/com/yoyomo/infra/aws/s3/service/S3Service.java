@@ -74,35 +74,42 @@ public class S3Service {
     }
 
     public void save(String bucketName) throws IOException {
+        // 프로젝트 경로 계산
         String projectPath = "app/notion-to-site";
-        String canonicalProjectPath = new File(projectPath).getCanonicalPath();
+        String distFolderPath = new File(projectPath, "out").getCanonicalPath();
+        Path distPath = Paths.get(distFolderPath);
 
-        String distFolderPath = canonicalProjectPath + "/out";
-        File distDir = new File(distFolderPath);
-
-        String canonicalDistPath = distDir.getCanonicalPath();
-        Path distPath = Paths.get(canonicalDistPath);
-
+        // 폴더가 존재하는지 체크
         if (!Files.exists(distPath)) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException("Distribution folder not found at " + distFolderPath);
         }
 
+        // 파일 탐색 및 업로드
         try (Stream<Path> paths = Files.walk(distPath)) {
             List<Path> filePaths = paths.filter(Files::isRegularFile).collect(Collectors.toList());
 
-            for (Path filePath : filePaths) {
-                uploadFileToS3(bucketName, filePath, canonicalDistPath);
-            }
+            // 병렬 스트림으로 S3 업로드 처리
+            filePaths.parallelStream().forEach(filePath -> {
+                try {
+                    uploadFileToS3(bucketName, filePath, distFolderPath);
+                } catch (IOException e) {
+                    // 파일 업로드 중 발생하는 예외를 처리
+                    System.err.println("Failed to upload file: " + filePath + ", error: " + e.getMessage());
+                }
+            });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            // 파일 탐색 중 발생하는 예외를 처리
+            throw new IOException("Error while walking through the dist folder", e);
         }
     }
 
-    private void uploadFileToS3(String bucketName, Path filePath, String distFolderPathString) {
-
+    private void uploadFileToS3(String bucketName, Path filePath, String distFolderPathString) throws IOException {
         Path distFolderPath = Paths.get(distFolderPathString);
-        String key = distFolderPath.relativize(filePath).toString().replace("\\", "/");
+
+
+        String key = distFolderPath.relativize(filePath).toString().replace(File.separator, "/");
+
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .cacheControl("no-cache, no-store, must-revalidate")
@@ -110,7 +117,7 @@ public class S3Service {
                 .key(key)
                 .build();
 
+
         s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath.toFile()));
     }
-
 }
