@@ -3,6 +3,7 @@ package com.yoyomo.domain.club.application.usecase;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.*;
@@ -13,7 +14,7 @@ import static com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO
 
 public interface ClubManageUseCase {
 
-    Response save(Save dto, Long userId);
+    Response save(Save dto, Long userId) throws IOException;
 
     Response read(String clubId);
 
