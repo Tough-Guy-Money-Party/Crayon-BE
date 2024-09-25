@@ -42,5 +42,35 @@ public class Route53Service {
         Route53Service.log.info("Route 53 record created: " + response.changeInfo().statusAsString());
     }
 
+    public void delete(String subdomain) {
+
+        ListResourceRecordSetsRequest listRequest = ListResourceRecordSetsRequest.builder()
+                .hostedZoneId(hostedId)
+                .startRecordName(subdomain)
+                .startRecordType(RRType.A)
+                .build();
+
+        ListResourceRecordSetsResponse listResponse = route53Client.listResourceRecordSets(listRequest);
+
+        ResourceRecordSet recordSet = listResponse.resourceRecordSets().stream()
+                .filter(rrs -> rrs.name().equals(subdomain + ".") && rrs.type() == RRType.A)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Record set not found for subdomain: " + subdomain));
+
+        ChangeBatch changeBatch = ChangeBatch.builder()
+                .changes(Change.builder()
+                        .action(ChangeAction.DELETE)
+                        .resourceRecordSet(recordSet)
+                        .build())
+                .build();
+
+        ChangeResourceRecordSetsRequest deleteRequest = ChangeResourceRecordSetsRequest.builder()
+                .hostedZoneId(hostedId)
+                .changeBatch(changeBatch)
+                .build();
+
+        ChangeResourceRecordSetsResponse response = route53Client.changeResourceRecordSets(deleteRequest);
+        System.out.println("Route 53 record deleted for subdomain: " + subdomain);
+    }
 
 }
