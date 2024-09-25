@@ -116,28 +116,49 @@ public class S3Service {
 
     public void delete(String subDomain) {
 
+        deleteAllElements(subDomain);
+
+        deleteBucket(subDomain);
+
+        System.out.println("S3 bucket deleted: " + subDomain);
+    }
+
+    private void deleteAllElements(String bucketName) {
         ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
-                .bucket(subDomain)
+                .bucket(bucketName)
                 .build();
 
         ListObjectsV2Response listObjectsResponse;
 
         do {
+
             listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
-            listObjectsResponse.contents().forEach(s3Object -> {
-                s3Client.deleteObject(builder -> builder.bucket(subDomain).key(s3Object.key()).build());
-            });
+
+            List<ObjectIdentifier> objectsToDelete = listObjectsResponse.contents().stream()
+                    .map(s3Object -> ObjectIdentifier.builder().key(s3Object.key()).build())
+                    .collect(Collectors.toList());
+
+            if (!objectsToDelete.isEmpty()) {
+
+                DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(Delete.builder().objects(objectsToDelete).build())
+                        .build();
+                s3Client.deleteObjects(deleteObjectsRequest);
+            }
+
 
             listObjectsRequest = listObjectsRequest.toBuilder()
                     .continuationToken(listObjectsResponse.nextContinuationToken())
                     .build();
 
         } while (listObjectsResponse.isTruncated());
-
-
-        s3Client.deleteBucket(DeleteBucketRequest.builder()
-                .bucket(subDomain)
-                .build());
-        System.out.println("S3 bucket deleted: " + subDomain);
     }
+
+    private void deleteBucket(String bucketName) {
+        s3Client.deleteBucket(DeleteBucketRequest.builder()
+                .bucket(bucketName)
+                .build());
+    }
+
 }
