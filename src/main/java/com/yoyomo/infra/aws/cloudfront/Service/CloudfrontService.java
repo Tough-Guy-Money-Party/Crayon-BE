@@ -107,4 +107,36 @@ public class CloudfrontService {
         return getDistributionResponse.distribution().domainName();
     }
 
+    public String findDistributionId(String subDomain) {
+        ListDistributionsResponse listDistributionsResponse = cloudFrontClient.listDistributions();
+
+        return listDistributionsResponse.distributionList().items().stream()
+                .filter(distribution -> distribution.aliases().items().contains(subDomain))
+                .findFirst()
+                .map(DistributionSummary::id)
+                .orElseThrow(() -> new RuntimeException("CloudFront distribution not found for subdomain: " + subDomain));
+    }
+
+    public void disableDitribute(String subDomain) {
+        String distributionId = findDistributionId(subDomain);
+        GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
+                .id(distributionId)
+                .build();
+
+        GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(getDistributionConfigRequest);
+
+        DistributionConfig distributionConfig = getDistributionConfigResponse.distributionConfig().toBuilder()
+                .enabled(false)
+                .build();
+
+        UpdateDistributionRequest updateDistributionRequest = UpdateDistributionRequest.builder()
+                .id(distributionId)
+                .distributionConfig(distributionConfig)
+                .ifMatch(getDistributionConfigResponse.eTag())
+                .build();
+
+        cloudFrontClient.updateDistribution(updateDistributionRequest);
+        System.out.println("CloudFront distribution disabled: " + distributionId);
+    }
+
 }
