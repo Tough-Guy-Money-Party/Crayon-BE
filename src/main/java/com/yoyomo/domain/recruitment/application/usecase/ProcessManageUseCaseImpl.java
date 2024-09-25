@@ -86,6 +86,7 @@ public class ProcessManageUseCaseImpl implements ProcessManageUseCase {
                 .toList();
     }
 
+    // 얜 여기 왜 있음??
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
         return application.getEvaluations().stream()
                 .map(evaluationMapper::toResponse)

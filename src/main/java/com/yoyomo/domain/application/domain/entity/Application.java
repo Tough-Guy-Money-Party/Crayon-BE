@@ -49,7 +49,7 @@ public class Application extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "application")
+    @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Evaluation> evaluations = new ArrayList<>();
 
     @PrePersist

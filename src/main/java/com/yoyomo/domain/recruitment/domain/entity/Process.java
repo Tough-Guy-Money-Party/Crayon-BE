@@ -42,7 +42,7 @@ public class Process extends BaseEntity {
     @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
 
-    @OneToMany(mappedBy = "process")
+    @OneToMany(mappedBy = "process", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Application> applications = new ArrayList<>();
 
     public void addApplication(Application application) {

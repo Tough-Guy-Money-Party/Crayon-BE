@@ -55,7 +55,7 @@ public class    Recruitment extends BaseEntity {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @OneToMany(mappedBy = "recruitment")
+    @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
 
     @PrePersist
