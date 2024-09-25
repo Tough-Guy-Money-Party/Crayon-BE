@@ -1,6 +1,7 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO;
+import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import org.mapstruct.Mapper;
@@ -11,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.*;
-import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
+import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -45,5 +46,5 @@ public interface ProcessMapper {
     // 지원서의 개수로만 applicationCount를 반환하면 soft delete된 개수도 반환하기 때문에 엔티티 안에서 관리하는 것으로 수정하는 것을 권장
     @Mapping(target = "applications", source = "applications")
     @Mapping(target = "applicantCount", expression = "java( applications.size() )")
-    Response toResponse(Process process, List<ApplicationResponseDTO.Response> applications);
+    DetailResponse toResponse(Process process, List<ApplicationResponseDTO.Response> applications);
 }

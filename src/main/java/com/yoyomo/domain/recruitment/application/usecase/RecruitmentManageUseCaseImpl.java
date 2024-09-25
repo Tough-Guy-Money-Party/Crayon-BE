@@ -6,7 +6,6 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -27,6 +26,7 @@ import java.util.List;
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Service
@@ -57,7 +57,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
+        List<ProcessResponseDTO.DetailResponse> processes = processManageUseCase.readAll(recruitmentId);
         return recruitmentMapper.toDetailResponse(recruitment, processes);
     }
 
