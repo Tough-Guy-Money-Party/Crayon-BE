@@ -11,6 +11,8 @@ import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import com.yoyomo.infra.aws.s3.service.S3Service;
+import com.yoyomo.infra.aws.service.AwsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,10 +38,19 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ManagerMapper managerMapper;
     private final ClubManagerGetService clubManagerGetService;
     private final ClubManagerDeleteService clubManagerDeleteService;
+    private final S3Service s3Service;
+    private final AwsService awsService;
+
+    private final String BASEURL = ".crayon.land";
 
     @Override @Transactional
     public Response save(Save dto, Long userId) {
-        checkDuplicatedSubDomain(dto.subDomain());
+        String subDomain = checkDuplicatedSubDomain(dto.subDomain()) + BASEURL;
+
+        //버킷 생성
+        s3Service.createBucket(subDomain);
+        //배포 생성
+        awsService.distribute(subDomain);
         Manager manager = userGetService.find(userId);
         Club club = clubSaveService.save(dto);
         mapFK(manager, club);
@@ -124,9 +135,10 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
                 .toList();
     }
 
-    private void checkDuplicatedSubDomain(String subDomain) {
+    private String checkDuplicatedSubDomain(String subDomain) {
         if(clubGetService.checkSubDomain(subDomain))
             throw new DuplicatedSubDomainException();
+        return subDomain;
     }
 
     private void mapFK(Manager manager, Club club) {
