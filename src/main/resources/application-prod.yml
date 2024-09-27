@@ -57,7 +57,3 @@ cloud:
 
 vite :
   uri: ${VITE_PUBLIC_API_URL}
-
-application:
-  bucket:
-    name: crayon-image
