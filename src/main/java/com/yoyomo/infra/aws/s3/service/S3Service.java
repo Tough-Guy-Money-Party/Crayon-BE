@@ -2,19 +2,24 @@ package com.yoyomo.infra.aws.s3.service;
 
 import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
+import com.yoyomo.infra.aws.exception.ImageSaveFailureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +31,11 @@ public class S3Service {
 
     private final S3Client s3Client;
 
+    @Value("${application.bucket.name}")
+    private String BUCKETNAME;
+
     public void createBucket(String bucketName) {
+
         try {
             CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
                     .bucket(bucketName)
@@ -159,6 +168,41 @@ public class S3Service {
         s3Client.deleteBucket(DeleteBucketRequest.builder()
                 .bucket(bucketName)
                 .build());
+    }
+
+    public List<String> save(List<MultipartFile> images) {
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            String fileName = getFileName(image);
+            String key = "image/" + fileName;
+
+            try (InputStream inputStream = image.getInputStream()) {
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(BUCKETNAME)
+                        .key(key)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, image.getSize()));
+            } catch (IOException | S3Exception e) {
+                throw new ImageSaveFailureException();
+            }
+
+            String url = s3Client.utilities().getUrl(b -> b.bucket(BUCKETNAME).key(key)).toExternalForm();
+            urls.add(url);
+        }
+
+        return urls;
+    }
+
+    private String getFileName(MultipartFile image) {
+        String originalFilename = image.getOriginalFilename();
+        int index = originalFilename.lastIndexOf(".");
+        String ext = originalFilename.substring(index + 1);
+
+        String storeFileName = UUID.randomUUID() + "." + ext;
+        return storeFileName;
     }
 
 }
