@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.yoyomo.infra.aws.presentation.constant.ResponseMessage.IMAGE_SAVE_SUCCESS;
+
 @RestController("/image")
 @RequiredArgsConstructor
 public class ImageController {
@@ -21,6 +23,6 @@ public class ImageController {
 
     @PostMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseDto<List<String>> returnImage(@RequestPart("images") List<MultipartFile> images) {
-        return ResponseDto.of(HttpStatus.OK.value(),"성공", s3Service.save(images));
+        return ResponseDto.of(HttpStatus.OK.value(),IMAGE_SAVE_SUCCESS.getMessage(), s3Service.save(images));
     }
 }
