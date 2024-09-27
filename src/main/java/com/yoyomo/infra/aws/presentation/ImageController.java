@@ -5,6 +5,7 @@ import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import com.yoyomo.infra.aws.service.AwsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static com.yoyomo.infra.aws.presentation.constant.ResponseMessage.IMAGE_SAVE_SUCCESS;
 
+@Tag(name = "IMAGE")
 @RestController("/image")
 @RequiredArgsConstructor
 public class ImageController {
