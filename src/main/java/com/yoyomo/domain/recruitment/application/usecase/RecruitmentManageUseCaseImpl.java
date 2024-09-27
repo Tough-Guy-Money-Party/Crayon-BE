@@ -109,7 +109,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
 
     private void checkDeletedRecruitment(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        if(!(recruitment.getDeletedAt()==null)){
+        if(recruitment.getDeletedAt()!=null){
             throw new RecruitmentDeletedException();
         }
     }
