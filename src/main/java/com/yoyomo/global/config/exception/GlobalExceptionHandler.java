@@ -32,7 +32,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ex.getErrorCode())
                 .body(ResponseDto.of(ex.getErrorCode(), ex.getMessage()));
-
     }
 
     // HTTP 요청이 잘못된 경우
