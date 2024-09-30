@@ -3,6 +3,7 @@ package com.yoyomo.domain.club.domain.entity;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
+import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -34,6 +35,10 @@ public class Club extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ClubManager> clubManagers = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "landing_id")
+    private Landing landing;
 
     private LocalDateTime deletedAt;
 
