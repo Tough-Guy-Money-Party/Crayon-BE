@@ -40,6 +40,8 @@ public class Club extends BaseEntity {
     @JoinColumn(name = "landing_id")
     private Landing landing;
 
+    private String notionPageLink;
+
     private LocalDateTime deletedAt;
 
     @PrePersist

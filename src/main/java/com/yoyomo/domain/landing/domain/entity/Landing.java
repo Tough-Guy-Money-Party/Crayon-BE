@@ -18,14 +18,12 @@ public class Landing {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "LandingId")
     private UUID id;
-    private String notionPageLink;
     private String favicon;
     private String image;
     private String siteTitle;
     private String callToAction;
     private String buttonColor;
     private String textColor;
-
     @OneToOne(mappedBy = "landing")
     private Club club;
 }
