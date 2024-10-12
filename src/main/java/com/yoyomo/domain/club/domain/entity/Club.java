@@ -63,6 +63,10 @@ public class Club extends BaseEntity {
         this.subDomain = dto.subDomain();
     }
 
+    public void update(String notionPageLink) {
+        this.notionPageLink = notionPageLink;
+    }
+
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
