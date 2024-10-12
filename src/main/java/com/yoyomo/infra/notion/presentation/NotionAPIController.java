@@ -1,8 +1,6 @@
 package com.yoyomo.infra.notion.presentation;
 
-import com.yoyomo.infra.notion.application.usecase.NotionManageUsecase;
 import com.yoyomo.infra.notion.application.usecase.NotionManageUsecaseImpl;
-import com.yoyomo.infra.notion.service.NotionGetService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
