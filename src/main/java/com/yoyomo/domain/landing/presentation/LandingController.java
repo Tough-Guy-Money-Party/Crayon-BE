@@ -3,16 +3,16 @@ package com.yoyomo.domain.landing.presentation;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.usecase.LandingManageUsecase;
 import com.yoyomo.global.common.dto.ResponseDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static org.springframework.http.HttpStatus.OK;
 
-@RestController("/landing")
+@Tag(name = "LANDING")
+@RestController()
+@RequestMapping("/landing")
 @RequiredArgsConstructor
 public class LandingController {
     private final LandingManageUsecase landingManageUsecase;
