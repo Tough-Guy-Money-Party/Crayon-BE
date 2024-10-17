@@ -23,7 +23,7 @@ import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class    Recruitment extends BaseEntity {
+public class Recruitment extends BaseEntity {
 
     @Id
     @Column(name = "recruitment_id")
@@ -65,7 +65,8 @@ public class    Recruitment extends BaseEntity {
     }
 
     public void addProcesses(List<Process> processes) {
-        this.processes = processes;
+        this.processes.clear();
+        this.processes.addAll(processes);
     }
 
     public void update(Update dto) {
@@ -80,7 +81,7 @@ public class    Recruitment extends BaseEntity {
     }
 
     public void checkModifiable() {
-        if(this.isActive)
+        if (this.isActive)
             throw new RecruitmentUnmodifiableException();
     }
 
@@ -110,10 +111,10 @@ public class    Recruitment extends BaseEntity {
     }
 
     public void checkAvailable() {
-        if(getStatus(this) != RECRUITING)
-            throw new OutOfDeadlineException();
-
-        if(this.deletedAt != null)
+        if (this.deletedAt != null)
             throw new RecruitmentNotFoundException();
+
+        if (getStatus(this) != RECRUITING)
+            throw new OutOfDeadlineException();
     }
 }
