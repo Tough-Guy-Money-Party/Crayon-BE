@@ -6,7 +6,7 @@ public enum Type {
     ASSIGNMENT,
     TEST,
     INTERVIEW,
-    FINAL_ACCEPTANCE,
+    FINAL,
     COMPLETION,
     STOP
 }
