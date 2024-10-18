@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LandingManageUsecase implements LandingManagementUsecase{
+public class LandingManageUsecaseImpl implements LandingManagementUsecase{
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final NotionGetService notionGetService;

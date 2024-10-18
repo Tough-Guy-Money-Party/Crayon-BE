@@ -1,7 +1,7 @@
 package com.yoyomo.domain.landing.presentation;
 
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
-import com.yoyomo.domain.landing.application.usecase.LandingManageUsecase;
+import com.yoyomo.domain.landing.application.usecase.LandingManageUsecaseImpl;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/landing")
 @RequiredArgsConstructor
 public class LandingController {
-    private final LandingManageUsecase landingManageUsecase;
+    private final LandingManageUsecaseImpl landingManageUsecase;
 
     @PostMapping()
     public ResponseDto<Void> update(@RequestBody LandingRequestDTO.NotionSave dto) {
