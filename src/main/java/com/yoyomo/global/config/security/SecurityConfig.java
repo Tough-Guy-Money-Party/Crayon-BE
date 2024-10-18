@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()
+                                .requestMatchers("/api/notion/**").permitAll()
                                 .anyRequest().permitAll());
 
         http
