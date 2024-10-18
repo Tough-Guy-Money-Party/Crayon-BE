@@ -16,8 +16,4 @@ public class YoYoMoBeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(YoYoMoBeApplication.class, args);
 	}
-	@Bean
-	public RestTemplate restTemplate(){
-		return new RestTemplate();
-	}
 }
