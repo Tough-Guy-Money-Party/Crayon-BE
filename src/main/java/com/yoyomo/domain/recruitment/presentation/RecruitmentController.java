@@ -52,10 +52,10 @@ public class RecruitmentController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), recruitmentManageUseCase.read(recruitmentId));
     }
 
-    @GetMapping
+    @GetMapping("all/{clubId}")
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<Page<Response>> readAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "7") Integer size) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), recruitmentManageUseCase.readAll(PageRequest.of(page, size)));
+    public ResponseDto<Page<Response>> readAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "7") Integer size, @PathVariable String clubId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), recruitmentManageUseCase.readAll(PageRequest.of(page, size), clubId));
     }
 
     @PatchMapping("/{recruitmentId}")
