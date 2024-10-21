@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
+import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -21,7 +22,7 @@ public class RecruitmentGetService {
                 .orElseThrow(RecruitmentNotFoundException::new);
     }
 
-    public Page<Recruitment> findAll(Pageable pageable) {
-        return recruitmentRepository.findAll(pageable);
+    public Page<Recruitment> findAll(Club club,Pageable pageable) {
+        return recruitmentRepository.findAllByClub(club,pageable);
     }
 }

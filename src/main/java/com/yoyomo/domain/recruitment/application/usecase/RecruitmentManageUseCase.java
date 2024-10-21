@@ -11,7 +11,7 @@ public interface RecruitmentManageUseCase {
 
     DetailResponse read(String recruitmentId);
 
-    Page<Response> readAll(Pageable pageable);
+    Page<Response> readAll(Pageable pageable, String clubId);
 
     void update(String recruitmentId, RecruitmentRequestDTO.Update dto, Long userId);
 
