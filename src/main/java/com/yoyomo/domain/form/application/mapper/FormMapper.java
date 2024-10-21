@@ -10,8 +10,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -23,6 +22,8 @@ public interface FormMapper {
     Form from(FormRequestDTO.Save dto, List<Item> items, String clubId);
 
     DetailResponse toDetailResponse(Form form);
+
+    InnerRecruitmentResponse toInnerRecruitmentResponse(Form form);
 
     Response toResponse(Form form);
 }
