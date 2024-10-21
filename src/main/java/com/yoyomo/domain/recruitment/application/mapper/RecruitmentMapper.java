@@ -1,6 +1,7 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -33,8 +34,10 @@ public interface RecruitmentMapper {
     Recruitment from(Save dto, Club club);
 
     @Mapping(target = "processes", source = "processes")
+    @Mapping(target = "title", source = "recruitment.title")
+    @Mapping(target = "clubName", expression = "java(recruitment.getClub().getName() )")
     @Mapping(target = "processCount", expression = "java( processes.size() )")
-    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes);
+    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, FormResponseDTO.InnerRecruitmentResponse form);
 
     @Mapping(target = "recruitmentEndDate", expression = "java( getEndDate(recruitment) )")
     @Mapping(target = "status", expression = "java( getStatus(recruitment) )")
