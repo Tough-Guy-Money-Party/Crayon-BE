@@ -20,6 +20,14 @@ public class FormResponseDTO {
             LocalDateTime updatedAt
     ) {}
 
+    public record InnerRecruitmentResponse(
+            String title,
+            String description,
+            List<ItemResponse> items,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {}
+
     public record Response(
             String id,
             String title,
