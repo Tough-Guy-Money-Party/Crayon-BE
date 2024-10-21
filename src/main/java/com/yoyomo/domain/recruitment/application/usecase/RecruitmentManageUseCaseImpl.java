@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.InnerRecruitmentResponse;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
@@ -36,14 +38,18 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
 
     private final UserGetService userGetService;
     private final ClubGetService clubGetService;
-    private final RecruitmentMapper recruitmentMapper;
+
     private final RecruitmentGetService recruitmentGetService;
     private final RecruitmentSaveService recruitmentSaveService;
     private final RecruitmentUpdateService recruitmentUpdateService;
-    private final ProcessManageUseCase processManageUseCase;
     private final RecruitmentDeleteService recruitmentDeleteService;
+    private final RecruitmentMapper recruitmentMapper;
+
     private final FormUpdateService formUpdateService;
     private final FormGetService formGetService;
+    private final FormManageUseCase formManageUseCase;
+
+    private final ProcessManageUseCase processManageUseCase;
 
     @Override @Transactional
     public void save(Save dto, Long userId) {
@@ -59,7 +65,9 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
-        return recruitmentMapper.toDetailResponse(recruitment, processes);
+        InnerRecruitmentResponse form = formManageUseCase.readForm(recruitment.getFormId());
+
+        return recruitmentMapper.toDetailResponse(recruitment, processes, form);
     }
 
     @Override
