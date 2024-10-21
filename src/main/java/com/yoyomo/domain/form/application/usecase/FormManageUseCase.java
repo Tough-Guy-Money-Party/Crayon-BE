@@ -10,7 +10,7 @@ import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
 public interface FormManageUseCase {
     DetailResponse read(String id);
 
-    InnerRecruitmentResponse readForm(String id);
+    info readForm(String id);
 
     List<Response> readAll(Long userId, String clubId);
 

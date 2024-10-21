@@ -23,7 +23,7 @@ public interface FormMapper {
 
     DetailResponse toDetailResponse(Form form);
 
-    InnerRecruitmentResponse toInnerRecruitmentResponse(Form form);
+    info toInfo(Form form);
 
     Response toResponse(Form form);
 }

@@ -37,7 +37,7 @@ public interface RecruitmentMapper {
     @Mapping(target = "title", source = "recruitment.title")
     @Mapping(target = "clubName", expression = "java(recruitment.getClub().getName() )")
     @Mapping(target = "processCount", expression = "java( processes.size() )")
-    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, FormResponseDTO.InnerRecruitmentResponse form);
+    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, FormResponseDTO.info form);
 
     @Mapping(target = "recruitmentEndDate", expression = "java( getEndDate(recruitment) )")
     @Mapping(target = "status", expression = "java( getStatus(recruitment) )")

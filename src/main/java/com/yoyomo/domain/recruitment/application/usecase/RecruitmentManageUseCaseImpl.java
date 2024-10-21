@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.InnerRecruitmentResponse;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
@@ -65,7 +66,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
-        InnerRecruitmentResponse form = formManageUseCase.readForm(recruitment.getFormId());
+        info form = formManageUseCase.readForm(recruitment.getFormId());
 
         return recruitmentMapper.toDetailResponse(recruitment, processes, form);
     }

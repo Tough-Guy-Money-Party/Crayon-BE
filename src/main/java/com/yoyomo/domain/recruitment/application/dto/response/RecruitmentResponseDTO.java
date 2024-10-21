@@ -29,6 +29,6 @@ public class RecruitmentResponseDTO {
             String clubName,
             List<ProcessResponseDTO.Response> processes,
             int processCount,
-            FormResponseDTO.InnerRecruitmentResponse form
+            FormResponseDTO.info form
     ) {}
 }
