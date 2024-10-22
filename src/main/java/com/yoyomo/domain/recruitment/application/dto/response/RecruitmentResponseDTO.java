@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.application.dto.response;
 
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
 
@@ -25,7 +26,9 @@ public class RecruitmentResponseDTO {
             String title,
             String generation,
             String position,
+            String clubName,
             List<ProcessResponseDTO.Response> processes,
-            int processCount
+            int processCount,
+            FormResponseDTO.info form
     ) {}
 }

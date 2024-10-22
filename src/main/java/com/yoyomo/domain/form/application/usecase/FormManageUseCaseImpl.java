@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,13 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         Form form = formGetService.find(id);
 
         return formMapper.toDetailResponse(form);
+    }
+
+    @Override
+    public info readForm(String id) {
+        Form form = formGetService.find(id);
+
+        return formMapper.toInfo(form);
     }
 
     @Override
