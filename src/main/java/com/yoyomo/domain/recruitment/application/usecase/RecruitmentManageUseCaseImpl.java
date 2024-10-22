@@ -71,8 +71,9 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     }
 
     @Override
-    public Page<Response> readAll(Pageable pageable) {
-        return recruitmentGetService.findAll(pageable)
+    public Page<Response> readAll(Pageable pageable, String clubId) {
+        Club club = clubGetService.find(clubId);
+        return recruitmentGetService.findAll(club,pageable)
                 .map(recruitmentMapper::toResponse);
     }
 
