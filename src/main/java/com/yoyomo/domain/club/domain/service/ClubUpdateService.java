@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.domain.service;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Update;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ClubUpdateService {
 
-    public void update(Club club, ClubRequestDTO.Save dto) {
+    public void update(Club club, Update dto) {
         club.update(dto);
     }
 

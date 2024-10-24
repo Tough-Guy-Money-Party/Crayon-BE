@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.domain.entity;
 
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
+import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Update;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
@@ -63,9 +64,8 @@ public class Club extends BaseEntity {
         this.landing = landing;
     }
 
-    public void update(ClubRequestDTO.Save dto) {
+    public void update(Update dto) {
         this.name = dto.name();
-        this.subDomain = dto.subDomain();
     }
 
     public void update(General dto) {

@@ -74,8 +74,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     @Override
-    public void update(String clubId, Save dto, Long userId) {
-        checkDuplicatedSubDomain(dto.subDomain());
+    public void update(String clubId, Update dto, Long userId) {
         Club club = checkAuthorityByClub(clubId, userId);
         clubUpdateService.update(club, dto);
     }

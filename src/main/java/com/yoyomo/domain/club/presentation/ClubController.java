@@ -50,7 +50,7 @@ public class ClubController {
 
     @PatchMapping("/{clubId}")
     @Operation(summary = "동아리 수정")
-    public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Save dto , @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> update(@PathVariable String clubId, @RequestBody @Valid Update dto , @CurrentUser @Parameter(hidden = true) Long userId) {
         clubManageUseCase.update(clubId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
