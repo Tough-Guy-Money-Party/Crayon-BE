@@ -45,12 +45,14 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
         Club club = clubGetService.find(dto.clubId());
         Landing landing = landingGetService.getLanding(club);
 
-        // 서브도메인 변경시 새 배포 시작
+        // 서브도메인 변경시 새 배포 시작 후 삭제
         if (isSubDomainChanged(dto,club)) {
             String subDomain = checkDuplicatedSubDomain(dto.subDomain()) + BASEURL;
             s3Service.createBucket(subDomain);
             awsService.distribute(subDomain);
             s3Service.save(subDomain);
+
+            awsService.deleteDistribute(club.getSubDomain() + BASEURL);
         }
 
         landingUpdateService.update(landing, club, dto);
