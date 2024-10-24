@@ -4,7 +4,7 @@ import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Notio
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.General;
-import com.yoyomo.domain.landing.application.usecase.LandingManageUsecaseImpl;
+import com.yoyomo.domain.landing.application.usecase.LandingGeneralManageUsecaseImpl;
 import com.yoyomo.domain.landing.application.usecase.LandingStyleManagementUsecaseImpl;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,18 +20,18 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/landing")
 @RequiredArgsConstructor
 public class LandingController {
-    private final LandingManageUsecaseImpl landingManageUsecase;
+    private final LandingGeneralManageUsecaseImpl landingGeneralManageUsecase;
     private final LandingStyleManagementUsecaseImpl landingStyleManagementUsecase;
 
     @PostMapping()
     public ResponseDto<Void> update(@RequestBody NotionSave dto) {
-        landingManageUsecase.update(dto);
+        landingGeneralManageUsecase.update(dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @GetMapping("/general/{clubId}")
     public ResponseDto<General> readGeneral(@PathVariable String clubId) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.readGeneral(clubId));
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingGeneralManageUsecase.readGeneral(clubId));
     }
 
     @PatchMapping("/style")

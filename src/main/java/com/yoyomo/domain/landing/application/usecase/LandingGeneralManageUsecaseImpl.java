@@ -10,13 +10,12 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.infra.notion.service.NotionGetService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LandingManageUsecaseImpl implements LandingManagementUsecase{
+public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagementUsecase {
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
