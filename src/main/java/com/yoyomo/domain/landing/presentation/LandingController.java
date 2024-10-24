@@ -1,6 +1,7 @@
 package com.yoyomo.domain.landing.presentation;
 
-import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
+import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.NotionSave;
+import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.General;
 import com.yoyomo.domain.landing.application.usecase.LandingManageUsecaseImpl;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -20,13 +21,19 @@ public class LandingController {
     private final LandingManageUsecaseImpl landingManageUsecase;
 
     @PostMapping()
-    public ResponseDto<Void> update(@RequestBody LandingRequestDTO.NotionSave dto) {
+    public ResponseDto<Void> update(@RequestBody NotionSave dto) {
         landingManageUsecase.update(dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @GetMapping("/general/{clubId}")
     public ResponseDto<General> read(@PathVariable String clubId) {
-        return ResponseDto.of(OK.value(),SUCCESS_READ.getMessage(), landingManageUsecase.read(clubId));
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.read(clubId));
+    }
+
+    @PatchMapping("/style")
+    public ResponseDto<Void> update(Style dto) {
+        landingManageUsecase.update(dto);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 }
