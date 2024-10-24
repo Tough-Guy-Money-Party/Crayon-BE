@@ -26,4 +26,13 @@ public class LandingRequestDTO {
             String buttonColor,
             String textColor
     ) {}
+
+    public record General(
+            String clubId,
+            String subDomain,
+            String siteName,
+            String notionPageLink,
+            String favicon,
+            String image
+    ) {}
 }
