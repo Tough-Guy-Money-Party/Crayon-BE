@@ -2,6 +2,7 @@ package com.yoyomo.domain.landing.presentation;
 
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.NotionSave;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
+import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.General;
 import com.yoyomo.domain.landing.application.usecase.LandingManageUsecaseImpl;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -27,7 +28,7 @@ public class LandingController {
     }
 
     @GetMapping("/general/{clubId}")
-    public ResponseDto<General> read(@PathVariable String clubId) {
+    public ResponseDto<General> readGeneral(@PathVariable String clubId) {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.read(clubId));
     }
 
