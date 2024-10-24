@@ -58,6 +58,10 @@ public class Club extends BaseEntity {
         this.clubManagers.add(clubManager);
     }
 
+    public void addLanding(Landing landing) {
+        this.landing = landing;
+    }
+
     public void update(ClubRequestDTO.Save dto) {
         this.name = dto.name();
         this.subDomain = dto.subDomain();

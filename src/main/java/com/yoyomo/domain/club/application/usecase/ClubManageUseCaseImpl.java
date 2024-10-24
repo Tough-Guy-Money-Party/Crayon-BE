@@ -7,6 +7,8 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.service.*;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
+import com.yoyomo.domain.landing.domain.entity.Landing;
+import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -41,10 +43,10 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ClubManagerDeleteService clubManagerDeleteService;
     private final S3Service s3Service;
     private final AwsService awsService;
+    private final LandingSaveService landingSaveService;
 
     private final String BASEURL = ".crayon.land";
 
-    //TODO: 배포시 기본 next 정적파일을 업로드하는 로직 추가
     @Override @Transactional
     public Response save(Save dto, Long userId) throws IOException{
         String subDomain = checkDuplicatedSubDomain(dto.subDomain()) + BASEURL;
@@ -59,8 +61,8 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         s3Service.save(subDomain);
         Manager manager = userGetService.find(userId);
         Club club = clubSaveService.save(dto);
-        mapFK(manager, club);
-
+        mapToLanding(manager, club);
+        mapToLanding(club);
 
         return clubMapper.toResponse(club);
     }
@@ -100,7 +102,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Manager manager = userGetService.find(userId);
 
         checkDuplicateParticipate(club, manager);
-        mapFK(manager, club);
+        mapToLanding(manager, club);
 
         return clubMapper.toParticipation(club);
     }
@@ -147,10 +149,15 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         return subDomain;
     }
 
-    private void mapFK(Manager manager, Club club) {
+    private void mapToLanding(Manager manager, Club club) {
         ClubManager clubManager = clubManagerSaveService.save(manager, club);
         manager.addClubManager(clubManager);
         club.addClubManager(clubManager);
+    }
+
+    private void mapToLanding(Club club) {
+        Landing landing = landingSaveService.Save(club);
+        club.addLanding(landing);
     }
 
     private Club checkAuthorityByClub(String clubId, Long userId) {

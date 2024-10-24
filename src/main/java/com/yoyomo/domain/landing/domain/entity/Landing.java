@@ -26,4 +26,8 @@ public class Landing {
     private String textColor;
     @OneToOne(mappedBy = "landing")
     private Club club;
+
+    public Landing(Club club) {
+        this.club = club;
+    }
 }
