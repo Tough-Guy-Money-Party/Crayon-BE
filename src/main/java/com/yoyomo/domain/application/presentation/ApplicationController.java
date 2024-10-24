@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationRequestD
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
+import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUsecase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.global.common.annotation.CurrentUser;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
@@ -34,6 +36,7 @@ public class ApplicationController {
 
     private final ApplyUseCase applyUseCase;
     private final ApplicationManageUseCase applicationManageUseCase;
+    private final ApplicationVerifyUsecase applicationVerifyUsecase;
 
     // Applicant
     @PostMapping("/{recruitmentId}")
@@ -69,6 +72,22 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
+    /*
+        * 지원자 이메일 인증
+     */
+    @GetMapping("/mail/{email}/")
+    @Operation(summary = "[Applicant] 지원서 작성 시 이메일 인증 코드 요청")
+    public ResponseDto<String> readCode(@PathVariable String email) {
+        applicationVerifyUsecase.generate(email);
+        return ResponseDto.of(OK.value(), SUCCESS_GENERATE_CODE.getMessage());
+    }
+
+    @PostMapping("/mail")
+    @Operation(summary = "[Applicant] 이메일 인증 요청. 가능시간 5분")
+    public ResponseDto<Void> verify(@Valid @RequestBody VerificationRequest dto){
+        applicationVerifyUsecase.verify(dto);
+        return ResponseDto.of(OK.value(), SUCCESS_VERIFY_CODE.getMessage());
+    }
 
     // Manager
     @GetMapping("/manager/{recruitmentId}/all")
