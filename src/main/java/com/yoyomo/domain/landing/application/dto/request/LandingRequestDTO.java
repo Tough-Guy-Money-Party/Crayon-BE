@@ -19,4 +19,11 @@ public class LandingRequestDTO {
             String notionPageLink
     ) {
     }
+
+    public record Style(
+            String clubId,
+            String callToAction,
+            String buttonColor,
+            String textColor
+    ) {}
 }

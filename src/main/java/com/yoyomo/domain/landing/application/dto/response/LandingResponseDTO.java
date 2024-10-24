@@ -8,4 +8,10 @@ public class LandingResponseDTO {
             String favicon,
             String image
     ) {}
+
+    public record Style(
+            String callToAction,
+            String buttonColor,
+            String textColor
+    ) {}
 }
