@@ -2,6 +2,7 @@ package com.yoyomo.domain.landing.domain.entity;
 
 
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,5 +37,11 @@ public class Landing {
         this.callToAction = dto.callToAction();
         this.buttonColor = dto.buttonColor();
         this.textColor = dto.textColor();
+    }
+
+    public void updateGeneral(General dto) {
+        this.favicon = dto.favicon();
+        this.image = dto.image();
+        this.siteTitle = dto.siteName();
     }
 }
