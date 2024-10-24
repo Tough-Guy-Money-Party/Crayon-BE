@@ -1,5 +1,6 @@
 package com.yoyomo.domain.landing.application.dto.request;
 
+import com.yoyomo.domain.landing.domain.constant.DisplayMode;
 import jakarta.validation.constraints.NotEmpty;
 
 public class LandingRequestDTO {
@@ -24,7 +25,8 @@ public class LandingRequestDTO {
             String clubId,
             String callToAction,
             String buttonColor,
-            String textColor
+            String textColor,
+            DisplayMode displayMode
     ) {}
 
     public record General(

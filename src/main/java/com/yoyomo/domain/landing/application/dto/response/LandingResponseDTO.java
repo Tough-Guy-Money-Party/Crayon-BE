@@ -1,5 +1,7 @@
 package com.yoyomo.domain.landing.application.dto.response;
 
+import com.yoyomo.domain.landing.domain.constant.DisplayMode;
+
 public class LandingResponseDTO {
     public record General(
             String subDomain,
@@ -12,6 +14,7 @@ public class LandingResponseDTO {
     public record Style(
             String callToAction,
             String buttonColor,
-            String textColor
+            String textColor,
+            DisplayMode displayMode
     ) {}
 }
