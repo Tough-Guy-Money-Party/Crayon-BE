@@ -29,12 +29,17 @@ public class LandingController {
 
     @GetMapping("/general/{clubId}")
     public ResponseDto<General> readGeneral(@PathVariable String clubId) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.read(clubId));
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.readGeneral(clubId));
     }
 
     @PatchMapping("/style")
     public ResponseDto<Void> update(Style dto) {
         landingManageUsecase.update(dto);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @GetMapping("/style/{clubId}")
+    public ResponseDto<LandingResponseDTO.Style> read(@PathVariable String clubId) {
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), landingManageUsecase.readStyle(clubId));
     }
 }
