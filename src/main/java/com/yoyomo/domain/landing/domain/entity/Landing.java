@@ -4,6 +4,7 @@ package com.yoyomo.domain.landing.domain.entity;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
+import com.yoyomo.domain.landing.domain.constant.DisplayMode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,8 @@ public class Landing {
     private String callToAction;
     private String buttonColor;
     private String textColor;
+    private DisplayMode displayMode = DisplayMode.LIGHT;
+
     @OneToOne(mappedBy = "landing")
     private Club club;
 
@@ -37,6 +40,7 @@ public class Landing {
         this.callToAction = dto.callToAction();
         this.buttonColor = dto.buttonColor();
         this.textColor = dto.textColor();
+        this.displayMode = dto.displayMode();
     }
 
     public void updateGeneral(General dto) {
