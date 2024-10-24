@@ -8,7 +8,4 @@ public interface LandingManagementUsecase {
 
     LandingResponseDTO.General readGeneral(String clubId);
 
-    LandingResponseDTO.Style readStyle(String clubId);
-
-    void update(LandingRequestDTO.Style dto);
 }

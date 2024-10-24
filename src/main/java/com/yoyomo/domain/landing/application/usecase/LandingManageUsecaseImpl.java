@@ -32,23 +32,9 @@ public class LandingManageUsecaseImpl implements LandingManagementUsecase{
     }
 
     @Override
-    public LandingResponseDTO.Style readStyle(String clubId) {
-        Club club = clubGetService.find(clubId);
-        Landing landing = landingGetService.getLanding(club);
-        return landingMapper.toStyleResponse(club,landing);
-    }
-
-    @Override
     public void update(LandingRequestDTO.NotionSave dto) {
         Club club = clubGetService.find(dto.clubId());
         String parsedNotionPage = notionGetService.notionParser(dto.notionPageLink());
         clubUpdateService.update(club, parsedNotionPage);
-    }
-
-    @Override @Transactional
-    public void update(LandingRequestDTO.Style dto) {
-        Club club = clubGetService.find(dto.clubId());
-        Landing landing = landingGetService.getLanding(club);
-        landingUpdateService.update(landing, dto);
     }
 }
