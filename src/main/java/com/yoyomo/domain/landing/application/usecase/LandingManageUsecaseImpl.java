@@ -5,7 +5,6 @@ import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
-import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.Style;
 import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
@@ -26,10 +25,17 @@ public class LandingManageUsecaseImpl implements LandingManagementUsecase{
     private final LandingUpdateService landingUpdateService;
 
     @Override
-    public LandingResponseDTO.General read(String clubId) {
+    public LandingResponseDTO.General readGeneral(String clubId) {
         Club club = clubGetService.find(clubId);
         Landing landing = landingGetService.getLanding(club);
-        return landingMapper.toResponse(club,landing);
+        return landingMapper.toGeneralResponse(club,landing);
+    }
+
+    @Override
+    public LandingResponseDTO.Style readStyle(String clubId) {
+        Club club = clubGetService.find(clubId);
+        Landing landing = landingGetService.getLanding(club);
+        return landingMapper.toStyleResponse(club,landing);
     }
 
     @Override
