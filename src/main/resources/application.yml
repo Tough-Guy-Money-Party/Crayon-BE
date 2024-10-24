@@ -25,6 +25,9 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+    ses:
+      accessKey: ${SES_ACCESS_KEY_ID}
+      secretKey: ${SES_SECRET_ACCESS_KEY}
 
 application:
   bucket:
