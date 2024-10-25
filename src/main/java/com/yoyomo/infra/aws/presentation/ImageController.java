@@ -1,11 +1,13 @@
 package com.yoyomo.infra.aws.presentation;
 
 
+import static com.yoyomo.infra.aws.presentation.constant.ResponseMessage.IMAGE_SAVE_SUCCESS;
+
 import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.infra.aws.s3.service.S3Service;
-import com.yoyomo.infra.aws.service.AwsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,10 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-
-import static com.yoyomo.infra.aws.presentation.constant.ResponseMessage.IMAGE_SAVE_SUCCESS;
 
 @Tag(name = "IMAGE")
 @RestController("/image")
