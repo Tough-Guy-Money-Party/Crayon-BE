@@ -64,7 +64,7 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
         return subDomain;
     }
 
-    private Boolean isSubDomainChanged(General dto, Club club) {
+    private boolean isSubDomainChanged(General dto, Club club) {
         return !dto.subDomain().equals(club.getSubDomain());
     }
 
