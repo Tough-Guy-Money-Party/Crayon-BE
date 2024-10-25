@@ -61,7 +61,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         s3Service.save(subDomain);
         Manager manager = userGetService.find(userId);
         Club club = clubSaveService.save(dto);
-        mapToLanding(manager, club);
+        mapToManager(manager, club);
         mapToLanding(club);
 
         return clubMapper.toResponse(club);
@@ -101,7 +101,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         Manager manager = userGetService.find(userId);
 
         checkDuplicateParticipate(club, manager);
-        mapToLanding(manager, club);
+        mapToManager(manager, club);
 
         return clubMapper.toParticipation(club);
     }
@@ -148,7 +148,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
         return subDomain;
     }
 
-    private void mapToLanding(Manager manager, Club club) {
+    private void mapToManager(Manager manager, Club club) {
         ClubManager clubManager = clubManagerSaveService.save(manager, club);
         manager.addClubManager(clubManager);
         club.addClubManager(clubManager);
