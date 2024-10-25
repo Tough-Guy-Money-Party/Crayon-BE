@@ -1,5 +1,8 @@
 package com.yoyomo.infra.aws.cloudfront.Service;
 
+import com.yoyomo.infra.aws.exception.DistributeNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -108,13 +111,25 @@ public class CloudfrontService {
     }
 
     public String findDistributionId(String subDomain) {
-        ListDistributionsResponse listDistributionsResponse = cloudFrontClient.listDistributions();
+        String nextMarker = null;
+        List<DistributionSummary> allDistributions = new ArrayList<>();
 
-        return listDistributionsResponse.distributionList().items().stream()
+        do {
+            ListDistributionsResponse listDistributionsResponse = cloudFrontClient.listDistributions(
+                    ListDistributionsRequest.builder()
+                            .marker(nextMarker)
+                            .build()
+            );
+
+            allDistributions.addAll(listDistributionsResponse.distributionList().items());
+            nextMarker = listDistributionsResponse.distributionList().nextMarker();
+        } while (nextMarker != null);
+
+        return allDistributions.stream()
                 .filter(distribution -> distribution.aliases().items().contains(subDomain))
                 .findFirst()
                 .map(DistributionSummary::id)
-                .orElseThrow(() -> new RuntimeException("CloudFront distribution not found for subdomain: " + subDomain));
+                .orElseThrow(DistributeNotFoundException::new);
     }
 
     public void disableDitribute(String subDomain) {

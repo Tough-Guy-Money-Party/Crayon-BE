@@ -12,6 +12,10 @@ public class ClubRequestDTO {
             @NotEmpty String subDomain
     ) {}
 
+    public record Update(
+            @NotEmpty String name
+    ) {}
+
     public record Participation(
             @NotEmpty String code
     ) {}
