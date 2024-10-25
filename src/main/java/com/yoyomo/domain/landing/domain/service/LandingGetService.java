@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class LandingGetService {
     private final LandingRepository landingRepository;
 
-    public Landing getLanding(Club club) {
+    public Landing find(Club club) {
         return landingRepository.findByClub(club).orElseThrow(LandingNotFoundException::new);
     }
 }

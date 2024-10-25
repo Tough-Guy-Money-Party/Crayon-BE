@@ -36,14 +36,14 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     @Override
     public LandingResponseDTO.General readGeneral(String clubId) {
         Club club = clubGetService.find(clubId);
-        Landing landing = landingGetService.getLanding(club);
+        Landing landing = landingGetService.find(club);
         return landingMapper.toGeneralResponse(club,landing);
     }
 
     @Override @Transactional
     public void update(General dto) throws IOException {
         Club club = clubGetService.find(dto.clubId());
-        Landing landing = landingGetService.getLanding(club);
+        Landing landing = landingGetService.find(club);
 
         // 서브도메인 변경시 새 배포 시작 후 삭제
         if (isSubDomainChanged(dto,club)) {
