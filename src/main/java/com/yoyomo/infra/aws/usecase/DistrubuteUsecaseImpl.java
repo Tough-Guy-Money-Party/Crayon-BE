@@ -3,7 +3,6 @@ package com.yoyomo.infra.aws.usecase;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
-import com.yoyomo.infra.aws.service.AwsService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
