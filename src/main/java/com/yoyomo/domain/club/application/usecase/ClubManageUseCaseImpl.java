@@ -1,11 +1,24 @@
 package com.yoyomo.domain.club.application.usecase;
 
+import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Delete;
+import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
+import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Update;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Code;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
+import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
+import static com.yoyomo.domain.club.domain.entity.Club.checkDuplicateParticipate;
+
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
-import com.yoyomo.domain.club.domain.service.*;
+import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerDeleteService;
+import com.yoyomo.domain.club.domain.service.ClubManagerGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
+import com.yoyomo.domain.club.domain.service.ClubSaveService;
+import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
@@ -13,20 +26,12 @@ import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import com.yoyomo.infra.aws.s3.service.S3Service;
-import com.yoyomo.infra.aws.service.AwsService;
+import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.List;
-
-import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.*;
-import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.*;
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
-import static com.yoyomo.domain.club.domain.entity.Club.checkDuplicateParticipate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -41,24 +46,15 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ManagerMapper managerMapper;
     private final ClubManagerGetService clubManagerGetService;
     private final ClubManagerDeleteService clubManagerDeleteService;
-    private final S3Service s3Service;
-    private final AwsService awsService;
+    private final DistributeUsecase distributeUsecaseImpl;
     private final LandingSaveService landingSaveService;
 
     private final String BASEURL = ".crayon.land";
 
     @Override @Transactional
     public Response save(Save dto, Long userId) throws IOException{
-        String subDomain = checkDuplicatedSubDomain(dto.subDomain()) + BASEURL;
+        distributeUsecaseImpl.create(dto.subDomain());
 
-        //버킷 생성
-        s3Service.createBucket(subDomain);
-
-        //배포 생성
-        awsService.distribute(subDomain);
-
-        //정적파일 업로드
-        s3Service.save(subDomain);
         Manager manager = userGetService.find(userId);
         Club club = clubSaveService.save(dto);
         mapToManager(manager, club);

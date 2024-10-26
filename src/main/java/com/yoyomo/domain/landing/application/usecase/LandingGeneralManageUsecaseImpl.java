@@ -11,8 +11,7 @@ import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.infra.aws.s3.service.S3Service;
-import com.yoyomo.infra.aws.service.AwsService;
+import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import com.yoyomo.infra.notion.service.NotionGetService;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -27,11 +26,8 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final LandingGetService landingGetService;
     private final NotionGetService notionGetService;
     private final LandingMapper landingMapper;
-    private final S3Service s3Service;
-    private final AwsService awsService;
+    private final DistributeUsecase distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
-
-    private final String BASEURL = ".crayon.land";
 
     @Override
     public LandingResponseDTO.General readGeneral(String clubId) {
@@ -45,17 +41,17 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
         Club club = clubGetService.find(dto.clubId());
         Landing landing = landingGetService.find(club);
 
-        // 서브도메인 변경시 새 배포 시작 후 삭제
-        if (isSubDomainChanged(dto,club)) {
-            String subDomain = checkDuplicatedSubDomain(dto.subDomain()) + BASEURL;
-            s3Service.createBucket(subDomain);
-            awsService.distribute(subDomain);
-            s3Service.save(subDomain);
-
-            awsService.deleteDistribute(club.getSubDomain() + BASEURL);
-        }
-
+        updateSubDomainIfChanged(dto,club);
         landingUpdateService.update(landing, club, dto);
+    }
+
+    private void updateSubDomainIfChanged(General dto, Club club) throws IOException{
+        if (isSubDomainChanged(dto,club)) {
+            String subDomain = checkDuplicatedSubDomain(dto.subDomain());
+            String oldDomain = club.getSubDomain();
+            distributeUsecaseImpl.create(subDomain);
+            distributeUsecaseImpl.delete(oldDomain);
+        }
     }
 
     private String checkDuplicatedSubDomain(String subDomain) {

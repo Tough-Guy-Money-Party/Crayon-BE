@@ -83,7 +83,7 @@ public class S3Service {
         System.out.println("Bucket policy applied for bucket: " + bucketName);
     }
 
-    public void save(String bucketName) throws IOException {
+    public void upload(String bucketName) throws IOException {
 
         String projectPath = "app/notion-to-site";
         String distFolderPath = new File(projectPath, "out").getCanonicalPath();
