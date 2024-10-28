@@ -17,7 +17,11 @@ public enum Status {
             else
                 return RECRUITING;
         } else {
-            return BEFORE;
+            if (recruitment.getDeletedAt() == null) {
+                return BEFORE;
+            } else {
+                return COMPLETE;
+            }
         }
     }
 }
