@@ -91,6 +91,7 @@ public class Recruitment extends BaseEntity {
 
     public void close() {
         this.deletedAt = LocalDateTime.now();
+        this.isActive = false;
     }
 
     public boolean isBefore() {
