@@ -1,6 +1,7 @@
-package com.yoyomo.infra.aws.ses;
+package com.yoyomo.infra.aws.ses.presentation;
 
 import com.yoyomo.global.common.dto.ResponseDto;
+import com.yoyomo.infra.aws.ses.MailService;
 import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
