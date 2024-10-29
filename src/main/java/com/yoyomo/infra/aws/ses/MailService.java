@@ -1,13 +1,12 @@
 package com.yoyomo.infra.aws.ses;
 
-import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
-import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.*;
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.save;
 
 @Slf4j
 @Service
