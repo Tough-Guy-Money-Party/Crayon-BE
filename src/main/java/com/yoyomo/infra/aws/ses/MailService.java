@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class MailService {
     private final SesClient sesClient;
 
     //템플릿 저장 - 비밀번호 전용
-    public void saveTemplate(MailTemplateRequest.save dto){
+    public void saveTemplate(save dto){
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
@@ -33,7 +35,7 @@ public class MailService {
         sesClient.createTemplate(saveRequest);
     }
 
-    public void updateTemplate(MailTemplateRequest.save dto){
+    public void updateTemplate(save dto){
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
