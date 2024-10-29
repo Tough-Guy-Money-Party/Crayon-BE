@@ -2,13 +2,12 @@ package com.yoyomo.infra.aws.ses.presentation;
 
 import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.infra.aws.ses.MailService;
-import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.*;
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.save;
 import static com.yoyomo.infra.aws.ses.presentation.constant.ResponseMessage.*;
 
 @RestController
