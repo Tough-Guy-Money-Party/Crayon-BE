@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.*;
 import static com.yoyomo.infra.aws.ses.presentation.constant.ResponseMessage.*;
 
 @RestController
@@ -25,14 +26,14 @@ public class VerificationMailController {
 
     @PostMapping
     @Operation(summary = "이메일 인증용 템플릿 저장 API 입니다.")
-    public ResponseDto<String> save(MailTemplateRequest.save dto){
+    public ResponseDto<String> save(save dto){
         mailService.saveTemplate(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_SAVE.getMessage());
     }
 
     @PatchMapping
     @Operation(summary = "이메일 인증용 템플릿 수정 API 입니다.")
-    public ResponseDto<String> update(MailTemplateRequest.save dto){
+    public ResponseDto<String> update(save dto){
         mailService.updateTemplate(dto);
         return ResponseDto.of((HttpStatus.OK.value()), SUCCESS_TEMPLATE_UPDATE.getMessage());
     }
