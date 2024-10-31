@@ -16,15 +16,24 @@ springdoc:
 lambda:
   uri: ${LAMBDA_URI}
 
+mail:
+  lambda:
+    arn: ${MAIL_LAMBDA_ARN}
+  scheduler:
+    arn: ${TARGET_ROLE_ARN}
+
 cloud:
   aws:
     credentials:
       accessKey: ${AWS_ACCESS_KEY_ID}
       secretKey: ${AWS_SECRET_ACCESS_KEY}
+      mailAccessKey: ${MAIL_AWS_ACCESS_KEY_ID}
+      mailSecretKey: ${MAIL_AWS_SECRET_ACCESS_KEY}
     region:
       static: ap-northeast-2
     stack:
       auto: false
+
 
 application:
   bucket:
