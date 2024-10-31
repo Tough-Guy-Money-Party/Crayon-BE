@@ -5,7 +5,7 @@ import com.yoyomo.domain.landing.domain.constant.DisplayMode;
 public class LandingResponseDTO {
     public record General(
             String subDomain,
-            String siteName,
+            String siteTitle,
             String notionPageLink,
             String favicon,
             String image
