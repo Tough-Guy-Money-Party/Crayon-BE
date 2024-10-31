@@ -31,7 +31,7 @@ public class VerificationService {
 
     public void verifyCode(VerificationRequest dto){
         String key = PREFIX + dto.email();
-        String code  = (String) redisTemplate.opsForValue().get(key);
+        String code  = redisTemplate.opsForValue().get(key);
 
         if(code != null && code.equals(dto.code())){
             redisTemplate.delete(key);
