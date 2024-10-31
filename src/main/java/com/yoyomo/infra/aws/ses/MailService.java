@@ -1,5 +1,6 @@
 package com.yoyomo.infra.aws.ses;
 
+import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class MailService {
     private final SesClient sesClient;
 
     //템플릿 저장 - 비밀번호 전용
-    public void saveTemplate(save dto){
+    public void saveTemplate(save dto) {
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
@@ -34,7 +35,7 @@ public class MailService {
         sesClient.createTemplate(saveRequest);
     }
 
-    public void updateTemplate(save dto){
+    public void updateTemplate(save dto) {
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
@@ -50,7 +51,7 @@ public class MailService {
         sesClient.updateTemplate(updateRequest);
     }
 
-    public String getTemplate(String templateName){
+    public MailTemplateRequest.save getTemplate(String templateName) {
 
         GetTemplateRequest getRequest = GetTemplateRequest.builder()
                 .templateName(templateName)
@@ -59,22 +60,27 @@ public class MailService {
         GetTemplateResponse response = sesClient.getTemplate(getRequest);
 
         // 우선 htmlPart만 반환. 요구사항 증가시 다른 요소도 함께 반환
-        return response.template().htmlPart();
+        return new MailTemplateRequest.save(
+                response.template().templateName(),
+                response.template().subjectPart(),
+                response.template().htmlPart(),
+                response.template().textPart()
+        );
     }
 
     // 템플릿을 사용하여 이메일 보내기 (sendTemplatedEmail 사용)
-    public void sendVerifyCode(String email, String code){
-            String templateData = "{\"CODE\":\"" + code + "\"}";
+    public void sendVerifyCode(String email, String code) {
+        String templateData = "{\"CODE\":\"" + code + "\"}";
 
-            SendTemplatedEmailRequest emailRequest = SendTemplatedEmailRequest.builder()
-                    .destination(Destination.builder().toAddresses(email).build())
-                    .template(TEMPLATE_NAME)
-                    .templateData(templateData)
-                    // 차후에 크레용 도메인 메일로 변경
-                    .source("ewgt1234@naver.com") // SES에 검증된 이메일 주소
-                    .build();
+        SendTemplatedEmailRequest emailRequest = SendTemplatedEmailRequest.builder()
+                .destination(Destination.builder().toAddresses(email).build())
+                .template(TEMPLATE_NAME)
+                .templateData(templateData)
+                // 차후에 크레용 도메인 메일로 변경
+                .source("ewgt1234@naver.com") // SES에 검증된 이메일 주소
+                .build();
 
-            sesClient.sendTemplatedEmail(emailRequest);
-            log.info("템플릿을 사용한 이메일 발송 성공: {}", email);
+        sesClient.sendTemplatedEmail(emailRequest);
+        log.info("템플릿을 사용한 이메일 발송 성공: {}", email);
     }
 }

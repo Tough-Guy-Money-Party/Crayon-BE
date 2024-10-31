@@ -2,6 +2,7 @@ package com.yoyomo.infra.aws.ses.presentation;
 
 import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.infra.aws.ses.MailService;
+import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class VerificationMailController {
 
     @GetMapping
     @Operation(summary = "이메일 인증용 템플릿 조회 API 입니다.")
-    public ResponseDto<String> read(String templateName){
+    public ResponseDto<MailTemplateRequest.save> read(String templateName){
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), mailService.getTemplate(templateName));
     }
 
