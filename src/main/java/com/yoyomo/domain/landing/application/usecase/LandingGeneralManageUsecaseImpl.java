@@ -67,7 +67,6 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     @Override
     public void update(LandingRequestDTO.NotionSave dto) {
         Club club = clubGetService.find(dto.clubId());
-        String parsedNotionPage = notionGetService.notionParser(dto.notionPageLink());
-        clubUpdateService.update(club, parsedNotionPage);
+        clubUpdateService.update(club, dto.notionPageLink());
     }
 }
