@@ -23,7 +23,7 @@ public class Landing {
     private UUID id;
     private String favicon;
     private String image;
-    private String siteTitle;
+    private String siteName;
     private String callToAction;
     private String buttonColor;
     private String textColor;
@@ -46,6 +46,6 @@ public class Landing {
     public void updateGeneral(General dto) {
         this.favicon = dto.favicon();
         this.image = dto.image();
-        this.siteTitle = dto.siteName();
+        this.siteName = dto.siteName();
     }
 }
