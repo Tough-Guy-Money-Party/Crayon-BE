@@ -1,13 +1,12 @@
 package com.yoyomo.infra.aws.ses;
 
-import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
-import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.save;
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.Save;
 
 @Slf4j
 @Service
@@ -19,7 +18,7 @@ public class MailService {
     private final SesClient sesClient;
 
     //템플릿 저장 - 비밀번호 전용
-    public void saveTemplate(save dto) {
+    public void saveTemplate(Save dto) {
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
@@ -35,7 +34,7 @@ public class MailService {
         sesClient.createTemplate(saveRequest);
     }
 
-    public void updateTemplate(save dto) {
+    public void updateTemplate(Save dto) {
 
         Template template = Template.builder()
                 .templateName(dto.templateName())
@@ -51,7 +50,7 @@ public class MailService {
         sesClient.updateTemplate(updateRequest);
     }
 
-    public MailTemplateRequest.save getTemplate(String templateName) {
+    public Save getTemplate(String templateName) {
 
         GetTemplateRequest getRequest = GetTemplateRequest.builder()
                 .templateName(templateName)
@@ -60,7 +59,7 @@ public class MailService {
         GetTemplateResponse response = sesClient.getTemplate(getRequest);
 
         // 우선 htmlPart만 반환. 요구사항 증가시 다른 요소도 함께 반환
-        return new MailTemplateRequest.save(
+        return new Save(
                 response.template().templateName(),
                 response.template().subjectPart(),
                 response.template().htmlPart(),

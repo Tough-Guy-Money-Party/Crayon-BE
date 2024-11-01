@@ -2,13 +2,12 @@ package com.yoyomo.infra.aws.ses.presentation;
 
 import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.infra.aws.ses.MailService;
-import com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.save;
+import static com.yoyomo.infra.aws.ses.dto.request.MailTemplateRequest.Save;
 import static com.yoyomo.infra.aws.ses.presentation.constant.ResponseMessage.*;
 
 @RestController
@@ -20,20 +19,20 @@ public class VerificationMailController {
 
     @GetMapping
     @Operation(summary = "이메일 인증용 템플릿 조회 API 입니다.")
-    public ResponseDto<MailTemplateRequest.save> read(String templateName){
+    public ResponseDto<Save> read(String templateName){
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), mailService.getTemplate(templateName));
     }
 
     @PostMapping
     @Operation(summary = "이메일 인증용 템플릿 저장 API 입니다.")
-    public ResponseDto<String> save(save dto){
+    public ResponseDto<String> save(Save dto){
         mailService.saveTemplate(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_SAVE.getMessage());
     }
 
     @PatchMapping
     @Operation(summary = "이메일 인증용 템플릿 수정 API 입니다.")
-    public ResponseDto<String> update(save dto){
+    public ResponseDto<String> update(Save dto){
         mailService.updateTemplate(dto);
         return ResponseDto.of((HttpStatus.OK.value()), SUCCESS_TEMPLATE_UPDATE.getMessage());
     }

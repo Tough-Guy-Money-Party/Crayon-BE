@@ -2,7 +2,7 @@ package com.yoyomo.infra.aws.ses.dto.request;
 
 public class MailTemplateRequest {
 
-    public record save(
+    public record Save(
             String templateName,
             String subject,
             String htmlPart,
