@@ -82,4 +82,19 @@ public class MailService {
         sesClient.sendTemplatedEmail(emailRequest);
         log.info("템플릿을 사용한 이메일 발송 성공: {}", email);
     }
+
+    // 이메일 인증 코드 전송 메서드. 요구사항에 맞게 사용할 것
+    public void sendVerificationEmail(String email) {
+        try {
+            VerifyEmailIdentityRequest verifyRequest = VerifyEmailIdentityRequest.builder()
+                    .emailAddress(email)
+                    .build();
+
+            VerifyEmailIdentityResponse response = sesClient.verifyEmailIdentity(verifyRequest);
+            log.info("인증 이메일 전송 요청 성공: {}", response);
+        } catch (SesException e) {
+            log.error("인증 이메일 전송 요청 실패: {}", e.awsErrorDetails().errorMessage());
+            throw new RuntimeException("인증 이메일 전송에 실패했습니다.", e);
+        }
+    }
 }
