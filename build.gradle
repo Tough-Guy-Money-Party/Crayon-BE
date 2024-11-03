@@ -70,6 +70,10 @@ dependencies {
     implementation 'software.amazon.awssdk:route53:2.20.12'
     implementation 'software.amazon.awssdk:core:2.20.2'
     implementation 'software.amazon.awssdk:regions:2.20.2'
+
+    //SES 추가
+    implementation 'software.amazon.awssdk:ses:2.27.8'
+
 }
 
 //tasks.named('test') {

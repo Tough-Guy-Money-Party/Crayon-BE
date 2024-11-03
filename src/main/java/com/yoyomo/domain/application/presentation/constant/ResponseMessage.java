@@ -18,6 +18,9 @@ public enum ResponseMessage {
     SUCCESS_DELETE_EVALUATION("평가 삭제에 성공했습니다."),
     SUCCESS_READ_RESULT("모집 결과 조회에 성공했습니다."),
 
+    SUCCESS_GENERATE_CODE("이메일 인증 코드 발송에 성공했습니다."),
+    SUCCESS_VERIFY_CODE("이메일 인증에 성공했습니다."),
+
     OVER_DEADLINE("모집 기간이 아닙니다."),
     APPLICATION_NOT_FOUND("지원 이력이 존재하지 않습니다."),
     ANSWER_NOT_FOUND("답변 이력이 존재하지 않습니다."),
