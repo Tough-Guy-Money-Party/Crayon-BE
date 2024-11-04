@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.application.dto.response.ResultResponseDTO.
 import com.yoyomo.domain.application.application.usecase.ResultManageUseCase;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.global.common.dto.ResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class ResultController {
 
     private final ResultManageUseCase resultManageUseCase;
 
+    @Operation(summary = "[Result] 사용자가 결과를 조회합니다.")
     @PostMapping
     public ResponseDto<List<Result>> announce(@RequestBody @Valid Find dto) {
         return ResponseDto.of(OK.value(), SUCCESS_READ_RESULT.getMessage(), resultManageUseCase.announce(dto));
