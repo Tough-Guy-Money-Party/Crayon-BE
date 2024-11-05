@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
 import software.amazon.awssdk.services.cloudfront.model.*;
@@ -156,6 +157,7 @@ public class CloudfrontService {
         logger.info("CloudFront distribution disabled: {}", distributionId);
     }
 
+    @Scheduled(cron = "0 0 3 * * ?")
     public void deleteInactiveDistributions() {
         logger.info("배포 삭제 시작");
         List<DistributionSummary> inactiveDistributions = findInactiveDistributions();
@@ -177,7 +179,7 @@ public class CloudfrontService {
                 .collect(Collectors.toList());
     }
 
-    private void deleteDistribution(DistributionSummary distribution) {
+    public void deleteDistribution(DistributionSummary distribution) {
         String distributionId = distribution.id();
         try {
             GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
@@ -192,9 +194,9 @@ public class CloudfrontService {
                     .build();
 
             cloudFrontClient.deleteDistribution(deleteRequest);
-            logger.info("배포 삭제: {}", distributionId);
+            logger.info("배포 삭제 완료: {}", distributionId);
         } catch (CloudFrontException e) {
-            logger.error("배포 삭제 실패: {} - {}", distributionId, e.getMessage());
+            logger.error("배포 삭제 실패: {} - {}", distributionId, e.awsErrorDetails().errorMessage());
         }
     }
 }
