@@ -2,14 +2,40 @@ package com.yoyomo.infra.aws.cloudfront.Service;
 
 import com.yoyomo.infra.aws.exception.DistributeNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
-import software.amazon.awssdk.services.cloudfront.model.*;
-
-import java.util.Collections;
+import software.amazon.awssdk.services.cloudfront.model.Aliases;
+import software.amazon.awssdk.services.cloudfront.model.CloudFrontException;
+import software.amazon.awssdk.services.cloudfront.model.CookiePreference;
+import software.amazon.awssdk.services.cloudfront.model.CreateDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.CreateDistributionResponse;
+import software.amazon.awssdk.services.cloudfront.model.CustomErrorResponse;
+import software.amazon.awssdk.services.cloudfront.model.CustomOriginConfig;
+import software.amazon.awssdk.services.cloudfront.model.DefaultCacheBehavior;
+import software.amazon.awssdk.services.cloudfront.model.DeleteDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.DistributionConfig;
+import software.amazon.awssdk.services.cloudfront.model.DistributionSummary;
+import software.amazon.awssdk.services.cloudfront.model.ForwardedValues;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigRequest;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigResponse;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionResponse;
+import software.amazon.awssdk.services.cloudfront.model.ListDistributionsRequest;
+import software.amazon.awssdk.services.cloudfront.model.ListDistributionsResponse;
+import software.amazon.awssdk.services.cloudfront.model.MinimumProtocolVersion;
+import software.amazon.awssdk.services.cloudfront.model.Origin;
+import software.amazon.awssdk.services.cloudfront.model.OriginProtocolPolicy;
+import software.amazon.awssdk.services.cloudfront.model.OriginShield;
+import software.amazon.awssdk.services.cloudfront.model.Origins;
+import software.amazon.awssdk.services.cloudfront.model.SSLSupportMethod;
+import software.amazon.awssdk.services.cloudfront.model.UpdateDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.ViewerCertificate;
+import software.amazon.awssdk.services.cloudfront.model.ViewerProtocolPolicy;
 
 @Service
 @RequiredArgsConstructor
@@ -153,5 +179,48 @@ public class CloudfrontService {
         cloudFrontClient.updateDistribution(updateDistributionRequest);
         System.out.println("CloudFront distribution disabled: " + distributionId);
     }
+
+    public void deleteInactiveDistributions() {
+        List<DistributionSummary> inactiveDistributions = findInactiveDistributions();
+        inactiveDistributions.forEach(this::deleteDistribution);
+    }
+
+    private List<DistributionSummary> findInactiveDistributions() {
+        List<DistributionSummary> allDistributions = new ArrayList<>();
+        String nextMarker = null;
+
+        do {
+            ListDistributionsResponse response = cloudFrontClient.listDistributions(ListDistributionsRequest.builder().marker(nextMarker).build());
+            allDistributions.addAll(response.distributionList().items());
+            nextMarker = response.distributionList().nextMarker();
+        } while (nextMarker != null);
+
+        return allDistributions.stream()
+                .filter(distribution -> distribution.enabled().equals(false))
+                .collect(Collectors.toList());
+    }
+
+    private void deleteDistribution(DistributionSummary distribution) {
+        String distributionId = distribution.id();
+        try {
+            GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
+                    .id(distributionId)
+                    .build();
+
+            GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(getDistributionConfigRequest);
+
+            DeleteDistributionRequest deleteRequest = DeleteDistributionRequest.builder()
+                    .id(distributionId)
+                    .ifMatch(getDistributionConfigResponse.eTag())
+                    .build();
+
+            cloudFrontClient.deleteDistribution(deleteRequest);
+            System.out.println("CloudFront distribution deleted: " + distributionId);
+        } catch (CloudFrontException e) {
+            System.err.println("Failed to delete CloudFront distribution: " + distributionId + " - " + e.getMessage());
+        }
+    }
+
+
 
 }
