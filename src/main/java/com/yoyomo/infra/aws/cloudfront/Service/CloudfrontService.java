@@ -6,41 +6,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
-import software.amazon.awssdk.services.cloudfront.model.Aliases;
-import software.amazon.awssdk.services.cloudfront.model.CloudFrontException;
-import software.amazon.awssdk.services.cloudfront.model.CookiePreference;
-import software.amazon.awssdk.services.cloudfront.model.CreateDistributionRequest;
-import software.amazon.awssdk.services.cloudfront.model.CreateDistributionResponse;
-import software.amazon.awssdk.services.cloudfront.model.CustomErrorResponse;
-import software.amazon.awssdk.services.cloudfront.model.CustomOriginConfig;
-import software.amazon.awssdk.services.cloudfront.model.DefaultCacheBehavior;
-import software.amazon.awssdk.services.cloudfront.model.DeleteDistributionRequest;
-import software.amazon.awssdk.services.cloudfront.model.DistributionConfig;
-import software.amazon.awssdk.services.cloudfront.model.DistributionSummary;
-import software.amazon.awssdk.services.cloudfront.model.ForwardedValues;
-import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigRequest;
-import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigResponse;
-import software.amazon.awssdk.services.cloudfront.model.GetDistributionRequest;
-import software.amazon.awssdk.services.cloudfront.model.GetDistributionResponse;
-import software.amazon.awssdk.services.cloudfront.model.ListDistributionsRequest;
-import software.amazon.awssdk.services.cloudfront.model.ListDistributionsResponse;
-import software.amazon.awssdk.services.cloudfront.model.MinimumProtocolVersion;
-import software.amazon.awssdk.services.cloudfront.model.Origin;
-import software.amazon.awssdk.services.cloudfront.model.OriginProtocolPolicy;
-import software.amazon.awssdk.services.cloudfront.model.OriginShield;
-import software.amazon.awssdk.services.cloudfront.model.Origins;
-import software.amazon.awssdk.services.cloudfront.model.SSLSupportMethod;
-import software.amazon.awssdk.services.cloudfront.model.UpdateDistributionRequest;
-import software.amazon.awssdk.services.cloudfront.model.ViewerCertificate;
-import software.amazon.awssdk.services.cloudfront.model.ViewerProtocolPolicy;
+import software.amazon.awssdk.services.cloudfront.model.*;
 
 @Service
 @RequiredArgsConstructor
 public class CloudfrontService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CloudfrontService.class);
     private final CloudFrontClient cloudFrontClient;
 
     @Value("${cloud.aws.acm}")
@@ -50,7 +27,6 @@ public class CloudfrontService {
 
     public String create(String subDomain) {
         String callerReference = Long.toString(System.currentTimeMillis());
-
         String domainName = subDomain + ".s3." + region + ".amazonaws.com";
 
         OriginShield originShield = OriginShield.builder()
@@ -59,7 +35,7 @@ public class CloudfrontService {
                 .build();
 
         CustomOriginConfig customOriginConfig = CustomOriginConfig.builder()
-                .originProtocolPolicy(OriginProtocolPolicy.HTTP_ONLY) // 또는 HTTPS_ONLY 사용 가능
+                .originProtocolPolicy(OriginProtocolPolicy.HTTP_ONLY)
                 .httpPort(80)
                 .httpsPort(443)
                 .build();
@@ -67,7 +43,7 @@ public class CloudfrontService {
         Origin origin = Origin.builder()
                 .domainName(domainName)
                 .id(subDomain)
-                .customOriginConfig(customOriginConfig) // CustomOriginConfig 사용
+                .customOriginConfig(customOriginConfig)
                 .originShield(originShield)
                 .build();
 
@@ -177,10 +153,11 @@ public class CloudfrontService {
                 .build();
 
         cloudFrontClient.updateDistribution(updateDistributionRequest);
-        System.out.println("CloudFront distribution disabled: " + distributionId);
+        logger.info("CloudFront distribution disabled: {}", distributionId);
     }
 
     public void deleteInactiveDistributions() {
+        logger.info("배포 삭제 시작");
         List<DistributionSummary> inactiveDistributions = findInactiveDistributions();
         inactiveDistributions.forEach(this::deleteDistribution);
     }
@@ -215,12 +192,9 @@ public class CloudfrontService {
                     .build();
 
             cloudFrontClient.deleteDistribution(deleteRequest);
-            System.out.println("CloudFront distribution deleted: " + distributionId);
+            logger.info("배포 삭제: {}", distributionId);
         } catch (CloudFrontException e) {
-            System.err.println("Failed to delete CloudFront distribution: " + distributionId + " - " + e.getMessage());
+            logger.error("배포 삭제 실패: {} - {}", distributionId, e.getMessage());
         }
     }
-
-
-
 }
