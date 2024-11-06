@@ -176,7 +176,7 @@ public class CloudfrontService {
 
         return allDistributions.stream()
                 .filter(distribution -> distribution.enabled().equals(false))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteDistribution(DistributionSummary distribution) {
