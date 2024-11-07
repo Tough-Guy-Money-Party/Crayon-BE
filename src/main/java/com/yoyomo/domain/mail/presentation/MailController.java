@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
+import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.SCHEDULE_SAVE_SUCCESS;
 
 @Tag(name = "MAIL")
 @RestController
@@ -25,7 +26,7 @@ public class MailController {
     @Operation(summary = "예약 메일 발송 요청")
     public ResponseDto<String> create(@RequestBody Reserve dto){
         mailManageUseCase.reserve(dto);
-        return ResponseDto.of(HttpStatus.OK.value(), "스케줄 저장 성공");
+        return ResponseDto.of(HttpStatus.OK.value(), SCHEDULE_SAVE_SUCCESS.getMessage());
     }
 
 }
