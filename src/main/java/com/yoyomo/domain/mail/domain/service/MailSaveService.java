@@ -28,7 +28,7 @@ public class MailSaveService {
     private final DynamoDbAsyncTable<Mail> mailTable;
 
     public CompletableFuture<Void> upload(List<Mail> mails) {
-        List<List<Mail>> batches = partitionList(mails);
+        List<List<Mail>> batches = divide(mails);
         log.info("[MailSaveService] | Divided mails into {} batches.", batches.size());
 
         List<CompletableFuture<Void>> futures = batches.stream()
@@ -63,7 +63,7 @@ public class MailSaveService {
                 });
     }
 
-    private <T> List<List<T>> partitionList(List<T> list) {
+    private <T> List<List<T>> divide(List<T> list) {
         return IntStream.range(0, (list.size() + BATCH_SIZE - 1) / BATCH_SIZE)
                 .mapToObj(i -> list.subList(i * BATCH_SIZE, Math.min((i + 1) * BATCH_SIZE, list.size())))
                 .collect(Collectors.toList());
