@@ -21,11 +21,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Mail {
 
+    private static final String FROM_ADDRESS = "mail@crayon.land";
+
     private String id;
     private String templateId;
     private Map<String, String> customData;
-    private String to;
     private String from;
+    private String to;
     private String status;
     private LocalDateTime scheduledTime;
 
@@ -46,7 +48,7 @@ public class Mail {
                 .templateId(dto.templateId())
                 .customData(customData)
                 .to(to)
-                .from(dto.from())
+                .from(FROM_ADDRESS)
                 .scheduledTime(dto.scheduledTime())
                 .status(Status.SCHEDULED.toString())
                 .build();
