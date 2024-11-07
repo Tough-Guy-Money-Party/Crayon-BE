@@ -11,9 +11,7 @@ public class MailRequest {
             Long processId,
             LocalDateTime scheduledTime,
             String templateId,
-            Set<CustomType> customType,
-            String from
+            Set<CustomType> customType
     ) {
     }
-
 }
