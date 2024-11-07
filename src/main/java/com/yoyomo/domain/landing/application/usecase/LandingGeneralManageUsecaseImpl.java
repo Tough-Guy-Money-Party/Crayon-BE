@@ -12,7 +12,6 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
-import com.yoyomo.infra.notion.service.NotionGetService;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
-    private final NotionGetService notionGetService;
     private final LandingMapper landingMapper;
     private final DistributeUsecase distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
@@ -67,7 +65,6 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     @Override
     public void update(LandingRequestDTO.NotionSave dto) {
         Club club = clubGetService.find(dto.clubId());
-        String parsedNotionPage = notionGetService.notionParser(dto.notionPageLink());
-        clubUpdateService.update(club, parsedNotionPage);
+        clubUpdateService.update(club, dto.notionPageLink());
     }
 }

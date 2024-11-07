@@ -9,7 +9,7 @@ public class LandingRequestDTO {
             String clubId,
             String favicon,
             String image,
-            String siteTitle,
+            String siteName,
             String callToAction,
             String buttonColor,
             String textColor
