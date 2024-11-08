@@ -225,8 +225,7 @@ public class CloudfrontService {
         List<DistributionSummary> allDistributions = cloudfrontGetService.getAllDistributions();
 
         boolean activeDistributionExists = allDistributions.stream()
-                .anyMatch(distribution -> distribution.enabled()
-                        && distribution.aliases().items().contains(subDomain));
+                .anyMatch(distribution -> distribution.aliases().items().contains(subDomain));
 
         if (activeDistributionExists) {
             throw new DuplicatedSubDomainException();
