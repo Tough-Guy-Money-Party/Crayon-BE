@@ -36,6 +36,11 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase{
         route53Service.create(subDomain, cloudfrontDomainName);
     }
 
+    public void checkValidSubdomain(String subDomain) {
+        String fullSubDomain = subDomain + BASEURL;
+        cloudfrontService.validateActiveDistribution(fullSubDomain);
+    }
+
     @Override
     public void delete(String subDomain) throws IOException {
         String fullSubDomain = subDomain + BASEURL;
