@@ -1,10 +1,10 @@
 package com.yoyomo.infra.aws.cloudfront.Service;
 
+import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.exception.DistributeNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,33 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
-import software.amazon.awssdk.services.cloudfront.model.*;
+import software.amazon.awssdk.services.cloudfront.model.Aliases;
+import software.amazon.awssdk.services.cloudfront.model.CloudFrontException;
+import software.amazon.awssdk.services.cloudfront.model.CookiePreference;
+import software.amazon.awssdk.services.cloudfront.model.CreateDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.CreateDistributionResponse;
+import software.amazon.awssdk.services.cloudfront.model.CustomErrorResponse;
+import software.amazon.awssdk.services.cloudfront.model.CustomOriginConfig;
+import software.amazon.awssdk.services.cloudfront.model.DefaultCacheBehavior;
+import software.amazon.awssdk.services.cloudfront.model.DeleteDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.DistributionConfig;
+import software.amazon.awssdk.services.cloudfront.model.DistributionSummary;
+import software.amazon.awssdk.services.cloudfront.model.ForwardedValues;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigRequest;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionConfigResponse;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.GetDistributionResponse;
+import software.amazon.awssdk.services.cloudfront.model.ListDistributionsRequest;
+import software.amazon.awssdk.services.cloudfront.model.ListDistributionsResponse;
+import software.amazon.awssdk.services.cloudfront.model.MinimumProtocolVersion;
+import software.amazon.awssdk.services.cloudfront.model.Origin;
+import software.amazon.awssdk.services.cloudfront.model.OriginProtocolPolicy;
+import software.amazon.awssdk.services.cloudfront.model.OriginShield;
+import software.amazon.awssdk.services.cloudfront.model.Origins;
+import software.amazon.awssdk.services.cloudfront.model.SSLSupportMethod;
+import software.amazon.awssdk.services.cloudfront.model.UpdateDistributionRequest;
+import software.amazon.awssdk.services.cloudfront.model.ViewerCertificate;
+import software.amazon.awssdk.services.cloudfront.model.ViewerProtocolPolicy;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +46,7 @@ public class CloudfrontService {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudfrontService.class);
     private final CloudFrontClient cloudFrontClient;
+    private final CloudfrontGetService cloudfrontGetService;
 
     @Value("${cloud.aws.acm}")
     private String acm;
@@ -165,14 +192,7 @@ public class CloudfrontService {
     }
 
     private List<DistributionSummary> findInactiveDistributions() {
-        List<DistributionSummary> allDistributions = new ArrayList<>();
-        String nextMarker = null;
-
-        do {
-            ListDistributionsResponse response = cloudFrontClient.listDistributions(ListDistributionsRequest.builder().marker(nextMarker).build());
-            allDistributions.addAll(response.distributionList().items());
-            nextMarker = response.distributionList().nextMarker();
-        } while (nextMarker != null);
+        List<DistributionSummary> allDistributions = cloudfrontGetService.getAllDistributions();
 
         return allDistributions.stream()
                 .filter(distribution -> distribution.enabled().equals(false))
@@ -197,6 +217,19 @@ public class CloudfrontService {
             logger.info("배포 삭제 완료: {}", distributionId);
         } catch (CloudFrontException e) {
             logger.error("배포 삭제 실패: {} - {}", distributionId, e.awsErrorDetails().errorMessage());
+        }
+    }
+
+    public void validateActiveDistribution(String subDomain) {
+
+        List<DistributionSummary> allDistributions = cloudfrontGetService.getAllDistributions();
+
+        boolean activeDistributionExists = allDistributions.stream()
+                .anyMatch(distribution -> distribution.enabled()
+                        && distribution.aliases().items().contains(subDomain));
+
+        if (activeDistributionExists) {
+            throw new DuplicatedSubDomainException();
         }
     }
 }
