@@ -1,6 +1,8 @@
 package com.yoyomo.infra.aws.usecase;
 
+import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
+import com.yoyomo.infra.aws.constant.ReservedSubDomain;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DistrubuteUsecaseImpl implements DistributeUsecase{
+public class DistrubuteUsecaseImpl implements DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
@@ -38,8 +40,16 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase{
 
     public void checkValidSubdomain(String subDomain) {
         String fullSubDomain = subDomain + BASEURL;
+        checkReservedSubDomain(subDomain);
         cloudfrontService.validateActiveDistribution(fullSubDomain);
     }
+
+    private void checkReservedSubDomain(String subDomain) {
+        if (ReservedSubDomain.contains(subDomain)) {
+            throw new DuplicatedSubDomainException();
+        }
+    }
+
 
     @Override
     public void delete(String subDomain) throws IOException {
