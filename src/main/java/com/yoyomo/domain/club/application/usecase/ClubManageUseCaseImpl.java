@@ -26,7 +26,7 @@ import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import com.yoyomo.infra.aws.usecase.DistributeUsecase;
+import com.yoyomo.infra.aws.usecase.DistrubuteUsecaseImpl;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -46,14 +46,17 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     private final ManagerMapper managerMapper;
     private final ClubManagerGetService clubManagerGetService;
     private final ClubManagerDeleteService clubManagerDeleteService;
-    private final DistributeUsecase distributeUsecaseImpl;
+    private final DistrubuteUsecaseImpl distributeUsecaseImpl;
     private final LandingSaveService landingSaveService;
 
     private final String BASEURL = ".crayon.land";
 
     @Override @Transactional
     public Response save(Save dto, Long userId) throws IOException{
-        distributeUsecaseImpl.create(dto.subDomain());
+        String subDomain = checkDuplicatedSubDomain(dto.subDomain());
+
+        distributeUsecaseImpl.checkValidSubdomain(subDomain);
+        distributeUsecaseImpl.create(subDomain);
 
         Manager manager = userGetService.find(userId);
         Club club = clubSaveService.save(dto);
@@ -138,7 +141,7 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
                 .toList();
     }
 
-    private String checkDuplicatedSubDomain(String subDomain) {
+    public String checkDuplicatedSubDomain(String subDomain) {
         if(clubGetService.checkSubDomain(subDomain))
             throw new DuplicatedSubDomainException();
         return subDomain;

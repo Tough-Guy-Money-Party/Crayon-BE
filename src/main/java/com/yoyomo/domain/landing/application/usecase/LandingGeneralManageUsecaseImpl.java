@@ -11,7 +11,7 @@ import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.infra.aws.usecase.DistributeUsecase;
+import com.yoyomo.infra.aws.usecase.DistrubuteUsecaseImpl;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
-    private final DistributeUsecase distributeUsecaseImpl;
+    private final DistrubuteUsecaseImpl distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
 
     @Override
@@ -46,6 +46,8 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private void updateSubDomainIfChanged(General dto, Club club) throws IOException{
         if (isSubDomainChanged(dto,club)) {
             String subDomain = checkDuplicatedSubDomain(dto.subDomain());
+
+            distributeUsecaseImpl.checkValidSubdomain(subDomain);
             String oldDomain = club.getSubDomain();
             distributeUsecaseImpl.create(subDomain);
             distributeUsecaseImpl.delete(oldDomain);
