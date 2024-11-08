@@ -31,7 +31,7 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
         try {
             s3Service.upload(fullSubDomain);
         } catch (Exception e) {
-            delete(fullSubDomain);
+            delete(subDomain);
             throw e;
         }
 
