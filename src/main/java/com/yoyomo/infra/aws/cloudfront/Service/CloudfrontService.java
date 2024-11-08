@@ -221,12 +221,12 @@ public class CloudfrontService {
     }
 
     public void validateActiveDistribution(String subDomain) {
-        if (isDistrubuteExists(subDomain)) {
+        if (isDistributeExists(subDomain)) {
             throw new DuplicatedSubDomainException();
         }
     }
 
-    private boolean isDistrubuteExists(String subDomain) {
+    private boolean isDistributeExists(String subDomain) {
         List<DistributionSummary> allDistributions = cloudfrontGetService.getAllDistributions();
         return allDistributions.stream()
                 .anyMatch(distribution -> distribution.aliases().items().contains(subDomain));
