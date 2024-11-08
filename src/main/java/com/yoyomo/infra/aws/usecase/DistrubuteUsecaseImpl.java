@@ -28,7 +28,13 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
         createRecord(fullSubDomain);
 
         // S3에 next app 업로드
-        s3Service.upload(fullSubDomain);
+        try {
+            s3Service.upload(fullSubDomain);
+        } catch (Exception e) {
+            delete(fullSubDomain);
+            throw e;
+        }
+
     }
 
     private void createRecord(String subDomain) {
