@@ -47,8 +47,7 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private void updateSubDomainIfChanged(General dto, Club club) throws IOException {
         if (isSubDomainChanged(dto, club)) {
             String subDomain = checkDuplicatedSubDomain(dto.subDomain());
-
-            distributeUsecaseImpl.checkValidSubdomain(subDomain);
+            
             String oldDomain = club.getSubDomain();
             //TODO: update 로직으로 변경 예정
             distributeUsecaseImpl.create(subDomain);

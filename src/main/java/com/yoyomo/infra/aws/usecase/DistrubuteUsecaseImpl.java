@@ -19,8 +19,9 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
 
     @Override
     public void create(String subDomain) throws IOException {
+        checkValidSubdomain(subDomain);
+        
         String fullSubDomain = subDomain + BASEURL;
-
         //버킷 생성
         s3Service.createBucket(fullSubDomain);
 

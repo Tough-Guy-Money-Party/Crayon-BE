@@ -51,11 +51,11 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
 
     private final String BASEURL = ".crayon.land";
 
-    @Override @Transactional
-    public Response save(Save dto, Long userId) throws IOException{
+    @Override
+    @Transactional
+    public Response save(Save dto, Long userId) throws IOException {
         String subDomain = checkDuplicatedSubDomain(dto.subDomain());
 
-        distributeUsecaseImpl.checkValidSubdomain(subDomain);
         distributeUsecaseImpl.create(subDomain);
 
         Manager manager = userGetService.find(userId);
@@ -94,7 +94,8 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
                 .toList();
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
         Club club = clubGetService.findByCode(dto.code());
         Manager manager = userGetService.find(userId);
@@ -142,8 +143,9 @@ public class ClubManageUseCaseImpl implements ClubManageUseCase {
     }
 
     public String checkDuplicatedSubDomain(String subDomain) {
-        if(clubGetService.checkSubDomain(subDomain))
+        if (clubGetService.checkSubDomain(subDomain)) {
             throw new DuplicatedSubDomainException();
+        }
         return subDomain;
     }
 
