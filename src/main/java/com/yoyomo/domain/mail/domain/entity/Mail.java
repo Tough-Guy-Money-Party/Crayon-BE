@@ -21,13 +21,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Mail {
 
-    private static final String FROM_ADDRESS = "mail@crayon.land";
+    private static final String SOURCE_ADDRESS = "mail@crayon.land";
 
     private String id;
     private String templateId;
     private Map<String, String> customData;
-    private String from;
-    private String to;
+    private String source;
+    private String destination;
     private String status;
     private LocalDateTime scheduledTime;
 
@@ -42,13 +42,13 @@ public class Mail {
         return scheduledTime;
     }
 
-    public static Mail toMail(MailRequest.Reserve dto, String to, Map<String, String> customData){
+    public static Mail toMail(MailRequest.Reserve dto, String destination, Map<String, String> customData){
         return Mail.builder()
                 .id(UUID.randomUUID().toString())
                 .templateId(dto.templateId())
                 .customData(customData)
-                .to(to)
-                .from(FROM_ADDRESS)
+                .destination(destination)
+                .source(SOURCE_ADDRESS)
                 .scheduledTime(dto.scheduledTime())
                 .status(Status.SCHEDULED.toString())
                 .build();

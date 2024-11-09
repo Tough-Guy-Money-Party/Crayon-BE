@@ -35,7 +35,7 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
 
     @Override// 예외처리(존재하는 템플릿과 맞는지,
     public void reserve(Reserve dto) {
-        mailReservationService.create(dto);
+//        mailReservationService.create(dto);
         create(dto);
     }
 
@@ -63,8 +63,8 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
         return applications.stream()
                 .map(application -> {
                     Map<String, String> customData = createCustomData(application, recruitment, dto.customType());
-                    String to = application.getUser().getEmail();
-                    return toMail(dto, to, customData);
+                    String destination = application.getUser().getEmail();
+                    return toMail(dto, destination, customData);
                 })
                 .collect(Collectors.toList());
     }
