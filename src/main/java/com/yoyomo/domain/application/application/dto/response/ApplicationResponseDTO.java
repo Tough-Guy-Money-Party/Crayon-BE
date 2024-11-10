@@ -7,6 +7,7 @@ import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.user.domain.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ApplicationResponseDTO {
@@ -16,10 +17,13 @@ public class ApplicationResponseDTO {
         User user,
         Status status,
         Rating averageRating,
-        AnswerResponseDTO.Response answer,
         Interview interview,
-        List<EvaluationResponseDTO.Response> evaluations,
-        Boolean isBeforeInterview
+        Boolean isBeforeInterview,
+        Integer currentStage,
+        String currentStageTitle,
+        LocalDateTime createdAt,
+        AnswerResponseDTO.Response answer,
+        List<EvaluationResponseDTO.Response> evaluations
     ) {}
 
     public record Response(
