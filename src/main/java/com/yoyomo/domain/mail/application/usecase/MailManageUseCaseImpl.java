@@ -50,21 +50,23 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
         Stream.iterate(0, pageNumber -> pageNumber + 1)
                 .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
                 .takeWhile(applications -> !applications.isEmpty())
-                .forEach(applications -> {
-                    List<Mail> mails = convertToMail(applications, dto, recruitment);
-                    CompletableFuture<Void> uploadFuture = mailSaveService.upload(mails);
-                    uploadFutures.add(uploadFuture);
+                .forEach(applications -> {uploadApplications(applications, uploadFutures, dto, recruitment);
                 });
 
         checkUpload(uploadFutures);
+    }
+
+    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
+        List<Mail> mails = convertToMail(applications, dto, recruitment);
+        CompletableFuture<Void> uploadFuture = mailSaveService.upload(mails);
+        uploadFutures.add(uploadFuture);
     }
 
     private List<Mail> convertToMail(List<Application> applications, Reserve dto, Recruitment recruitment) {
         return applications.stream()
                 .map(application -> {
                     Map<String, String> customData = createCustomData(application, recruitment, dto.customType());
-                    String destination = application.getUser().getEmail();
-                    return toMail(dto, destination, customData);
+                    return toMail(dto, application.getUser().getEmail(), customData);
                 })
                 .collect(Collectors.toList());
     }
