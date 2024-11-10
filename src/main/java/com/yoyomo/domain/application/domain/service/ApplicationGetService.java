@@ -3,10 +3,13 @@ package com.yoyomo.domain.application.domain.service;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO;
 import com.yoyomo.domain.user.application.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,10 @@ public class ApplicationGetService {
 
     public List<Application> findAll(UserRequestDTO.Find dto) {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(userMapper.from(dto));
+    }
+
+    public Page<Application> findAll(Process process, Pageable pageable) {
+        return applicationRepository.findAllByProcessAndDeletedAtIsNull(process, pageable);
     }
 
     public Application find(String id) {
