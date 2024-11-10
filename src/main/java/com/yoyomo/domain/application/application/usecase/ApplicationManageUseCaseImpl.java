@@ -20,7 +20,6 @@ import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -59,11 +58,8 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        List<Response> result = applicationGetService.findByName(recruitment, name).stream()
-                .map(applicationMapper::toResponses)
-                .toList();
-
-        return new PageImpl<>(result, pageable, result.size());
+        return applicationGetService.findByName(recruitment, name, pageable)
+                .map(applicationMapper::toResponses);
     }
 
     @Override
@@ -73,9 +69,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
 
         return applicationGetService.findAll(process, pageable)
                 .map(application -> applicationMapper.toDetail(
-                        application,
-                        answerGetService.find(application.getAnswerId()),
-                        getEvaluations(application)
+                        application, answerGetService.find(application.getAnswerId()), getEvaluations(application)
                 ));
     }
 
