@@ -35,9 +35,8 @@ public class ApplicationGetService {
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
-    public List<Application> findByName(Recruitment recruitment, String name) {
-        return applicationRepository.findAllByUser_NameAndDeletedAtIsNull(name).stream()
-                .filter(application -> application.containsInRecruitment(recruitment))
-                .toList();
+    public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
+        return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment, pageable);
     }
+
 }

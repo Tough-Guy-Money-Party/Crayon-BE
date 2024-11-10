@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     List<Application> findAllByUserAndDeletedAtIsNull(User user);
 
     List<Application> findAllByUser_NameAndDeletedAtIsNull(String name);
+
+    Page<Application> findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(String name, Recruitment recruitment, Pageable pageable);
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
