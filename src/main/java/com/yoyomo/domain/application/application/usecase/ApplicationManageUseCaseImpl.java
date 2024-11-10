@@ -71,11 +71,12 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
-        List<Detail> details = process.getApplications().stream()
-                .map(application -> applicationMapper.toDetail(application, answerGetService.find(application.getAnswerId()), getEvaluations(application)))
-                .toList();
-
-        return new PageImpl<>(details, pageable, details.size());
+        return applicationGetService.findAll(process, pageable)
+                .map(application -> applicationMapper.toDetail(
+                        application,
+                        answerGetService.find(application.getAnswerId()),
+                        getEvaluations(application)
+                ));
     }
 
     @Override
