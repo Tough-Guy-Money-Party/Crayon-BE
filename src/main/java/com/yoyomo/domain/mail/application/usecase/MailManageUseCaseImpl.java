@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
-import static com.yoyomo.domain.mail.domain.entity.Mail.toMail;
+import static com.yoyomo.domain.mail.application.dto.MailRequest.toMail;
 
 @Slf4j
 @Service
