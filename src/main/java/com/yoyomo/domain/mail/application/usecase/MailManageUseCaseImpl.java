@@ -28,6 +28,7 @@ import static com.yoyomo.domain.mail.domain.entity.Mail.toMail;
 @RequiredArgsConstructor
 public class MailManageUseCaseImpl implements MailManageUseCase {
     private static final int PAGE_SIZE = 100;
+
     private final MailSaveService mailSaveService;
     private final MailReserveService mailReservationService;
     private final ApplicationGetService applicationGetService;
