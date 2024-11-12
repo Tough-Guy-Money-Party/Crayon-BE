@@ -51,8 +51,7 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
         Stream.iterate(0, pageNumber -> pageNumber + 1)
                 .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
                 .takeWhile(applications -> !applications.isEmpty())
-                .forEach(applications -> {uploadApplications(applications, uploadFutures, dto, recruitment);
-                });
+                .forEach(applications -> uploadApplications(applications, uploadFutures, dto, recruitment));
 
         checkUpload(uploadFutures);
     }
