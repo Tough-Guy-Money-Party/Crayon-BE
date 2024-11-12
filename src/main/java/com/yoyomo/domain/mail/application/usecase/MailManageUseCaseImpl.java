@@ -48,12 +48,15 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
 
         List<CompletableFuture<Void>> uploadFutures = new ArrayList<>();
 
+        process(processId, uploadFutures, dto, recruitment);
+        checkUpload(uploadFutures);
+    }
+
+    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
         Stream.iterate(0, pageNumber -> pageNumber + 1)
                 .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
                 .takeWhile(applications -> !applications.isEmpty())
                 .forEach(applications -> uploadApplications(applications, uploadFutures, dto, recruitment));
-
-        checkUpload(uploadFutures);
     }
 
     private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
