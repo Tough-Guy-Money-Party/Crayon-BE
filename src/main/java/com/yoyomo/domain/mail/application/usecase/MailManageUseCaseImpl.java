@@ -57,18 +57,22 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
     }
 
     private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
-        List<Mail> mails = convertToMail(applications, dto, recruitment);
+        List<Mail> mails = convertToMails(applications, dto, recruitment);
         CompletableFuture<Void> uploadFuture = mailSaveService.upload(mails);
         uploadFutures.add(uploadFuture);
     }
 
-    private List<Mail> convertToMail(List<Application> applications, Reserve dto, Recruitment recruitment) {
+    private List<Mail> convertToMails(List<Application> applications, Reserve dto, Recruitment recruitment) {
         return applications.stream()
-                .map(application -> {
-                    Map<String, String> customData = createCustomData(application, recruitment, dto.customType());
-                    return toMail(dto, application.getUser().getEmail(), customData);
-                })
+                .map(application -> convert(dto, application, recruitment))
                 .collect(Collectors.toList());
+    }
+
+    private Mail convert(Reserve dto, Application application, Recruitment recruitment) {
+        Map<String, String> customData = createCustomData(application, recruitment, dto.customType());
+        String destination = application.getUser().getEmail();
+
+        return toMail(dto, destination , customData);
     }
 
     private Map<String, String> createCustomData(Application application, Recruitment recruitment, Set<CustomType> customTypes) {
