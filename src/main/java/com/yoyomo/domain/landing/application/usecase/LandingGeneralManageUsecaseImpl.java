@@ -11,7 +11,7 @@ import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.infra.aws.usecase.DistributeUsecase;
+import com.yoyomo.infra.aws.usecase.DistrubuteUsecaseImpl;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -24,37 +24,41 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
-    private final DistributeUsecase distributeUsecaseImpl;
+    private final DistrubuteUsecaseImpl distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
 
     @Override
     public LandingResponseDTO.General readGeneral(String clubId) {
         Club club = clubGetService.find(clubId);
         Landing landing = landingGetService.find(club);
-        return landingMapper.toGeneralResponse(club,landing);
+        return landingMapper.toGeneralResponse(club, landing);
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void update(General dto) throws IOException {
         Club club = clubGetService.find(dto.clubId());
         Landing landing = landingGetService.find(club);
 
-        updateSubDomainIfChanged(dto,club);
+        updateSubDomainIfChanged(dto, club);
         landingUpdateService.update(landing, club, dto);
     }
 
-    private void updateSubDomainIfChanged(General dto, Club club) throws IOException{
-        if (isSubDomainChanged(dto,club)) {
+    private void updateSubDomainIfChanged(General dto, Club club) throws IOException {
+        if (isSubDomainChanged(dto, club)) {
             String subDomain = checkDuplicatedSubDomain(dto.subDomain());
             String oldDomain = club.getSubDomain();
+
+            //TODO: update 로직으로 변경 예정
             distributeUsecaseImpl.create(subDomain);
             distributeUsecaseImpl.delete(oldDomain);
         }
     }
 
     private String checkDuplicatedSubDomain(String subDomain) {
-        if(clubGetService.checkSubDomain(subDomain))
+        if (clubGetService.checkSubDomain(subDomain)) {
             throw new DuplicatedSubDomainException();
+        }
         return subDomain;
     }
 
