@@ -4,6 +4,7 @@ import com.yoyomo.domain.template.application.dto.response.MailTemplateGetRespon
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.domain.repository.MailTemplateRepository;
 import com.yoyomo.domain.template.exception.SesTemplateException;
+import com.yoyomo.domain.template.exception.TemplateNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class MailTemplateGetService {
 
     public MailTemplate findFromLocal(String templateId) {
         return mailTemplateRepository.findById(UUID.fromString(templateId))
-                .orElseThrow();
+                .orElseThrow(TemplateNotFoundException::new);
     }
 
     private MailTemplateGetResponse findFromSes(MailTemplate mailTemplate) {
