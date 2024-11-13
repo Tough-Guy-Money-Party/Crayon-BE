@@ -32,6 +32,11 @@ public class MailTemplateGetService {
         return createMailTemplateGetResponse(template);
     }
 
+    public MailTemplate findById(String templateId) {
+        return mailTemplateRepository.findById(UUID.fromString(templateId))
+                .orElseThrow();
+    }
+
     private MailTemplateGetResponse createMailTemplateGetResponse(MailTemplate mailTemplate) {
         UUID templateId = mailTemplate.getId();
 
