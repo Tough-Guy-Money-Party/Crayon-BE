@@ -1,7 +1,6 @@
 package com.yoyomo.domain.form.domain.entity;
 
 import com.yoyomo.domain.item.domain.entity.Item;
-import com.yoyomo.global.common.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "forms")
-public class Form extends BaseEntity {
+public class Form {
 
     @Id
     private String id;
@@ -38,5 +37,4 @@ public class Form extends BaseEntity {
     public void updateItems(List<Item> items) {
         this.items = items;
     }
-
 }

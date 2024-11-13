@@ -1,4 +1,4 @@
-package com.yoyomo.domain.application.domain.repository;
+package com.yoyomo.domain.application.domain.repository.mongo;
 
 import com.yoyomo.domain.application.domain.entity.Answer;
 import org.springframework.data.mongodb.repository.MongoRepository;
