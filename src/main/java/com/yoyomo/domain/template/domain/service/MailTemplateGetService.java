@@ -29,7 +29,7 @@ public class MailTemplateGetService {
 
     public MailTemplateGetResponse findWithSes(String templateId) {
         MailTemplate template = mailTemplateRepository.findById(UUID.fromString(templateId))
-                .orElseThrow();
+                .orElseThrow(TemplateNotFoundException::new);
         return findFromSes(template);
     }
 
