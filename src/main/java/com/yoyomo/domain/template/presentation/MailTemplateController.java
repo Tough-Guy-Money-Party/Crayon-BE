@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yoyomo.domain.template.presentation.constant.ResponseMessage.*;
-import static com.yoyomo.infra.aws.ses.presentation.constant.ResponseMessage.SUCCESS_TEMPLATE_SAVE;
 
 @Tag(name = "MAIL_TEMPLATE")
 @RestController
