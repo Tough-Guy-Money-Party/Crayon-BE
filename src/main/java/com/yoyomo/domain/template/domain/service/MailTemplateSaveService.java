@@ -20,7 +20,6 @@ public class MailTemplateSaveService {
     private final MailTemplateRepository mailTemplateRepository;
     private final SesClient sesClient;
 
-
     public void save(MailTemplateSaveRequest dto, Club club) {
         MailTemplate template = MailTemplateSaveRequest.of(dto, club);
         UUID templateId = mailTemplateRepository.save(template).getId();

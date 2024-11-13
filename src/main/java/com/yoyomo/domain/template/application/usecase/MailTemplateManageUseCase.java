@@ -31,8 +31,7 @@ public class MailTemplateManageUseCase {
     private final MailTemplateGetService mailTemplateGetService;
     private final MailTemplateUpdateService mailTemplateUpdateService;
     private final MailTemplateDeleteService mailTemplateDeleteService;
-
-
+    
     @Transactional
     public void save(MailTemplateSaveRequest dto, Long userId) {
         Club club = checkAuthorityByClub(dto.clubId(), userId);
