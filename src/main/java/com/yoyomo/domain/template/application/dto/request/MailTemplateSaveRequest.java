@@ -12,10 +12,10 @@ public record MailTemplateSaveRequest(
         String textPart,
         String clubId
 ) {
-    public static MailTemplate of(MailTemplateSaveRequest dto, Club club) {
+    public MailTemplate toMailTemplate(Club club) {
         return MailTemplate.builder()
                 .id(UUID.randomUUID())
-                .customTemplateName(dto.customTemplateName)
+                .customTemplateName(customTemplateName)
                 .club(club)
                 .build();
     }

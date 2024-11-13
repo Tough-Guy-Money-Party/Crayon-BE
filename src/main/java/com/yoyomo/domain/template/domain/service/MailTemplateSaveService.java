@@ -22,7 +22,7 @@ public class MailTemplateSaveService {
     private final SesClient sesClient;
 
     public void save(MailTemplateSaveRequest dto, Club club) {
-        MailTemplate template = MailTemplateSaveRequest.of(dto, club);
+        MailTemplate template = dto.toMailTemplate(club);
         UUID templateId = mailTemplateRepository.save(template).getId();
 
         saveTemplate(dto, templateId);
