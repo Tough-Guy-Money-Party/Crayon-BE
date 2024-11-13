@@ -6,7 +6,7 @@ public record MailTemplateListResponse(
         String templateId,
         String customTemplateName
 ) {
-    public static MailTemplateListResponse of(MailTemplate mailTemplate){
+    public static MailTemplateListResponse of(MailTemplate mailTemplate) {
         return new MailTemplateListResponse(mailTemplate.getId().toString(), mailTemplate.getCustomTemplateName());
     }
 }

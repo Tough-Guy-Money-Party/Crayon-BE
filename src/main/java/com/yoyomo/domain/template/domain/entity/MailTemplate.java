@@ -18,6 +18,7 @@ public class MailTemplate {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "template_id")
     private UUID id;
+
     String customTemplateName;
 
     @ManyToOne
