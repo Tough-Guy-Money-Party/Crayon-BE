@@ -13,4 +13,6 @@ public interface ClubRepository extends JpaRepository<Club, UUID> {
     Optional<Club> findByIdAndDeletedAtIsNull(UUID id);
 
     Optional<Club> findByCode(String code);
+
+    Optional<Club> findBySubDomain(String subDomain);
 }

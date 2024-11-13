@@ -8,7 +8,6 @@ import com.yoyomo.domain.application.domain.service.EvaluationGetService;
 import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.exception.AccessDeniedException;
-import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
@@ -25,11 +24,12 @@ public class EvaluationManageUseCaseImpl implements EvaluationManageUseCase {
     private final EvaluationGetService evaluationGetService;
     private final EvaluationUpdateService evaluationUpdateService;
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void save(String applicationId, Save dto, Long userId) {
         Application application = applicationGetService.find(applicationId);
         Manager manager = userGetService.find(userId);
-        Club.checkAuthority(application.getProcess().getRecruitment().getClub(), manager);
+        application.getProcess().getRecruitment().getClub().checkAuthority(manager);
 
         Evaluation evaluation = evaluationSaveService.save(dto, manager, application);
         manager.addEvaluation(evaluation);
@@ -51,7 +51,7 @@ public class EvaluationManageUseCaseImpl implements EvaluationManageUseCase {
     }
 
     private void checkAuthority(Evaluation evaluation, Long userId) {
-        if(!evaluation.getManager().getId().equals(userId))
+        if (!evaluation.getManager().getId().equals(userId))
             throw new AccessDeniedException();
     }
 

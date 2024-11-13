@@ -1,9 +1,12 @@
 package com.yoyomo.domain.club.domain.service;
 
-import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
+import com.yoyomo.domain.club.domain.entity.ClubManager;
+import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.landing.domain.entity.Landing;
+import com.yoyomo.domain.landing.domain.repository.LandingRepository;
+import com.yoyomo.domain.user.domain.entity.Manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,13 @@ import org.springframework.stereotype.Service;
 public class ClubSaveService {
 
     private final ClubRepository clubRepository;
-    private final ClubMapper clubMapper;
+    private final ClubMangerRepository clubMangerRepository;
+    private final LandingRepository landingRepository;
 
-    public Club save(Save dto) {
-        return clubRepository.save(clubMapper.from(dto));
+    public Club save(Club club, Manager manager) {
+        ClubManager clubManager = new ClubManager(manager, club);
+        clubMangerRepository.save(clubManager);
+        landingRepository.save(new Landing(club));
+        return clubRepository.save(club);
     }
 }

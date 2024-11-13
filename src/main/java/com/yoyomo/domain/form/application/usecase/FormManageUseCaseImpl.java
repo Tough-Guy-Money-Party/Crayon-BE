@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 @Service
@@ -73,7 +72,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public void update(String formId, Update dto, Long userId) {
         Form form = checkAuthorityByFormId(userId, formId);
 
-        if(!form.getRecruitmentIds().isEmpty())
+        if (!form.getRecruitmentIds().isEmpty())
             throw new FormUnmodifiableException();
 
         formUpdateService.update(formId, dto);
@@ -106,6 +105,6 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private void checkAuthorityByClubId(Long userId, String clubId) {
         Manager manager = userGetService.find(userId);
         Club club = clubGetService.find(clubId);
-        checkAuthority(club, manager);
+        club.checkAuthority(manager);
     }
 }

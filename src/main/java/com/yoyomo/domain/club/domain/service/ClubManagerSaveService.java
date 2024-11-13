@@ -13,7 +13,12 @@ public class ClubManagerSaveService {
 
     private final ClubMangerRepository clubMangerRepository;
 
-    public ClubManager save(Manager manager, Club club) {
-        return clubMangerRepository.save(new ClubManager(manager, club));
+    public ClubManager save(ClubManager clubManager) {
+        return clubMangerRepository.save(clubManager);
+    }
+
+    public void saveManager(Manager manager, Club club) {
+        ClubManager clubManager = new ClubManager(manager, club);
+        clubMangerRepository.save(clubManager);
     }
 }

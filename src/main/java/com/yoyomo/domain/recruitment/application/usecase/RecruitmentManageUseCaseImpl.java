@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
@@ -51,11 +50,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
 
     private final ProcessManageUseCase processManageUseCase;
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void save(Save dto, Long userId) {
         Club club = clubGetService.find(dto.clubId());
         Manager manager = userGetService.find(userId);
-        checkAuthority(club, manager);
+        club.checkAuthority(manager);
         Recruitment recruitment = recruitmentSaveService.save(dto, club);
         List<Process> processes = processManageUseCase.save(dto.processes(), recruitment);
         recruitment.addProcesses(processes);
@@ -73,11 +73,12 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     @Override
     public Page<Response> readAll(Pageable pageable, String clubId) {
         Club club = clubGetService.find(clubId);
-        return recruitmentGetService.findAll(club,pageable)
+        return recruitmentGetService.findAll(club, pageable)
                 .map(recruitmentMapper::toResponse);
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void update(String recruitmentId, Update dto, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitment.checkModifiable();
@@ -111,14 +112,14 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private Recruitment checkAuthorityByRecruitment(String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Manager manager = userGetService.find(userId);
-        checkAuthority(recruitment.getClub(), manager);
+        recruitment.getClub().checkAuthority(manager);
 
         return recruitment;
     }
 
     private void checkDeletedRecruitment(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        if(recruitment.getDeletedAt()!=null){
+        if (recruitment.getDeletedAt() != null) {
             throw new RecruitmentDeletedException();
         }
     }

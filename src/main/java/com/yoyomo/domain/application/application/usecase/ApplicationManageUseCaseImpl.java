@@ -29,7 +29,6 @@ import java.util.List;
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +100,7 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Manager manager = userGetService.find(userId);
-        checkAuthority(recruitment.getClub(), manager);
+        recruitment.getClub().checkAuthority(manager);
 
         return recruitment;
     }
@@ -109,14 +108,14 @@ public class ApplicationManageUseCaseImpl implements ApplicationManageUseCase {
     private Application checkAuthorityByApplication(String applicationId, Long userId) {
         Application application = applicationGetService.find(applicationId);
         Manager manager = userGetService.find(userId);
-        checkAuthority(application.getProcess().getRecruitment().getClub(), manager);
+        application.getProcess().getRecruitment().getClub().checkAuthority(manager);
 
         return application;
     }
 
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
         return evaluationGetService.findAll(application.getId()).stream()
-                .filter(evaluation -> evaluation.getDeletedAt()==null)
+                .filter(evaluation -> evaluation.getDeletedAt() == null)
                 .map(evaluationMapper::toResponse)
                 .toList();
     }
