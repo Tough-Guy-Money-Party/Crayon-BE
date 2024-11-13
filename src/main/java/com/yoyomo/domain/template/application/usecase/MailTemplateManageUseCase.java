@@ -25,12 +25,13 @@ import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 @RequiredArgsConstructor
 public class MailTemplateManageUseCase {
 
+    private final ClubGetService clubGetService;
+    private final UserGetService userGetService;
     private final MailTemplateSaveService mailTemplateSaveService;
     private final MailTemplateGetService mailTemplateGetService;
     private final MailTemplateUpdateService mailTemplateUpdateService;
     private final MailTemplateDeleteService mailTemplateDeleteService;
-    private final ClubGetService clubGetService;
-    private final UserGetService userGetService;
+
 
     @Transactional
     public void save(MailTemplateSaveRequest dto, Long userId) {
@@ -40,20 +41,20 @@ public class MailTemplateManageUseCase {
     }
 
     public Page<MailTemplateListResponse> findAll(String clubId, Pageable pageable) {
-        Club club = clubGetService.find(clubId);
+        clubGetService.find(clubId);
 
         return mailTemplateGetService.findAll(clubId, pageable)
                 .map(MailTemplateListResponse::of);
     }
 
     public MailTemplateGetResponse find(String templateId) {
-        return mailTemplateGetService.find(templateId);
+        return mailTemplateGetService.findWithSes(templateId);
     }
 
     @Transactional
     public void update(MailTemplateUpdateRequest dto, String templateId, Long userId) {
         Club club = checkAuthorityByClub(dto.clubId(), userId);
-        MailTemplate mailTemplate = mailTemplateGetService.findById(templateId);
+        MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
 
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
     }
@@ -74,7 +75,7 @@ public class MailTemplateManageUseCase {
     }
 
     private MailTemplate checkAuthorityByMailTemplate(String templateId, Long userId) {
-        MailTemplate mailTemplate = mailTemplateGetService.findById(templateId);
+        MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
         Manager manager = userGetService.find(userId);
         checkAuthority(mailTemplate.getClub(), manager);
 
