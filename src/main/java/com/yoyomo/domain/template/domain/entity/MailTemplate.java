@@ -19,7 +19,7 @@ public class MailTemplate {
     @Column(name = "template_id")
     private UUID id;
 
-    String customTemplateName;
+    private String customTemplateName;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
