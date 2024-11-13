@@ -3,10 +3,14 @@ package com.yoyomo.domain.template.application.usecase;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
+import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
 import com.yoyomo.domain.template.application.dto.response.MailTemplateGetResponse;
 import com.yoyomo.domain.template.application.dto.response.MailTemplateListResponse;
+import com.yoyomo.domain.template.domain.entity.MailTemplate;
+import com.yoyomo.domain.template.domain.service.MailTemplateDeleteService;
 import com.yoyomo.domain.template.domain.service.MailTemplateGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
+import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
@@ -15,35 +19,65 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
+
 @Service
 @RequiredArgsConstructor
 public class MailTemplateManageUseCase {
 
     private final MailTemplateSaveService mailTemplateSaveService;
     private final MailTemplateGetService mailTemplateGetService;
-
+    private final MailTemplateUpdateService mailTemplateUpdateService;
+    private final MailTemplateDeleteService mailTemplateDeleteService;
     private final ClubGetService clubGetService;
-
     private final UserGetService userGetService;
 
     @Transactional
-    public void save(MailTemplateSaveRequest dto, Long userId){
-        String clubId = dto.clubId();
-        Club club = clubGetService.find(clubId);
-
-        Manager manager = userGetService.find(userId);
-        Club.checkAuthority(club, manager);
+    public void save(MailTemplateSaveRequest dto, Long userId) {
+        Club club = checkAuthorityByClub(dto.clubId(), userId);
 
         mailTemplateSaveService.save(dto, club);
     }
 
-    public Page<MailTemplateListResponse> findAll(String clubId, Pageable pageable){
+    public Page<MailTemplateListResponse> findAll(String clubId, Pageable pageable) {
         Club club = clubGetService.find(clubId);
+
         return mailTemplateGetService.findAll(clubId, pageable)
                 .map(MailTemplateListResponse::of);
     }
 
     public MailTemplateGetResponse find(String templateId) {
         return mailTemplateGetService.find(templateId);
+    }
+
+    @Transactional
+    public void update(MailTemplateUpdateRequest dto, String templateId, Long userId) {
+        Club club = checkAuthorityByClub(dto.clubId(), userId);
+        MailTemplate mailTemplate = mailTemplateGetService.findById(templateId);
+
+        mailTemplateUpdateService.update(dto, mailTemplate, templateId);
+    }
+
+    @Transactional
+    public void delete(String templateId, Long userId) {
+        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
+
+        mailTemplateDeleteService.delete(mailTemplate);
+    }
+
+    private Club checkAuthorityByClub(String clubId, Long userId) {
+        Club club = clubGetService.find(clubId);
+        Manager manager = userGetService.find(userId);
+        checkAuthority(club, manager);
+
+        return club;
+    }
+
+    private MailTemplate checkAuthorityByMailTemplate(String templateId, Long userId) {
+        MailTemplate mailTemplate = mailTemplateGetService.findById(templateId);
+        Manager manager = userGetService.find(userId);
+        checkAuthority(mailTemplate.getClub(), manager);
+
+        return mailTemplate;
     }
 }
