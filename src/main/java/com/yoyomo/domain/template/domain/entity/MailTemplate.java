@@ -17,8 +17,7 @@ public class MailTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "template_id")
-    private UUID id; //SES에 저장될 템플릿 이름
-
+    private UUID id;
     String customTemplateName;
 
     @ManyToOne
