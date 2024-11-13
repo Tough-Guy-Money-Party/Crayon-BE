@@ -23,21 +23,20 @@ public class MailTemplateGetService {
     public Page<MailTemplate> findAll(String clubId, Pageable pageable) {
         UUID clubUUID = UUID.fromString(clubId);
         return mailTemplateRepository.findAllByClubId(clubUUID, pageable);
-
     }
 
-    public MailTemplateGetResponse find(String templateId) {
+    public MailTemplateGetResponse findWithSes(String templateId) {
         MailTemplate template = mailTemplateRepository.findById(UUID.fromString(templateId))
                 .orElseThrow();
-        return createMailTemplateGetResponse(template);
+        return findFromSes(template);
     }
 
-    public MailTemplate findById(String templateId) {
+    public MailTemplate findFromLocal(String templateId) {
         return mailTemplateRepository.findById(UUID.fromString(templateId))
                 .orElseThrow();
     }
 
-    private MailTemplateGetResponse createMailTemplateGetResponse(MailTemplate mailTemplate) {
+    private MailTemplateGetResponse findFromSes(MailTemplate mailTemplate) {
         UUID templateId = mailTemplate.getId();
 
         GetTemplateRequest getRequest = GetTemplateRequest.builder()
