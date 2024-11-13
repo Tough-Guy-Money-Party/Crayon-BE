@@ -4,7 +4,6 @@ public record MailTemplateUpdateRequest(
         String customTemplateName,
         String subject,
         String htmlPart,
-        String textPart,
-        String clubId
+        String textPart
 ) {
 }
