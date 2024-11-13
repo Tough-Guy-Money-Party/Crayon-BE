@@ -1,4 +1,4 @@
-package com.yoyomo.infra.aws.ses;
+package com.yoyomo.domain.mail.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.ses.model.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MailService {
+public class MailVerifyService {
 
     //UUID로 DB에 저장해서 템플릿 이름으로 사용하도록 수정
     private final String TEMPLATE_NAME = "VerifyMailTemplate";
