@@ -2,11 +2,11 @@ package com.yoyomo.domain.template.domain.service;
 
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.domain.repository.MailTemplateRepository;
+import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.DeleteTemplateRequest;
-import software.amazon.awssdk.services.ses.model.DeleteTemplateResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +25,10 @@ public class MailTemplateDeleteService {
                 .templateName(mailTemplate.getId().toString())
                 .build();
 
-        DeleteTemplateResponse response = sesClient.deleteTemplate(deleteTemplateRequest);
+        try {
+            sesClient.deleteTemplate(deleteTemplateRequest);
+        } catch (Exception e) {
+            throw new SesTemplateException(e.getMessage());
+        }
     }
 }

@@ -53,9 +53,8 @@ public class MailTemplateManageUseCase {
 
     @Transactional
     public void update(MailTemplateUpdateRequest dto, String templateId, Long userId) {
-        Club club = checkAuthorityByClub(dto.clubId(), userId);
-        MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
 
+        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
     }
 

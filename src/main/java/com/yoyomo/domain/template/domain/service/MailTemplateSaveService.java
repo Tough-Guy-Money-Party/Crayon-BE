@@ -4,6 +4,7 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.domain.repository.MailTemplateRepository;
+import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
@@ -20,12 +21,13 @@ public class MailTemplateSaveService {
     private final SesClient sesClient;
 
 
-    public void save(MailTemplateSaveRequest dto, Club club){
+    public void save(MailTemplateSaveRequest dto, Club club) {
         MailTemplate template = MailTemplateSaveRequest.of(dto, club);
         UUID templateId = mailTemplateRepository.save(template).getId();
 
         saveTemplate(dto, templateId);
     }
+
     private void saveTemplate(MailTemplateSaveRequest dto, UUID templateId) {
 
         Template template = Template.builder()
@@ -39,6 +41,10 @@ public class MailTemplateSaveService {
                 .template(template)
                 .build();
 
-        sesClient.createTemplate(saveRequest);
+        try {
+            sesClient.createTemplate(saveRequest);
+        } catch (Exception e) {
+            throw new SesTemplateException(e.getMessage());
+        }
     }
 }

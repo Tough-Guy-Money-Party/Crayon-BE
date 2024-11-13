@@ -3,6 +3,7 @@ package com.yoyomo.domain.template.domain.service;
 import com.yoyomo.domain.template.application.dto.response.MailTemplateGetResponse;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.domain.repository.MailTemplateRepository;
+import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,8 +44,11 @@ public class MailTemplateGetService {
                 .templateName(templateId.toString())
                 .build();
 
-        GetTemplateResponse response = sesClient.getTemplate(getRequest);
-
-        return MailTemplateGetResponse.of(mailTemplate, response);
+        try {
+            GetTemplateResponse response = sesClient.getTemplate(getRequest);
+            return MailTemplateGetResponse.of(mailTemplate, response);
+        } catch (Exception e) {
+            throw new SesTemplateException(e.getMessage());
+        }
     }
 }
