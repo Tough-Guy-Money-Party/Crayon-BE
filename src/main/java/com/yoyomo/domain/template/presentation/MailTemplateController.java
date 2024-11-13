@@ -28,14 +28,14 @@ public class MailTemplateController {
 
 
     @GetMapping("/{clubId}")
-    @Operation(summary = "이메일 템플릿 목록 조회 API 입니다.")
+    @Operation(summary = "이메일 템플릿 목록 조회 API 입니다. 템플릿 ID와 이름만 반환합니다.")
     public ResponseDto<Page<MailTemplateListResponse>> read(@PathVariable String clubId, @RequestParam Integer page, @RequestParam Integer size){
         Page<MailTemplateListResponse> response = mailTemplateManageUseCase.findAll(clubId, PageRequest.of(page, size));
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
     }
 
     @GetMapping("/detail/{templateId}")
-    @Operation(summary = "이메일 템플릿 상세 조회 API 입니다.")
+    @Operation(summary = "이메일 템플릿 상세 조회 API 입니다. 템플릿 ID를 이용해 템플릿 전체를 반환합니다.")
     public ResponseDto<MailTemplateGetResponse> read(@PathVariable String templateId){
         MailTemplateGetResponse response = mailTemplateManageUseCase.find(templateId);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
