@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.DeleteTemplateRequest;
+import software.amazon.awssdk.services.ses.model.SesException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class MailTemplateDeleteService {
 
         try {
             sesClient.deleteTemplate(deleteTemplateRequest);
-        } catch (Exception e) {
+        } catch (SesException e) {
             throw new SesTemplateException(e.getMessage());
         }
     }

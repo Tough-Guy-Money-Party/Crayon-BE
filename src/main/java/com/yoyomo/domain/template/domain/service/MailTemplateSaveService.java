@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.CreateTemplateRequest;
+import software.amazon.awssdk.services.ses.model.SesException;
 import software.amazon.awssdk.services.ses.model.Template;
 
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class MailTemplateSaveService {
 
         try {
             sesClient.createTemplate(saveRequest);
-        } catch (Exception e) {
+        } catch (SesException e) {
             throw new SesTemplateException(e.getMessage());
         }
     }

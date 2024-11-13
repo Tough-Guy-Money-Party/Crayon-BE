@@ -6,6 +6,7 @@ import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
+import software.amazon.awssdk.services.ses.model.SesException;
 import software.amazon.awssdk.services.ses.model.Template;
 import software.amazon.awssdk.services.ses.model.UpdateTemplateRequest;
 
@@ -34,7 +35,7 @@ public class MailTemplateUpdateService {
 
         try {
             sesClient.updateTemplate(updateRequest);
-        } catch (Exception e) {
+        } catch (SesException e) {
             throw new SesTemplateException(e.getMessage());
         }
     }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.GetTemplateRequest;
 import software.amazon.awssdk.services.ses.model.GetTemplateResponse;
+import software.amazon.awssdk.services.ses.model.SesException;
 
 import java.util.UUID;
 
@@ -48,7 +49,7 @@ public class MailTemplateGetService {
         try {
             GetTemplateResponse response = sesClient.getTemplate(getRequest);
             return MailTemplateGetResponse.of(mailTemplate, response);
-        } catch (Exception e) {
+        } catch (SesException e) {
             throw new SesTemplateException(e.getMessage());
         }
     }
