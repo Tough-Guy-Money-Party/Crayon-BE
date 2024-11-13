@@ -7,6 +7,8 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO;
 import com.yoyomo.domain.user.application.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,11 @@ public class ApplicationGetService {
 
     public List<Application> findAll(UserRequestDTO.Find dto) {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(userMapper.from(dto));
+    }
+
+    public List<Application> findAll(Long processId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
     }
 
     public Application find(String id) {
