@@ -22,11 +22,13 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final String EMPTY_ROLE = "EMPTY_ROLE";
+    private static final String EMPTY_PASSWORD = "EMPTY_PASSWORD";
+
     private final JwtProvider jwtProvider;
     private final ManagerRepository managerRepository;
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
-    private final String EMPTY_ROLE = "EMPTY_ROLE";
-    private final String EMPTY_PASSWORD = "EMPTY_PASSWORD";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
