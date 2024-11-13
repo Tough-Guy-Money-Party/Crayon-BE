@@ -6,6 +6,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.UUID;
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
     List<Application> findAllByUserAndDeletedAtIsNull(User user);
+
+    List<Application> findByProcessIdAndDeletedAtIsNull(Long processId, Pageable pageable);
 
     List<Application> findAllByUser_NameAndDeletedAtIsNull(String name);
 

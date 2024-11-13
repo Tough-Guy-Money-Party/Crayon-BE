@@ -10,10 +10,10 @@ import software.amazon.awssdk.services.ses.SesClient;
 
 @Configuration
 public class AwsSesConfig {
-    @Value("${cloud.aws.ses.accessKey}")
+    @Value("${cloud.aws.credentials.mailAccessKey}")
     private String accessKey;
 
-    @Value("${cloud.aws.ses.secretKey}")
+    @Value("${cloud.aws.credentials.mailSecretKey}")
     private String secretKey;
 
     @Value("${cloud.aws.region.static}")

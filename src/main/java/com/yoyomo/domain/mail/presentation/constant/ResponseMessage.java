@@ -1,0 +1,14 @@
+package com.yoyomo.domain.mail.presentation.constant;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum ResponseMessage {
+
+    SCHEDULE_SAVE_SUCCESS("예약 매일 설정에 성공했습니다."),
+
+    MAIL_DB_UPLOAD_FAIL("메일을 Dynamodb에 업로드하는 중 예외가 발생했습니다.");
+    private final String message;
+}

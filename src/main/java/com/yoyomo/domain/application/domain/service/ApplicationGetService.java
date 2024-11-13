@@ -10,6 +10,8 @@ import com.yoyomo.domain.user.application.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,11 @@ public class ApplicationGetService {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(userMapper.from(dto));
     }
 
+    public List<Application> findAll(Long processId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
+    }
+
     public Page<Application> findAll(Process process, Pageable pageable) {
         return applicationRepository.findAllByProcessAndDeletedAtIsNull(process, pageable);
     }
@@ -38,5 +45,4 @@ public class ApplicationGetService {
     public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
         return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment, pageable);
     }
-
 }
