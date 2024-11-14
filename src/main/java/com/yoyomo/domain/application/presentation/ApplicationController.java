@@ -5,8 +5,9 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationRequestD
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
-import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUsecase;
+import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
+import com.yoyomo.domain.application.application.usecase.InterviewManageUseCase;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -50,13 +51,14 @@ import static org.springframework.http.HttpStatus.OK;
 public class ApplicationController {
 
     private final ApplyUseCase applyUseCase;
+    private final InterviewManageUseCase interviewManageUseCase;
     private final ApplicationManageUseCase applicationManageUseCase;
-    private final ApplicationVerifyUsecase applicationVerifyUsecase;
+    private final ApplicationVerifyUseCase applicationVerifyUseCase;
 
     // Applicant
     @PostMapping("/{recruitmentId}")
     @Operation(summary = "[Applicant] 지원서 작성")
-    public ResponseDto<Void> apply(@RequestBody @Valid Save dto, @PathVariable String recruitmentId) {
+    public ResponseDto<Void> apply(@Valid @RequestBody Save dto, @PathVariable String recruitmentId) {
         applyUseCase.apply(dto, recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
@@ -64,7 +66,7 @@ public class ApplicationController {
 
     @GetMapping
     @Operation(summary = "[Applicant] 내 지원서 목록 조회")
-    public ResponseDto<List<Response>> readAll(@RequestBody @Valid Find dto) {
+    public ResponseDto<List<Response>> readAll(@Valid @RequestBody Find dto) {
         List<Response> responses = applyUseCase.readAll(dto);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), responses);
@@ -97,7 +99,7 @@ public class ApplicationController {
     @GetMapping("/mail/{email}/")
     @Operation(summary = "[Applicant] 지원서 작성 시 이메일 인증 코드 요청")
     public ResponseDto<String> readCode(@PathVariable String email) {
-        applicationVerifyUsecase.generate(email);
+        applicationVerifyUseCase.generate(email);
 
         return ResponseDto.of(OK.value(), SUCCESS_GENERATE_CODE.getMessage());
     }
@@ -105,7 +107,7 @@ public class ApplicationController {
     @PostMapping("/mail")
     @Operation(summary = "[Applicant] 이메일 인증 요청. 가능시간 5분")
     public ResponseDto<Void> verify(@Valid @RequestBody VerificationRequest dto) {
-        applicationVerifyUsecase.verify(dto);
+        applicationVerifyUseCase.verify(dto);
 
         return ResponseDto.of(OK.value(), SUCCESS_VERIFY_CODE.getMessage());
     }
@@ -137,7 +139,7 @@ public class ApplicationController {
     @PatchMapping("/manager/{recruitmentId}")
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
     public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser @Parameter(hidden = true) Long userId, @PathVariable String recruitmentId) {
-        applicationManageUseCase.update(dto, userId, recruitmentId);
+        applicationManageUseCase.updateProcess(dto, userId, recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
@@ -145,7 +147,7 @@ public class ApplicationController {
     @PatchMapping("/{applicationId}/interview")
     @Operation(summary = "[Manager] 면접 일정 설정")
     public ResponseDto<Void> saveInterview(@PathVariable String applicationId, @RequestBody InterviewRequestDTO.Save dto, @CurrentUser @Parameter(hidden = true) Long userId) {
-        applicationManageUseCase.saveInterview(applicationId, dto, userId);
+        interviewManageUseCase.saveInterview(applicationId, dto, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW.getMessage());
     }

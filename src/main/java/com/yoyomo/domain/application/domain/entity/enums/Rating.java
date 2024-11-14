@@ -1,6 +1,5 @@
 package com.yoyomo.domain.application.domain.entity.enums;
 
-import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,26 +19,14 @@ public enum Rating {
     private final Integer low;
     private final Integer high;
 
-    public static Rating calculate(Application application) {
-        List<Evaluation> evaluations = application.getEvaluations().stream()
-                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
-                .toList();
-
+    public static Rating calculate(List<Evaluation> evaluations) {
         double sum = (double) evaluations.stream()
                 .map(assessment -> assessment.getRating().getValue())
                 .reduce(0, Integer::sum);
 
-        double average = sum / application.getEvaluations().stream()
-                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
+        double average = sum / evaluations.stream()
                 .filter(Evaluation::isAfterEvaluation)
                 .count();
-
-        System.out.println(sum);
-
-        System.out.println(application.getEvaluations().stream()
-                .filter(evaluation -> evaluation.getStage().equals(application.getProcess().getStage()))
-                .filter(Evaluation::isAfterEvaluation)
-                .count());
 
         return Arrays.stream(values())
                 .filter(rating -> rating.low <= average && average <= rating.high)

@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProcessUpdateService {
 
-    public void update(Process from, Process to, Application application) {
-        from.removeApplication(application);
-        to.addApplication(application);
-        application.init();
+    public void update(Process to, Application application) {
+//        from.removeApplication(application);
+//        to.addApplication(application);
         application.update(to);
     }
 }

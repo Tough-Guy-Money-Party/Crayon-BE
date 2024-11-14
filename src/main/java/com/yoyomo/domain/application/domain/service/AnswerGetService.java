@@ -12,8 +12,8 @@ public class AnswerGetService {
 
     private final AnswerRepository answerRepository;
 
-    public Answer find(String id) {
-        return answerRepository.findById(id)
+    public Answer findByApplicationId(String applicationId) {
+        return answerRepository.findByApplicationId(applicationId)
                 .orElseThrow(AnswerNotFoundException::new);
     }
 }

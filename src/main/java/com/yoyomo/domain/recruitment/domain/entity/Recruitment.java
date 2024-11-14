@@ -6,8 +6,23 @@ import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +54,7 @@ public class Recruitment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Submit submit;
 
-    private Boolean isActive;
+    private boolean isActive;
 
     private LocalDateTime startAt;
 
@@ -102,7 +117,6 @@ public class Recruitment extends BaseEntity {
         return this.endAt.isBefore(LocalDateTime.now());
     }
 
-
     public void plusApplicantsCount() {
         this.totalApplicantsCount++;
     }
@@ -112,10 +126,12 @@ public class Recruitment extends BaseEntity {
     }
 
     public void checkAvailable() {
-        if (this.deletedAt != null)
+        if (this.deletedAt != null) {
             throw new RecruitmentNotFoundException();
+        }
 
-        if (getStatus(this) != RECRUITING)
+        if (getStatus(this) != RECRUITING) {
             throw new OutOfDeadlineException();
+        }
     }
 }

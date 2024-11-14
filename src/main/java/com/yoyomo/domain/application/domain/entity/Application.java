@@ -7,15 +7,27 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import static com.yoyomo.domain.application.domain.entity.enums.Rating.*;
+import static com.yoyomo.domain.application.domain.entity.enums.Rating.PENDING;
 
 @Getter
 @Builder
@@ -49,9 +61,6 @@ public class Application extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Evaluation> evaluations = new ArrayList<>();
-
     @PrePersist
     public void init() {
         this.status = Status.PENDING;
@@ -72,15 +81,16 @@ public class Application extends BaseEntity {
 
     public void update(Process process) {
         this.process = process;
+        this.status = Status.PENDING;
+        this.averageRating = Rating.PENDING;
     }
 
     public void addInterview(Interview interview) {
         this.interview = interview;
     }
 
-    public void evaluate(Evaluation evaluation) {
-        this.evaluations.add(evaluation);
-        this.averageRating = calculate(this);
-        this.status = evaluation.getStatus();
+    public void evaluate(Status status, Rating rating) {
+        this.averageRating = rating;
+        this.status = status;
     }
 }

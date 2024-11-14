@@ -4,12 +4,23 @@ import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
-
-import static com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
 
 
 @Getter
@@ -31,7 +42,7 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private Integer stage;
+    private int stage;
 
     private String memo;
 
@@ -49,10 +60,10 @@ public class Evaluation extends BaseEntity {
         return evaluation.getRating() != Rating.PENDING;
     }
 
-    public void update(Save dto) {
-        this.rating = dto.rating();
-        this.status = dto.status();
-        this.memo = dto.memo();
+    public void update(Rating rating, Status status, String memo) {
+        this.rating = rating;
+        this.status = status;
+        this.memo = memo;
     }
 
     public void delete() {

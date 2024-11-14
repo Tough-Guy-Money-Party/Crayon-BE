@@ -13,7 +13,7 @@ public class ProcessGetService {
 
     private final ProcessRepository processRepository;
 
-    public Process find(Recruitment recruitment, Integer stage) {
+    public Process find(Recruitment recruitment, int stage) {
         return processRepository.findByRecruitmentAndStage(recruitment, stage)
                 .orElseThrow(ProcessNotFoundException::new);
     }
