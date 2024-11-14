@@ -3,20 +3,15 @@ package com.yoyomo.domain.item.domain.service.factory;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.Score;
+import com.yoyomo.domain.item.domain.entity.type.Type;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ScoreCreationStrategy implements ItemCreationStrategy {
-    private static ScoreCreationStrategy instance;
 
-    private ScoreCreationStrategy() {
-    }
-
-    public static ScoreCreationStrategy getInstance() {
-        if (instance == null) {
-            return instance = new ScoreCreationStrategy();
-        }
-        return instance;
+    @Override
+    public boolean isSupported(Type type) {
+        return Type.SCORE == type;
     }
 
     @Override

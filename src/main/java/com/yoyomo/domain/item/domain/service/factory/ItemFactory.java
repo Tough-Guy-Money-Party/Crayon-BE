@@ -3,28 +3,24 @@ package com.yoyomo.domain.item.domain.service.factory;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.type.Type;
+import com.yoyomo.domain.item.exception.InvalidItemException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class ItemFactory {
-    private final Map<Type, ItemCreationStrategy> creationStrategies;
 
-    private ItemFactory() {
-        this.creationStrategies = Map.of(
-                Type.SHORT_FORM, AnswerCreationStrategy.getInstance(),
-                Type.LONG_FORM, AnswerCreationStrategy.getInstance(),
-                Type.SELECT, SelectCreationStrategy.getInstance(),
-                Type.MULTI_SELECT, SelectCreationStrategy.getInstance(),
-                Type.CALENDAR, DateCreationStrategy.getInstance(),
-                Type.SCORE, ScoreCreationStrategy.getInstance(),
-                Type.ANNOUNCE, BaseCreationStrategy.getInstance()
-        );
-    }
+    private final Set<ItemCreationStrategy> creationStrategies;
 
     public Item createItem(ItemRequest request) {
-        ItemCreationStrategy strategy = creationStrategies.get(request.type());
-        return strategy.create(request);
+        Type type = request.type();
+        ItemCreationStrategy itemCreationStrategy = creationStrategies.stream()
+                .filter(strategy -> strategy.isSupported(type))
+                .findFirst()
+                .orElseThrow(InvalidItemException::new);
+        return itemCreationStrategy.create(request);
     }
 }
