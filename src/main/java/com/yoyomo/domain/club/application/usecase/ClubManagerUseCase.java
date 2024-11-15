@@ -50,20 +50,8 @@ public class ClubManagerUseCase {
     public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
         Club club = clubGetService.findByCode(dto.code());
         Manager manager = userGetService.find(userId);
-        System.out.println("manager = " + manager);
-
-        List<Manager> managers = clubManagerGetService.readAllManagers(club.getId())
-                .stream()
-                .map(ClubManager::getManager)
-                .peek(m -> System.out.println("contain = " + m))
-                .toList();
-
-        if (managers.contains(manager)) {
-            throw new IllegalArgumentException();
-        }
 
         clubManagerSaveService.saveManager(manager, club);
-
         return clubMapper.toParticipation(club);
     }
 
