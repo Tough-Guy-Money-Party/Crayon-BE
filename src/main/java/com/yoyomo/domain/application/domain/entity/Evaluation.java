@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -24,11 +23,11 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
+@Builder
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Evaluation extends BaseEntity {
 
     @Id
@@ -39,10 +38,8 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    private int stage;
+    @Column(nullable = false, name = "process_id")
+    private long processId;
 
     private String memo;
 
@@ -56,13 +53,12 @@ public class Evaluation extends BaseEntity {
     @JoinColumn(name = "application_id")
     private Application application;
 
-    public static boolean isAfterEvaluation(Evaluation evaluation) {
-        return evaluation.getRating() != Rating.PENDING;
+    public boolean isAfterEvaluation() { // todo pending 값 말고 존재 유무로 가능
+        return rating != Rating.PENDING;
     }
 
-    public void update(Rating rating, Status status, String memo) {
+    public void update(Rating rating, String memo) {
         this.rating = rating;
-        this.status = status;
         this.memo = memo;
     }
 
