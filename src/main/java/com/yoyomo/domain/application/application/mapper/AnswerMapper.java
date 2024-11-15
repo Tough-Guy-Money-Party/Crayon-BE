@@ -8,6 +8,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -16,5 +17,5 @@ import java.util.List;
 public interface AnswerMapper {
 
     @Mapping(target = "id", ignore = true)
-    Answer from(List<Item> items, String applicationId);
+    Answer from(List<Item> items, UUID applicationId);
 }

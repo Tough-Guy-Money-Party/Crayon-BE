@@ -4,7 +4,6 @@ package com.yoyomo.domain.application.domain.entity;
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -31,9 +30,9 @@ import static com.yoyomo.domain.application.domain.entity.enums.Rating.PENDING;
 
 @Getter
 @Builder
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Entity
 public class Application extends BaseEntity {
 
     @Id
@@ -51,6 +50,9 @@ public class Application extends BaseEntity {
     private Rating averageRating;
 
     private String answerId;
+
+    @Column(nullable = false, name = "recruitment_id")
+    private UUID recruitmentId;
 
     @ManyToOne
     @JoinColumn(name = "process_id")
@@ -71,12 +73,8 @@ public class Application extends BaseEntity {
         this.answerId = answerId;
     }
 
-    public boolean containsInRecruitment(Recruitment recruitment) {
-        return this.process.getRecruitment().equals(recruitment);
-    }
-
-    public void delete() {
-        this.deletedAt = LocalDateTime.now();
+    public boolean inRecruitment(UUID recruitmentId) {
+        return this.recruitmentId == recruitmentId;
     }
 
     public void update(Process process) {
@@ -92,5 +90,9 @@ public class Application extends BaseEntity {
     public void evaluate(Status status, Rating rating) {
         this.averageRating = rating;
         this.status = status;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }

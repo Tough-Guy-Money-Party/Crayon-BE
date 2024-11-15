@@ -31,8 +31,9 @@ public class ApplicationGetService {
     }
 
     public List<Application> findByName(Recruitment recruitment, String name) {
+        UUID recruitmentId = recruitment.getId();
         return applicationRepository.findAllByUser_NameAndDeletedAtIsNull(name).stream()
-                .filter(application -> application.containsInRecruitment(recruitment))
+                .filter(application -> application.inRecruitment(recruitmentId))
                 .toList();
     }
 

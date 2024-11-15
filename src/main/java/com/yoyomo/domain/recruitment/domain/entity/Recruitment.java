@@ -134,4 +134,8 @@ public class Recruitment extends BaseEntity {
             throw new OutOfDeadlineException();
         }
     }
+
+    public boolean isLastProcess(Process current) {
+        return processes.get(processes.size() - 1).getId() == current.getId();
+    }
 }
