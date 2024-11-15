@@ -108,7 +108,7 @@ public class RecruitmentManageUseCase {
     private Recruitment checkAuthorityByRecruitment(String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Manager manager = userGetService.find(userId);
-        recruitment.getClub().checkAuthority(manager);
+        clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
     }

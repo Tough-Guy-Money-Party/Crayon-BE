@@ -35,7 +35,6 @@ public class ClubManagerAuthService {
                 .map(ClubManager::getManager)
                 .toList();
 
-
         if (!managers.contains(manager)) {
             throw new ClubAccessDeniedException();
         }
