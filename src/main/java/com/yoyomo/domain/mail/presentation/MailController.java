@@ -5,6 +5,7 @@ import com.yoyomo.domain.mail.application.usecase.MailManageUseCase;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class MailController {
 
     @PostMapping("/schedule")
     @Operation(summary = "예약 메일 발송 요청")
-    public ResponseDto<String> create(@RequestBody MailReservationRequest dto){
+    public ResponseDto<String> create(@RequestBody @Valid MailReservationRequest dto){
         mailManageUseCase.reserve(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SCHEDULE_SAVE_SUCCESS.getMessage());
     }
