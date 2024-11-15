@@ -148,4 +148,12 @@ public class Recruitment extends BaseEntity {
                 .map(process -> process.getEndAt().toLocalDate())
                 .orElseThrow(ProcessEmptyException::new);
     }
+
+    public Process getDocumentProcess() {
+        return processes.get(0);
+    }
+
+    public Process getProcess(int stage) {
+        return processes.get(stage);
+    }
 }

@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
-import com.yoyomo.domain.application.application.mapper.EvaluationMapperImpl;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
@@ -26,7 +25,6 @@ public class EvaluationManageUseCase {
     private final EvaluationSaveService evaluationSaveService;
     private final EvaluationGetService evaluationGetService;
     private final EvaluationUpdateService evaluationUpdateService;
-    private final EvaluationMapperImpl evaluationMapper;
     private final ApplicationUpdateService applicationUpdateService;
     private final ClubManagerAuthService clubManagerAuthService;
 
@@ -36,7 +34,7 @@ public class EvaluationManageUseCase {
         Manager manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
-        Evaluation evaluation = evaluationMapper.from(dto, manager, application);
+        Evaluation evaluation = dto.toEvaluation(manager, application);
         evaluationSaveService.save(evaluation);
         applicationUpdateService.evaluate(application, dto.status());// todo application status 분리하기
     }

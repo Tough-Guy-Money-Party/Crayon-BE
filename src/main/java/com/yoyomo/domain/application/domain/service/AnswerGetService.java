@@ -6,13 +6,15 @@ import com.yoyomo.domain.application.exception.AnswerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AnswerGetService {
 
     private final AnswerRepository answerRepository;
 
-    public Answer findByApplicationId(String applicationId) {
+    public Answer findByApplicationId(UUID applicationId) {
         return answerRepository.findByApplicationId(applicationId)
                 .orElseThrow(AnswerNotFoundException::new);
     }

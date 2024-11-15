@@ -13,7 +13,6 @@ import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
-import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.application.mapper.UserMapperImpl;
@@ -48,11 +47,10 @@ public class ApplyUseCase {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         recruitment.checkAvailable();
 
-        Process process = recruitment.getProcesses().get(0); // 첫 지원 프로세스
-        Application application = applicationMapper.from(dto, process);
-        applicationSaveService.save(recruitment, application);
-
         List<Item> items = itemManageUseCase.create(dto.answers());
+        Application application = dto.toApplication(recruitment);
+
+        applicationSaveService.save(recruitment, application); //todo application.answerId 추가
         answerSaveService.save(items, application.getId());
     }
 
@@ -65,7 +63,7 @@ public class ApplyUseCase {
 
     public MyResponse read(String applicationId) {
         Application application = applicationGetService.find(applicationId);
-        Answer answer = answerGetService.findByApplicationId(applicationId);
+        Answer answer = answerGetService.findByApplicationId(application.getId());
 
         return applicationMapper.toMyResponse(application, answer);
     }

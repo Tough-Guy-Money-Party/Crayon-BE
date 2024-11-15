@@ -15,12 +15,12 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,10 +42,11 @@ public class ApplicationManageUseCase {
     private final EvaluationMapper evaluationMapper;
     private final ClubManagerAuthService clubManagerAuthService;
 
+    @Transactional(readOnly = true)
     public Detail read(String applicationId, Long userId) {
         Application application = checkAuthorityByApplication(applicationId, userId);
         List<EvaluationResponseDTO.Response> evaluations = getEvaluations(application);
-        Answer answer = answerGetService.findByApplicationId(applicationId);
+        Answer answer = answerGetService.findByApplicationId(application.getId());
 
         return applicationMapper.toDetail(application, answer, evaluations);
     }
@@ -61,12 +62,13 @@ public class ApplicationManageUseCase {
         return new PageImpl<>(result, pageable, result.size());
     }
 
+    @Transactional(readOnly = true)
     public Page<Detail> readAll(String recruitmentId, int stage, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         List<Application> applications = applicationGetService.findAllInStep(recruitment, stage);
 
         List<Detail> details = applications.stream()
-                .map(application -> applicationMapper.toDetail(application, answerGetService.findByApplicationId(application.getId().toString()), getEvaluations(application)))
+                .map(application -> applicationMapper.toDetail(application, answerGetService.findByApplicationId(application.getId()), getEvaluations(application)))
                 .toList();
 
         return new PageImpl<>(details, pageable, details.size());
@@ -85,7 +87,7 @@ public class ApplicationManageUseCase {
     private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Manager manager = userGetService.find(userId);
-        recruitment.getClub().checkAuthority(manager);
+        clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
     }

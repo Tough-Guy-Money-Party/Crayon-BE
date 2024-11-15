@@ -18,7 +18,7 @@ public class AnswerSaveService {
     private final AnswerRepository answerRepository;
 
     public Answer save(List<Item> items, UUID applicationId) {
-        Answer from = answerMapper.from(items, applicationId);
-        return answerRepository.save(from);
+        Answer answer = answerMapper.from(items, applicationId);
+        return answerRepository.save(answer);
     }
 }

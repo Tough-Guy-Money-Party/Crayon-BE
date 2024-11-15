@@ -8,7 +8,5 @@ import java.util.UUID;
 
 public interface AnswerRepository extends MongoRepository<Answer, String> {
 
-    Optional<Answer> findByApplicationId(String applicationId);
-
     Optional<Answer> findByApplicationId(UUID applicationId);
 }
