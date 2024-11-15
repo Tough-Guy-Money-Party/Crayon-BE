@@ -1,5 +1,6 @@
 package com.yoyomo.domain.mail.presentation;
 
+import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
 import com.yoyomo.domain.mail.application.usecase.MailManageUseCase;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.SCHEDULE_SAVE_SUCCESS;
 
 @Tag(name = "MAIL")
@@ -24,7 +24,7 @@ public class MailController {
 
     @PostMapping("/schedule")
     @Operation(summary = "예약 메일 발송 요청")
-    public ResponseDto<String> create(@RequestBody Reserve dto){
+    public ResponseDto<String> create(@RequestBody MailReservationRequest dto){
         mailManageUseCase.reserve(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SCHEDULE_SAVE_SUCCESS.getMessage());
     }

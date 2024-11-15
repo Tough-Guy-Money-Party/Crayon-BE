@@ -2,6 +2,7 @@ package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.service.MailReserveService;
@@ -10,6 +11,7 @@ import com.yoyomo.domain.mail.exception.DynamodbUploadException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
+import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,6 @@ import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
-import static com.yoyomo.domain.mail.application.dto.MailRequest.toMail;
 
 @Slf4j
 @Service
@@ -33,14 +33,15 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
     private final MailReserveService mailReservationService;
     private final ApplicationGetService applicationGetService;
     private final ProcessGetService processGetService;
+    private final MailTemplateUpdateService mailTemplateUpdateService;
 
     @Override// 예외처리(존재하는 템플릿과 맞는지,
-    public void reserve(Reserve dto) {
+    public void reserve(MailReservationRequest dto) {
 //        mailReservationService.create(dto);
         create(dto);
     }
 
-    private void create(Reserve dto) {
+    private void create(MailReservationRequest dto) {
         long processId = dto.processId();
 
         Process process = processGetService.find(processId);
@@ -52,26 +53,26 @@ public class MailManageUseCaseImpl implements MailManageUseCase {
         checkUpload(uploadFutures);
     }
 
-    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
+    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, MailReservationRequest dto, Recruitment recruitment) {
         Stream.iterate(0, pageNumber -> pageNumber + 1)
                 .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
                 .takeWhile(applications -> !applications.isEmpty())
                 .forEach(applications -> uploadApplications(applications, uploadFutures, dto, recruitment));
     }
 
-    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, Reserve dto, Recruitment recruitment) {
+    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, MailReservationRequest dto, Recruitment recruitment) {
         List<Mail> mails = convertToMails(applications, dto, recruitment);
         CompletableFuture<Void> uploadFuture = mailSaveService.upload(mails);
         uploadFutures.add(uploadFuture);
     }
 
-    private List<Mail> convertToMails(List<Application> applications, Reserve dto, Recruitment recruitment) {
+    private List<Mail> convertToMails(List<Application> applications, MailReservationRequest dto, Recruitment recruitment) {
         return applications.stream()
                 .map(application -> convert(dto, application, recruitment))
                 .collect(Collectors.toList());
     }
 
-    private Mail convert(Reserve dto, Application application, Recruitment recruitment) {
+    private Mail convert(MailReservationRequest dto, Application application, Recruitment recruitment) {
         Map<String, String> customData = createCustomData(application, recruitment, dto.customType());
         String destination = application.getUser().getEmail();
 

@@ -1,9 +1,9 @@
 package com.yoyomo.domain.mail.application.usecase;
 
-import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
+import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
 
 public interface MailManageUseCase {
 
-    void reserve(Reserve dto);
+    void reserve(MailReservationRequest dto);
 
 }
