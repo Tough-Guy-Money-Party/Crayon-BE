@@ -81,6 +81,9 @@ dependencies {
 
     //EventBridgeScheduler 추가
     implementation 'software.amazon.awssdk:scheduler:2.27.24'
+
+    //HTML parser Jsoup
+    implementation 'org.jsoup:jsoup:1.17.2'
 }
 
 //tasks.named('test') {
