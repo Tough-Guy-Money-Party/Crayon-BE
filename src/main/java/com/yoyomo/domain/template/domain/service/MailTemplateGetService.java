@@ -28,14 +28,14 @@ public class MailTemplateGetService {
         return mailTemplateRepository.findAllByClubId(clubUUID, pageable);
     }
 
-    public MailTemplateGetResponse findWithSes(String templateId) {
-        MailTemplate template = mailTemplateRepository.findById(UUID.fromString(templateId))
+    public MailTemplateGetResponse findWithSes(UUID templateId) {
+        MailTemplate template = mailTemplateRepository.findById(templateId)
                 .orElseThrow(TemplateNotFoundException::new);
         return findFromSes(template);
     }
 
-    public MailTemplate findFromLocal(String templateId) {
-        return mailTemplateRepository.findById(UUID.fromString(templateId))
+    public MailTemplate findFromLocal(UUID templateId) {
+        return mailTemplateRepository.findById(templateId)
                 .orElseThrow(TemplateNotFoundException::new);
     }
 

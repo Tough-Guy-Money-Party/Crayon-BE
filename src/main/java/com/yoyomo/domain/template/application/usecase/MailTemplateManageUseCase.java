@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 
 @Service
@@ -46,19 +48,18 @@ public class MailTemplateManageUseCase {
                 .map(MailTemplateListResponse::of);
     }
 
-    public MailTemplateGetResponse find(String templateId) {
+    public MailTemplateGetResponse find(UUID templateId) {
         return mailTemplateGetService.findWithSes(templateId);
     }
 
     @Transactional
-    public void update(MailTemplateUpdateRequest dto, String templateId, Long userId) {
-
+    public void update(MailTemplateUpdateRequest dto, UUID templateId, Long userId) {
         MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
     }
 
     @Transactional
-    public void delete(String templateId, Long userId) {
+    public void delete(UUID templateId, Long userId) {
         MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
 
         mailTemplateDeleteService.delete(mailTemplate);
@@ -72,7 +73,7 @@ public class MailTemplateManageUseCase {
         return club;
     }
 
-    private MailTemplate checkAuthorityByMailTemplate(String templateId, Long userId) {
+    private MailTemplate checkAuthorityByMailTemplate(UUID templateId, Long userId) {
         MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
         Manager manager = userGetService.find(userId);
         checkAuthority(mailTemplate.getClub(), manager);

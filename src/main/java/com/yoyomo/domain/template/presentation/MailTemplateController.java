@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static com.yoyomo.domain.template.presentation.constant.ResponseMessage.*;
 
 @Tag(name = "MAIL_TEMPLATE")
@@ -35,7 +37,7 @@ public class MailTemplateController {
 
     @GetMapping("/detail/{templateId}")
     @Operation(summary = "이메일 템플릿 상세 조회 API 입니다. 템플릿 ID를 이용해 템플릿 전체를 반환합니다.")
-    public ResponseDto<MailTemplateGetResponse> read(@PathVariable String templateId) {
+    public ResponseDto<MailTemplateGetResponse> read(@PathVariable UUID templateId) {
         MailTemplateGetResponse response = mailTemplateManageUseCase.find(templateId);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
     }
@@ -49,14 +51,14 @@ public class MailTemplateController {
 
     @PatchMapping("/{templateId}")
     @Operation(summary = "이메일 템플릿 수정 API 입니다.")
-    public ResponseDto<String> update(MailTemplateUpdateRequest dto, @PathVariable String templateId, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<String> update(MailTemplateUpdateRequest dto, @PathVariable UUID templateId, @CurrentUser @Parameter(hidden = true) Long userId) {
         mailTemplateManageUseCase.update(dto, templateId, userId);
         return ResponseDto.of((HttpStatus.OK.value()), SUCCESS_TEMPLATE_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{templateId}")
     @Operation(summary = "이메일 템플릿 삭제 API 입니다.")
-    public ResponseDto<String> delete(@PathVariable String templateId, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<String> delete(@PathVariable UUID templateId, @CurrentUser @Parameter(hidden = true) Long userId) {
         mailTemplateManageUseCase.delete(templateId, userId);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_DELETE.getMessage());
     }

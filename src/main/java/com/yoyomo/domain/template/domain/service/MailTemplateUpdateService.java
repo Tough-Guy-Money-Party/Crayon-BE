@@ -10,20 +10,22 @@ import software.amazon.awssdk.services.ses.model.SesException;
 import software.amazon.awssdk.services.ses.model.Template;
 import software.amazon.awssdk.services.ses.model.UpdateTemplateRequest;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class MailTemplateUpdateService {
 
     private final SesClient sesClient;
 
-    public void update(MailTemplateUpdateRequest dto, MailTemplate mailTemplate, String templateId) {
+    public void update(MailTemplateUpdateRequest dto, MailTemplate mailTemplate, UUID templateId) {
         mailTemplate.update(dto);
         updateTemplate(dto, templateId);
     }
 
-    private void updateTemplate(MailTemplateUpdateRequest dto, String templateId) {
+    private void updateTemplate(MailTemplateUpdateRequest dto, UUID templateId) {
         Template template = Template.builder()
-                .templateName(templateId)
+                .templateName(templateId.toString())
                 .subjectPart(dto.subject())
                 .textPart(dto.textPart())
                 .htmlPart(dto.htmlPart())
