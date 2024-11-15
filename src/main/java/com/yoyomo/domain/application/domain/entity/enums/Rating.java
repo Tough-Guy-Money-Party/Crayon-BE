@@ -24,9 +24,10 @@ public enum Rating {
                 .map(assessment -> assessment.getRating().getValue())
                 .reduce(0, Integer::sum);
 
-        double average = sum / evaluations.stream()
+        long evaluationCount = evaluations.stream()
                 .filter(Evaluation::isAfterEvaluation)
                 .count();
+        double average = sum / evaluationCount;
 
         return Arrays.stream(values())
                 .filter(rating -> rating.low <= average && average <= rating.high)
