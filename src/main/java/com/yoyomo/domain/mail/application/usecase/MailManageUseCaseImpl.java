@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class MailManageUseCaseImpl implements MailManageUseCase {
     private static final int PAGE_SIZE = 100;
+    private static final String SOURCE = "mail@crayon.land";
 
     private final MailSaveService mailSaveService;
     private final MailReserveService mailReservationService;
