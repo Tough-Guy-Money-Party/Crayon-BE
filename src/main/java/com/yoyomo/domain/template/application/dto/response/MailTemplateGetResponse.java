@@ -4,9 +4,11 @@ import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import lombok.Builder;
 import software.amazon.awssdk.services.ses.model.GetTemplateResponse;
 
+import java.util.UUID;
+
 @Builder
 public record MailTemplateGetResponse(
-        String templateId,
+        UUID templateId,
         String customTemplateName,
         String subject,
         String htmlPart,
@@ -14,7 +16,7 @@ public record MailTemplateGetResponse(
 ) {
     public static MailTemplateGetResponse of(MailTemplate mailTemplate, GetTemplateResponse response) {
         return MailTemplateGetResponse.builder()
-                .templateId(mailTemplate.getId().toString())
+                .templateId(mailTemplate.getId())
                 .customTemplateName(mailTemplate.getCustomTemplateName())
                 .subject(response.template().subjectPart())
                 .htmlPart(response.template().htmlPart())
