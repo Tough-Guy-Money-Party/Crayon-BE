@@ -1,5 +1,6 @@
 package com.yoyomo.domain.mail.domain.service;
 
+import com.yoyomo.domain.mail.exception.CreateScheduleException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,8 +49,12 @@ public class MailReserveService {
                 .build();
 
         // Schedule 생성
-        CreateScheduleResponse response = schedulerClient.createSchedule(request);
-        log.info("[MailReserveService]| 예약 메일 스케줄 생성 성공 {}", response.toString());
+        try {
+            CreateScheduleResponse response = schedulerClient.createSchedule(request);
+            log.info("[MailReserveService]| 예약 메일 스케줄 생성 성공 {}", response.toString());
+        } catch (SchedulerException e) {
+            throw new CreateScheduleException(e.getMessage());
+        }
     }
 
     private String toCron(LocalDateTime scheduledTime) {
