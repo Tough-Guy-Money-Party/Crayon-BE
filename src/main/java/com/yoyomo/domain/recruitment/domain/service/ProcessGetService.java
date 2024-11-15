@@ -17,4 +17,9 @@ public class ProcessGetService {
         return processRepository.findByRecruitmentAndStage(recruitment, stage)
                 .orElseThrow(ProcessNotFoundException::new);
     }
+
+    public Process find(Long processId) {
+        return processRepository.findById(processId)
+                .orElseThrow(ProcessNotFoundException::new);
+    }
 }

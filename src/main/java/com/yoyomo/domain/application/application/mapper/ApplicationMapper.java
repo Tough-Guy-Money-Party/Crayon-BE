@@ -32,6 +32,8 @@ public interface ApplicationMapper {
     @Mapping(target = "id", source = "application.id")
     @Mapping(target = "evaluations", source = "evaluations")
     @Mapping(target = "isBeforeInterview", expression = "java( isBefore(application) )")
+    @Mapping(target = "currentStage", source = "application.process.stage")
+    @Mapping(target = "currentStageTitle", source = "application.process.title")
     Detail toDetail(Application application, Answer answer, List<EvaluationResponseDTO.Response> evaluations);
 
     @Mapping(target = "club", source = "application.process.recruitment.club")

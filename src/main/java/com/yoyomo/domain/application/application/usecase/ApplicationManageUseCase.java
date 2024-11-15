@@ -54,7 +54,7 @@ public class ApplicationManageUseCase {
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        List<Application> applications = applicationGetService.findByName(recruitment, name);
+        Page<Application> applications = applicationGetService.findByName(recruitment, name, pageable);
         List<Response> result = applications.stream()
                 .map(applicationMapper::toResponses)
                 .toList();

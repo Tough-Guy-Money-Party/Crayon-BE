@@ -7,6 +7,9 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,16 +25,22 @@ public class ApplicationGetService {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(user);
     }
 
+    public List<Application> findAll(Long processId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
+    }
+
+    public Page<Application> findAll(Process process, Pageable pageable) {
+        return applicationRepository.findAllByProcessAndDeletedAtIsNull(process, pageable);
+    }
+
     public Application find(String id) {
         return applicationRepository.findByIdAndDeletedAtIsNull(UUID.fromString(id))
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
-    public List<Application> findByName(Recruitment recruitment, String name) {
-        UUID recruitmentId = recruitment.getId();
-        return applicationRepository.findAllByUser_NameAndDeletedAtIsNull(name).stream()
-                .filter(application -> application.inRecruitment(recruitmentId))
-                .toList();
+    public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
+        return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment, pageable);
     }
 
     public List<Application> findAllInStep(Recruitment recruitment, int stage) {
