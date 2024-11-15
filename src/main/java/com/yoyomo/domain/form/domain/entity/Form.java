@@ -32,9 +32,9 @@ public class Form {
 
     private LocalDateTime deletedAt;
 
-    private List<String> recruitmentIds = new ArrayList<>();
-
-    public void updateItems(List<Item> items) {
+    public void update(String title, String description, List<Item> items) {
+        this.title = title;
+        this.description = description;
         this.items = items;
     }
 }

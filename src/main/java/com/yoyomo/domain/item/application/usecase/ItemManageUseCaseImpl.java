@@ -4,8 +4,11 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
 import com.yoyomo.domain.item.application.mapper.ItemMapper;
-import com.yoyomo.domain.item.domain.entity.*;
-import com.yoyomo.domain.item.domain.service.ItemUpdateService;
+import com.yoyomo.domain.item.domain.entity.Answer;
+import com.yoyomo.domain.item.domain.entity.Date;
+import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.item.domain.entity.Score;
+import com.yoyomo.domain.item.domain.entity.Select;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +20,8 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class ItemManageUseCaseImpl implements ItemManageUseCase {
+    
     private final ItemFactory itemFactory;
-    private final ItemUpdateService itemUpdateService;
     private final ItemMapper itemMapper;
 
     @Override
@@ -33,7 +36,6 @@ public class ItemManageUseCaseImpl implements ItemManageUseCase {
         List<Item> items = requests.stream()
                 .map(itemFactory::createItem)
                 .toList();
-        itemUpdateService.updateItem(formId, items);
     }
 
     @Override

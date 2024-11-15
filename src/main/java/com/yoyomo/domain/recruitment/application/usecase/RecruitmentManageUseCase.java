@@ -6,7 +6,6 @@ import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
-import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.mapper.RecruitmentMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -45,7 +44,6 @@ public class RecruitmentManageUseCase {
     private final RecruitmentDeleteService recruitmentDeleteService;
     private final RecruitmentMapper recruitmentMapper;
 
-    private final FormUpdateService formUpdateService;
     private final FormGetService formGetService;
     private final FormManageUseCase formManageUseCase;
     private final ClubManagerAuthService clubManagerAuthService;
@@ -94,10 +92,9 @@ public class RecruitmentManageUseCase {
     public void activate(String recruitmentId, String formId, Long userId) {
         checkDeletedRecruitment(recruitmentId);
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+
         Form form = formGetService.find(formId);
-        form.getRecruitmentIds().add(recruitmentId);
-        formUpdateService.update(formId, form.getRecruitmentIds());
-        recruitmentUpdateService.update(recruitment, formId);
+        recruitmentUpdateService.update(recruitment, form.getId());
     }
 
     public void cancel(String recruitmentId, Long userId) {
