@@ -12,6 +12,7 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -38,6 +39,7 @@ public class ProcessManageUseCase {
     /*
         기존 로직이 ApplicationDTO.Detail로 데이터 변환을 하고 있었는데 필요성을 느끼지 못해 Response로 간소화 하여 구현하였음
     */
+    @Transactional(readOnly = true)
     public List<Response> readAll(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
 
@@ -53,6 +55,7 @@ public class ProcessManageUseCase {
                 .toList();
     }
 
+    @Transactional
     public List<Process> update(List<Update> dto, Recruitment recruitment) {
         processDeleteService.deleteAll(recruitment.getProcesses());
         recruitment.clearProcesses();

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> {
+
     Page<Recruitment> findAllByClub(Club club, Pageable pageable);
 
     long countByFormId(String formId);

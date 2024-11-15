@@ -3,6 +3,7 @@ package com.yoyomo.domain.recruitment.domain.entity;
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
+import com.yoyomo.domain.recruitment.exception.ProcessEmptyException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
@@ -24,8 +25,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -137,5 +140,12 @@ public class Recruitment extends BaseEntity {
 
     public boolean isLastProcess(Process current) {
         return processes.get(processes.size() - 1).getId() == current.getId();
+    }
+
+    public LocalDate getRecruitmentEndDate() {
+        return processes.stream()
+                .max(Comparator.comparing(Process::getEndAt))
+                .map(process -> process.getEndAt().toLocalDate())
+                .orElseThrow(ProcessEmptyException::new);
     }
 }

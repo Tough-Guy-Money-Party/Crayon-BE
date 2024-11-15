@@ -17,11 +17,11 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -69,10 +69,11 @@ public class RecruitmentManageUseCase {
         return recruitmentMapper.toDetailResponse(recruitment, processes, form);
     }
 
+    @Transactional(readOnly = true)
     public Page<Response> readAll(Pageable pageable, String clubId) {
         Club club = clubGetService.find(clubId);
         return recruitmentGetService.findAll(club, pageable)
-                .map(recruitmentMapper::toResponse);
+                .map(Response::toResponse);
     }
 
     @Transactional
@@ -89,6 +90,7 @@ public class RecruitmentManageUseCase {
         recruitmentUpdateService.delete(recruitment);
     }
 
+    @Transactional
     public void activate(String recruitmentId, String formId, Long userId) {
         checkDeletedRecruitment(recruitmentId);
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
