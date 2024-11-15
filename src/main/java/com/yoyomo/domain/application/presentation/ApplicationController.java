@@ -113,7 +113,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/manager/{recruitmentId}/all")
-    @Operation(summary = "[Manager] 지원서 목록 조회")
+    @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
     public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId, @RequestParam Integer stage, @RequestParam Integer page, @RequestParam Integer size) {
         Page<Detail> response = applicationManageUseCase.readAll(recruitmentId, stage, userId, PageRequest.of(page, size));
 

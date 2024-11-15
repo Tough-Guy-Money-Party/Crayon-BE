@@ -15,7 +15,6 @@ import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
-import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,6 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormGetService formGetService;
     private final FormUpdateService formUpdateService;
     private final ClubManagerAuthService clubManagerAuthService;
-    private final RecruitmentGetService recruitmentGetService;
 
     @Override
     public DetailResponse read(String id) {

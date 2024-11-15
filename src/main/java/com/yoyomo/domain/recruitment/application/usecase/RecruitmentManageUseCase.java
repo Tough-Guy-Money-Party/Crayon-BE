@@ -85,6 +85,7 @@ public class RecruitmentManageUseCase {
         recruitmentUpdateService.update(recruitment, dto);
     }
 
+    @Transactional
     public void close(String recruitmentId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitmentUpdateService.delete(recruitment);
@@ -99,6 +100,7 @@ public class RecruitmentManageUseCase {
         recruitmentUpdateService.update(recruitment, form.getId());
     }
 
+    @Transactional
     public void cancel(String recruitmentId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitmentDeleteService.delete(recruitment);

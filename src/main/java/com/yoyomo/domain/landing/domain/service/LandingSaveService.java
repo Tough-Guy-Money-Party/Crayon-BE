@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingSaveService {
+    
     private final LandingRepository landingRepository;
 
     public Landing save(Club club) {

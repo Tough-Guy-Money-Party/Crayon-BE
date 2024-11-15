@@ -20,20 +20,13 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class ItemManageUseCaseImpl implements ItemManageUseCase {
-    
+
     private final ItemFactory itemFactory;
     private final ItemMapper itemMapper;
 
     @Override
     public List<Item> create(List<ItemRequest> request) {
         return request.stream()
-                .map(itemFactory::createItem)
-                .toList();
-    }
-
-    @Override
-    public void update(String formId, List<ItemRequest> requests) {
-        List<Item> items = requests.stream()
                 .map(itemFactory::createItem)
                 .toList();
     }

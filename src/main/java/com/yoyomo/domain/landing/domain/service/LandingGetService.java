@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingGetService {
+    
     private final LandingRepository landingRepository;
 
     public Landing find(Club club) {

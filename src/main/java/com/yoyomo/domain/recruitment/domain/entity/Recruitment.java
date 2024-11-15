@@ -18,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
@@ -65,7 +65,7 @@ public class Recruitment extends BaseEntity {
 
     private String formId;
 
-    private Integer totalApplicantsCount;   // 수정: applicant++
+    private int totalApplicantsCount;   // 수정: applicant++
 
     private LocalDateTime deletedAt;
 
@@ -75,12 +75,6 @@ public class Recruitment extends BaseEntity {
 
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
-
-    @PrePersist
-    public void init() {
-        isActive = false;
-        totalApplicantsCount = 0;
-    }
 
     public void addProcesses(List<Process> processes) {
         this.processes.clear();
@@ -139,7 +133,8 @@ public class Recruitment extends BaseEntity {
     }
 
     public boolean isLastProcess(Process current) {
-        return processes.get(processes.size() - 1).getId() == current.getId();
+        Long lastProcessId = processes.get(processes.size() - 1).getId();
+        return Objects.equals(lastProcessId, current.getId());
     }
 
     public LocalDate getRecruitmentEndDate() {

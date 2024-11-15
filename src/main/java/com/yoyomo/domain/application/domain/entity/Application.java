@@ -16,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.yoyomo.domain.application.domain.entity.enums.Rating.PENDING;
 
 @Getter
 @Builder
@@ -43,11 +41,13 @@ public class Application extends BaseEntity {
     @Embedded
     private User user;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.PENDING;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Rating averageRating;
+    private Rating averageRating = Rating.PENDING;
 
     private String answerId;
 
@@ -62,16 +62,6 @@ public class Application extends BaseEntity {
     private Interview interview;
 
     private LocalDateTime deletedAt;
-
-    @PrePersist
-    public void init() {
-        this.status = Status.PENDING;
-        this.averageRating = PENDING;
-    }
-
-    public void mapToAnswer(String answerId) {
-        this.answerId = answerId;
-    }
 
     public boolean inRecruitment(UUID recruitmentId) {
         return this.recruitmentId == recruitmentId;

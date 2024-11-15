@@ -1,6 +1,5 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-import com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -50,14 +49,4 @@ public class Process extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
-
-    public void update(ProcessRequestDTO.Update update) {
-        this.title = update.title();
-        this.stage = update.stage();
-        this.type = update.type();
-        this.startAt = update.period().evaluation().time().startAt();
-        this.endAt = update.period().evaluation().time().endAt();
-        this.announceStartAt = update.period().announcement().time().startAt();
-        this.announceEndAt = update.period().announcement().time().endAt();
-    }
 }
