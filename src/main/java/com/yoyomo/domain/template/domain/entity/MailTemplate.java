@@ -16,7 +16,7 @@ public class MailTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "template_id")
+    @Column(name = "mail_template_id")
     private UUID id;
 
     private String customTemplateName;
