@@ -41,7 +41,7 @@ public class MailReserveService {
         CreateScheduleRequest request = CreateScheduleRequest.builder()
                 .name(UUID.randomUUID().toString())
                 .scheduleExpression(cron) // Cron 표현식 사용
-                .scheduleExpressionTimezone("UTC") // 타임존 설정
+                .scheduleExpressionTimezone("Asia/Seoul") // 타임존 설정
                 .flexibleTimeWindow(flexibleTimeWindow)
                 .target(target)
                 .state(ScheduleState.ENABLED)
