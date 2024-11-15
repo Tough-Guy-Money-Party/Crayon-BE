@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
@@ -35,6 +36,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final UserGetService userGetService;
     private final FormGetService formGetService;
     private final FormUpdateService formUpdateService;
+    private final ClubManagerAuthService clubManagerAuthService;
 
     @Override
     public DetailResponse read(String id) {
@@ -105,6 +107,6 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private void checkAuthorityByClubId(Long userId, String clubId) {
         Manager manager = userGetService.find(userId);
         Club club = clubGetService.find(clubId);
-        club.checkAuthority(manager);
+        clubManagerAuthService.checkAuthorization(club, manager);
     }
 }

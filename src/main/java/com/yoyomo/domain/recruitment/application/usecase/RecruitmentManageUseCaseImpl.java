@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
@@ -47,6 +48,7 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     private final FormUpdateService formUpdateService;
     private final FormGetService formGetService;
     private final FormManageUseCase formManageUseCase;
+    private final ClubManagerAuthService clubManagerAuthService;
 
     private final ProcessManageUseCase processManageUseCase;
 
@@ -55,7 +57,8 @@ public class RecruitmentManageUseCaseImpl implements RecruitmentManageUseCase {
     public void save(Save dto, Long userId) {
         Club club = clubGetService.find(dto.clubId());
         Manager manager = userGetService.find(userId);
-        club.checkAuthority(manager);
+        clubManagerAuthService.checkAuthorization(club, manager);
+
         Recruitment recruitment = recruitmentSaveService.save(dto, club);
         List<Process> processes = processManageUseCase.save(dto.processes(), recruitment);
         recruitment.addProcesses(processes);
