@@ -17,7 +17,6 @@ import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,24 +53,19 @@ public class ApplicationManageUseCase {
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        Page<Application> applications = applicationGetService.findByName(recruitment, name, pageable);
-        List<Response> result = applications.stream()
-                .map(applicationMapper::toResponses)
-                .toList();
-
-        return new PageImpl<>(result, pageable, result.size());
+        return applicationGetService.findByName(recruitment, name, pageable)
+                .map(applicationMapper::toResponses);
     }
 
     @Transactional(readOnly = true)
-    public Page<Detail> readAll(String recruitmentId, int stage, Long userId, Pageable pageable) {
+    public Page<Detail> readAll(String recruitmentId, Integer stage, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
-        List<Application> applications = applicationGetService.findAllInStep(recruitment, stage);
+        Process process = processGetService.find(recruitment, stage);
 
-        List<Detail> details = applications.stream()
-                .map(application -> applicationMapper.toDetail(application, answerGetService.findByApplicationId(application.getId()), getEvaluations(application)))
-                .toList();
-
-        return new PageImpl<>(details, pageable, details.size());
+        return applicationGetService.findAll(process, pageable)
+                .map(application -> applicationMapper.toDetail(
+                        application, answerGetService.findByApplicationId(application.getId()), getEvaluations(application)
+                ));
     }
 
     @Transactional
