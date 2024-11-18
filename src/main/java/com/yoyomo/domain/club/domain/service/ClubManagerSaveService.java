@@ -30,7 +30,7 @@ public class ClubManagerSaveService {
             throw new DuplicatedParticipationException();
         }
 
-        ClubManager clubManager = new ClubManager(manager, club);
+        ClubManager clubManager = ClubManager.of(club, manager);
         clubMangerRepository.save(clubManager);
     }
 }

@@ -32,8 +32,12 @@ public class ClubManager {
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
-    public ClubManager(Manager manager, Club club) {
-        this.manager = manager;
+    private ClubManager(Club club, Manager manager) {
         this.club = club;
+        this.manager = manager;
+    }
+
+    public static ClubManager of(Club club, Manager manager) {
+        return new ClubManager(club, manager);
     }
 }
