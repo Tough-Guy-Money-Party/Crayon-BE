@@ -43,7 +43,7 @@ public class ApplicationGetService {
         return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment, pageable);
     }
 
-    public List<Application> findAllInStep(Recruitment recruitment, int stage) {
+    public List<Application> findAllInStage(Recruitment recruitment, int stage) {
         Process process = recruitment.getProcess(stage);
         return applicationRepository.findAllByProcess(process);
     }

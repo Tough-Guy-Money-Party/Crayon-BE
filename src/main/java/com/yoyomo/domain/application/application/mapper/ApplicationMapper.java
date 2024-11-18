@@ -39,7 +39,7 @@ public interface ApplicationMapper {
     @Mapping(target = "club", source = "application.process.recruitment.club")
     @Mapping(target = "processes", source = "application.process.recruitment.processes")
     @Mapping(target = "currentStage", source = "application.process.stage")
-    Response toResponses(Application application);
+    Response toResponse(Application application);
 
     default User getUser(Save dto) {
         return new User(dto.name(), dto.email(), dto.tel());

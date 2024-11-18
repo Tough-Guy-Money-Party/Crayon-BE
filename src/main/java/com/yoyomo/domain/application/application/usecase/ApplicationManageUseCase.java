@@ -54,7 +54,7 @@ public class ApplicationManageUseCase {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
         return applicationGetService.findByName(recruitment, name, pageable)
-                .map(applicationMapper::toResponses);
+                .map(applicationMapper::toResponse);
     }
 
     @Transactional(readOnly = true)

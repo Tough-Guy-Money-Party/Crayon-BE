@@ -45,9 +45,9 @@ public class ProcessManageUseCase {
 
         return recruitment.getProcesses().stream()
                 .map(process -> {
-                    List<Application> applications = applicationGetService.findAllInStep(recruitment, process.getStage());
+                    List<Application> applications = applicationGetService.findAllInStage(recruitment, process.getStage());
                     List<ApplicationResponseDTO.Response> responses = applications.stream()
-                            .map(applicationMapper::toResponses)
+                            .map(applicationMapper::toResponse)
                             .toList();
                     return processMapper.toResponse(process, responses);
                 })

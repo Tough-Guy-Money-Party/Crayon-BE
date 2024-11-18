@@ -57,7 +57,7 @@ public class ApplyUseCase {
     public List<Response> readAll(Find dto) {
         User user = userMapper.from(dto);
         return applicationGetService.findAll(user).stream()
-                .map(applicationMapper::toResponses)
+                .map(applicationMapper::toResponse)
                 .toList();
     }
 
