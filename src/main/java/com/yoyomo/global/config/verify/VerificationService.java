@@ -13,16 +13,17 @@ import static com.yoyomo.domain.application.application.dto.request.ApplicationV
 @Service
 @RequiredArgsConstructor
 public class VerificationService {
+    
     private static final int BOUND = 900000;
     private static final int OFFSET = 100000;
     private static final int EXPIRE_TIME = 5;
     private static final String CODE_LENGTH = "%06d";
     private static final String PREFIX = "verification_code:";
+    private final SecureRandom secureRandom = new SecureRandom();
 
     private final RedisTemplate<String, String> redisTemplate;
-    private static final SecureRandom secureRandom = new SecureRandom();
 
-    public String GenerateCode(String email){
+    public String generateCode(String email) {
         String code = String.format(CODE_LENGTH, secureRandom.nextInt(BOUND) + OFFSET);
 
         String key = generate(email);
@@ -31,17 +32,17 @@ public class VerificationService {
         return code;
     }
 
-    public void verifyCode(VerificationRequest dto){
+    public void verifyCode(VerificationRequest dto) {
         String key = generate(dto.email());
-        String code  = redisTemplate.opsForValue().get(key);
+        String code = redisTemplate.opsForValue().get(key);
 
-        if(code == null || !code.equals(dto.code())){
+        if (code == null || !code.equals(dto.code())) {
             throw new InvalidMailCodeException();
         }
         redisTemplate.delete(key);
     }
 
-    private String generate(String email){
+    private String generate(String email) {
         return PREFIX + email;
     }
 

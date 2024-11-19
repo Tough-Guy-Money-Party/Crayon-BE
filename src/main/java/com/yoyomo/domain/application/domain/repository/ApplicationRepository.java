@@ -18,12 +18,11 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     List<Application> findByProcessIdAndDeletedAtIsNull(Long processId, Pageable pageable);
 
-    List<Application> findAllByUser_NameAndDeletedAtIsNull(String name);
-
     Page<Application> findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(String name, Recruitment recruitment, Pageable pageable);
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
-    Page<Application> findAllByProcessAndDeletedAtIsNull(Process process, Pageable pageable);
+    List<Application> findAllByProcess(Process process);
 
+    Page<Application> findAllByProcessAndDeletedAtIsNull(Process process, Pageable pageable);
 }

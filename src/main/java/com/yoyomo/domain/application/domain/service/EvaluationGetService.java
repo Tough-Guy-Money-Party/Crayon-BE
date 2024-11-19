@@ -20,7 +20,7 @@ public class EvaluationGetService {
                 .orElseThrow(EvaluationNotFoundException::new);
     }
 
-    public List<Evaluation> findAll(UUID applicationId){
+    public List<Evaluation> findAll(UUID applicationId) {
         return evaluationRepository.findAllByApplicationIdAndDeletedAtIsNull(applicationId);
     }
 }

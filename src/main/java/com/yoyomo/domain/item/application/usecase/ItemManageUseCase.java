@@ -10,7 +10,5 @@ import java.util.List;
 public interface ItemManageUseCase {
     List<Item> create(List<ItemRequest> request);
 
-    void update(String formId, List<ItemRequest> requests);
-
     List<ItemResponse> get(Form form);
 }

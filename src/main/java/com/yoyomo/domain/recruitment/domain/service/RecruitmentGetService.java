@@ -18,11 +18,15 @@ public class RecruitmentGetService {
     private final RecruitmentRepository recruitmentRepository;
 
     public Recruitment find(String recruitmentId) {
-        return recruitmentRepository.findById(UUID.fromString(recruitmentId))
+        return find(UUID.fromString(recruitmentId));
+    }
+
+    public Recruitment find(UUID recruitmentId) {
+        return recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(RecruitmentNotFoundException::new);
     }
 
-    public Page<Recruitment> findAll(Club club,Pageable pageable) {
-        return recruitmentRepository.findAllByClub(club,pageable);
+    public Page<Recruitment> findAll(Club club, Pageable pageable) {
+        return recruitmentRepository.findAllByClub(club, pageable);
     }
 }

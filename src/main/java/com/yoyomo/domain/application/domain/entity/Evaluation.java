@@ -1,23 +1,33 @@
 package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-import static com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
-
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
+@Builder
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Evaluation extends BaseEntity {
 
     @Id
@@ -28,10 +38,8 @@ public class Evaluation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    private Integer stage;
+    @Column(nullable = false, name = "process_id")
+    private long processId;
 
     private String memo;
 
@@ -45,14 +53,13 @@ public class Evaluation extends BaseEntity {
     @JoinColumn(name = "application_id")
     private Application application;
 
-    public static boolean isAfterEvaluation(Evaluation evaluation) {
-        return evaluation.getRating() != Rating.PENDING;
+    public boolean isAfterEvaluation() { // todo pending 값 말고 존재 유무로 가능
+        return rating != Rating.PENDING;
     }
 
-    public void update(Save dto) {
-        this.rating = dto.rating();
-        this.status = dto.status();
-        this.memo = dto.memo();
+    public void update(Rating rating, String memo) {
+        this.rating = rating;
+        this.memo = memo;
     }
 
     public void delete() {

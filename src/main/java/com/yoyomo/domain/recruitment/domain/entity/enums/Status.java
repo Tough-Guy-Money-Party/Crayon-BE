@@ -9,8 +9,8 @@ public enum Status {
     COMPLETE;   // 모집 마감 (active && isAfter)
 
     public static Status getStatus(Recruitment recruitment) {
-        if (recruitment.getIsActive()) {
-            if(recruitment.isBefore())
+        if (recruitment.isActive()) {
+            if (recruitment.isBefore())
                 return SCHEDULED;
             else if (recruitment.isAfter())
                 return COMPLETE;

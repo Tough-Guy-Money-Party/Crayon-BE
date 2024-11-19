@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
@@ -12,7 +13,6 @@ import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
-import com.yoyomo.domain.form.exception.FormUnmodifiableException;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.user.domain.entity.Manager;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 @Service
@@ -36,6 +35,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final UserGetService userGetService;
     private final FormGetService formGetService;
     private final FormUpdateService formUpdateService;
+    private final ClubManagerAuthService clubManagerAuthService;
 
     @Override
     public DetailResponse read(String id) {
@@ -72,12 +72,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public void update(String formId, Update dto, Long userId) {
         Form form = checkAuthorityByFormId(userId, formId);
-
-        if(!form.getRecruitmentIds().isEmpty())
-            throw new FormUnmodifiableException();
-
-        formUpdateService.update(formId, dto);
-        itemManageUseCase.update(formId, dto.itemRequests());
+        formUpdateService.update(form, dto.title(), dto.description(), dto.itemRequests());
     }
 
     @Override
@@ -106,6 +101,6 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private void checkAuthorityByClubId(Long userId, String clubId) {
         Manager manager = userGetService.find(userId);
         Club club = clubGetService.find(clubId);
-        checkAuthority(club, manager);
+        clubManagerAuthService.checkAuthorization(club, manager);
     }
 }
