@@ -10,19 +10,23 @@ import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
 import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
+import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
+import static java.util.Collections.emptyList;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormGetService formGetService;
     private final FormUpdateService formUpdateService;
     private final ClubManagerAuthService clubManagerAuthService;
+    private final RecruitmentGetService recruitmentGetService;
 
     @Override
     public DetailResponse read(String id) {
@@ -55,8 +60,12 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public List<Response> readAll(Long userId, String clubId) {
         checkAuthorityByClubId(userId, clubId);
 
-        return formGetService.findAll(clubId).stream()
-                .map(formMapper::toResponse)
+        List<Form> forms = formGetService.findAll(clubId);
+        List<String> formIds = formGetService.findAllIds(forms);
+        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(formIds);
+
+        return forms.stream()
+                .map(form -> Response.toResponse(form, linkedRecruitments.getOrDefault(form.getId(), emptyList())))
                 .toList();
     }
 

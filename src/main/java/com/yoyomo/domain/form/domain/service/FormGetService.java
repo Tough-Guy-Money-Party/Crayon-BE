@@ -22,7 +22,13 @@ public class FormGetService {
         return formRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
     }
 
+    public List<String> findAllIds(List<Form> forms) {
+        return forms.stream()
+                .map(Form::getId)
+                .toList();
+    }
+
     public List<Form> searchByKeyword(String keyword, String clubId) {
-        return formRepository.findByClubIdAndTitleRegexOrClubIdAndDescriptionRegex(clubId,keyword,clubId,keyword);
+        return formRepository.findByClubIdAndTitleRegexOrClubIdAndDescriptionRegex(clubId, keyword, clubId, keyword);
     }
 }
