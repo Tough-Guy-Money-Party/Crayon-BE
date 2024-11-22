@@ -29,6 +29,6 @@ public class FormGetService {
     }
 
     public List<Form> searchByKeyword(String keyword, String clubId) {
-        return formRepository.findByClubIdAndTitleRegexOrClubIdAndDescriptionRegex(clubId, keyword, clubId, keyword);
+        return formRepository.findAllBySearch(clubId, keyword, keyword);
     }
 }

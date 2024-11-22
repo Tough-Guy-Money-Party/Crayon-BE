@@ -94,9 +94,12 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     public List<Response> search(String keyword, String clubId, Long userId) {
         checkAuthorityByClubId(userId, clubId);
 
-        return formGetService.searchByKeyword(keyword, clubId).stream()
-                .filter(form -> form.getDeletedAt() == null)    // JPA 메서드에서 해결하려 해봤지만 안돼서 스트림으로 해결
-                .map(formMapper::toResponse)
+        List<Form> forms = formGetService.searchByKeyword(keyword, clubId);
+        List<String> formIds = formGetService.findAllIds(forms);
+        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(formIds);
+
+        return forms.stream()
+                .map(form -> Response.toResponse(form, linkedRecruitments.getOrDefault(form.getId(), emptyList())))
                 .toList();
     }
 
