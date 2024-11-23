@@ -27,4 +27,6 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> 
             WHERE r.formId IN :formIds
             """)
     List<LinkedRecruitment> findByForms(List<String> formIds);
+
+    List<Recruitment> findAllByFormId(String formId);
 }

@@ -45,8 +45,9 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public DetailResponse read(String id) {
         Form form = formGetService.find(id);
+        List<String> linkedRecruitmentIds = recruitmentGetService.findAllLinkedRecruitments(form.getId());
 
-        return formMapper.toDetailResponse(form);
+        return formMapper.toDetailResponse(form, linkedRecruitmentIds);
     }
 
     @Override

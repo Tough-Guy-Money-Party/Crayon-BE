@@ -10,7 +10,9 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -21,7 +23,7 @@ public interface FormMapper {
     @Mapping(target = "deletedAt", ignore = true)
     Form from(FormRequestDTO.Save dto, List<Item> items, String clubId);
 
-    DetailResponse toDetailResponse(Form form);
+    DetailResponse toDetailResponse(Form form, List<String> recruitmentIds);
 
     info toInfo(Form form);
 

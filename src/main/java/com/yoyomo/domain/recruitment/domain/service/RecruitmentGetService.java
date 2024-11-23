@@ -34,6 +34,13 @@ public class RecruitmentGetService {
         return recruitmentRepository.findAllByClub(club, pageable);
     }
 
+    public List<String> findAllLinkedRecruitments(String formId) {
+        return recruitmentRepository.findAllByFormId(formId)
+                .stream()
+                .map(Recruitment::getFormId)
+                .toList();
+    }
+
     public Map<String, List<LinkedRecruitment>> findAllLinkedRecruitments(List<String> formIds) {
         return recruitmentRepository.findByForms(formIds).stream()
                 .collect(Collectors.groupingBy(LinkedRecruitment::formId));
