@@ -17,7 +17,6 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> 
 
     long countByFormId(String formId);
 
-
     @Query("""
             SELECT new com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment(
                 r.formId,
