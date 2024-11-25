@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.domain.service;
 
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.FormRepository;
+import com.yoyomo.domain.form.exception.FormCanNotRemoveException;
 import com.yoyomo.domain.form.exception.FormUnmodifiableException;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
@@ -25,7 +26,7 @@ public class FormUpdateService {
     public void update(Form form, String title, String description, List<ItemRequest> rawItems) {
         long linkedRecruitmentCount = recruitmentRepository.countByFormId(form.getId());
         if (linkedRecruitmentCount != 0) {
-            throw new FormUnmodifiableException(); // todo 연결이 기준인지, 활성화가 기준인지 파악 후 수정
+            throw new FormUnmodifiableException();
         }
 
         List<Item> items = rawItems.stream()
@@ -35,6 +36,10 @@ public class FormUpdateService {
     }
 
     public void delete(String formId) {
+        long linkedRecruitmentCount = recruitmentRepository.countByFormId(formId);
+        if (linkedRecruitmentCount != 0) {
+            throw new FormCanNotRemoveException();
+        }
         formRepository.deleteById(formId);
     }
 }
