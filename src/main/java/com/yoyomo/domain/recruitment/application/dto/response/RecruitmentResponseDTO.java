@@ -33,7 +33,7 @@ public class RecruitmentResponseDTO {
                     .submit(recruitment.getSubmit())
                     .status(Status.getStatus(recruitment))
                     .isActive(recruitment.isActive())
-                    .recruitmentEndDate(recruitment.getRecruitmentEndDate())
+                    .recruitmentEndDate(recruitment.getEndDate())
                     .totalApplicantsCount(recruitment.getTotalApplicantsCount())
                     .formId(recruitment.getFormId())
                     .build();
