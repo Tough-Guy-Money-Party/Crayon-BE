@@ -91,7 +91,7 @@ public class ApplyUseCase {
     @Transactional
     public void delete(String applicationId, Long userId) {
         User applicant = userGetService.find(userId);
-        Application application = applicationGetService.find(applicationId); // todo 권한조회
+        Application application = applicationGetService.find(applicationId);
         applicationAuthService.checkAuthorization(application, applicant);
         applicationUpdateService.delete(application);
     }
