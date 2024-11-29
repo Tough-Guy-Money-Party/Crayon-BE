@@ -1,7 +1,7 @@
 package com.yoyomo.domain.user.domain.service;
 
-import com.yoyomo.domain.user.domain.entity.Manager;
-import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserSaveService {
-    private final ManagerRepository managerRepository;
+    private final UserRepository userRepository;
 
-    public Manager save(Manager manager) {
-        return managerRepository.save(manager);
+    public User save(User manager) {
+        return userRepository.save(manager);
     }
 }

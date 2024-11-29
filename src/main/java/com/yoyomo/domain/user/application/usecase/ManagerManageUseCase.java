@@ -2,7 +2,7 @@ package com.yoyomo.domain.user.application.usecase;
 
 import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
 import com.yoyomo.global.config.jwt.JwtProvider;
@@ -44,25 +44,25 @@ public class ManagerManageUseCase {
     }
 
     private ManagerResponseDTO.Response registerNewManager(KakaoAccount account) {
-        Manager manager = mapper.from(account);
-        userSaveService.save(manager);
+        User user = mapper.from(account);
+        userSaveService.save(user);
 
         JwtResponse tokenDto = new JwtResponse(
-                jwtProvider.createAccessToken(manager.getId(), manager.getEmail()),
+                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
                 jwtProvider.createRefreshToken()
         );
 
-        return mapper.toResponseDTO(manager, tokenDto);
+        return mapper.toResponseDTO(user, tokenDto);
     }
 
     private ManagerResponseDTO.Response getManagerResponse(String email) {
-        Manager manager = userGetService.findByEmail(email);
+        User user = userGetService.findByEmail(email);
         JwtResponse tokenDto = new JwtResponse(
-                jwtProvider.createAccessToken(manager.getId(), manager.getEmail()),
+                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
                 jwtProvider.createRefreshToken()
         );
 
-        return mapper.toResponseDTO(manager, tokenDto);
+        return mapper.toResponseDTO(user, tokenDto);
     }
 
 }

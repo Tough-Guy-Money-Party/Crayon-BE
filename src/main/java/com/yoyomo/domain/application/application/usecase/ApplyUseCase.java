@@ -1,5 +1,9 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
+
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
@@ -18,14 +22,9 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.application.mapper.UserMapperImpl;
 import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 
 @Service
 @RequiredArgsConstructor

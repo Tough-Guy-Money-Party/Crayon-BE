@@ -1,5 +1,9 @@
 package com.yoyomo.domain.application.application.mapper;
 
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
 import com.yoyomo.domain.application.application.dto.response.EvaluationResponseDTO;
 import com.yoyomo.domain.application.domain.entity.Answer;
@@ -7,16 +11,11 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import java.util.List;
-
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -54,8 +53,9 @@ public interface ApplicationMapper {
                 .map(Process::getType)
                 .toList();
 
-        if (!types.contains(Type.INTERVIEW))
+        if (!types.contains(Type.INTERVIEW)) {
             return false;
+        }
 
         return types.indexOf(Type.INTERVIEW) > application.getProcess().getStage();
     }
