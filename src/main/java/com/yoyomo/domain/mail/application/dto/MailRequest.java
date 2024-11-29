@@ -3,12 +3,14 @@ package com.yoyomo.domain.mail.application.dto;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.entity.enums.Status;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+@Slf4j
 public class MailRequest {
     private static final String SOURCE_ADDRESS = "mail@crayon.land";
 
@@ -21,6 +23,10 @@ public class MailRequest {
 
     }
     public static Mail toMail(MailRequest.Reserve dto, String destination, Map<String, String> customData){
+        long ttl = dto.scheduledTime.plusDays(1)
+                .toInstant(ZoneOffset.UTC)
+                .getEpochSecond();
+        log.info("ttl: {}", ttl);
         return Mail.builder()
                 .id(UUID.randomUUID().toString())
                 .templateId(dto.templateId())
@@ -29,6 +35,7 @@ public class MailRequest {
                 .source(SOURCE_ADDRESS)
                 .scheduledTime(dto.scheduledTime())
                 .status(Status.SCHEDULED.toString())
+                .ttl(ttl)
                 .build();
     }
 }
