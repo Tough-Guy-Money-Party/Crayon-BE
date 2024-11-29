@@ -1,24 +1,20 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
-import com.yoyomo.domain.item.application.mapper.ItemMapper;
 import com.yoyomo.domain.item.domain.entity.Date;
 import com.yoyomo.domain.item.domain.entity.Item;
-import org.springframework.stereotype.Service;
+import com.yoyomo.domain.item.domain.entity.type.Type;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DateCreationStrategy implements ItemCreationStrategy {
-    private static DateCreationStrategy instance;
-    private static ItemMapper itemMapper;
-    private DateCreationStrategy(ItemMapper itemMapper) {
-        DateCreationStrategy.itemMapper = itemMapper;
-    }
 
-    public static DateCreationStrategy getInstance() {
-        if (instance == null) {
-            return instance = new DateCreationStrategy(itemMapper);
-        }
-        return instance;
+    @Override
+    public boolean isSupported(Type type) {
+        return Type.CALENDAR == type;
     }
 
     @Override

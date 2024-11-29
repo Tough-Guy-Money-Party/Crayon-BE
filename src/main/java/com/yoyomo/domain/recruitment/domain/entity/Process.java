@@ -1,15 +1,23 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Builder
@@ -25,7 +33,7 @@ public class Process extends BaseEntity {
 
     private String title;
 
-    private Integer stage;
+    private int stage;
 
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -41,25 +49,4 @@ public class Process extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
-
-    @OneToMany(mappedBy = "process", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Application> applications = new ArrayList<>();
-
-    public void addApplication(Application application) {
-        this.applications.add(application);
-    }
-
-    public void update(ProcessRequestDTO.Update update) {
-        this.title = update.title();
-        this.stage = update.stage();
-        this.type = update.type();
-        this.startAt = update.period().evaluation().time().startAt();
-        this.endAt = update.period().evaluation().time().endAt();
-        this.announceStartAt = update.period().announcement().time().startAt();
-        this.announceEndAt = update.period().announcement().time().endAt();
-    }
-
-    public void removeApplication(Application application) {
-        this.applications.remove(application);
-    }
 }

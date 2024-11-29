@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class FileCreationStrategy implements ItemCreationStrategy {
+public class FileCreationStrategy {
     private static FileCreationStrategy instance;
     private static ItemMapper itemMapper;
 
@@ -25,7 +25,6 @@ public class FileCreationStrategy implements ItemCreationStrategy {
         return instance;
     }
 
-    @Override
     public Item create(ItemRequest request) {
         List<Option> options = itemMapper.optionRequestToOptionList(request.options());
         return Select.builder()

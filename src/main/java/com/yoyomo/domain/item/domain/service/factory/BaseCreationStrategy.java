@@ -2,16 +2,18 @@ package com.yoyomo.domain.item.domain.service.factory;
 
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.item.domain.entity.type.Type;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BaseCreationStrategy implements ItemCreationStrategy {
 
-    private static final BaseCreationStrategy INSTANCE = new BaseCreationStrategy();
-
-    private BaseCreationStrategy() {
-    }
-
-    public static BaseCreationStrategy getInstance() {
-        return INSTANCE;
+    @Override
+    public boolean isSupported(Type type) {
+        return Type.ANNOUNCE == type;
     }
 
     @Override
@@ -25,5 +27,4 @@ public class BaseCreationStrategy implements ItemCreationStrategy {
                 .required(request.required())
                 .build();
     }
-
 }

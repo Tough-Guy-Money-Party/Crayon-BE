@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingStyleManagementUsecaseImpl implements LandingStyleManagementUsecase {
+    
     private final ClubGetService clubGetService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
     private final LandingUpdateService landingUpdateService;
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public void update(LandingRequestDTO.Style dto) {
         Club club = clubGetService.find(dto.clubId());
         Landing landing = landingGetService.find(club);
@@ -31,7 +33,6 @@ public class LandingStyleManagementUsecaseImpl implements LandingStyleManagement
     public LandingResponseDTO.Style read(String clubId) {
         Club club = clubGetService.find(clubId);
         Landing landing = landingGetService.find(club);
-        return landingMapper.toStyleResponse(club,landing);
+        return landingMapper.toStyleResponse(club, landing);
     }
-
 }

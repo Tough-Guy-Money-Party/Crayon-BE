@@ -39,5 +39,4 @@ public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime>
     public EnhancedType<LocalDateTime> type() {
         return EnhancedType.of(LocalDateTime.class);
     }
-
 }

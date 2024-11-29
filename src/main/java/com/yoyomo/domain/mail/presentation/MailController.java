@@ -1,11 +1,9 @@
 package com.yoyomo.domain.mail.presentation;
 
-import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
 import com.yoyomo.domain.mail.application.usecase.MailManageUseCase;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -14,11 +14,15 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 
 @Configuration
 public class AwsDynamodbConfig {
+
     private static final String TABLE_NAME = "MailTable";
+
     @Value("${cloud.aws.credentials.mailAccessKey}")
     private String accessKey;
+
     @Value("${cloud.aws.credentials.mailSecretKey}")
     private String secretKey;
+
     @Value("${cloud.aws.region.static}")
     private String region;
 

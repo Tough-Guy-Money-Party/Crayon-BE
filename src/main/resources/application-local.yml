@@ -23,6 +23,7 @@ spring:
       username: ${USERNAME}
       password: ${PASSWORD}
       authentication-database: admin
+      uuid-representation: standard
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
@@ -53,7 +54,7 @@ cloud:
     route53:
       hostedZoneId: ${HOSTED_ZONE_ID}
     accountId: ${AWS_ACCOUNT_ID}
-    acm : ${ACM}
+    acm: ${ACM}
 
-vite :
+vite:
   uri: ${VITE_PUBLIC_API_URL}
