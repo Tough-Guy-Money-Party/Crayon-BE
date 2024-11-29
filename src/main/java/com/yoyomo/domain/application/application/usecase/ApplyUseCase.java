@@ -11,6 +11,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.AnswerSaveService;
 import com.yoyomo.domain.application.domain.service.AnswerUpdateService;
+import com.yoyomo.domain.application.domain.service.ApplicationAuthService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
@@ -35,12 +36,14 @@ public class ApplyUseCase {
     private final ApplicationSaveService applicationSaveService;
     private final AnswerSaveService answerSaveService;
     private final ApplicationGetService applicationGetService;
+    private final ApplicationAuthService applicationAuthService;
     private final AnswerGetService answerGetService;
     private final AnswerUpdateService answerUpdateService;
     private final ApplicationUpdateService applicationUpdateService;
     private final UserMapperImpl userMapper;
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
     private final UserGetService userGetService;
+
 
     @Transactional
     public void apply(Save dto, String recruitmentId, Long userId) {
@@ -71,9 +74,11 @@ public class ApplyUseCase {
     }
 
     @Transactional
-    public void update(String applicationId, Update dto) {
+    public void update(String applicationId, Update dto, Long userId) {
+        User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
+        applicationAuthService.checkAuthorization(application, applicant);
         recruitment.checkAvailable();
 
         List<Item> items = itemManageUseCase.create(dto.answers());

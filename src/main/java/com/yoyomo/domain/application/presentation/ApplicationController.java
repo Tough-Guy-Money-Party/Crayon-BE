@@ -81,8 +81,9 @@ public class ApplicationController {
 
     @PatchMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내 지원서 응답 수정")
-    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid Update dto) {
-        applyUseCase.update(applicationId, dto);
+    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid Update dto,
+                                    @CurrentUser @Parameter(hidden = true) Long userId) {
+        applyUseCase.update(applicationId, dto, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
