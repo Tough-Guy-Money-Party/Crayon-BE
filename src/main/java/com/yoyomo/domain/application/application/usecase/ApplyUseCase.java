@@ -21,6 +21,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.application.mapper.UserMapperImpl;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,14 +41,17 @@ public class ApplyUseCase {
     private final ApplicationUpdateService applicationUpdateService;
     private final UserMapperImpl userMapper;
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
+    private final UserGetService userGetService;
 
     @Transactional
-    public void apply(Save dto, String recruitmentId) {
+    public void apply(Save dto, String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         recruitment.checkAvailable();
 
+        User applicant = userGetService.find(userId);
+
         List<Item> items = itemManageUseCase.create(dto.answers());
-        Application application = dto.toApplication(recruitment);
+        Application application = dto.toApplication(recruitment, applicant);
 
         applicationSaveService.save(recruitment, application); //todo application.answerId 추가
         answerSaveService.save(items, application.getId());
