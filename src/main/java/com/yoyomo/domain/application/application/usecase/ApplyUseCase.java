@@ -70,7 +70,7 @@ public class ApplyUseCase {
         User user = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
         applicationAuthService.checkAuthorization(application, user);
-        
+
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
         return applicationMapper.toMyResponse(application, answer);
@@ -89,8 +89,10 @@ public class ApplyUseCase {
     }
 
     @Transactional
-    public void delete(String applicationId) {
+    public void delete(String applicationId, Long userId) {
+        User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId); // todo 권한조회
+        applicationAuthService.checkAuthorization(application, applicant);
         applicationUpdateService.delete(application);
     }
 }

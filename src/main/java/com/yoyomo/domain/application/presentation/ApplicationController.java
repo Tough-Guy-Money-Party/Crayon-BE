@@ -91,8 +91,9 @@ public class ApplicationController {
 
     @DeleteMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 지원서 삭제")
-    public ResponseDto<Void> delete(@PathVariable String applicationId) {
-        applyUseCase.delete(applicationId);
+    public ResponseDto<Void> delete(@PathVariable String applicationId,
+                                    @CurrentUser @Parameter(hidden = true) Long userId) {
+        applyUseCase.delete(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
