@@ -38,10 +38,6 @@ public interface ApplicationMapper {
     @Mapping(target = "currentStage", source = "application.process.stage")
     Response toResponse(Application application);
 
-//    default User getUser(Save dto) {
-//        return new User(dto.name(), dto.email(), dto.tel());
-//    }
-
     // 수정: Evaluation 도메인 생성 시 개발
     @Mapping(target = "id", source = "application.id")
     MyResponse toMyResponse(Application application, Answer answer);
