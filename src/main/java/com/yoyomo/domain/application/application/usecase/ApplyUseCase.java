@@ -66,8 +66,11 @@ public class ApplyUseCase {
                 .toList();
     }
 
-    public MyResponse read(String applicationId) {
+    public MyResponse read(String applicationId, Long userId) {
+        User user = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
+        applicationAuthService.checkAuthorization(application, user);
+        
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
         return applicationMapper.toMyResponse(application, answer);

@@ -73,8 +73,9 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내가 쓴 지원서 불러오기")
-    public ResponseDto<MyResponse> read(@PathVariable String applicationId) {
-        MyResponse response = applyUseCase.read(applicationId);
+    public ResponseDto<MyResponse> readApplication(@PathVariable String applicationId,
+                                                   @CurrentUser @Parameter(hidden = true) Long userId) {
+        MyResponse response = applyUseCase.read(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
