@@ -1,7 +1,11 @@
 package com.yoyomo.domain.mail.domain.entity;
 
 import com.yoyomo.domain.mail.application.converter.LocalDateTimeConverter;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbConvertedBy;
@@ -28,7 +32,7 @@ public class Mail {
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
-    public String getId(){
+    public String getId() {
         return id;
     }
 
@@ -36,5 +40,4 @@ public class Mail {
     public LocalDateTime getScheduledTime() {
         return scheduledTime;
     }
-
 }

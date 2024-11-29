@@ -8,6 +8,9 @@ import com.yoyomo.domain.user.domain.entity.Manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ClubManagerGetService {
@@ -17,5 +20,9 @@ public class ClubManagerGetService {
     public ClubManager find(Club club, Manager manager) {
         return clubMangerRepository.findByClubAndManager(club, manager)
                 .orElseThrow(ClubManagerNotFoundException::new);
+    }
+
+    public List<ClubManager> readAllManagers(UUID clubId) {
+        return clubMangerRepository.findAllByClubId(clubId);
     }
 }

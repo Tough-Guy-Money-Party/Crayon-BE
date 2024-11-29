@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +29,8 @@ public class ResultController {
     @Operation(summary = "[Result] 사용자가 결과를 조회합니다.")
     @PostMapping
     public ResponseDto<List<Result>> announce(@RequestBody @Valid Find dto) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ_RESULT.getMessage(), resultManageUseCase.announce(dto));
+        List<Result> responses = resultManageUseCase.announce(dto);
+
+        return ResponseDto.of(OK.value(), SUCCESS_READ_RESULT.getMessage(), responses);
     }
 }

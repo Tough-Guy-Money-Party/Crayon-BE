@@ -1,19 +1,24 @@
 package com.yoyomo.domain.club.domain.entity;
 
-import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Update;
-import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
-import com.yoyomo.domain.club.exception.DuplicatedParticipationException;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
 import com.yoyomo.domain.landing.domain.entity.Landing;
-import com.yoyomo.domain.user.domain.entity.Manager;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -30,13 +35,10 @@ public class Club extends BaseEntity {
 
     private String name;
 
+    @Column(unique = true)
     private String subDomain;
 
     private String code;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ClubManager> clubManagers = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "landing_id")
@@ -56,14 +58,6 @@ public class Club extends BaseEntity {
         return code;
     }
 
-    public void addClubManager(ClubManager clubManager) {
-        this.clubManagers.add(clubManager);
-    }
-
-    public void addLanding(Landing landing) {
-        this.landing = landing;
-    }
-
     public void update(Update dto) {
         this.name = dto.name();
     }
@@ -79,20 +73,5 @@ public class Club extends BaseEntity {
 
     public void delete() {
         this.deletedAt = LocalDateTime.now();
-    }
-
-    public static void checkDuplicateParticipate(Club club, Manager manager) {
-        if(club.contains(manager))
-            throw new DuplicatedParticipationException();
-    }
-
-    public static void checkAuthority(Club club, Manager manager) {
-        if(!club.contains(manager))
-            throw new ClubAccessDeniedException();
-    }
-
-    private boolean contains(Manager manager) {
-        return this.getClubManagers().stream()
-                .anyMatch(clubManager -> clubManager.getManager().equals(manager));
     }
 }

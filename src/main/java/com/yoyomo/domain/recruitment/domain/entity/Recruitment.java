@@ -3,15 +3,33 @@ package com.yoyomo.domain.recruitment.domain.entity;
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
+import com.yoyomo.domain.recruitment.exception.ProcessEmptyException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
@@ -39,7 +57,7 @@ public class Recruitment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Submit submit;
 
-    private Boolean isActive;
+    private boolean isActive;
 
     private LocalDateTime startAt;
 
@@ -47,7 +65,7 @@ public class Recruitment extends BaseEntity {
 
     private String formId;
 
-    private Integer totalApplicantsCount;   // 수정: applicant++
+    private int totalApplicantsCount;   // 수정: applicant++
 
     private LocalDateTime deletedAt;
 
@@ -57,12 +75,6 @@ public class Recruitment extends BaseEntity {
 
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
-
-    @PrePersist
-    public void init() {
-        isActive = false;
-        totalApplicantsCount = 0;
-    }
 
     public void addProcesses(List<Process> processes) {
         this.processes.clear();
@@ -102,7 +114,6 @@ public class Recruitment extends BaseEntity {
         return this.endAt.isBefore(LocalDateTime.now());
     }
 
-
     public void plusApplicantsCount() {
         this.totalApplicantsCount++;
     }
@@ -112,10 +123,32 @@ public class Recruitment extends BaseEntity {
     }
 
     public void checkAvailable() {
-        if (this.deletedAt != null)
+        if (this.deletedAt != null) {
             throw new RecruitmentNotFoundException();
+        }
 
-        if (getStatus(this) != RECRUITING)
+        if (getStatus(this) != RECRUITING) {
             throw new OutOfDeadlineException();
+        }
+    }
+
+    public boolean isLastProcess(Process current) {
+        Long lastProcessId = processes.get(processes.size() - 1).getId();
+        return Objects.equals(lastProcessId, current.getId());
+    }
+
+    public LocalDate getRecruitmentEndDate() {
+        return processes.stream()
+                .max(Comparator.comparing(Process::getEndAt))
+                .map(process -> process.getEndAt().toLocalDate())
+                .orElseThrow(ProcessEmptyException::new);
+    }
+
+    public Process getDocumentProcess() {
+        return processes.get(0);
+    }
+
+    public Process getProcess(int stage) {
+        return processes.get(stage);
     }
 }

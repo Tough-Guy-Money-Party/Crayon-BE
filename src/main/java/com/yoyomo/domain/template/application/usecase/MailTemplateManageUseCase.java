@@ -2,6 +2,7 @@ package com.yoyomo.domain.template.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
 import com.yoyomo.domain.template.application.dto.response.MailTemplateGetResponse;
@@ -21,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.yoyomo.domain.club.domain.entity.Club.checkAuthority;
-
 @Service
 @RequiredArgsConstructor
 public class MailTemplateManageUseCase {
@@ -33,7 +32,8 @@ public class MailTemplateManageUseCase {
     private final MailTemplateGetService mailTemplateGetService;
     private final MailTemplateUpdateService mailTemplateUpdateService;
     private final MailTemplateDeleteService mailTemplateDeleteService;
-    
+    private final ClubManagerAuthService clubManagerAuthService;
+
     @Transactional
     public void save(MailTemplateSaveRequest dto, Long userId) {
         Club club = checkAuthorityByClub(dto.clubId(), userId);
@@ -68,7 +68,7 @@ public class MailTemplateManageUseCase {
     private Club checkAuthorityByClub(String clubId, Long userId) {
         Club club = clubGetService.find(clubId);
         Manager manager = userGetService.find(userId);
-        checkAuthority(club, manager);
+        clubManagerAuthService.checkAuthorization(club, manager);
 
         return club;
     }
@@ -76,7 +76,7 @@ public class MailTemplateManageUseCase {
     private MailTemplate checkAuthorityByMailTemplate(UUID templateId, Long userId) {
         MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
         Manager manager = userGetService.find(userId);
-        checkAuthority(mailTemplate.getClub(), manager);
+        clubManagerAuthService.checkAuthorization(mailTemplate.getClub(), manager);
 
         return mailTemplate;
     }

@@ -5,6 +5,8 @@ import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ClubManagerDeleteService {
@@ -13,5 +15,9 @@ public class ClubManagerDeleteService {
 
     public void delete(ClubManager clubManager) {
         clubMangerRepository.delete(clubManager);
+    }
+
+    public void delete(List<Long> clubManagerIds) {
+        clubMangerRepository.deleteAllById(clubManagerIds);
     }
 }

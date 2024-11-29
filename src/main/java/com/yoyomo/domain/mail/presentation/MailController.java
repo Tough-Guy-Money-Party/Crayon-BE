@@ -24,9 +24,8 @@ public class MailController {
 
     @PostMapping("/schedule")
     @Operation(summary = "예약 메일 발송 요청")
-    public ResponseDto<String> create(@RequestBody Reserve dto){
+    public ResponseDto<String> create(@RequestBody Reserve dto) {
         mailManageUseCase.reserve(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SCHEDULE_SAVE_SUCCESS.getMessage());
     }
-
 }

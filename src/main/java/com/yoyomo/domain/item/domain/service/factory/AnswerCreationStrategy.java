@@ -3,18 +3,20 @@ package com.yoyomo.domain.item.domain.service.factory;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
-import org.springframework.stereotype.Service;
+import com.yoyomo.domain.item.domain.entity.type.Type;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Service
-public class AnswerCreationStrategy implements ItemCreationStrategy{
-    private static AnswerCreationStrategy instance;
+@Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AnswerCreationStrategy implements ItemCreationStrategy {
 
-    public static AnswerCreationStrategy getInstance() {
-        if (instance == null) {
-            return instance = new AnswerCreationStrategy();
-        }
-        return instance;
+    @Override
+    public boolean isSupported(Type type) {
+        return Type.SHORT_FORM == type || Type.LONG_FORM == type;
     }
+
     @Override
     public Item create(ItemRequest request) {
         return Answer.builder()

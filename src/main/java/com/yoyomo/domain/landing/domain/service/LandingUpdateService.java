@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingUpdateService {
+    
     private final ClubUpdateService clubUpdateService;
 
     public void update(Landing landing, Style dto) {

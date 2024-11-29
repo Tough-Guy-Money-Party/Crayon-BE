@@ -5,10 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 
 public class ApplicationVerificationRequestDto {
 
-    public record VerificationRequest (
+    public record VerificationRequest(
             @Email String email,
             @NotBlank String code
-    ){}
-
-
+    ) {
+    }
 }
