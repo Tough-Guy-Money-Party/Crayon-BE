@@ -22,7 +22,6 @@ import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCas
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
 import com.yoyomo.domain.application.application.usecase.InterviewManageUseCase;
-import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,8 +65,8 @@ public class ApplicationController {
 
     @GetMapping
     @Operation(summary = "[Applicant] 내 지원서 목록 조회")
-    public ResponseDto<List<Response>> readAll(@Valid @RequestBody Find dto) {
-        List<Response> responses = applyUseCase.readAll(dto);
+    public ResponseDto<List<Response>> readAll(@CurrentUser @Parameter(hidden = true) Long userId) {
+        List<Response> responses = applyUseCase.readAll(userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), responses);
     }

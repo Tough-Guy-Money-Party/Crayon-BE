@@ -2,7 +2,6 @@ package com.yoyomo.domain.application.application.usecase;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-import static com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
@@ -57,8 +56,8 @@ public class ApplyUseCase {
         answerSaveService.save(items, application.getId());
     }
 
-    public List<Response> readAll(Find dto) {
-        User user = userMapper.from(dto);
+    public List<Response> readAll(Long userId) {
+        User user = userGetService.find(userId);
         return applicationGetService.findAll(user).stream()
                 .map(applicationMapper::toResponse)
                 .toList();
