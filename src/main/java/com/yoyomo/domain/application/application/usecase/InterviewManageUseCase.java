@@ -8,7 +8,7 @@ import com.yoyomo.domain.application.domain.entity.Interview;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class InterviewManageUseCase {
 
     private Application checkAuthorityByApplication(String applicationId, Long userId) {
         Application application = applicationGetService.find(applicationId);
-        Manager manager = userGetService.find(userId);
+        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         return application;

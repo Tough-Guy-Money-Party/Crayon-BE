@@ -10,7 +10,7 @@ import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class EvaluationManageUseCase {
     @Transactional
     public void save(String applicationId, Save dto, long userId) {
         Application application = applicationGetService.find(applicationId);
-        Manager manager = userGetService.find(userId);
+        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         Evaluation evaluation = dto.toEvaluation(manager, application);
@@ -56,7 +56,8 @@ public class EvaluationManageUseCase {
     }
 
     private void checkMyEvaluation(Evaluation evaluation, Long userId) {
-        if (!evaluation.getManager().getId().equals(userId))
+        if (!evaluation.getManager().getId().equals(userId)) {
             throw new AccessDeniedException();
+        }
     }
 }

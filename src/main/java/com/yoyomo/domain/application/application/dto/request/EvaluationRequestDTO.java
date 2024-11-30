@@ -4,7 +4,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.validation.constraints.NotNull;
 
 public class EvaluationRequestDTO {
@@ -14,7 +14,7 @@ public class EvaluationRequestDTO {
             @NotNull Status status,
             String memo
     ) {
-        public Evaluation toEvaluation(Manager manager, Application application) {
+        public Evaluation toEvaluation(User manager, Application application) {
             return Evaluation.builder()
                     .rating(rating)
                     .processId(application.getProcess().getId())

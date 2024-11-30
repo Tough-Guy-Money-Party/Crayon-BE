@@ -6,10 +6,9 @@ import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.domain.entity.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

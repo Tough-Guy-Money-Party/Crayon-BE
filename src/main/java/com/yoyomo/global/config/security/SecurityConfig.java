@@ -1,7 +1,7 @@
 package com.yoyomo.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.domain.user.domain.repository.UserRepository;
 import com.yoyomo.global.common.dto.ResponseDto;
 import com.yoyomo.global.config.jwt.JwtFilter;
 import com.yoyomo.global.config.jwt.JwtProvider;
@@ -26,7 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
-    private final ManagerRepository managerRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
@@ -81,12 +81,13 @@ public class SecurityConfig {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
-            String json = new ObjectMapper().writeValueAsString(ResponseDto.of(401, ResponseMessage.INVALID_TOKEN.getMessage()));
+            String json = new ObjectMapper().writeValueAsString(
+                    ResponseDto.of(401, ResponseMessage.INVALID_TOKEN.getMessage()));
             response.getWriter().write(json);
         };
     }
 
     public JwtFilter jwtAuthenticationProcessingFilter() {
-        return new JwtFilter(jwtProvider, managerRepository);
+        return new JwtFilter(jwtProvider, userRepository);
     }
 }
