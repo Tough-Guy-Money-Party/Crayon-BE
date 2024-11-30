@@ -11,6 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByRefreshToken(String token);
 
-    Optional<User> findByIdAndDeletedAtIsNull(Long id);
+    Optional<User> findByIdAndDeletedAtIsNull(long id);
 }
 
