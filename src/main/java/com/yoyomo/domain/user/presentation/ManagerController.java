@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class ManagerController {
 
-    private final UserManageUsecase managerManageUseCase;
+    private final UserManageUsecase userManageUsecase;
 
     @PostMapping(value = "/login/{code}")
     @Operation(summary = "카카오 로그인 및 회원가입")
     public ResponseDto<Response> authenticate(@PathVariable String code) {
-        Response response = managerManageUseCase.authenticate(code);
+        Response response = userManageUsecase.authenticate(code);
         return ResponseDto.of(OK.value(), SUCCESS_LOGIN.getMessage(), response);
     }
 }
