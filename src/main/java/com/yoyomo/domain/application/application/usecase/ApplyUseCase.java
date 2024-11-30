@@ -60,8 +60,8 @@ public class ApplyUseCase {
     }
 
     public List<Response> readAll(Long userId) {
-        User user = userGetService.find(userId);
-        return applicationGetService.findAll(user).stream()
+        User applicant = userGetService.find(userId);
+        return applicationGetService.findAll(applicant).stream()
                 .map(applicationMapper::toResponse)
                 .toList();
     }
