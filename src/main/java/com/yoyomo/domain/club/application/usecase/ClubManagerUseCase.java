@@ -11,7 +11,7 @@ import com.yoyomo.domain.club.domain.service.ClubManagerGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubValidateService;
-import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
+import com.yoyomo.domain.user.application.dto.response.UserResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -35,7 +35,7 @@ public class ClubManagerUseCase {
     private final ClubManagerGetService clubManagerGetService;
     private final ManagerMapper managerMapper;
 
-    public List<ManagerResponseDTO.ManagerInfo> getManagers(UUID clubId, Long userId) {
+    public List<UserResponseDTO.ManagerInfo> getManagers(UUID clubId, Long userId) {
         clubValidateService.checkAuthority(clubId, userId);
         List<ClubManager> clubManagers = clubManagerGetService.readAllManagers(clubId);
 

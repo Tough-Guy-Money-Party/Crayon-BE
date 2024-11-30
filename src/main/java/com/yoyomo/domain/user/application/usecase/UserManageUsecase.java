@@ -1,7 +1,7 @@
 package com.yoyomo.domain.user.application.usecase;
 
-import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
-import com.yoyomo.domain.user.application.mapper.ManagerMapper;
+import com.yoyomo.domain.user.application.dto.response.UserResponseDTO;
+import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
@@ -18,32 +18,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ManagerManageUseCase {
+public class UserManageUsecase {
 
     private final UserGetService userGetService;
     private final UserSaveService userSaveService;
     private final KakaoServiceNew kakaoServiceNew;
     private final JwtProvider jwtProvider;
-    private final ManagerMapper mapper;
+    private final UserMapper mapper;
 
-    public ManagerResponseDTO.Response authenticate(String code) {
+    public UserResponseDTO.Response authenticate(String code) {
         KakaoTokenResponse tokenResponse = kakaoServiceNew.getToken(code);
         KakaoUserInfoResponse userInfo = kakaoServiceNew.getUserInfo(tokenResponse.getAccess_token());
 
         return registerMemberIfNew(userInfo);
     }
 
-    private ManagerResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
+    private UserResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
         String email = userInfo.getKakao_account().getEmail();
 
         if (userGetService.existsByEmail(email)) {
-            return getManagerResponse(email);
+            return getUserResponse(email);
         }
 
-        return registerNewManager(userInfo.getKakao_account());
+        return registerNewUser(userInfo.getKakao_account());
     }
 
-    private ManagerResponseDTO.Response registerNewManager(KakaoAccount account) {
+    private UserResponseDTO.Response registerNewUser(KakaoAccount account) {
         User user = mapper.from(account);
         userSaveService.save(user);
 
@@ -55,7 +55,7 @@ public class ManagerManageUseCase {
         return mapper.toResponseDTO(user, tokenDto);
     }
 
-    private ManagerResponseDTO.Response getManagerResponse(String email) {
+    private UserResponseDTO.Response getUserResponse(String email) {
         User user = userGetService.findByEmail(email);
         JwtResponse tokenDto = new JwtResponse(
                 jwtProvider.createAccessToken(user.getId(), user.getEmail()),
