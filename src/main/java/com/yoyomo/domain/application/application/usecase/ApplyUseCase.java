@@ -63,9 +63,9 @@ public class ApplyUseCase {
     }
 
     public MyResponse read(String applicationId, Long userId) {
-        User user = userGetService.find(userId); // todo: applicant로 변경
+        User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
-        application.checkAuthorization(user);
+        application.checkAuthorization(applicant);
 
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
