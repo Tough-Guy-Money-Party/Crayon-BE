@@ -11,7 +11,6 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.AnswerSaveService;
 import com.yoyomo.domain.application.domain.service.AnswerUpdateService;
-import com.yoyomo.domain.application.domain.service.ApplicationAuthService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
@@ -19,7 +18,6 @@ import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.application.mapper.UserMapperImpl;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
@@ -36,11 +34,9 @@ public class ApplyUseCase {
     private final ApplicationSaveService applicationSaveService;
     private final AnswerSaveService answerSaveService;
     private final ApplicationGetService applicationGetService;
-    private final ApplicationAuthService applicationAuthService;
     private final AnswerGetService answerGetService;
     private final AnswerUpdateService answerUpdateService;
     private final ApplicationUpdateService applicationUpdateService;
-    private final UserMapperImpl userMapper;
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
     private final UserGetService userGetService;
 
@@ -67,9 +63,9 @@ public class ApplyUseCase {
     }
 
     public MyResponse read(String applicationId, Long userId) {
-        User user = userGetService.find(userId);
+        User user = userGetService.find(userId); // todo: applicant로 변경
         Application application = applicationGetService.find(applicationId);
-        applicationAuthService.checkAuthorization(application, user);
+        application.checkAuthorization(user);
 
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
@@ -81,7 +77,7 @@ public class ApplyUseCase {
         User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
-        applicationAuthService.checkAuthorization(application, applicant);
+        application.checkAuthorization(applicant);
         recruitment.checkAvailable();
 
         List<Item> items = itemManageUseCase.create(dto.answers());
@@ -92,7 +88,7 @@ public class ApplyUseCase {
     public void delete(String applicationId, Long userId) {
         User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
-        applicationAuthService.checkAuthorization(application, applicant);
+        application.checkAuthorization(applicant);
         applicationUpdateService.delete(application);
     }
 }
