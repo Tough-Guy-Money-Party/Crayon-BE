@@ -1,5 +1,7 @@
 package com.yoyomo.domain.application.application.dto.response;
 
+import static com.yoyomo.domain.application.application.dto.response.AnswerResponseDTO.Response.toAnswerResponse;
+
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Interview;
@@ -44,13 +46,6 @@ public class ApplicationResponseDTO {
                     application.getCreatedAt(),
                     toAnswerResponse(answer),
                     evaluations
-            );
-        }
-
-        private static AnswerResponseDTO.Response toAnswerResponse(Answer answer) {
-            return new AnswerResponseDTO.Response(
-                    answer.getId(),
-                    answer.getItems()
             );
         }
     }
