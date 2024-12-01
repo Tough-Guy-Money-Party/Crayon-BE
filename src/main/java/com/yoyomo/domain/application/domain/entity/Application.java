@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -95,5 +97,17 @@ public class Application extends BaseEntity {
         if (!this.getUser().equals(user)) {
             throw new AccessDeniedException();
         }
+    }
+
+    public boolean isBeforeInterview() {
+        List<Type> types = this.getProcess().getRecruitment().getProcesses().stream()
+                .map(Process::getType)
+                .toList();
+
+        if (!types.contains(Type.INTERVIEW)) {
+            return false;
+        }
+
+        return types.indexOf(Type.INTERVIEW) > this.getProcess().getStage();
     }
 }
