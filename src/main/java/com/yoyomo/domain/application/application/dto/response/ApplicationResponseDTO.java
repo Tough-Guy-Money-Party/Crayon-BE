@@ -7,8 +7,6 @@ import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
-import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,25 +38,13 @@ public class ApplicationResponseDTO {
                     application.getStatus(),
                     application.getAverageRating(),
                     application.getInterview(),
-                    isBeforeInterview(application),
+                    application.isBeforeInterview(),
                     application.getProcess().getStage(),
                     application.getProcess().getTitle(),
                     application.getCreatedAt(),
                     toAnswerResponse(answer),
                     evaluations
             );
-        }
-
-        private static boolean isBeforeInterview(Application application) {
-            List<Type> types = application.getProcess().getRecruitment().getProcesses().stream()
-                    .map(Process::getType)
-                    .toList();
-
-            if (!types.contains(Type.INTERVIEW)) {
-                return false;
-            }
-
-            return types.indexOf(Type.INTERVIEW) > application.getProcess().getStage();
         }
 
         private static AnswerResponseDTO.Response toAnswerResponse(Answer answer) {

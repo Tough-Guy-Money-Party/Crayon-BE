@@ -20,8 +20,10 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,11 +63,17 @@ public class ApplicationManageUseCase {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
-        return applicationGetService.findAll(process, pageable)
+        List<Detail> details = applicationGetService.findAll(process, pageable)
                 .map(application -> Detail.toDetail(
                         application, answerGetService.findByApplicationIdOrNull(application.getId()),
                         getEvaluations(application)
-                ));
+                ))
+                .filter(Objects::nonNull)
+                .toList();
+
+        long availableDetailCount = details.size();
+
+        return new PageImpl<>(details, pageable, availableDetailCount);
     }
 
 
