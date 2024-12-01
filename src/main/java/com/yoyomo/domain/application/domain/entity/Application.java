@@ -78,6 +78,10 @@ public class Application extends BaseEntity {
         this.interview = interview;
     }
 
+    public void addAnswer(String answerId) {
+        this.answerId = answerId;
+    }
+
     public void evaluate(Status status, Rating rating) {
         this.averageRating = rating;
         this.status = status;
