@@ -46,7 +46,7 @@ public class ApplicationManageUseCase {
         List<EvaluationResponseDTO.Response> evaluations = getEvaluations(application);
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
-        return applicationMapper.toDetail(application, answer, evaluations);
+        return Detail.toDetail(application, answer, evaluations);
     }
 
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
@@ -62,11 +62,12 @@ public class ApplicationManageUseCase {
         Process process = processGetService.find(recruitment, stage);
 
         return applicationGetService.findAll(process, pageable)
-                .map(application -> applicationMapper.toDetail(
-                        application, answerGetService.findByApplicationId(application.getId()),
+                .map(application -> Detail.toDetail(
+                        application, answerGetService.findByApplicationIdOrNull(application.getId()),
                         getEvaluations(application)
                 ));
     }
+
 
     @Transactional
     public void updateProcess(Stage dto, Long userId, String recruitmentId) {
