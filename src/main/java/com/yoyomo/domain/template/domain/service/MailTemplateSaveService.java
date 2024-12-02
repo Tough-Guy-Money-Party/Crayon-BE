@@ -25,11 +25,26 @@ public class MailTemplateSaveService {
         MailTemplate template = dto.toMailTemplate(club);
         UUID templateId = mailTemplateRepository.save(template).getId();
 
-        saveTemplate(dto, templateId);
+        uploadTemplate(dto, templateId);
     }
 
-    private void saveTemplate(MailTemplateSaveRequest dto, UUID templateId) {
+    public UUID uploadTemplate(MailTemplateSaveRequest dto) {
+        UUID templateId = UUID.randomUUID();
+        uploadTemplate(dto, templateId);
+        return templateId;
+    }
 
+    private void uploadTemplate(MailTemplateSaveRequest dto, UUID templateId) {
+        CreateTemplateRequest request = buildRequest(dto, templateId);
+
+        try {
+            sesClient.createTemplate(request);
+        } catch (SesException e) {
+            throw new SesTemplateException(e.getMessage());
+        }
+    }
+
+    private CreateTemplateRequest buildRequest(MailTemplateSaveRequest dto, UUID templateId) {
         Template template = Template.builder()
                 .templateName(templateId.toString())
                 .subjectPart(dto.subject())
@@ -37,14 +52,8 @@ public class MailTemplateSaveService {
                 .htmlPart(dto.htmlPart())
                 .build();
 
-        CreateTemplateRequest saveRequest = CreateTemplateRequest.builder()
+        return CreateTemplateRequest.builder()
                 .template(template)
                 .build();
-
-        try {
-            sesClient.createTemplate(saveRequest);
-        } catch (SesException e) {
-            throw new SesTemplateException(e.getMessage());
-        }
     }
 }
