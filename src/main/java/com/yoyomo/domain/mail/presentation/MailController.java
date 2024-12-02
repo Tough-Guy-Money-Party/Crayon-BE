@@ -1,6 +1,6 @@
 package com.yoyomo.domain.mail.presentation;
 
-import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
+import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,14 +26,14 @@ public class MailController {
 
     @PostMapping("/schedule")
     @Operation(summary = "예약 메일 발송 요청")
-    public ResponseDto<String> create(@RequestBody @Valid MailReservationRequest dto){
+    public ResponseDto<String> create(@RequestBody @Valid MailRequest dto){
         mailManageUseCase.reserve(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SCHEDULED_MAIL_UPLOAD_SUCCESS.getMessage());
     }
 
     @PostMapping("/direct")
     @Operation(summary = "예약 즉시 전송 요청")
-    public ResponseDto<String> direct(@RequestBody @Valid MailReservationRequest dto){
+    public ResponseDto<String> direct(@RequestBody @Valid MailRequest dto){
         mailManageUseCase.direct(dto);
         return ResponseDto.of(HttpStatus.OK.value(), DIRECT_MAIL_SEND_SUCCESS.getMessage());
     }

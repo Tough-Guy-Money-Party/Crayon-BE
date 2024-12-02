@@ -1,6 +1,6 @@
 package com.yoyomo.domain.mail.domain.service;
 
-import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
+import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class MailReserveService {
     @Value("${mail.scheduler.arn}")
     private String roleArn;
 
-    public void create(MailReservationRequest dto){
+    public void create(MailRequest dto){
         String cron = toCron(dto.scheduledTime());
 
         // 환경변수 처리
