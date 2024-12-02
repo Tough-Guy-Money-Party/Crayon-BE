@@ -97,7 +97,7 @@ public class MailManageUseCaseImpl {
                                       Set<CustomType> failCustomTypes, UUID failTemplateId) {
         return applications.stream()
                 .map(application -> {
-                    boolean isPass = application.getStatus().equals(Status.PASS);
+                    boolean isPass = application.getStatus() == Status.PASS;
                     UUID templateId = isPass ? passTemplateId : failTemplateId;
                     Set<CustomType> customTypes = isPass ? passCustomTypes : failCustomTypes;
                     return convert(dto, application, recruitment, customTypes, templateId);
