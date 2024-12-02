@@ -9,6 +9,7 @@ import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ApplicationResponseDTO {
             List<EvaluationResponseDTO.Response> evaluations
     ) {
         public static Detail toDetail(Application application, Answer answer,
-                                      List<EvaluationResponseDTO.Response> evaluations) {
+                                      List<EvaluationResponseDTO.Response> evaluations, List<Type> types) {
 
             return new Detail(
                     application.getId().toString(),
@@ -37,7 +38,7 @@ public class ApplicationResponseDTO {
                     application.getStatus(),
                     application.getAverageRating(),
                     application.getInterview(),
-                    application.isBeforeInterview(),
+                    application.isBeforeInterview(types),
                     application.getProcess().getStage(),
                     application.getProcess().getTitle(),
                     application.getCreatedAt(),

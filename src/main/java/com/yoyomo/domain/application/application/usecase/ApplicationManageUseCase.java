@@ -15,6 +15,7 @@ import com.yoyomo.domain.application.domain.service.EvaluationGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -46,7 +47,10 @@ public class ApplicationManageUseCase {
         List<EvaluationResponseDTO.Response> evaluations = getEvaluations(application);
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
-        return Detail.toDetail(application, answer, evaluations);
+        Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
+        List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
+
+        return Detail.toDetail(application, answer, evaluations, types);
     }
 
     public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
@@ -61,11 +65,14 @@ public class ApplicationManageUseCase {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
+        List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
+
         return applicationGetService.findAll(process, pageable)
                 .map(application -> Detail.toDetail(
                         application,
                         answerGetService.findByApplicationIdAsOptional(application.getId()).orElse(null),
-                        getEvaluations(application)
+                        getEvaluations(application),
+                        types
                 ));
     }
 

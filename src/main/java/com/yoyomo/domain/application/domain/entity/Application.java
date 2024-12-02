@@ -99,10 +99,7 @@ public class Application extends BaseEntity {
         }
     }
 
-    public boolean isBeforeInterview() {
-        List<Type> types = this.getProcess().getRecruitment().getProcesses().stream()
-                .map(Process::getType)
-                .toList();
+    public boolean isBeforeInterview(List<Type> types) {
 
         if (!types.contains(Type.INTERVIEW)) {
             return false;
