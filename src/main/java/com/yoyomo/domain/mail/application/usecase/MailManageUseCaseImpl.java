@@ -9,6 +9,7 @@ import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.service.MailSaveService;
 import com.yoyomo.domain.mail.domain.service.MailUtilService;
 import com.yoyomo.domain.mail.exception.DynamodbUploadException;
+import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
@@ -56,7 +57,7 @@ public class MailManageUseCaseImpl {
                 log.info("[MailManageUseCaseImpl] Lambda 호출 성공: {}", mailLambdaArn)
         ).exceptionally(e -> {
             log.error("[MailManageUseCaseImpl] Lambda 호출 실패: {}", e.getMessage());
-            return null;
+            throw new LambdaInvokeException();
         });
     }
 
