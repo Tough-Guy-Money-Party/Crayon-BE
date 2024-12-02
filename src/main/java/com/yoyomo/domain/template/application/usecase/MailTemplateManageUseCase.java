@@ -35,8 +35,8 @@ public class MailTemplateManageUseCase {
     private final ClubManagerAuthService clubManagerAuthService;
 
     @Transactional
-    public void save(MailTemplateSaveRequest dto, Long userId) {
-        Club club = checkAuthorityByClub(dto.clubId(), userId);
+    public void save(MailTemplateSaveRequest dto, UUID clubId, Long userId) {
+        Club club = checkAuthorityByClub(clubId.toString(), userId);
 
         mailTemplateSaveService.save(dto, club);
     }
