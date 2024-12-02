@@ -43,7 +43,7 @@ public class Application extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private Status status = Status.BEFORE_EVALUATION;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
