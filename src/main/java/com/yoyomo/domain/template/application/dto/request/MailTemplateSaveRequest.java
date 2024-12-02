@@ -9,8 +9,7 @@ public record MailTemplateSaveRequest(
         String customTemplateName,
         String subject,
         String htmlPart,
-        String textPart,
-        String clubId
+        String textPart
 ) {
     public MailTemplate toMailTemplate(Club club) {
         return MailTemplate.builder()
