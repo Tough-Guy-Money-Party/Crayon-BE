@@ -3,7 +3,7 @@ package com.yoyomo.domain.mail.application.usecase;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.mail.application.dto.request.MailReservationRequest;
+import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.service.MailSaveService;
@@ -44,11 +44,11 @@ public class MailManageUseCaseImpl {
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
 
-    public void reserve(MailReservationRequest dto) {
+    public void reserve(MailRequest dto) {
         create(dto);
     }
 
-    public void direct(MailReservationRequest dto) {
+    public void direct(MailRequest dto) {
         create(dto);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
 
@@ -60,7 +60,7 @@ public class MailManageUseCaseImpl {
         });
     }
 
-    private void create(MailReservationRequest dto) {
+    private void create(MailRequest dto) {
         long processId = dto.processId();
 
         Process process = processGetService.find(processId);
@@ -72,14 +72,14 @@ public class MailManageUseCaseImpl {
         checkUpload(uploadFutures);
     }
 
-    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, MailReservationRequest dto, Recruitment recruitment) {
+    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, MailRequest dto, Recruitment recruitment) {
         Stream.iterate(0, pageNumber -> pageNumber + 1)
                 .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
                 .takeWhile(applications -> !applications.isEmpty())
                 .forEach(applications -> uploadApplications(applications, uploadFutures, dto, recruitment));
     }
 
-    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, MailReservationRequest dto, Recruitment recruitment) {
+    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, MailRequest dto, Recruitment recruitment) {
         Set<CustomType> passCustomType = mailUtilService.extract(dto.passTemplate());
         Set<CustomType> failCustomType = mailUtilService.extract(dto.failTemplate());
 
@@ -92,7 +92,7 @@ public class MailManageUseCaseImpl {
         uploadFutures.add(uploadFuture);
     }
 
-    private List<Mail> convertToMails(List<Application> applications, MailReservationRequest dto, Recruitment recruitment,
+    private List<Mail> convertToMails(List<Application> applications, MailRequest dto, Recruitment recruitment,
                                       Set<CustomType> passCustomTypes, UUID passTemplateId,
                                       Set<CustomType> failCustomTypes, UUID failTemplateId) {
         return applications.stream()
@@ -105,7 +105,7 @@ public class MailManageUseCaseImpl {
                 .collect(Collectors.toList());
     }
 
-    private Mail convert(MailReservationRequest dto, Application application, Recruitment recruitment,
+    private Mail convert(MailRequest dto, Application application, Recruitment recruitment,
                          Set<CustomType> customTypes, UUID templateId) {
         Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
         String destination = application.getUser().getEmail();
