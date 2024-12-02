@@ -65,7 +65,8 @@ public class ApplicationManageUseCase {
 
         List<Detail> details = applicationGetService.findAll(process, pageable)
                 .map(application -> Detail.toDetail(
-                        application, answerGetService.findByApplicationIdOrNull(application.getId()),
+                        application,
+                        answerGetService.findByApplicationIdAsOptional(application.getId()).orElseGet(null),
                         getEvaluations(application)
                 ))
                 .filter(Objects::nonNull)
