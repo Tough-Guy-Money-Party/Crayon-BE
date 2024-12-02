@@ -2,21 +2,20 @@ package com.yoyomo.domain.mail.application.dto.request;
 
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.Status;
-import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
-import jakarta.validation.constraints.NotBlank;
+import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-public record MailReservationRequest(
-        @NotBlank Long processId,
+public record MailRequest(
+        @NotNull Long processId,
         @NotNull LocalDateTime scheduledTime,
-        @NotBlank UUID templateId,
-        @NotNull MailTemplateUpdateRequest template
+        @NotNull MailTemplateSaveRequest passTemplate,
+        @NotNull MailTemplateSaveRequest failTemplate
 ){
-    public Mail toMail(String source, String destination, Map<String, String> customData){
+    public Mail toMail(String source, String destination, Map<String, String> customData, UUID templateId){
         return Mail.builder()
                 .id(UUID.randomUUID().toString())
                 .templateId(templateId.toString())
