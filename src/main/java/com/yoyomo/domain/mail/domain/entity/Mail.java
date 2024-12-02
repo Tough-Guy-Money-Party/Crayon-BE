@@ -29,6 +29,7 @@ public class Mail {
     private String destination;
     private String status;
     private LocalDateTime scheduledTime;
+    private Long ttl;
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")

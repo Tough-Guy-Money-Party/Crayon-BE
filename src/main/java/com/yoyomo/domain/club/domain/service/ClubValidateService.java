@@ -6,20 +6,19 @@ import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
-import com.yoyomo.domain.user.domain.entity.Manager;
-import com.yoyomo.domain.user.domain.repository.ManagerRepository;
+import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.repository.UserRepository;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ClubValidateService {
 
     private final ClubRepository clubRepository;
-    private final ManagerRepository managerRepository;
+    private final UserRepository userRepository;
     private final ClubMangerRepository clubMangerRepository;
 
     public Club checkAuthority(String clubId, long userId) {
@@ -29,7 +28,7 @@ public class ClubValidateService {
     public Club checkAuthority(UUID clubId, long userId) {
         Club club = clubRepository.findByIdAndDeletedAtIsNull(clubId)
                 .orElseThrow(ClubNotFoundException::new);
-        Manager manager = managerRepository.findByIdAndDeletedAtIsNull(userId)
+        User manager = userRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (clubMangerRepository.existsByClubAndManager(club, manager)) {

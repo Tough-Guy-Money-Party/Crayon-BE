@@ -1,6 +1,6 @@
 package com.yoyomo.domain.club.domain.entity;
 
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,15 +29,15 @@ public class ClubManager {
     private Club club;
 
     @ManyToOne
-    @JoinColumn(name = "manager_id")
-    private Manager manager;
+    @JoinColumn(name = "user_id")
+    private User manager;
 
-    private ClubManager(Club club, Manager manager) {
+    private ClubManager(Club club, User user) {
         this.club = club;
-        this.manager = manager;
+        this.manager = user;
     }
 
-    public static ClubManager of(Club club, Manager manager) {
+    public static ClubManager of(Club club, User manager) {
         return new ClubManager(club, manager);
     }
 }

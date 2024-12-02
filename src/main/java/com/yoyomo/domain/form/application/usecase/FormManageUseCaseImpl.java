@@ -1,5 +1,8 @@
 package com.yoyomo.domain.form.application.usecase;
 
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
+import static java.util.Collections.emptyList;
+
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -17,16 +20,12 @@ import com.yoyomo.domain.form.domain.service.FormUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
-
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
-import static java.util.Collections.emptyList;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +62,8 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
         List<Form> forms = formGetService.findAll(clubId);
         List<String> formIds = formGetService.findAllIds(forms);
-        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(formIds);
+        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(
+                formIds);
 
         return forms.stream()
                 .map(form -> Response.toResponse(form, linkedRecruitments.getOrDefault(form.getId(), emptyList())))
@@ -97,7 +97,8 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
         List<Form> forms = formGetService.searchByKeyword(keyword, clubId);
         List<String> formIds = formGetService.findAllIds(forms);
-        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(formIds);
+        Map<String, List<LinkedRecruitment>> linkedRecruitments = recruitmentGetService.findAllLinkedRecruitments(
+                formIds);
 
         return forms.stream()
                 .map(form -> Response.toResponse(form, linkedRecruitments.getOrDefault(form.getId(), emptyList())))
@@ -112,7 +113,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     private void checkAuthorityByClubId(Long userId, String clubId) {
-        Manager manager = userGetService.find(userId);
+        User manager = userGetService.find(userId);
         Club club = clubGetService.find(clubId);
         clubManagerAuthService.checkAuthorization(club, manager);
     }

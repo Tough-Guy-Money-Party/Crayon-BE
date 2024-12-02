@@ -1,7 +1,7 @@
 package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,14 +12,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
 
 
 @Getter
@@ -46,8 +45,8 @@ public class Evaluation extends BaseEntity {
     private LocalDateTime deletedAt;
 
     @ManyToOne
-    @JoinColumn(name = "manager_id")
-    private Manager manager;
+    @JoinColumn(name = "user_id")
+    private User manager;
 
     @ManyToOne
     @JoinColumn(name = "application_id")
