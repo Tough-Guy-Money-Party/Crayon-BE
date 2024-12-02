@@ -30,9 +30,6 @@ public class ApplicationResponseDTO {
     ) {
         public static Detail toDetail(Application application, Answer answer,
                                       List<EvaluationResponseDTO.Response> evaluations) {
-            if (answer == null) {
-                return null;
-            }
 
             return new Detail(
                     application.getId().toString(),
@@ -44,7 +41,7 @@ public class ApplicationResponseDTO {
                     application.getProcess().getStage(),
                     application.getProcess().getTitle(),
                     application.getCreatedAt(),
-                    toAnswerResponse(answer),
+                    answer == null ? null : toAnswerResponse(answer),
                     evaluations
             );
         }
