@@ -1,5 +1,7 @@
 package com.yoyomo.domain.mail.domain.service;
 
+import com.yoyomo.domain.mail.application.dto.request.MailRequest;
+import com.yoyomo.domain.mail.exception.CreateScheduleException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +11,6 @@ import software.amazon.awssdk.services.scheduler.model.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
 
 @Slf4j
 @Service
