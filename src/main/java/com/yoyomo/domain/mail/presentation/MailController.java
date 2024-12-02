@@ -26,14 +26,14 @@ public class MailController {
 
     @PostMapping("/schedule")
     @Operation(summary = "예약 메일 발송 요청")
-    public ResponseDto<String> create(@RequestBody @Valid MailRequest dto){
+    public ResponseDto<String> create(@RequestBody @Valid MailRequest dto) {
         mailManageUseCase.reserve(dto);
         return ResponseDto.of(HttpStatus.OK.value(), SCHEDULED_MAIL_UPLOAD_SUCCESS.getMessage());
     }
 
     @PostMapping("/direct")
     @Operation(summary = "예약 즉시 전송 요청")
-    public ResponseDto<String> direct(@RequestBody @Valid MailRequest dto){
+    public ResponseDto<String> direct(@RequestBody @Valid MailRequest dto) {
         mailManageUseCase.direct(dto);
         return ResponseDto.of(HttpStatus.OK.value(), DIRECT_MAIL_SEND_SUCCESS.getMessage());
     }

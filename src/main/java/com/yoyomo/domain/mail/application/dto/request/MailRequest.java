@@ -15,7 +15,7 @@ public record MailRequest(
         @NotNull MailTemplateSaveRequest passTemplate,
         @NotNull MailTemplateSaveRequest failTemplate
 ){
-    public Mail toMail(String source, String destination, Map<String, String> customData, UUID templateId){
+    public Mail toMail(String source, String destination, Map<String, String> customData, UUID templateId) {
         return Mail.builder()
                 .id(UUID.randomUUID().toString())
                 .templateId(templateId.toString())
