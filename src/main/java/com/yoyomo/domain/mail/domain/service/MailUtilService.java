@@ -4,7 +4,6 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class MailUtilService {
 
