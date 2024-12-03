@@ -25,8 +25,7 @@ public class FormResponseDTO {
             LocalDateTime updatedAt
     ) {
     }
-
-    // TODO: 클래스 이름 첫 글자 대문자
+    
     public record Info(
             String title,
             String description,
