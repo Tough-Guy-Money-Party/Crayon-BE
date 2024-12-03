@@ -1,9 +1,5 @@
 package com.yoyomo.domain.application.application.usecase;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-
 import com.yoyomo.domain.application.application.dto.response.EvaluationResponseDTO;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.application.mapper.EvaluationMapper;
@@ -19,12 +15,17 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -97,7 +98,6 @@ public class ApplicationManageUseCase {
 
     private List<EvaluationResponseDTO.Response> getEvaluations(Application application) {
         return evaluationGetService.findAll(application.getId()).stream()
-                .filter(evaluation -> evaluation.getDeletedAt() == null)
                 .map(evaluationMapper::toResponse)
                 .toList();
     }

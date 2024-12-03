@@ -1,5 +1,7 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationStatusRequest;
+import com.yoyomo.domain.application.application.dto.request.EvaluationRequest;
 import com.yoyomo.domain.application.application.dto.request.EvaluationRequestDTO.Save;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
@@ -40,11 +42,36 @@ public class EvaluationManageUseCase {
     }
 
     @Transactional
+    public void saveRating(String applicationId, EvaluationRequest request, long userId) {
+        Application application = applicationGetService.find(applicationId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
+
+        Evaluation evaluation = request.toEvaluation(manager, application);
+        evaluationSaveService.save(evaluation);
+    }
+
+    @Transactional
+    public void updateRating(long evaluationId, EvaluationRequest request, long userId) {
+        Evaluation evaluation = evaluationGetService.find(evaluationId);
+        evaluationUpdateService.update(evaluation, request.rating(), userId);
+    }
+
+    @Transactional
+    public void updateStatus(String applicationId, ApplicationStatusRequest request, long userId) {
+        Application application = applicationGetService.find(applicationId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
+
+        applicationUpdateService.evaluate(application, request.status());
+    }
+
+    @Transactional
     public void update(long evaluationId, Save dto, long userId) {
         Evaluation evaluation = evaluationGetService.find(evaluationId);
         checkMyEvaluation(evaluation, userId);
 
-        evaluationUpdateService.update(evaluation, dto.rating(), dto.memo());
+        evaluationUpdateService.update(evaluation, dto.rating(), userId);
     }
 
     @Transactional
@@ -52,7 +79,6 @@ public class EvaluationManageUseCase {
         Evaluation evaluation = evaluationGetService.find(evaluationId);
         checkMyEvaluation(evaluation, userId);
 
-        evaluationUpdateService.delete(evaluation);
     }
 
     private void checkMyEvaluation(Evaluation evaluation, Long userId) {

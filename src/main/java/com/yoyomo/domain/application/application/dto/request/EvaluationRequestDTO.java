@@ -18,7 +18,6 @@ public class EvaluationRequestDTO {
             return Evaluation.builder()
                     .rating(rating)
                     .processId(application.getProcess().getId())
-                    .memo(memo)
                     .manager(manager)
                     .application(application)
                     .build();

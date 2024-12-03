@@ -1,11 +1,10 @@
 package com.yoyomo.domain.application.domain.entity;
 
-import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Entity
@@ -25,32 +26,33 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Evaluation {
+public class Memo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evaluation_id")
+    @Column(name = "memo_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    private String memo;
 
     @Column(nullable = false, name = "process_id")
     private long processId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "user_id")
     private User manager;
 
-    @ManyToOne
-    @JoinColumn(name = "application_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "application_id")
     private Application application;
 
-    public boolean isAfterEvaluation() { // todo pending 값 말고 존재 유무로 가능
-        return rating != Rating.PENDING;
+    private LocalDateTime deletedAt;
+
+    public void update(String memo) {
+        this.memo = memo;
     }
 
-    public void update(Rating rating) {
-        this.rating = rating;
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }

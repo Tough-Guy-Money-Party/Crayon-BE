@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.domain.entity;
 
 
-import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -17,13 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Getter
@@ -46,10 +46,6 @@ public class Application extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
 
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Rating averageRating = Rating.PENDING;
-
     private String answerId;
 
     @Column(nullable = false, name = "recruitment_id")
@@ -64,22 +60,16 @@ public class Application extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public boolean inRecruitment(UUID recruitmentId) {
-        return this.recruitmentId == recruitmentId;
-    }
-
     public void update(Process process) {
         this.process = process;
         this.status = Status.PENDING;
-        this.averageRating = Rating.PENDING;
     }
 
     public void addInterview(Interview interview) {
         this.interview = interview;
     }
 
-    public void evaluate(Status status, Rating rating) {
-        this.averageRating = rating;
+    public void evaluate(Status status) {
         this.status = status;
     }
 

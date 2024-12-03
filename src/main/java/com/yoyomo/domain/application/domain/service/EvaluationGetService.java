@@ -16,11 +16,11 @@ public class EvaluationGetService {
     private final EvaluationRepository evaluationRepository;
 
     public Evaluation find(Long id) {
-        return evaluationRepository.findByIdAndDeletedAtIsNull(id)
+        return evaluationRepository.findById(id)
                 .orElseThrow(EvaluationNotFoundException::new);
     }
 
     public List<Evaluation> findAll(UUID applicationId) {
-        return evaluationRepository.findAllByApplicationIdAndDeletedAtIsNull(applicationId);
+        return evaluationRepository.findAllByApplicationId(applicationId);
     }
 }
