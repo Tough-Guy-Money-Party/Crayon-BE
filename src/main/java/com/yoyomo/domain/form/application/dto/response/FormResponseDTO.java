@@ -47,7 +47,7 @@ public class FormResponseDTO {
                     form.getTitle(),
                     form.getDescription(),
                     itemResponses,
-                    form.getCreateAt(),
+                    form.getCreatedAt(),
                     form.getDeletedAt()
             );
         }
