@@ -27,14 +27,14 @@ public class FormResponseDTO {
     }
 
     // TODO: 클래스 이름 첫 글자 대문자
-    public record info(
+    public record Info(
             String title,
             String description,
             List<ItemResponse> items,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        public static info toInfo(Optional<Form> wrappedForm) {
+        public static Info toInfo(Optional<Form> wrappedForm) {
             if (wrappedForm.isEmpty()) {
                 return null;
             }
@@ -43,7 +43,7 @@ public class FormResponseDTO {
 
             List<ItemResponse> itemResponses = ItemResponse.itemListToItemResponseList(form.getItems());
 
-            return new info(
+            return new Info(
                     form.getTitle(),
                     form.getDescription(),
                     itemResponses,

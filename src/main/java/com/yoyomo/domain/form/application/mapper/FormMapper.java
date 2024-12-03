@@ -1,8 +1,8 @@
 package com.yoyomo.domain.form.application.mapper;
 
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO;
 import com.yoyomo.domain.form.domain.entity.Form;
@@ -24,7 +24,7 @@ public interface FormMapper {
 
     DetailResponse toDetailResponse(Form form, List<String> recruitmentIds);
 
-    info toInfo(Form form);
+    Info toInfo(Form form);
 
     Response toResponse(Form form);
 }
