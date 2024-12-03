@@ -15,18 +15,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-
 
 @Getter
 @Entity
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Memo extends BaseEntity {
+public class EvaluationMemo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,10 +44,6 @@ public class Memo extends BaseEntity {
     private Application application;
 
     private LocalDateTime deletedAt;
-
-    public void update(String memo) {
-        this.memo = memo;
-    }
 
     public void delete() {
         this.deletedAt = LocalDateTime.now();
