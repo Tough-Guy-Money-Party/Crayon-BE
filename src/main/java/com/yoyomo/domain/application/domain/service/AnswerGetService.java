@@ -5,7 +5,6 @@ import com.yoyomo.domain.application.domain.repository.mongo.AnswerRepository;
 import com.yoyomo.domain.application.exception.AnswerNotFoundException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,10 +20,6 @@ public class AnswerGetService {
     public Answer findByApplicationId(UUID applicationId) {
         return answerRepository.findByApplicationId(applicationId)
                 .orElseThrow(AnswerNotFoundException::new);
-    }
-
-    public Optional<Answer> findByApplicationIdAsOptional(UUID applicationId) {
-        return answerRepository.findByApplicationId(applicationId);
     }
 
     public List<Answer> findAllByApplicationIds(List<UUID> applicationIds) {
