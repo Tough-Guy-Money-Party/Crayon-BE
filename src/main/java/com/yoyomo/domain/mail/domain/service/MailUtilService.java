@@ -34,17 +34,8 @@ public class MailUtilService {
 
         return doc.select("[data-id]").stream()
                 .map(element -> element.attr("data-id"))
-                .map(this::findCustomType)
+                .map(CustomType::findCustomType)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
-    }
-
-    private Optional<CustomType> findCustomType(String placeholder) {
-        for (CustomType customType : CustomType.values()) {
-            if (customType.getPlaceholder().equals(placeholder)) {
-                return Optional.of(customType);
-            }
-        }
-        return Optional.empty();
     }
 }

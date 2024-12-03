@@ -56,9 +56,18 @@ public enum CustomType {
 
     private static <T> T get(Supplier<T> supplier, T defaultValue) {
         try {
-            return Optional.ofNullable(supplier.get()).orElse(defaultValue);
+            return java.util.Optional.ofNullable(supplier.get()).orElse(defaultValue);
         } catch (NullPointerException e) {
             return defaultValue;
         }
+    }
+
+    public static Optional<CustomType> findCustomType(String placeholder) {
+        for (CustomType customType : CustomType.values()) {
+            if (customType.getPlaceholder().equals(placeholder)) {
+                return Optional.of(customType);
+            }
+        }
+        return Optional.empty();
     }
 }
