@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
+import com.yoyomo.domain.user.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     List<Evaluation> findAllByApplicationId(UUID applicationId);
 
     List<Evaluation> findAllByProcessIdAndApplication(long processId, Application application);
+
+    boolean existsByManager(User manager);
 }

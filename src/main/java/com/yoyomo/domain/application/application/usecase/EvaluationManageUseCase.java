@@ -56,7 +56,7 @@ public class EvaluationManageUseCase {
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         Evaluation evaluation = request.toEvaluation(manager, application);
-        evaluationSaveService.save(evaluation);
+        evaluationSaveService.save(manager, evaluation);
     }
 
     @Transactional
