@@ -71,7 +71,7 @@ public class ApplicationManageUseCase {
 
         Page<Application> applications = applicationGetService.findAll(process, pageable);
 
-        List<UUID> applicationIds = applicationGetService.getapplicationIds(applications);
+        List<UUID> applicationIds = applicationGetService.getApplicationIds(applications);
 
         Map<UUID, Answer> answerMap = answerGetService.findAllApplicationMapByApplicationIds(applicationIds);
 
