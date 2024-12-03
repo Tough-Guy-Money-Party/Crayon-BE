@@ -21,6 +21,8 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,13 +69,18 @@ public class ApplicationManageUseCase {
 
         List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
 
-        return applicationGetService.findAll(process, pageable)
-                .map(application -> Detail.toDetail(
-                        application,
-                        answerGetService.findByApplicationIdAsOptional(application.getId()).orElse(null),
-                        getEvaluations(application),
-                        types
-                ));
+        Page<Application> applications = applicationGetService.findAll(process, pageable);
+
+        List<UUID> applicationIds = applicationGetService.getapplicationIds(applications);
+
+        Map<UUID, Answer> answerMap = answerGetService.findAllApplicationMapByApplicationIds(applicationIds);
+
+        return applications.map(application -> Detail.toDetail(
+                application,
+                answerMap.get(application.getId()),
+                getEvaluations(application),
+                types
+        ));
     }
 
 
