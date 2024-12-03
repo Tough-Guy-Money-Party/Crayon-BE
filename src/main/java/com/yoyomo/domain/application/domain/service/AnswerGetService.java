@@ -22,7 +22,7 @@ public class AnswerGetService {
                 .orElseThrow(AnswerNotFoundException::new);
     }
 
-    public List<Answer> findAllByApplicationIds(List<UUID> applicationIds) {
+    private List<Answer> findAllByApplicationIds(List<UUID> applicationIds) {
         return answerRepository.findAllByApplicationIds(applicationIds);
     }
 
