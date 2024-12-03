@@ -38,6 +38,12 @@ public class ApplicationGetService {
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
+    public List<UUID> getApplicationIds(Page<Application> applications) {
+        return applications.stream()
+                .map(Application::getId)
+                .toList();
+    }
+
     public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
         return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment,
                 pageable);

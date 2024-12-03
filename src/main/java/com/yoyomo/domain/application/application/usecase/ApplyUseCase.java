@@ -51,8 +51,9 @@ public class ApplyUseCase {
         List<Item> items = itemManageUseCase.create(dto.answers());
         Application application = dto.toApplication(recruitment, applicant);
 
-        applicationSaveService.save(recruitment, application); //todo application.answerId 추가
-        answerSaveService.save(items, application.getId());
+        applicationSaveService.save(recruitment, application);
+        Answer answer = answerSaveService.save(items, application.getId());
+        application.addAnswer(answer.getId());
     }
 
     public List<Response> readAll(Long userId) {
