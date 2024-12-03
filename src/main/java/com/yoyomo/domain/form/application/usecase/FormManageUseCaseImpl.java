@@ -24,6 +24,7 @@ import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +52,9 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     @Override
     public info readForm(String id) {
-        Form form = formGetService.find(id);
+        Optional<Form> form = formGetService.findAsOptional(id);
 
-        return formMapper.toInfo(form);
+        return info.toInfo(form);
     }
 
     @Override

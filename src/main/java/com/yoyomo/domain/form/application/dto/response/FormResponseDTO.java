@@ -3,11 +3,11 @@ package com.yoyomo.domain.form.application.dto.response;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
-import lombok.Builder;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.Builder;
 
 public class FormResponseDTO {
 
@@ -26,6 +26,7 @@ public class FormResponseDTO {
     ) {
     }
 
+    // TODO: 클래스 이름 첫 글자 대문자
     public record info(
             String title,
             String description,
@@ -33,6 +34,24 @@ public class FormResponseDTO {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
+        public static info toInfo(Optional<Form> wrappedForm) {
+            if (wrappedForm.isEmpty()) {
+                return null;
+            }
+
+            Form form = wrappedForm.get();
+
+            List<ItemResponse> itemResponses = ItemResponse.itemListToItemResponseList(form.getItems());
+
+            return new info(
+                    form.getTitle(),
+                    form.getDescription(),
+                    itemResponses,
+                    form.getCreateAt(),
+                    form.getDeletedAt()
+            );
+        }
+
     }
 
     @Builder
@@ -49,7 +68,7 @@ public class FormResponseDTO {
             List<UUID> recruitmentIds = linkedRecruitments.stream()
                     .map(LinkedRecruitment::recruitmentId)
                     .toList();
-            
+
             return Response.builder()
                     .id(form.getId())
                     .title(form.getTitle())
