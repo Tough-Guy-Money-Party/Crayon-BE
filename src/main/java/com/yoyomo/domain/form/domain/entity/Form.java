@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -33,6 +34,9 @@ public class Form {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+    
     private LocalDateTime deletedAt;
 
     public void update(String title, String description, List<Item> items) {

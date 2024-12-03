@@ -25,7 +25,7 @@ public class FormResponseDTO {
             LocalDateTime updatedAt
     ) {
     }
-    
+
     public record Info(
             String title,
             String description,
@@ -47,7 +47,7 @@ public class FormResponseDTO {
                     form.getDescription(),
                     itemResponses,
                     form.getCreatedAt(),
-                    form.getDeletedAt()
+                    form.getUpdatedAt()
             );
         }
 
@@ -73,6 +73,8 @@ public class FormResponseDTO {
                     .title(form.getTitle())
                     .description(form.getDescription())
                     .recruitmentIds(recruitmentIds)
+                    .createdAt(form.getCreatedAt())
+                    .updatedAt(form.getUpdatedAt())
                     .build(); //todo createdAt, updatedAt 추가
         }
     }
