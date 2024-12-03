@@ -3,6 +3,7 @@ package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
@@ -16,14 +17,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 @Getter
@@ -38,7 +38,8 @@ public class Application extends BaseEntity {
     @Column(name = "application_id")
     private UUID id;
 
-    @Embedded
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder.Default
@@ -84,5 +85,11 @@ public class Application extends BaseEntity {
 
     public void delete() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void checkAuthorization(User user) {
+        if (!this.getUser().equals(user)) {
+            throw new AccessDeniedException();
+        }
     }
 }

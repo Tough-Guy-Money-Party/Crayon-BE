@@ -43,7 +43,8 @@ public class ApplicationGetService {
     }
 
     public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
-        return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment, pageable);
+        return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment,
+                pageable);
     }
 
     public Map<Process, Long> countInProcesses(UUID recruitmentId, List<Process> processes) {

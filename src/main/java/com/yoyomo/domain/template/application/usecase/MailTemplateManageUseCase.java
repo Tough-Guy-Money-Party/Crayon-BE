@@ -12,15 +12,14 @@ import com.yoyomo.domain.template.domain.service.MailTemplateDeleteService;
 import com.yoyomo.domain.template.domain.service.MailTemplateGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +66,7 @@ public class MailTemplateManageUseCase {
 
     private Club checkAuthorityByClub(String clubId, Long userId) {
         Club club = clubGetService.find(clubId);
-        Manager manager = userGetService.find(userId);
+        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(club, manager);
 
         return club;
@@ -75,7 +74,7 @@ public class MailTemplateManageUseCase {
 
     private MailTemplate checkAuthorityByMailTemplate(UUID templateId, Long userId) {
         MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
-        Manager manager = userGetService.find(userId);
+        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(mailTemplate.getClub(), manager);
 
         return mailTemplate;

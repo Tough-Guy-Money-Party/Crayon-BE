@@ -11,16 +11,15 @@ import com.yoyomo.domain.club.domain.service.ClubManagerGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerSaveService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubValidateService;
-import com.yoyomo.domain.user.application.dto.response.ManagerResponseDTO;
-import com.yoyomo.domain.user.application.mapper.ManagerMapperImpl;
-import com.yoyomo.domain.user.domain.entity.Manager;
+import com.yoyomo.domain.user.application.dto.response.UserResponseDTO;
+import com.yoyomo.domain.user.application.mapper.ManagerMapper;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +33,9 @@ public class ClubManagerUseCase {
     private final ClubManagerSaveService clubManagerSaveService;
     private final ClubManagerDeleteService clubManagerDeleteService;
     private final ClubManagerGetService clubManagerGetService;
-    private final ManagerMapperImpl managerMapper;
+    private final ManagerMapper managerMapper;
 
-    public List<ManagerResponseDTO.ManagerInfo> getManagers(UUID clubId, Long userId) {
+    public List<UserResponseDTO.ManagerInfo> getManagers(UUID clubId, Long userId) {
         clubValidateService.checkAuthority(clubId, userId);
         List<ClubManager> clubManagers = clubManagerGetService.readAllManagers(clubId);
 
@@ -49,9 +48,9 @@ public class ClubManagerUseCase {
     @Transactional
     public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
         Club club = clubGetService.findByCode(dto.code());
-        Manager manager = userGetService.find(userId);
+        User user = userGetService.find(userId);
 
-        clubManagerSaveService.saveManager(manager, club);
+        clubManagerSaveService.saveManager(user, club);
         return clubMapper.toParticipation(club);
     }
 
