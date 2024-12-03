@@ -46,10 +46,6 @@ public class Evaluation {
     @JoinColumn(name = "application_id")
     private Application application;
 
-    public boolean isAfterEvaluation() { // todo pending 값 말고 존재 유무로 가능
-        return rating != Rating.PENDING;
-    }
-
     public void update(Rating rating) {
         this.rating = rating;
     }

@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Rating {
-    
+
     LOW,
     MEDIUM,
-    HIGH,
-    PENDING;
+    HIGH;
 }

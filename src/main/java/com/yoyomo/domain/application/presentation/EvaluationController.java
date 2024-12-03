@@ -4,6 +4,7 @@ package com.yoyomo.domain.application.presentation;
 import com.yoyomo.domain.application.application.dto.request.ApplicationStatusRequest;
 import com.yoyomo.domain.application.application.dto.request.EvaluationMemoRequest;
 import com.yoyomo.domain.application.application.dto.request.EvaluationRequest;
+import com.yoyomo.domain.application.application.dto.response.EvaluationResponses;
 import com.yoyomo.domain.application.application.usecase.EvaluationManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,15 @@ import static org.springframework.http.HttpStatus.OK;
 public class EvaluationController {
 
     private final EvaluationManageUseCase evaluationManageUseCase;
+
+    @GetMapping
+    @Operation(summary = "평가 조회")
+    public ResponseDto<EvaluationResponses> findEvaluations(@RequestParam String applicationId,
+                                                            @CurrentUser @Parameter(hidden = true) Long userId) {
+        EvaluationResponses responses = evaluationManageUseCase.findEvaluations(applicationId, userId);
+
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_EVALUATION.getMessage(), responses);
+    }
 
     @PatchMapping("/status")
     @Operation(summary = "합불 결과 변경")
