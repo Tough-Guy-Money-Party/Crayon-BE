@@ -109,7 +109,7 @@ public class MailManageUseCaseImpl {
     private Mail convert(MailRequest dto, Application application, Recruitment recruitment,
                          Set<CustomType> customTypes, UUID templateId) {
         Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
-        String destination = application.getUser().getEmail();
+            String destination = application.getEmail();
         return dto.toMail(SOURCE, destination, customData, templateId);
     }
 
