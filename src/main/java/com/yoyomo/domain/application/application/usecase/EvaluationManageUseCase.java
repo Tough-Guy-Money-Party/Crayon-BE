@@ -44,8 +44,9 @@ public class EvaluationManageUseCase {
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         List<Evaluation> evaluations = evaluationGetService.findAllInStage(application);
+        Evaluation myEvaluation = evaluationGetService.findMyEvaluation(evaluations, manager);
         List<EvaluationMemo> memos = evaluationMemoGetService.findAllInStage(application);
-        return EvaluationResponses.toResponse(application, evaluations, memos);
+        return EvaluationResponses.toResponse(application, myEvaluation, evaluations, memos);
     }
 
     @Transactional
@@ -81,5 +82,12 @@ public class EvaluationManageUseCase {
 
         EvaluationMemo evaluationMemo = request.toEvaluationMemo(manager, application);
         evaluationMemoSaveService.save(evaluationMemo);
+    }
+
+    @Transactional
+    public void deleteRating(long evaluationId, long managerId) {
+        Evaluation evaluation = evaluationGetService.find(evaluationId);
+
+        evaluationUpdateService.delete(evaluation, managerId);
     }
 }

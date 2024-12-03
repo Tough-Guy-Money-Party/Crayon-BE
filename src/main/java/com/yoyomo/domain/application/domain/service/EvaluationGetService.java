@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.repository.EvaluationRepository;
 import com.yoyomo.domain.application.exception.EvaluationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,12 @@ public class EvaluationGetService {
     public List<Evaluation> findAllInStage(Application application) {
         Process process = application.getProcess();
         return evaluationRepository.findAllByProcessIdAndApplication(process.getId(), application);
+    }
+
+    public Evaluation findMyEvaluation(List<Evaluation> evaluations, User manager) {
+        return evaluations.stream()
+                .filter(evaluation -> evaluation.getManager().equals(manager))
+                .findFirst()
+                .orElse(Evaluation.empty());
     }
 }

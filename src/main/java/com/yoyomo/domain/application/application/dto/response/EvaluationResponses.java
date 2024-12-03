@@ -12,10 +12,10 @@ public record EvaluationResponses(
         EvaluationResponse evaluationResponse,
         List<EvaluationMemoResponse> memoResponses
 ) {
-    public static EvaluationResponses toResponse(Application application, List<Evaluation> evaluations, List<EvaluationMemo> memos) {
+    public static EvaluationResponses toResponse(Application application, Evaluation myEvaluation, List<Evaluation> evaluations, List<EvaluationMemo> memos) {
         Map<String, Long> ratingCount = evaluations.stream()
                 .collect(Collectors.groupingBy(evaluation -> evaluation.getRating().toString(), Collectors.counting()));
-        EvaluationResponse evaluationResponse = EvaluationResponse.toResponse(application, ratingCount);
+        EvaluationResponse evaluationResponse = EvaluationResponse.toResponse(application, myEvaluation, ratingCount);
 
         List<EvaluationMemoResponse> memoResponses = memos.stream()
                 .map(EvaluationMemoResponse::toResponse)

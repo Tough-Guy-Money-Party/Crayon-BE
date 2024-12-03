@@ -11,20 +11,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 
 @Getter
 @Entity
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                columnNames = {"user_id", "application_id"}
+        )})
 public class Evaluation {
 
     @Id
@@ -45,6 +49,10 @@ public class Evaluation {
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;
+
+    public static Evaluation empty() {
+        return new Evaluation();
+    }
 
     public void update(Rating rating) {
         this.rating = rating;

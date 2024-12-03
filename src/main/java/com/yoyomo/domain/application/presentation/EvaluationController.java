@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_DELETE_EVALUATION;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_EVALUATION;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_EVALUATION;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE_EVALUATION;
 import static org.springframework.http.HttpStatus.OK;
@@ -39,7 +42,7 @@ public class EvaluationController {
                                                             @CurrentUser @Parameter(hidden = true) Long userId) {
         EvaluationResponses responses = evaluationManageUseCase.findEvaluations(applicationId, userId);
 
-        return ResponseDto.of(OK.value(), SUCCESS_SAVE_EVALUATION.getMessage(), responses);
+        return ResponseDto.of(OK.value(), SUCCESS_READ_EVALUATION.getMessage(), responses);
     }
 
     @PatchMapping("/status")
@@ -49,7 +52,7 @@ public class EvaluationController {
                                            @CurrentUser @Parameter(hidden = true) Long userId) {
         evaluationManageUseCase.updateStatus(applicationId, request, userId);
 
-        return ResponseDto.of(OK.value(), SUCCESS_SAVE_EVALUATION.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_EVALUATION.getMessage());
     }
 
     @PostMapping("/rating")
@@ -59,7 +62,16 @@ public class EvaluationController {
                                         @CurrentUser @Parameter(hidden = true) Long userId) {
         evaluationManageUseCase.saveRating(applicationId, request, userId);
 
-        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_EVALUATION.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_EVALUATION.getMessage());
+    }
+
+    @DeleteMapping("/rating")
+    @Operation(summary = "임원 평가 삭제")
+    public ResponseDto<Void> deleteRating(@RequestParam Long evaluationId,
+                                          @CurrentUser @Parameter(hidden = true) Long userId) {
+        evaluationManageUseCase.deleteRating(evaluationId, userId);
+
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE_EVALUATION.getMessage());
     }
 
     @PatchMapping("/rating")
@@ -79,6 +91,6 @@ public class EvaluationController {
                                           @CurrentUser @Parameter(hidden = true) Long userId) {
         evaluationManageUseCase.createMemo(applicationId, request, userId);
 
-        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_EVALUATION.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_EVALUATION.getMessage());
     }
 }
