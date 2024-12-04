@@ -36,15 +36,13 @@ public class ItemResponse {
             return null;
         }
 
-        ItemResponse.ItemResponseBuilder<?, ?> itemResponse = ItemResponse.builder();
-
-        itemResponse.id(item.getId());
-        itemResponse.title(item.getTitle());
-        itemResponse.description(item.getDescription());
-        itemResponse.type(item.getType());
-        itemResponse.order(item.getOrder());
-        itemResponse.required(item.isRequired());
-
-        return itemResponse.build();
+        return ItemResponse.builder()
+                .id(item.getId())
+                .title(item.getTitle())
+                .description(item.getDescription())
+                .type(item.getType())
+                .order(item.getOrder())
+                .required(item.isRequired())
+                .build();
     }
 }
