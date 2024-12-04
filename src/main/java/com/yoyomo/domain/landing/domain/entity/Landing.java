@@ -5,10 +5,18 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
 import com.yoyomo.domain.landing.domain.constant.DisplayMode;
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -19,7 +27,7 @@ public class Landing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "LandingId")
+    @Column(name = "landing_id")
     private UUID id;
     private String favicon;
     private String image;
