@@ -1,19 +1,18 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.form.application.dto.response.FormResponseDTO;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -31,7 +30,7 @@ public interface RecruitmentMapper {
     @Mapping(target = "title", source = "recruitment.title")
     @Mapping(target = "clubName", expression = "java(recruitment.getClub().getName() )")
     @Mapping(target = "processCount", expression = "java( processes.size() )")
-    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, FormResponseDTO.info form);
+    DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, Info form);
 
 
     default LocalDateTime getStartAt(Save dto) {

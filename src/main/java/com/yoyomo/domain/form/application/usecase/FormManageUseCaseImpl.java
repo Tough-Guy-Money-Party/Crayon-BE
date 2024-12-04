@@ -1,6 +1,5 @@
 package com.yoyomo.domain.form.application.usecase;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 import static java.util.Collections.emptyList;
 
 import com.yoyomo.domain.club.domain.entity.Club;
@@ -9,6 +8,7 @@ import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
 import com.yoyomo.domain.form.application.mapper.FormMapper;
@@ -24,6 +24,7 @@ import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,10 +51,10 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
-    public info readForm(String id) {
-        Form form = formGetService.find(id);
+    public Info readForm(String id) {
+        Optional<Form> form = formGetService.findAsOptional(id);
 
-        return formMapper.toInfo(form);
+        return Info.toInfo(form);
     }
 
     @Override
