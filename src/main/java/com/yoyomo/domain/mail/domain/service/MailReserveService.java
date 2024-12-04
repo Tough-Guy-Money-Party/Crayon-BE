@@ -1,5 +1,6 @@
 package com.yoyomo.domain.mail.domain.service;
 
+import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.exception.CreateScheduleException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +11,6 @@ import software.amazon.awssdk.services.scheduler.model.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static com.yoyomo.domain.mail.application.dto.MailRequest.Reserve;
 
 @Slf4j
 @Service
@@ -25,7 +24,7 @@ public class MailReserveService {
     @Value("${mail.scheduler.arn}")
     private String roleArn;
 
-    public void create(Reserve dto){
+    public void create(MailRequest dto){
         String cron = toCron(dto.scheduledTime());
 
         // 환경변수 처리

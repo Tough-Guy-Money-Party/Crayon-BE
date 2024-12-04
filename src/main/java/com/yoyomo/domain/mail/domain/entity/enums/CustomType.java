@@ -6,50 +6,68 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Getter
 @AllArgsConstructor
 public enum CustomType {
-    CLUB_NAME("clubName") {
+    CLUB_NAME("CLUB_NAME") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(recruitment.getClub().getName()).orElse("");
+            return get(() -> recruitment.getClub().getName(), "");
         }
     },
-    USER_NAME("userName") {
+    USER_NAME("USER_NAME") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(application.getUser().getName()).orElse("");
+            return get(() -> application.getUser().getName(), "");
         }
     },
-    RECRUITMENT_NAME("recruitmentName") {
+    RECRUITMENT_NAME("RECRUITMENT_NAME") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(recruitment.getTitle()).orElse("");
+            return get(recruitment::getTitle, "");
+
         }
     },
-    INTERVIEW_DATE("interviewDate") {
+    INTERVIEW_DATE("INTERVIEW_DATE") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(application.getInterview().getDate()).orElse("");
+            return get(() -> application.getInterview().getDate(), "");
+
         }
     },
-    INTERVIEW_PLACE("interviewPlace") {
+    INTERVIEW_PLACE("INTERVIEW_PLACE") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(application.getInterview().getPlace()).orElse("");
+            return get(() -> application.getInterview().getPlace(), "");
         }
     },
-    PROCESS("currentProcess") {
+    PROCESS("PROCESS") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return Optional.ofNullable(application.getProcess().getTitle()).orElse("");
+            return get(() -> application.getProcess().getTitle(), "");
         }
     };
 
-    // 커스텀 항목이 확장된다면 여기에 인자를 하나 더 전달해서 데이터를 가져오면 됨. 속도는 테스트 해봐야하겟지만 큰 차이는 없을 듯
     private final String placeholder;
 
-    // 각 CustomType에 대한 추상 메서드. 예외를 날릴지 null로 채울지 고민
     public abstract String extractValue(Application application, Recruitment recruitment);
+
+    private static <T> T get(Supplier<T> supplier, T defaultValue) {
+        try {
+            return java.util.Optional.ofNullable(supplier.get()).orElse(defaultValue);
+        } catch (NullPointerException e) {
+            return defaultValue;
+        }
+    }
+
+    public static Optional<CustomType> findCustomType(String placeholder) {
+        for (CustomType customType : CustomType.values()) {
+            if (customType.getPlaceholder().equals(placeholder)) {
+                return Optional.of(customType);
+            }
+        }
+        return Optional.empty();
+    }
 }
