@@ -17,8 +17,8 @@ public class LandingAllSettingManageUsecase {
     public All readAll(String subDomain) {
         Club club = clubGetService.findBySubDomain(subDomain);
         Landing landing = club.getLanding();
-        String parsedNotionPageLink = notionGetService.notionParser(club.getNotionPageLink());
-        
+        String parsedNotionPageLink = notionGetService.parseNotionPageLink(club.getNotionPageLink());
+
         return All.toAll(landing, parsedNotionPageLink);
     }
 }
