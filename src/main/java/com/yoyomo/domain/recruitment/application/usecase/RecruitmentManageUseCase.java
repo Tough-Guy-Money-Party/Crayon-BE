@@ -24,6 +24,7 @@ import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,9 +61,9 @@ public class RecruitmentManageUseCase {
         recruitment.addProcesses(processes);
     }
 
-    public DetailResponse read(String recruitmentId) {
+    public DetailResponse read(UUID recruitmentId, long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
+        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId, userId);
         Info form = formManageUseCase.readForm(recruitment.getFormId());
 
         return recruitmentMapper.toDetailResponse(recruitment, processes, form);
