@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
@@ -78,7 +78,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional
-    public void updateProcess(Stage dto, Long userId, String recruitmentId) {
+    public void updateProcess(StageUpdateRequest dto, Long userId, String recruitmentId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, dto.to());
 
