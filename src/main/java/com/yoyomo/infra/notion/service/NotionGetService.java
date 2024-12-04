@@ -2,10 +2,7 @@ package com.yoyomo.infra.notion.service;
 
 import com.yoyomo.infra.notion.exception.InvalidNotionLinkException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -21,7 +18,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class NotionGetService {
 
-    public String notionParser(String notionLink) {
+    public String parseNotionPageLink(String notionLink) {
         String patternString = "^https:\\/\\/(www\\.notion\\.so|[^\\/]+\\.notion\\.site)\\/[^\\?\\/]*([0-9a-fA-F]{32})";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(notionLink);

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
     List<Application> findAllByUserAndDeletedAtIsNull(User user);
