@@ -1,18 +1,17 @@
 package com.yoyomo.domain.form.application.mapper;
 
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
+
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.item.domain.entity.Item;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import java.util.List;
-
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -25,7 +24,7 @@ public interface FormMapper {
 
     DetailResponse toDetailResponse(Form form, List<String> recruitmentIds);
 
-    info toInfo(Form form);
+    Info toInfo(Form form);
 
     Response toResponse(Form form);
 }

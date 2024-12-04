@@ -8,11 +8,10 @@ import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -33,6 +32,7 @@ public class FormUpdateService {
                 .map(itemFactory::createItem)
                 .toList();
         form.update(title, description, items);
+        formRepository.save(form);
     }
 
     public void delete(String formId) {
