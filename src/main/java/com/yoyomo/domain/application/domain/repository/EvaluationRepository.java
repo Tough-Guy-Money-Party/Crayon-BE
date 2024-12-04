@@ -1,15 +1,18 @@
 package com.yoyomo.domain.application.domain.repository;
 
+import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
+import com.yoyomo.domain.user.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
-    Optional<Evaluation> findByIdAndDeletedAtIsNull(Long id);
+    List<Evaluation> findAllByApplicationId(UUID applicationId);
 
-    List<Evaluation> findAllByApplicationIdAndDeletedAtIsNull(UUID applicationId);
+    List<Evaluation> findAllByProcessIdAndApplication(long processId, Application application);
+
+    boolean existsByManager(User manager);
 }

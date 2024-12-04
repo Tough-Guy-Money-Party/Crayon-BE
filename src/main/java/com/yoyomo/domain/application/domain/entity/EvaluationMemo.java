@@ -1,60 +1,51 @@
 package com.yoyomo.domain.application.domain.entity;
 
-import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {
-        @UniqueConstraint(
-                columnNames = {"user_id", "application_id"}
-        )})
-public class Evaluation {
+public class EvaluationMemo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evaluation_id")
+    @Column(name = "memo_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    private String memo;
 
     @Column(nullable = false, name = "process_id")
     private long processId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "user_id")
     private User manager;
 
-    @ManyToOne
-    @JoinColumn(name = "application_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "application_id")
     private Application application;
 
-    public static Evaluation empty() {
-        return new Evaluation();
-    }
+    private LocalDateTime deletedAt;
 
-    public void update(Rating rating) {
-        this.rating = rating;
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
