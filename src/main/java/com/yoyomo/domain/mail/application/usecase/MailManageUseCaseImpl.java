@@ -1,7 +1,6 @@
 package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
@@ -20,7 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
@@ -100,7 +103,7 @@ public class MailManageUseCaseImpl {
                                       Set<CustomType> failCustomTypes, UUID failTemplateId) {
         return applications.stream()
                 .map(application -> {
-                    boolean isPass = application.getStatus() == Status.PASS;
+                    boolean isPass = application.getStatus().isPass();
                     UUID templateId = isPass ? passTemplateId : failTemplateId;
                     Set<CustomType> customTypes = isPass ? passCustomTypes : failCustomTypes;
                     return convert(dto, application, recruitment, customTypes, templateId);
@@ -111,7 +114,7 @@ public class MailManageUseCaseImpl {
     private Mail convert(MailRequest dto, Application application, Recruitment recruitment,
                          Set<CustomType> customTypes, UUID templateId) {
         Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
-            String destination = application.getEmail();
+        String destination = application.getEmail();
         return dto.toMail(mailSourceAddress, destination, customData, templateId);
     }
 

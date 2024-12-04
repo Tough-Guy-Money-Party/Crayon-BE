@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
@@ -133,11 +132,6 @@ public class Recruitment extends BaseEntity {
         if (getStatus(this) != RECRUITING) {
             throw new OutOfDeadlineException();
         }
-    }
-
-    public boolean isLastProcess(Process current) {
-        Long lastProcessId = processes.get(processes.size() - 1).getId();
-        return Objects.equals(lastProcessId, current.getId());
     }
 
     public LocalDate getEndDate() {

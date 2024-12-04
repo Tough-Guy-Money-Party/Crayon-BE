@@ -17,14 +17,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -65,7 +66,6 @@ public class Application extends BaseEntity {
 
     public void update(Process process) {
         this.process = process;
-        this.status = Status.PENDING;
     }
 
     public void addInterview(Interview interview) {
