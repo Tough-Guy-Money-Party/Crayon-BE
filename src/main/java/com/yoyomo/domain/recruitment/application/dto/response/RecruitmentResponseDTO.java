@@ -1,13 +1,12 @@
 package com.yoyomo.domain.recruitment.application.dto.response;
 
-import com.yoyomo.domain.form.application.dto.response.FormResponseDTO;
+import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
-import lombok.Builder;
-
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Builder;
 
 public class RecruitmentResponseDTO {
 
@@ -33,7 +32,7 @@ public class RecruitmentResponseDTO {
                     .submit(recruitment.getSubmit())
                     .status(Status.getStatus(recruitment))
                     .isActive(recruitment.isActive())
-                    .recruitmentEndDate(recruitment.getRecruitmentEndDate())
+                    .recruitmentEndDate(recruitment.getEndDate())
                     .totalApplicantsCount(recruitment.getTotalApplicantsCount())
                     .formId(recruitment.getFormId())
                     .build();
@@ -47,7 +46,7 @@ public class RecruitmentResponseDTO {
             String clubName,
             List<ProcessResponseDTO.Response> processes,
             int processCount,
-            FormResponseDTO.info form
+            Info form
     ) {
     }
 }

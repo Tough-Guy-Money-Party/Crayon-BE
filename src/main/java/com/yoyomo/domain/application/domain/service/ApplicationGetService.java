@@ -2,17 +2,21 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
+import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +53,9 @@ public class ApplicationGetService {
                 pageable);
     }
 
-    public List<Application> findAllInStage(Recruitment recruitment, int stage) {
-        Process process = recruitment.getProcess(stage);
-        return applicationRepository.findAllByProcess(process);
+    public Map<Process, Long> countInProcesses(UUID recruitmentId, List<Process> processes) {
+        return applicationRepository.countByRecruitmentAndProcess(recruitmentId, processes)
+                .stream()
+                .collect(Collectors.toMap(ProcessApplicant::process, ProcessApplicant::applicantCount));
     }
 }
