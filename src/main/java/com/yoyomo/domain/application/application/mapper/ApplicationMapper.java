@@ -1,27 +1,23 @@
 package com.yoyomo.domain.application.application.mapper;
 
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-
-import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
-import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ApplicationMapper {
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "deletedAt", ignore = true)
-    Application from(Save dto, Process process);
 
     @Mapping(target = "club", source = "application.process.recruitment.club")
     @Mapping(target = "processes", source = "application.process.recruitment.processes")
