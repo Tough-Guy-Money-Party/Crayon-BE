@@ -4,11 +4,10 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +23,11 @@ public class ClubGetService {
 
     public Club find(UUID clubId) {
         return clubRepository.findByIdAndDeletedAtIsNull(clubId)
+                .orElseThrow(ClubNotFoundException::new);
+    }
+
+    public Club findBySubDomain(String subDomain) {
+        return clubRepository.findBySubDomain(subDomain)
                 .orElseThrow(ClubNotFoundException::new);
     }
 
