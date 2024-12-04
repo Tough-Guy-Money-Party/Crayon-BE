@@ -9,12 +9,26 @@ public class LandingResponseDTO {
             String notionPageLink,
             String favicon,
             String image
-    ) {}
+    ) {
+    }
 
     public record Style(
             String callToAction,
             String buttonColor,
             String textColor,
             DisplayMode displayMode
-    ) {}
+    ) {
+    }
+
+    public record All(
+            String siteTitle,
+            String notionPageLink,
+            String favicon,
+            String image,
+            String callToAction,
+            String buttonColor,
+            String textColor,
+            DisplayMode displayMode
+    ) {
+    }
 }
