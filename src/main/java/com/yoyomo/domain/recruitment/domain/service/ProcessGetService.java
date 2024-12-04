@@ -26,6 +26,6 @@ public class ProcessGetService {
     }
 
     public List<Process> findAll(Recruitment recruitment) {
-        return processRepository.findByRecruitment(recruitment);
+        return processRepository.findAllByRecruitment(recruitment);
     }
 }

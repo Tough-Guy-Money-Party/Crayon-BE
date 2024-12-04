@@ -11,5 +11,5 @@ public interface ProcessRepository extends JpaRepository<Process, Long> {
 
     Optional<Process> findByRecruitmentAndStage(Recruitment recruitment, Integer stage);
 
-    List<Process> findByRecruitment(Recruitment recruitment);
+    List<Process> findAllByRecruitment(Recruitment recruitment);
 }
