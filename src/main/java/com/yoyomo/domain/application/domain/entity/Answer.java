@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -26,5 +27,9 @@ public class Answer {
 
     public void update(List<Item> items) {
         this.items = items;
+    }
+
+    public UUID getApplicationId() {
+        return UUID.fromString(applicationId);
     }
 }
