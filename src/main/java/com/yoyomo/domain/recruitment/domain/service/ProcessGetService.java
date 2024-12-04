@@ -7,6 +7,8 @@ import com.yoyomo.domain.recruitment.exception.ProcessNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProcessGetService {
@@ -21,5 +23,9 @@ public class ProcessGetService {
     public Process find(Long processId) {
         return processRepository.findById(processId)
                 .orElseThrow(ProcessNotFoundException::new);
+    }
+
+    public List<Process> findAll(Recruitment recruitment) {
+        return processRepository.findByRecruitment(recruitment);
     }
 }
