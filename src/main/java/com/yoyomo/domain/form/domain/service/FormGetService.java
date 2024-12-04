@@ -3,10 +3,10 @@ package com.yoyomo.domain.form.domain.service;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.FormRepository;
 import com.yoyomo.domain.form.exception.FormNotFoundException;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +16,10 @@ public class FormGetService {
     public Form find(String id) {
         return formRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(FormNotFoundException::new);
+    }
+
+    public Optional<Form> findAsOptional(String id) {
+        return formRepository.findByIdAndDeletedAtIsNull(id);
     }
 
     public List<Form> findAll(String clubId) {

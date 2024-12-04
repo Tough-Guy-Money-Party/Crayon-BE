@@ -21,11 +21,15 @@ public class Answer {
     @Id
     private String id;
 
-    private UUID applicationId;
+    private String applicationId;
 
     private List<Item> items;
 
     public void update(List<Item> items) {
         this.items = items;
+    }
+
+    public UUID getApplicationId() {
+        return UUID.fromString(applicationId);
     }
 }

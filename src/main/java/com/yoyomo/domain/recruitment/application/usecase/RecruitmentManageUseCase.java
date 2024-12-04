@@ -1,6 +1,6 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.info;
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
@@ -63,7 +63,7 @@ public class RecruitmentManageUseCase {
     public DetailResponse read(String recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId);
-        info form = formManageUseCase.readForm(recruitment.getFormId());
+        Info form = formManageUseCase.readForm(recruitment.getFormId());
 
         return recruitmentMapper.toDetailResponse(recruitment, processes, form);
     }
