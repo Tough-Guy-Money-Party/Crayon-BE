@@ -42,10 +42,10 @@ public class MailTemplateController {
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
     }
 
-    @PostMapping
+    @PostMapping("/{clubId}")
     @Operation(summary = "이메일 템플릿 저장 API 입니다.")
-    public ResponseDto<String> save(MailTemplateSaveRequest dto, @CurrentUser @Parameter(hidden = true) Long userId) {
-        mailTemplateManageUseCase.save(dto, userId);
+    public ResponseDto<String> save(MailTemplateSaveRequest dto, @PathVariable UUID clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
+        mailTemplateManageUseCase.save(dto, clubId, userId);
         return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_SAVE.getMessage());
     }
 

@@ -45,7 +45,7 @@ public class Application extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private Status status = Status.BEFORE_EVALUATION;
 
     private String answerId;
 
@@ -60,6 +60,8 @@ public class Application extends BaseEntity {
     private Interview interview;
 
     private LocalDateTime deletedAt;
+
+    private String email;
 
     public void update(Process process) {
         this.process = process;
