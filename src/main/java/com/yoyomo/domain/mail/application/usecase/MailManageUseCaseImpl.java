@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class MailManageUseCaseImpl {
     private static final int PAGE_SIZE = 100;
-    private static final String SOURCE = "mail@crayon.land";
 
     private final MailSaveService mailSaveService;
     private final MailUtilService mailUtilService;
@@ -44,6 +43,9 @@ public class MailManageUseCaseImpl {
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
+
+    @Value("${mail.sourceAddress}")
+    private String mailSourceAddress;
 
     public void reserve(MailRequest dto) {
         create(dto);
@@ -110,7 +112,7 @@ public class MailManageUseCaseImpl {
                          Set<CustomType> customTypes, UUID templateId) {
         Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
             String destination = application.getEmail();
-        return dto.toMail(SOURCE, destination, customData, templateId);
+        return dto.toMail(mailSourceAddress, destination, customData, templateId);
     }
 
     private void checkUpload(List<CompletableFuture<Void>> uploadFutures) {

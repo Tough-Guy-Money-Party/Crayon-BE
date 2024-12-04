@@ -21,6 +21,7 @@ mail:
     arn: ${MAIL_LAMBDA_ARN}
   scheduler:
     arn: ${TARGET_ROLE_ARN}
+  sourceAddress: ${MAIL_SOURCE_ADDRESS}
 
 cloud:
   aws:
