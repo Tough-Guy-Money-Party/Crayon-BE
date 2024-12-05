@@ -2,6 +2,7 @@ package com.yoyomo.domain.template.domain.service;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateSaveRequest;
+import com.yoyomo.domain.template.application.util.HtmlSanitizer;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.domain.repository.MailTemplateRepository;
 import com.yoyomo.domain.template.exception.SesTemplateException;
@@ -20,22 +21,23 @@ public class MailTemplateSaveService {
 
     private final MailTemplateRepository mailTemplateRepository;
     private final SesClient sesClient;
+    private final HtmlSanitizer htmlSanitizer;
 
-    public void save(MailTemplateSaveRequest dto, String htmlPart, Club club) {
+    public void save(MailTemplateSaveRequest dto, Club club) {
         MailTemplate template = dto.toMailTemplate(club);
         UUID templateId = mailTemplateRepository.save(template).getId();
 
-        uploadTemplate(dto, htmlPart, templateId);
+        uploadTemplate(dto, templateId);
     }
 
-    public UUID uploadTemplate(MailTemplateSaveRequest dto, String htmlPart) {
+    public UUID uploadTemplate(MailTemplateSaveRequest dto) {
         UUID templateId = UUID.randomUUID();
-        uploadTemplate(dto, htmlPart ,templateId);
+        uploadTemplate(dto, templateId);
         return templateId;
     }
 
-    private void uploadTemplate(MailTemplateSaveRequest dto, String htmlPart, UUID templateId) {
-        CreateTemplateRequest request = buildRequest(dto, htmlPart, templateId);
+    private void uploadTemplate(MailTemplateSaveRequest dto, UUID templateId) {
+        CreateTemplateRequest request = buildRequest(dto, templateId);
 
         try {
             sesClient.createTemplate(request);
@@ -44,12 +46,14 @@ public class MailTemplateSaveService {
         }
     }
 
-    private CreateTemplateRequest buildRequest(MailTemplateSaveRequest dto, String htmlPart, UUID templateId) {
+    private CreateTemplateRequest buildRequest(MailTemplateSaveRequest dto, UUID templateId) {
+        String sanitizedHtmlPart = htmlSanitizer.sanitize(dto.htmlPart());
+
         Template template = Template.builder()
                 .templateName(templateId.toString())
                 .subjectPart(dto.subject())
                 .textPart(dto.textPart())
-                .htmlPart(htmlPart)
+                .htmlPart(sanitizedHtmlPart)
                 .build();
 
         return CreateTemplateRequest.builder()

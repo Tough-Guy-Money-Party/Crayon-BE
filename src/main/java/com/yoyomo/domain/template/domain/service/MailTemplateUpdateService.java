@@ -1,6 +1,7 @@
 package com.yoyomo.domain.template.domain.service;
 
 import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
+import com.yoyomo.domain.template.application.util.HtmlSanitizer;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +18,21 @@ import java.util.UUID;
 public class MailTemplateUpdateService {
 
     private final SesClient sesClient;
+    private final HtmlSanitizer htmlSanitizer;
 
-    public void update(MailTemplateUpdateRequest dto, String htmlPart, MailTemplate mailTemplate, UUID templateId) {
+    public void update(MailTemplateUpdateRequest dto, MailTemplate mailTemplate, UUID templateId) {
         mailTemplate.update(dto);
-        updateTemplate(dto, htmlPart, templateId);
+        updateTemplate(dto, templateId);
     }
 
-    private void updateTemplate(MailTemplateUpdateRequest dto, String htmlPart, UUID templateId) {
+    private void updateTemplate(MailTemplateUpdateRequest dto, UUID templateId) {
+        String sanitizedHtmlPart = htmlSanitizer.sanitize(dto.htmlPart());
+
         Template template = Template.builder()
                 .templateName(templateId.toString())
                 .subjectPart(dto.subject())
                 .textPart(dto.textPart())
-                .htmlPart(htmlPart)
+                .htmlPart(sanitizedHtmlPart)
                 .build();
 
         UpdateTemplateRequest updateRequest = UpdateTemplateRequest.builder()

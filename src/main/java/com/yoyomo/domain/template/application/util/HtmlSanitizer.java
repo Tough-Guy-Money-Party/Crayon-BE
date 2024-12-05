@@ -1,11 +1,11 @@
-package com.yoyomo.domain.template.domain.service;
+package com.yoyomo.domain.template.application.util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class HtmlSanitizeService {
+@Component
+public class HtmlSanitizer {
 
     public String sanitize(String html) {
         if (html == null || html.isEmpty()) {
