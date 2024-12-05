@@ -13,6 +13,7 @@ import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
+import com.yoyomo.domain.template.domain.service.HtmlSanitizeService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class MailManageUseCaseImpl {
     private final ApplicationGetService applicationGetService;
     private final ProcessGetService processGetService;
     private final MailTemplateSaveService mailTemplateSaveService;
-
     private final LambdaService lambdaService;
+    private final HtmlSanitizeService htmlSanitizeService;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -86,8 +87,11 @@ public class MailManageUseCaseImpl {
         Set<CustomType> passCustomType = mailUtilService.extract(dto.passTemplate());
         Set<CustomType> failCustomType = mailUtilService.extract(dto.failTemplate());
 
-        UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
-        UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
+        String passHtmlPart = htmlSanitizeService.sanitize(dto.passTemplate().htmlPart());
+        String failHtmlPart = htmlSanitizeService.sanitize(dto.failTemplate().htmlPart());
+
+        UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate(), passHtmlPart);
+        UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate(), failHtmlPart);
 
         List<Mail> mailList = convertToMails(applications, dto, recruitment, passCustomType, passTemplateId, failCustomType, failTemplateId);
 
