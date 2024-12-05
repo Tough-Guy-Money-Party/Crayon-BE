@@ -1,5 +1,17 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.OK;
+
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
@@ -10,6 +22,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,20 +36,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "RECRUITMENT")
 @RestController
@@ -56,7 +56,8 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}/{formId}")
     @Operation(summary = "모집 활성화 (Recruitment - Form 매핑)")
-    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> activate(@PathVariable String recruitmentId, @PathVariable String formId,
+                                      @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.activate(recruitmentId, formId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_ACTIVATE.getMessage());
@@ -64,15 +65,18 @@ public class RecruitmentController {
 
     @GetMapping("/{recruitmentId}")
     @Operation(summary = "모집 상세 조회")
-    public ResponseDto<DetailResponse> read(@PathVariable String recruitmentId) {
-        DetailResponse response = recruitmentManageUseCase.read(recruitmentId);
+    public ResponseDto<DetailResponse> read(@PathVariable UUID recruitmentId,
+                                            @CurrentUser @Parameter(hidden = true) Long userId) {
+        DetailResponse response = recruitmentManageUseCase.read(recruitmentId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
     @GetMapping("all/{clubId}")
     @Operation(summary = "모집 목록 조회")
-    public ResponseDto<Page<Response>> readAll(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "7") Integer size, @PathVariable String clubId) {
+    public ResponseDto<Page<Response>> readAll(@RequestParam(defaultValue = "0") Integer page,
+                                               @RequestParam(defaultValue = "7") Integer size,
+                                               @PathVariable String clubId) {
         Page<Response> responses = recruitmentManageUseCase.readAll(PageRequest.of(page, size), clubId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
@@ -80,7 +84,8 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정")
-    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto,
+                                    @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.update(recruitmentId, dto, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
@@ -88,7 +93,8 @@ public class RecruitmentController {
 
     @DeleteMapping("/{recruitmentId}")
     @Operation(summary = "모집 마감")
-    public ResponseDto<Void> close(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> close(@PathVariable String recruitmentId,
+                                   @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.close(recruitmentId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
@@ -96,7 +102,8 @@ public class RecruitmentController {
 
     @DeleteMapping("/{recruitmentId}/force")
     @Operation(summary = "모집 취소")
-    public ResponseDto<Void> cancel(@PathVariable String recruitmentId, @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> cancel(@PathVariable String recruitmentId,
+                                    @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.cancel(recruitmentId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_CANCEL.getMessage());
@@ -104,9 +111,10 @@ public class RecruitmentController {
 
     @GetMapping("/processes/{recruitmentId}")
     @Operation(summary = "모집 프로세스 목록 조회")
-    public ResponseDto<List<ProcessResponseDTO.Response>> readAll(@PathVariable String recruitmentId) {
-        List<ProcessResponseDTO.Response> responses = processManageUseCase.readAll(recruitmentId);
-        
+    public ResponseDto<List<ProcessResponseDTO.Response>> readAll(@PathVariable UUID recruitmentId,
+                                                                  @CurrentUser @Parameter(hidden = true) Long userId) {
+        List<ProcessResponseDTO.Response> responses = processManageUseCase.readAll(recruitmentId, userId);
+
         return ResponseDto.of(OK.value(), SUCCESS_READ_PROCESSES.getMessage(), responses);
     }
 }
