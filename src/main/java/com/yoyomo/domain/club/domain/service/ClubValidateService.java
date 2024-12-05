@@ -35,12 +35,13 @@ public class ClubValidateService {
 
         ClubManager clubManager = clubMangerRepository.findByClubAndManager(club, manager)
                 .orElseThrow(ClubAccessDeniedException::new);
+
         if (clubManager.isOwner()) {
             return club;
         }
         throw new ClubAccessDeniedException();
     }
-    
+
     public Club checkAuthority(UUID clubId, long userId) {
         Club club = clubRepository.findByIdAndDeletedAtIsNull(clubId)
                 .orElseThrow(ClubNotFoundException::new);
