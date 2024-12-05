@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HtmlSanitizeService {
 
-    public static String sanitize(String html) {
+    public String sanitize(String html) {
         if (html == null || html.isEmpty()) {
             return html;
         }
