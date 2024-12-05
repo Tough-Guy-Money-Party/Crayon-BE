@@ -86,9 +86,8 @@ public class LandingController {
     }
 
     @GetMapping("/general-for-react")
-    public ResponseDto<All> readAll(@RequestParam String subDomain,
-                                    @CurrentUser @Parameter(hidden = true) Long userId) {
-        All response = landingAllSettingManageUsecase.readAll(subDomain, userId);
+    public ResponseDto<All> readAll(@RequestParam String subDomain) {
+        All response = landingAllSettingManageUsecase.readAll(subDomain);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 }

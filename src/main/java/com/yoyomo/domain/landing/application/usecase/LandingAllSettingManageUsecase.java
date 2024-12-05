@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingAllSettingManageUsecase {
-    
+
     private final ClubGetService clubGetService;
     private final NotionGetService notionGetService;
 
-    public All readAll(String subDomain, long userId) {
+    public All readAll(String subDomain) {
         Club club = clubGetService.findBySubDomain(subDomain);
         Landing landing = club.getLanding();
         String parsedNotionPageLink = notionGetService.parseNotionPageLink(club.getNotionPageLink());
