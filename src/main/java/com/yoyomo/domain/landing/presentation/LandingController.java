@@ -7,8 +7,8 @@ import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.All;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.General;
 import com.yoyomo.domain.landing.application.usecase.LandingAllSettingManageUsecase;
-import com.yoyomo.domain.landing.application.usecase.LandingGeneralManageUsecaseImpl;
-import com.yoyomo.domain.landing.application.usecase.LandingStyleManagementUsecaseImpl;
+import com.yoyomo.domain.landing.application.usecase.LandingGeneralManageUsecase;
+import com.yoyomo.domain.landing.application.usecase.LandingStyleManagementUsecase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,12 +36,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class LandingController {
 
-    private final LandingGeneralManageUsecaseImpl landingGeneralManageUsecase;
-    private final LandingStyleManagementUsecaseImpl landingStyleManagementUsecase;
+    private final LandingGeneralManageUsecase landingGeneralManageUsecase;
+    private final LandingStyleManagementUsecase landingStyleManagementUsecase;
     private final LandingAllSettingManageUsecase landingAllSettingManageUsecase;
 
     @Operation(summary = "[Landing] notion 페이지 링크를 입력받아 저장합니다.")
-    @PostMapping()
+    @PostMapping
     public ResponseDto<Void> update(@RequestBody NotionSave dto,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         landingGeneralManageUsecase.update(dto, userId);

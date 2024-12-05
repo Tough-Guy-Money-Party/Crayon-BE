@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class LandingGeneralManageUsecaseImpl {
+public class LandingGeneralManageUsecase {
 
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
