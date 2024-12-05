@@ -19,7 +19,7 @@ public class ClubSaveService {
     private final LandingRepository landingRepository;
 
     public Club save(Club club, User manager) {
-        ClubManager clubManager = ClubManager.of(club, manager);
+        ClubManager clubManager = ClubManager.asOwner(club, manager);
         clubMangerRepository.save(clubManager);
         landingRepository.save(new Landing(club));
         return clubRepository.save(club);

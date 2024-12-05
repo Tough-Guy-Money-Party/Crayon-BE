@@ -32,12 +32,24 @@ public class ClubManager {
     @JoinColumn(name = "user_id")
     private User manager;
 
-    private ClubManager(Club club, User user) {
+    @Column(name = "manager_role", nullable = false)
+    private ManagerRole managerRole;
+
+    private ClubManager(Club club, User user, ManagerRole managerRole) {
         this.club = club;
         this.manager = user;
+        this.managerRole = managerRole;
     }
 
-    public static ClubManager of(Club club, User manager) {
-        return new ClubManager(club, manager);
+    public static ClubManager asManager(Club club, User manager) {
+        return new ClubManager(club, manager, ManagerRole.MANAGER);
+    }
+
+    public static ClubManager asOwner(Club club, User manager) {
+        return new ClubManager(club, manager, ManagerRole.OWNER);
+    }
+
+    public boolean isOwner() {
+        return managerRole.isOwner();
     }
 }
