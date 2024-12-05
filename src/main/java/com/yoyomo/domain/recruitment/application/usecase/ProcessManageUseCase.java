@@ -12,7 +12,6 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import java.util.Comparator;
 import java.util.List;
@@ -43,8 +42,7 @@ public class ProcessManageUseCase {
     */
     @Transactional(readOnly = true)
     public List<Response> readAll(UUID recruitmentId, long userId) {
-        User manager = userGetService.find(userId);
-        clubManagerAuthService.checkAuthorization(recruitmentId, manager);
+        clubManagerAuthService.checkAuthorization(recruitmentId, userId);
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<Process> processes = processGetService.findAll(recruitment);
         Map<Process, Long> processApplicantCount = applicationGetService.countInProcesses(recruitment.getId(),
