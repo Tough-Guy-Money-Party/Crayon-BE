@@ -4,24 +4,29 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ClubRequestDTO {
 
     public record Save(
             @NotEmpty String name,
             @NotEmpty String subDomain
-    ) {}
+    ) {
+    }
 
     public record Update(
             @NotEmpty String name
-    ) {}
+    ) {
+    }
 
     public record Participation(
             @NotEmpty String code
-    ) {}
+    ) {
+    }
 
     public record Delete(
-            @NotEmpty String clubId,
+            @NotEmpty UUID clubId,
             @NotNull List<Long> userIds
-    ) {}
+    ) {
+    }
 }
