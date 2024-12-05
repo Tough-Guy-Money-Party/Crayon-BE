@@ -26,3 +26,4 @@ public class HtmlSanitizer {
         return Jsoup.clean(html, customSafelist);
     }
 }
+
