@@ -1,8 +1,5 @@
 package com.yoyomo.domain.club.domain.entity;
 
-import lombok.Getter;
-
-@Getter
 public enum ManagerRole {
     OWNER,
     MANAGER;

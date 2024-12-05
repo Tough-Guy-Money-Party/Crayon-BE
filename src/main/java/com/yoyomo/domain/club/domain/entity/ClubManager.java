@@ -3,6 +3,8 @@ package com.yoyomo.domain.club.domain.entity;
 import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,6 +34,7 @@ public class ClubManager {
     @JoinColumn(name = "user_id")
     private User manager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "manager_role", nullable = false)
     private ManagerRole managerRole;
 
