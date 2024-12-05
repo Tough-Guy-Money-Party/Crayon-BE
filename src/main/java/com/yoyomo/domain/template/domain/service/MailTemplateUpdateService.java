@@ -18,17 +18,17 @@ public class MailTemplateUpdateService {
 
     private final SesClient sesClient;
 
-    public void update(MailTemplateUpdateRequest dto, MailTemplate mailTemplate, UUID templateId) {
+    public void update(MailTemplateUpdateRequest dto, String htmlPart, MailTemplate mailTemplate, UUID templateId) {
         mailTemplate.update(dto);
-        updateTemplate(dto, templateId);
+        updateTemplate(dto, htmlPart, templateId);
     }
 
-    private void updateTemplate(MailTemplateUpdateRequest dto, UUID templateId) {
+    private void updateTemplate(MailTemplateUpdateRequest dto, String htmlPart, UUID templateId) {
         Template template = Template.builder()
                 .templateName(templateId.toString())
                 .subjectPart(dto.subject())
                 .textPart(dto.textPart())
-                .htmlPart(dto.htmlPart())
+                .htmlPart(htmlPart)
                 .build();
 
         UpdateTemplateRequest updateRequest = UpdateTemplateRequest.builder()

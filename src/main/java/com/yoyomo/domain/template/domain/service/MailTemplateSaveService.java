@@ -21,21 +21,21 @@ public class MailTemplateSaveService {
     private final MailTemplateRepository mailTemplateRepository;
     private final SesClient sesClient;
 
-    public void save(MailTemplateSaveRequest dto, Club club) {
+    public void save(MailTemplateSaveRequest dto, String htmlPart, Club club) {
         MailTemplate template = dto.toMailTemplate(club);
         UUID templateId = mailTemplateRepository.save(template).getId();
 
-        uploadTemplate(dto, templateId);
+        uploadTemplate(dto, htmlPart, templateId);
     }
 
-    public UUID uploadTemplate(MailTemplateSaveRequest dto) {
+    public UUID uploadTemplate(MailTemplateSaveRequest dto, String htmlPart) {
         UUID templateId = UUID.randomUUID();
-        uploadTemplate(dto, templateId);
+        uploadTemplate(dto, htmlPart ,templateId);
         return templateId;
     }
 
-    private void uploadTemplate(MailTemplateSaveRequest dto, UUID templateId) {
-        CreateTemplateRequest request = buildRequest(dto, templateId);
+    private void uploadTemplate(MailTemplateSaveRequest dto, String htmlPart, UUID templateId) {
+        CreateTemplateRequest request = buildRequest(dto, htmlPart, templateId);
 
         try {
             sesClient.createTemplate(request);
@@ -44,12 +44,12 @@ public class MailTemplateSaveService {
         }
     }
 
-    private CreateTemplateRequest buildRequest(MailTemplateSaveRequest dto, UUID templateId) {
+    private CreateTemplateRequest buildRequest(MailTemplateSaveRequest dto, String htmlPart, UUID templateId) {
         Template template = Template.builder()
                 .templateName(templateId.toString())
                 .subjectPart(dto.subject())
                 .textPart(dto.textPart())
-                .htmlPart(dto.htmlPart())
+                .htmlPart(htmlPart)
                 .build();
 
         return CreateTemplateRequest.builder()

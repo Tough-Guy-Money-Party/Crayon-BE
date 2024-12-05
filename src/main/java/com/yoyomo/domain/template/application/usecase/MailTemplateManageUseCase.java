@@ -8,18 +8,16 @@ import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequ
 import com.yoyomo.domain.template.application.dto.response.MailTemplateGetResponse;
 import com.yoyomo.domain.template.application.dto.response.MailTemplateListResponse;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
-import com.yoyomo.domain.template.domain.service.MailTemplateDeleteService;
-import com.yoyomo.domain.template.domain.service.MailTemplateGetService;
-import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
-import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
+import com.yoyomo.domain.template.domain.service.*;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +30,13 @@ public class MailTemplateManageUseCase {
     private final MailTemplateUpdateService mailTemplateUpdateService;
     private final MailTemplateDeleteService mailTemplateDeleteService;
     private final ClubManagerAuthService clubManagerAuthService;
+    private final HtmlSanitizeService htmlSanitizeService;
 
     @Transactional
     public void save(MailTemplateSaveRequest dto, UUID clubId, Long userId) {
         Club club = checkAuthorityByClub(clubId.toString(), userId);
-
-        mailTemplateSaveService.save(dto, club);
+        String htmlPart = htmlSanitizeService.sanitize(dto.htmlPart());
+        mailTemplateSaveService.save(dto, htmlPart, club);
     }
 
     public Page<MailTemplateListResponse> findAll(String clubId, Pageable pageable) {
@@ -54,7 +53,8 @@ public class MailTemplateManageUseCase {
     @Transactional
     public void update(MailTemplateUpdateRequest dto, UUID templateId, Long userId) {
         MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
-        mailTemplateUpdateService.update(dto, mailTemplate, templateId);
+        String htmlPart = htmlSanitizeService.sanitize(dto.htmlPart());
+        mailTemplateUpdateService.update(dto, htmlPart, mailTemplate, templateId);
     }
 
     @Transactional
