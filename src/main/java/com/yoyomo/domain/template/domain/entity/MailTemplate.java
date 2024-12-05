@@ -2,6 +2,7 @@ package com.yoyomo.domain.template.domain.entity;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
+import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class MailTemplate {
+public class MailTemplate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
