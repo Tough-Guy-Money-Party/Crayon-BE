@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagementUsecase {
+public class LandingGeneralManageUsecaseImpl {
 
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
@@ -29,16 +29,14 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final DistrubuteUsecaseImpl distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
 
-    @Override
-    public LandingResponseDTO.General readGeneral(String clubId) {
+    public LandingResponseDTO.General readGeneral(String clubId, long userId) {
         Club club = clubGetService.find(clubId);
         Landing landing = landingGetService.find(club);
         return landingMapper.toGeneralResponse(club, landing);
     }
 
-    @Override
     @Transactional
-    public void update(General dto) throws IOException {
+    public void update(General dto, long userId) throws IOException {
         Club club = clubGetService.find(dto.clubId());
         Landing landing = landingGetService.find(club);
 
@@ -68,8 +66,7 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
         return !dto.subDomain().equals(club.getSubDomain());
     }
 
-    @Override
-    public void update(LandingRequestDTO.NotionSave dto) {
+    public void update(LandingRequestDTO.NotionSave dto, long userId) {
         Club club = clubGetService.find(dto.clubId());
         clubUpdateService.update(club, dto.notionPageLink());
     }
