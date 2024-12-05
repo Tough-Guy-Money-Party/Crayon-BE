@@ -7,14 +7,24 @@ import com.yoyomo.domain.user.domain.entity.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public record ApplicationSaveRequest(
-        @NotBlank String userName,
-        @NotBlank @Email String email,
-        @NotBlank String tel,
-        @Valid List<ItemRequest> answers
+        @NotBlank
+        String userName,
+
+        @Email
+        @NotBlank
+        String email,
+
+        @Size(max = 13)
+        @NotBlank
+        String tel,
+
+        @Valid
+        List<ItemRequest> answers
 ) {
     public Application toApplication(Recruitment recruitment, User applicant) {
         return Application.builder()

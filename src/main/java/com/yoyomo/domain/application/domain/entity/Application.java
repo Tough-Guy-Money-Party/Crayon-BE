@@ -35,6 +35,7 @@ public class Application extends BaseEntity {
 
     private String email;
 
+    @Column(length = 13)
     private String tel;
 
     @Builder.Default
