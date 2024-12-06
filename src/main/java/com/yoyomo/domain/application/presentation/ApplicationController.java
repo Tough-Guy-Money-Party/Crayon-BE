@@ -1,22 +1,9 @@
 package com.yoyomo.domain.application.presentation;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
-import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
-import static org.springframework.http.HttpStatus.OK;
-
-import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Stage;
-import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
+import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
+import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
+import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
@@ -28,19 +15,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
 @RestController
@@ -56,7 +42,7 @@ public class ApplicationController {
     // Applicant
     @PostMapping("/{recruitmentId}")
     @Operation(summary = "[Applicant] 지원서 작성")
-    public ResponseDto<Void> apply(@Valid @RequestBody Save dto, @PathVariable String recruitmentId,
+    public ResponseDto<Void> apply(@Valid @RequestBody ApplicationSaveRequest dto, @PathVariable String recruitmentId,
                                    @CurrentUser @Parameter(hidden = true) Long userId) {
         applyUseCase.apply(dto, recruitmentId, userId);
 
@@ -82,7 +68,7 @@ public class ApplicationController {
 
     @PatchMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내 지원서 응답 수정")
-    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid Update dto,
+    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid ApplicationUpdateRequest dto,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         applyUseCase.update(applicationId, dto, userId);
 
@@ -148,7 +134,7 @@ public class ApplicationController {
 
     @PatchMapping("/manager/{recruitmentId}")
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
-    public ResponseDto<Void> update(@RequestBody @Valid Stage dto, @CurrentUser @Parameter(hidden = true) Long userId,
+    public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto, @CurrentUser @Parameter(hidden = true) Long userId,
                                     @PathVariable String recruitmentId) {
         applicationManageUseCase.updateProcess(dto, userId, recruitmentId);
 
