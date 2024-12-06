@@ -3,6 +3,7 @@ package com.yoyomo.domain.landing.application.usecase;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
+import com.yoyomo.domain.club.domain.service.ClubValidateService;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
@@ -12,15 +13,15 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.infra.aws.usecase.DistrubuteUsecaseImpl;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagementUsecase {
+public class LandingGeneralManageUsecase {
 
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
@@ -28,21 +29,24 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
     private final LandingMapper landingMapper;
     private final DistrubuteUsecaseImpl distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
+    private final ClubValidateService clubValidateService;
 
-    @Override
-    public LandingResponseDTO.General readGeneral(String clubId) {
+    @Transactional(readOnly = true)
+    public LandingResponseDTO.General readGeneral(String clubId, long userId) {
         Club club = clubGetService.find(clubId);
+        clubValidateService.checkAuthority(club.getId(), userId);
+
         Landing landing = landingGetService.find(club);
         return landingMapper.toGeneralResponse(club, landing);
     }
 
-    @Override
     @Transactional
-    public void update(General dto) throws IOException {
+    public void update(General dto, long userId) throws IOException {
         Club club = clubGetService.find(dto.clubId());
-        Landing landing = landingGetService.find(club);
+        clubValidateService.checkOwnerAuthority(club.getId(), userId);
 
         updateSubDomainIfChanged(dto, club);
+        Landing landing = landingGetService.find(club);
         landingUpdateService.update(landing, club, dto);
     }
 
@@ -68,9 +72,10 @@ public class LandingGeneralManageUsecaseImpl implements LandingGeneralManagement
         return !dto.subDomain().equals(club.getSubDomain());
     }
 
-    @Override
-    public void update(LandingRequestDTO.NotionSave dto) {
+    @Transactional
+    public void update(LandingRequestDTO.NotionSave dto, long userId) {
         Club club = clubGetService.find(dto.clubId());
+        clubValidateService.checkOwnerAuthority(club.getId(), userId);
         clubUpdateService.update(club, dto.notionPageLink());
     }
 }
