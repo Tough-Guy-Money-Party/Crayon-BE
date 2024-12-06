@@ -1,4 +1,4 @@
-package com.yoyomo.domain.template.application.util;
+package com.yoyomo.domain.template.application.support;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;

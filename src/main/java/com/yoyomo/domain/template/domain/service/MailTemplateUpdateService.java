@@ -1,7 +1,7 @@
 package com.yoyomo.domain.template.domain.service;
 
 import com.yoyomo.domain.template.application.dto.request.MailTemplateUpdateRequest;
-import com.yoyomo.domain.template.application.util.HtmlSanitizer;
+import com.yoyomo.domain.template.application.support.HtmlSanitizer;
 import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import com.yoyomo.domain.template.exception.SesTemplateException;
 import lombok.RequiredArgsConstructor;
