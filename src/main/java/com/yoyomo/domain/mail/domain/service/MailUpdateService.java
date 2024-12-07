@@ -57,7 +57,7 @@ public class MailUpdateService {
     }
 
     private CompletableFuture<Void> updateMailStatus(Mail mail) {
-        mail.delete();
+        mail.cancel();
         return mailTable.updateItem(mail)
                 .thenAccept(unused -> {})
                 .exceptionally(e -> {
