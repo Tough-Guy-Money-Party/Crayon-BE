@@ -2,7 +2,6 @@ package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.mail.application.dto.request.MailCancelRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
@@ -64,9 +63,10 @@ public class MailManageUseCaseImpl {
         });
     }
 
-    public void cancel(MailCancelRequest dto) {
+    public void cancel(Long processId) {
+        processGetService.find(processId);
         try {
-            mailUpdateService.cancelMail(dto).join();
+            mailUpdateService.cancelMail(processId).join();
         } catch (CompletionException e) {
             throw new MailCancelException(e.getMessage());
         }

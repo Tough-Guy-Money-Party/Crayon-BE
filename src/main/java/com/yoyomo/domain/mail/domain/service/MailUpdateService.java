@@ -1,6 +1,5 @@
 package com.yoyomo.domain.mail.domain.service;
 
-import com.yoyomo.domain.mail.application.dto.request.MailCancelRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +23,11 @@ public class MailUpdateService {
 
     private final DynamoDbAsyncTable<Mail> mailTable;
 
-    public CompletableFuture<Void> cancelMail(MailCancelRequest dto) {
+    public CompletableFuture<Void> cancelMail(Long processId) {
         Expression filterExpression = Expression.builder()
                 .expression("processId = :processId")
                 .expressionValues(Map.of(
-                        ":processId", AttributeValue.builder().n(dto.processId().toString()).build()
+                        ":processId", AttributeValue.builder().n(processId.toString()).build()
                 ))
                 .build();
 
