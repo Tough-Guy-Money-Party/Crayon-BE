@@ -71,7 +71,7 @@ public class Application extends BaseEntity {
 
     public void update(Process process) {
         this.process = process;
-        this.status = Status.PENDING;
+        this.status = Status.BEFORE_EVALUATION;
     }
 
     public void addInterview(Interview interview) {
