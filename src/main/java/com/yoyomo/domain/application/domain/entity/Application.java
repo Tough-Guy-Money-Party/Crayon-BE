@@ -44,6 +44,13 @@ public class Application extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String userName;
+
+    private String email;
+
+    @Column(length = 13)
+    private String tel;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Status status = Status.BEFORE_EVALUATION;
@@ -62,10 +69,9 @@ public class Application extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    private String email;
-
     public void update(Process process) {
         this.process = process;
+        this.status = Status.PENDING;
     }
 
     public void addInterview(Interview interview) {

@@ -1,19 +1,12 @@
 package com.yoyomo.domain.application.application.usecase;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Save;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
-
-import com.yoyomo.domain.application.application.dto.request.ApplicationRequestDTO.Update;
+import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
+import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.service.AnswerGetService;
-import com.yoyomo.domain.application.domain.service.AnswerSaveService;
-import com.yoyomo.domain.application.domain.service.AnswerUpdateService;
-import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
-import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
+import com.yoyomo.domain.application.domain.service.*;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -21,9 +14,12 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +38,7 @@ public class ApplyUseCase {
 
 
     @Transactional
-    public void apply(Save dto, String recruitmentId, Long userId) {
+    public void apply(ApplicationSaveRequest dto, String recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         recruitment.checkAvailable();
 
@@ -74,7 +70,7 @@ public class ApplyUseCase {
     }
 
     @Transactional
-    public void update(String applicationId, Update dto, Long userId) {
+    public void update(String applicationId, ApplicationUpdateRequest dto, Long userId) {
         User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());

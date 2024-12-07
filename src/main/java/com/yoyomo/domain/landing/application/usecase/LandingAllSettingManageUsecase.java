@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LandingAllSettingManageUsecase {
+
     private final ClubGetService clubGetService;
     private final NotionGetService notionGetService;
 

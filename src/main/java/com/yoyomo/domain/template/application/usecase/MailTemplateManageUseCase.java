@@ -14,12 +14,13 @@ import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +55,7 @@ public class MailTemplateManageUseCase {
     @Transactional
     public void update(MailTemplateUpdateRequest dto, UUID templateId, Long userId) {
         MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
+
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
     }
 

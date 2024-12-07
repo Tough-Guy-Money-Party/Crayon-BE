@@ -1,18 +1,10 @@
 package com.yoyomo.domain.user.domain.entity;
 
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -31,6 +23,7 @@ public class User extends BaseEntity {
 
     private String email;
 
+    @Column(length = 13)
     private String tel;
 
     private String refreshToken;

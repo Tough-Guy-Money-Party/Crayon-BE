@@ -41,7 +41,6 @@ public class MailManageUseCaseImpl {
     private final ApplicationGetService applicationGetService;
     private final ProcessGetService processGetService;
     private final MailTemplateSaveService mailTemplateSaveService;
-
     private final LambdaService lambdaService;
 
     @Value("${mail.lambda.arn}")
