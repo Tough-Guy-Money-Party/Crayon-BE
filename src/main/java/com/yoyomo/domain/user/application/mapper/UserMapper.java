@@ -1,6 +1,5 @@
 package com.yoyomo.domain.user.application.mapper;
 
-import com.yoyomo.domain.user.application.dto.request.UserRequestDTO.Find;
 import com.yoyomo.domain.user.application.dto.response.UserResponseDTO.Response;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
@@ -15,7 +14,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
-    User from(Find dto);
 
     @Mapping(target = "name", source = "dto.profile.nickname")
     User from(KakaoAccount dto);

@@ -2,7 +2,13 @@ package com.yoyomo.domain.application.domain.entity.enums;
 
 public enum Status {
     BEFORE_EVALUATION,
-    PENDING,
-    PASS,
-    FAIL
+    DOCUMENT_PASS,
+    DOCUMENT_FAIL,
+    FINAL_PASS,
+    FINAL_FAIL,
+    PENDING;
+
+    public boolean isPass() {
+        return this == DOCUMENT_PASS || this == FINAL_PASS;
+    }
 }
