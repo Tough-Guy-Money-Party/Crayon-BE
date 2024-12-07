@@ -11,9 +11,9 @@ public record RatingResponse(
 ) {
     public static RatingResponse toResponse(Map<Rating, Long> ratingCount) {
         return new RatingResponse(
-                ratingCount.get(Rating.LOW),
-                ratingCount.get(Rating.MEDIUM),
-                ratingCount.get(Rating.HIGH)
+                ratingCount.getOrDefault(Rating.LOW, 0L),
+                ratingCount.getOrDefault(Rating.MEDIUM, 0L),
+                ratingCount.getOrDefault(Rating.HIGH, 0L)
         );
     }
 }
