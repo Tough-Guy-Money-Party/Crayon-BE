@@ -1,6 +1,7 @@
 package com.yoyomo.domain.mail.domain.entity;
 
 import com.yoyomo.domain.mail.application.converter.LocalDateTimeConverter;
+import com.yoyomo.domain.mail.domain.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +28,10 @@ public class Mail {
     private Map<String, String> customData;
     private String source;
     private String destination;
-    private String status;
+    private Status status;
     private LocalDateTime scheduledTime;
     private Long ttl;
+    private Long processId;
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
@@ -40,5 +42,9 @@ public class Mail {
     @DynamoDbConvertedBy(LocalDateTimeConverter.class)
     public LocalDateTime getScheduledTime() {
         return scheduledTime;
+    }
+
+    public void cancel() {
+        this.status= Status.CANCELED;
     }
 }
