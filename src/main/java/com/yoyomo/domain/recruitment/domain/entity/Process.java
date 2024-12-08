@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -35,6 +36,11 @@ public class Process extends BaseEntity {
 
     private int stage;
 
+    @Builder.Default
+    @Column(nullable = false, name = "process_step")
+    @Enumerated(EnumType.STRING)
+    private ProcessStep processStep = ProcessStep.EVALUATION;
+
     @Enumerated(EnumType.STRING)
     private Type type;
 
@@ -46,7 +52,17 @@ public class Process extends BaseEntity {
 
     private LocalDateTime announceEndAt;
 
+    private LocalDateTime mailScheduleAt;
+
     @ManyToOne
     @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
+
+    public void updateStep(ProcessStep step) {
+        this.processStep = step;
+    }
+
+    public void reserve(LocalDateTime scheduledTime) {
+        this.mailScheduleAt = scheduledTime;
+    }
 }
