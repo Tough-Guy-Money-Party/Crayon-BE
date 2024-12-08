@@ -13,6 +13,7 @@ public class ProcessResponseDTO {
 
     @Builder
     public record Response(
+            long id,
             int stage,
             Type type,
             String title,
@@ -26,6 +27,7 @@ public class ProcessResponseDTO {
 
         public static ProcessResponseDTO.Response toResponse(Process process, long applicantCount, ProcessStep processStep) {
             return Response.builder()
+                    .id(process.getId())
                     .stage(process.getStage())
                     .type(process.getType())
                     .title(process.getTitle())
