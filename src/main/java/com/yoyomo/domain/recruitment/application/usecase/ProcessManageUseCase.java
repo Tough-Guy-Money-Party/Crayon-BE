@@ -1,25 +1,28 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
-
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.service.UserGetService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,6 @@ public class ProcessManageUseCase {
     private final ApplicationGetService applicationGetService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final ProcessGetService processGetService;
-    private final UserGetService userGetService;
 
     public List<Process> save(List<Save> dto, Recruitment recruitment) {
         return processSaveService.saveAll(dto, recruitment);
@@ -50,7 +52,7 @@ public class ProcessManageUseCase {
 
         return processes.stream()
                 .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L),
-                        recruitment.getProcessStep()))
+                        process.getProcessStep()))
                 .sorted(Comparator.comparingInt(Response::stage))
                 .toList();
     }
@@ -64,5 +66,24 @@ public class ProcessManageUseCase {
                 .map(update -> processSaveService.save(update, recruitment))
                 .sorted(Comparator.comparing(Process::getStage))
                 .toList();
+    }
+
+    @Transactional
+    public void updateStep(UUID recruitmentId, Long processId, ProcessStep step, Long userId) {
+        clubManagerAuthService.checkAuthorization(recruitmentId, userId);
+
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        Process process = processGetService.find(processId);
+
+        Type currentProcess = recruitment.getCurrentProcess();
+        if(!process.getType().equals(currentProcess)) {
+            throw new RuntimeException("현재 진행 중이지 않은 프로세스의 스텝을 수정할 수 없습니다.");
+        }
+
+        if(step.equals(ProcessStep.EVALUATION) && LocalDateTime.now().isAfter(process.getMailScheduleAt())) {
+            throw new RuntimeException("메일 발송 후에는 심사 스텝으로 돌아갈 수 없습니다.");
+        }
+
+        process.updateStep(step);
     }
 }
