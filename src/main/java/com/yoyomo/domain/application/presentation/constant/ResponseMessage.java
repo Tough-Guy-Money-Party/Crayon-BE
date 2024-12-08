@@ -18,6 +18,7 @@ public enum ResponseMessage {
     SUCCESS_UPDATE_EVALUATION("평가 수정에 성공했습니다."),
     SUCCESS_DELETE_EVALUATION("평가 삭제에 성공했습니다."),
     SUCCESS_READ_RESULT("모집 결과 조회에 성공했습니다."),
+    SUCCESS_MOVE_PASS("합격자 이동에 성공했습니다."),
 
     SUCCESS_GENERATE_CODE("이메일 인증 코드 발송에 성공했습니다."),
     SUCCESS_VERIFY_CODE("이메일 인증에 성공했습니다."),

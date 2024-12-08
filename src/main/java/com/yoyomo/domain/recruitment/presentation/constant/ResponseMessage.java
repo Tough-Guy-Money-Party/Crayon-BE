@@ -13,6 +13,7 @@ public enum ResponseMessage {
     SUCCESS_CANCEL("모집 취소에 성공했습니다."),
     SUCCESS_ACTIVATE("모집 활성화에 성공했습니다."),
     SUCCESS_READ_PROCESSES("프로세스 목록 조회에 성공했습니다."),
+    SUCCESS_MOVE_PROCESS_STEP("프로세스 스텝 변경에 성공했습니다."),
 
     RECRUITMENT_CANNOT_UPDATE("진행중인 모집은 수정할 수 없습니다."),
     PROCESS_NOT_FOUND("존재하지 않는 모집입니다."),
