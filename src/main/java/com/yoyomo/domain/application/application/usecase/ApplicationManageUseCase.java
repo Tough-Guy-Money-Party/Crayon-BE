@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
@@ -30,6 +31,7 @@ import static com.yoyomo.domain.application.application.dto.response.Application
 @Service
 @RequiredArgsConstructor
 public class ApplicationManageUseCase {
+    private static final int PAGE_SIZE = 100;
 
     private final UserGetService userGetService;
     private final ApplicationGetService applicationGetService;
@@ -50,7 +52,7 @@ public class ApplicationManageUseCase {
         return Detail.toDetail(application, answer, types);
     }
 
-    public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
+    public Page<Response> search(String name, UUID recruitmentId, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
         return applicationGetService.findByName(recruitment, name, pageable)
@@ -58,7 +60,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Page<Detail> readAll(String recruitmentId, Integer stage, Long userId, Pageable pageable) {
+    public Page<Detail> readAll(UUID recruitmentId, Integer stage, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
@@ -78,7 +80,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional
-    public void updateProcess(StageUpdateRequest dto, Long userId, String recruitmentId) {
+    public void updateProcess(StageUpdateRequest dto, Long userId, UUID recruitmentId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, dto.to());
 
@@ -87,7 +89,27 @@ public class ApplicationManageUseCase {
                 .forEach(application -> application.update(process));
     }
 
-    private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {
+    @Transactional
+    public void movePass(UUID recruitmentId, Long fromProcessId, Long toProcessId, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+        Process from = processGetService.find(fromProcessId);
+        Process to = processGetService.find(toProcessId);
+
+        Stream.iterate(0, pageNumber -> pageNumber + 1)
+                .map(pageNumber -> applicationGetService.findAll(fromProcessId, pageNumber, PAGE_SIZE))
+                .takeWhile(applications -> !applications.isEmpty())
+                .forEach(applications -> update(applications, to));
+
+        recruitment.move(to.getType());
+    }
+
+    private void update(List<Application> applications, Process to) {
+        applications.stream()
+                .filter(application -> application.getStatus().isPass())
+                .forEach(application -> application.update(to));
+    }
+
+    private Recruitment checkAuthorityByRecruitmentId(UUID recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
