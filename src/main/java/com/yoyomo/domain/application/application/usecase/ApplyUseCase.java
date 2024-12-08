@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 
@@ -38,7 +39,7 @@ public class ApplyUseCase {
 
 
     @Transactional
-    public void apply(ApplicationSaveRequest dto, String recruitmentId, Long userId) {
+    public void apply(ApplicationSaveRequest dto, UUID recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         recruitment.checkAvailable();
 
