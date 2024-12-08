@@ -34,7 +34,7 @@ public class MailController {
         return ResponseDto.of(OK.value(), DIRECT_MAIL_SEND_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/cancel/{processId}")
+    @DeleteMapping("/{processId}")
     @Operation(summary = "메일 예약 취소 요청")
     public ResponseDto<String> delete(@PathVariable Long processId) {
         mailManageUseCase.cancel(processId);
