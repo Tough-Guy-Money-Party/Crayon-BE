@@ -64,7 +64,7 @@ public class MailManageUseCaseImpl {
     }
 
     public void cancel(Long processId) {
-        processGetService.find(processId);
+        processGetService.exists(processId);
         try {
             mailUpdateService.cancelMail(processId).join();
         } catch (CompletionException e) {
