@@ -7,21 +7,15 @@ import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
-
 import java.util.List;
-import java.util.UUID;
 import java.util.Map;
-
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +33,7 @@ public class ApplicationGetService {
     }
 
     public Page<Application> findAll(Process process, Pageable pageable) {
-        return applicationRepository.findAllByProcessAndDeletedAtIsNull(process, pageable);
+        return applicationRepository.findAllByProcessAndDeletedAtIsNullWithPendingFirst(process, pageable);
     }
 
     public Application find(String id) {
