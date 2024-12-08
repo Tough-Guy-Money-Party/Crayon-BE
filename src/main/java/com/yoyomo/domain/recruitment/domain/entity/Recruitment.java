@@ -2,17 +2,13 @@ package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,17 +53,17 @@ public class Recruitment extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
+    @Builder.Default
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Type currentProcess = Type.DOCUMENTATION;
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
 
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
-
-    @Builder.Default
-    @Column(nullable = false, name = "process_step")
-    @Enumerated(EnumType.STRING)
-    private ProcessStep processStep = ProcessStep.EVALUATION;
 
     public void addProcesses(List<Process> processes) {
         this.processes.clear();
@@ -131,5 +127,9 @@ public class Recruitment extends BaseEntity {
 
     public Process getDocumentProcess() {
         return processes.get(0);
+    }
+
+    public void move(Type type) {
+        this.currentProcess = type;
     }
 }
