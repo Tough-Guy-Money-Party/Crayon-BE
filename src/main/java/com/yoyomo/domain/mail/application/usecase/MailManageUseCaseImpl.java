@@ -18,12 +18,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
@@ -49,6 +46,7 @@ public class MailManageUseCaseImpl {
     @Value("${mail.sourceAddress}")
     private String mailSourceAddress;
 
+    @Transactional
     public void reserve(MailRequest dto) {
         create(dto);
     }
@@ -69,6 +67,8 @@ public class MailManageUseCaseImpl {
         long processId = dto.processId();
 
         Process process = processGetService.find(processId);
+        process.reserve(dto.scheduledTime());
+
         Recruitment recruitment = process.getRecruitment();
 
         List<CompletableFuture<Void>> uploadFutures = new ArrayList<>();
