@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 
@@ -46,7 +47,7 @@ public class ApplicationManageUseCase {
         return Detail.toDetail(application, answer, types);
     }
 
-    public Page<ApplicationListResponse> search(String name, String recruitmentId, int stage, long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
@@ -55,7 +56,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Page<ApplicationListResponse> readAll(String recruitmentId, Integer stage, Long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> readAll(UUID recruitmentId, Integer stage, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
@@ -64,7 +65,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional
-    public void updateProcess(StageUpdateRequest dto, Long userId, String recruitmentId) {
+    public void updateProcess(StageUpdateRequest dto, Long userId, UUID recruitmentId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, dto.to());
 
@@ -73,7 +74,7 @@ public class ApplicationManageUseCase {
                 .forEach(application -> application.update(process));
     }
 
-    private Recruitment checkAuthorityByRecruitmentId(String recruitmentId, Long userId) {
+    private Recruitment checkAuthorityByRecruitmentId(UUID recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);

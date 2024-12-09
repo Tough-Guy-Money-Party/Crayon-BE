@@ -1,18 +1,5 @@
 package com.yoyomo.domain.application.presentation;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
@@ -43,6 +30,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
 @RestController
@@ -119,7 +120,7 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
-    public ResponseDto<Page<ApplicationListResponse>> readAll(@PathVariable String recruitmentId,
+    public ResponseDto<Page<ApplicationListResponse>> readAll(@PathVariable UUID recruitmentId,
                                                               @CurrentUser @Parameter(hidden = true) Long userId,
                                                               @RequestParam Integer stage, @RequestParam Integer page,
                                                               @RequestParam Integer size) {
@@ -140,7 +141,7 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/search")
     @Operation(summary = "[Manager] 이름으로 지원서 검색")
-    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable String recruitmentId, @Parameter(hidden = true) @CurrentUser Long userId,
+    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable UUID recruitmentId, @Parameter(hidden = true) @CurrentUser Long userId,
                                                              @RequestParam String name, @RequestParam Integer stage,
                                                              @RequestParam Integer page, @RequestParam Integer size) {
         Page<ApplicationListResponse> responses = applicationManageUseCase.search(name, recruitmentId, stage, userId,
@@ -153,7 +154,7 @@ public class ApplicationController {
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
     public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto,
                                     @CurrentUser @Parameter(hidden = true) Long userId,
-                                    @PathVariable String recruitmentId) {
+                                    @PathVariable UUID recruitmentId) {
         applicationManageUseCase.updateProcess(dto, userId, recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
