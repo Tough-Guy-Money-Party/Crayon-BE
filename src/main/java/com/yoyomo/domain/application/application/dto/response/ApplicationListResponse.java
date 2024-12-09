@@ -13,7 +13,7 @@ public record ApplicationListResponse(
         Status status,
         LocalDateTime createdAt
 ) {
-    public static ApplicationListResponse toApplicationListResponse(Application application) {
+    public static ApplicationListResponse toResponse(Application application) {
         return new ApplicationListResponse(
                 application.getId(),
                 application.getUserName(),

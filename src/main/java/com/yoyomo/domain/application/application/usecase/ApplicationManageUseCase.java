@@ -70,7 +70,7 @@ public class ApplicationManageUseCase {
 
         Map<UUID, Answer> answerMap = answerGetService.findAllApplicationMapByApplicationIds(applicationIds);
 
-        return applications.map(ApplicationListResponse::toApplicationListResponse);
+        return applications.map(ApplicationListResponse::toResponse);
     }
 
     @Transactional
