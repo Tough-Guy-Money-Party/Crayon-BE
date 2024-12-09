@@ -22,6 +22,7 @@ public enum ResponseMessage {
     EMPTY_PROCESS("프로세스가 존재하지 않는 모집입니다."),
     ACCESS_DENIED("권한이 없습니다."),
     PROCESS_STEP_CANNOT_UPDATE("현재 진행 중이지 않은 프로세스의 스텝을 수정할 수 없습니다."),
-    CANNOT_UPDATE_TO_EVALUATION_STEP("메일 발송 후에는 심사 스텝으로 돌아갈 수 없습니다.");
+    CANNOT_UPDATE_TO_EVALUATION_STEP("메일 발송 후에는 심사 스텝으로 돌아갈 수 없습니다."),
+    CANNOT_UPDATE_TO_MOVING_STEP("면접 프로세스에서는 합격자 이동 스텝으로 수정할 수 없습니다.");
     private final String message;
 }
