@@ -33,7 +33,7 @@ public class ApplicationGetService {
     }
 
     public Page<Application> findAll(Process process, Pageable pageable) {
-        return applicationRepository.findAllByProcessAndDeletedAtIsNullWithPendingFirst(process, pageable);
+        return applicationRepository.findAllByProcessOrderByPending(process, pageable);
     }
 
     public Application find(String id) {

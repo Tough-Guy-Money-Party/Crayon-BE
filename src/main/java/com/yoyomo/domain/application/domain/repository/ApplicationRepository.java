@@ -36,8 +36,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
                 CASE WHEN a.status = 'PENDING' THEN 0 ELSE 1 END ASC, 
                 a.createdAt DESC
             """)
-    Page<Application> findAllByProcessAndDeletedAtIsNullWithPendingFirst(@Param("process") Process process,
-                                                                         Pageable pageable);
+    Page<Application> findAllByProcessOrderByPending(@Param("process") Process process,
+                                                     Pageable pageable);
 
 
     @Query("""
