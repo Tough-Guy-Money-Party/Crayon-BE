@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
@@ -50,11 +49,12 @@ public class ApplicationManageUseCase {
         return Detail.toDetail(application, answer, types);
     }
 
-    public Page<Response> search(String name, String recruitmentId, Long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> search(String name, String recruitmentId, int stage, long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+        Process process = processGetService.find(recruitment, stage);
 
-        return applicationGetService.findByName(recruitment, name, pageable)
-                .map(applicationMapper::toResponse);
+        return applicationGetService.findByName(name, process, pageable)
+                .map(ApplicationListResponse::toResponse);
     }
 
     @Transactional(readOnly = true)

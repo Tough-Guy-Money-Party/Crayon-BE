@@ -33,7 +33,7 @@ public class UserManageUsecase {
         return registerMemberIfNew(userInfo);
     }
 
-    private UserResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
+    public UserResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
         String email = userInfo.getKakao_account().getEmail();
 
         if (userGetService.existsByEmail(email)) {
