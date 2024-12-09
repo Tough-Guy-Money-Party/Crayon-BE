@@ -1,17 +1,13 @@
 package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +32,10 @@ public class ApplicationGetService {
     public List<Application> findAll(Long processId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
+    }
+
+    public List<Application> findAll(Long processId, Status status) {
+        return applicationRepository.findAllByProcess_IdAndStatusAndDeletedAtIsNull(processId, status);
     }
 
     public Page<Application> findAll(Process process, Pageable pageable) {
