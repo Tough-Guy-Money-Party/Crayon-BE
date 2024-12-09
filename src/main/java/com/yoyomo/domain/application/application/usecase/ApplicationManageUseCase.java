@@ -4,10 +4,8 @@ import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -32,6 +30,7 @@ import static com.yoyomo.domain.application.application.dto.response.Application
 @Service
 @RequiredArgsConstructor
 public class ApplicationManageUseCase {
+
     private final UserGetService userGetService;
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
@@ -52,31 +51,21 @@ public class ApplicationManageUseCase {
         return Detail.toDetail(application, answer, types);
     }
 
-    public Page<Response> search(String name, UUID recruitmentId, Long userId, Pageable pageable) {
-        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
-
-        return applicationGetService.findByName(recruitment, name, pageable)
-                .map(applicationMapper::toResponse);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<Detail> readAll(UUID recruitmentId, Integer stage, Long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
-        List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
+        return applicationGetService.findByName(name, process, pageable)
+                .map(ApplicationListResponse::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ApplicationListResponse> readAll(UUID recruitmentId, Integer stage, Long userId, Pageable pageable) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+        Process process = processGetService.find(recruitment, stage);
 
         Page<Application> applications = applicationGetService.findAll(process, pageable);
-
-        List<UUID> applicationIds = applicationGetService.getApplicationIds(applications);
-
-        Map<UUID, Answer> answerMap = answerGetService.findAllApplicationMapByApplicationIds(applicationIds);
-
-        return applications.map(application -> Detail.toDetail(
-                application,
-                answerMap.get(application.getId()),
-                types
-        ));
+        return applications.map(ApplicationListResponse::toResponse);
     }
 
     @Transactional

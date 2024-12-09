@@ -21,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
@@ -69,7 +68,8 @@ public class ApplicationController {
 
     @PatchMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내 지원서 응답 수정")
-    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid ApplicationUpdateRequest dto,
+    public ResponseDto<Void> update(@PathVariable String applicationId,
+                                    @RequestBody @Valid ApplicationUpdateRequest dto,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         applyUseCase.update(applicationId, dto, userId);
 
@@ -103,7 +103,7 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
-    public ResponseDto<Page<Detail>> readAll(@PathVariable UUID recruitmentId,
+    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId,
                                              @CurrentUser @Parameter(hidden = true) Long userId,
                                              @RequestParam Integer stage, @RequestParam Integer page,
                                              @RequestParam Integer size) {
@@ -124,10 +124,10 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/search")
     @Operation(summary = "[Manager] 이름으로 지원서 검색")
-    public ResponseDto<Page<Response>> search(@RequestParam String name, @PathVariable UUID recruitmentId,
-                                              @CurrentUser @Parameter(hidden = true) Long userId,
-                                              @RequestParam Integer page, @RequestParam Integer size) {
-        Page<Response> responses = applicationManageUseCase.search(name, recruitmentId, userId,
+    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable UUID recruitmentId, @Parameter(hidden = true) @CurrentUser Long userId,
+                                                             @RequestParam String name, @RequestParam Integer stage,
+                                                             @RequestParam Integer page, @RequestParam Integer size) {
+        Page<ApplicationListResponse> responses = applicationManageUseCase.search(name, recruitmentId, stage, userId,
                 PageRequest.of(page, size));
 
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
@@ -135,7 +135,8 @@ public class ApplicationController {
 
     @PatchMapping("/manager/{recruitmentId}")
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
-    public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto, @CurrentUser @Parameter(hidden = true) Long userId,
+    public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto,
+                                    @CurrentUser @Parameter(hidden = true) Long userId,
                                     @PathVariable UUID recruitmentId) {
         applicationManageUseCase.updateProcess(dto, userId, recruitmentId);
 
