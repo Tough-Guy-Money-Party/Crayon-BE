@@ -144,9 +144,11 @@ public class ApplicationController {
 
     @PatchMapping("/manager/{recruitmentId}/from/{fromProcessId}/to/{toProcessId}")
     @Operation(summary = "[Manager] 합격자 이동")
-    public ResponseDto<Void> updatePass(@PathVariable UUID recruitmentId, @PathVariable Long fromProcessId, @PathVariable Long toProcessId,
+    public ResponseDto<Void> moveApplicant(@PathVariable UUID recruitmentId,
+                                        @PathVariable Long fromProcessId,
+                                        @PathVariable Long toProcessId,
                                         @CurrentUser @Parameter(hidden = true) Long userId) {
-        applicationManageUseCase.movePass(recruitmentId, fromProcessId, toProcessId, userId);
+        applicationManageUseCase.moveApplicant(recruitmentId, fromProcessId, toProcessId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_MOVE_PASS.getMessage());
     }
 

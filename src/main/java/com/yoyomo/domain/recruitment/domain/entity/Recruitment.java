@@ -129,7 +129,7 @@ public class Recruitment extends BaseEntity {
         return processes.get(0);
     }
 
-    public void move(Type type) {
+    public void updateProcess(Type type) {
         this.currentProcess = type;
     }
 }

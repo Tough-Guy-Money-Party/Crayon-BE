@@ -90,7 +90,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional
-    public void movePass(UUID recruitmentId, Long fromProcessId, Long toProcessId, Long userId) {
+    public void moveApplicant(UUID recruitmentId, Long fromProcessId, Long toProcessId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process from = processGetService.find(fromProcessId);
         Process to = processGetService.find(toProcessId);
@@ -100,7 +100,7 @@ public class ApplicationManageUseCase {
                 .takeWhile(applications -> !applications.isEmpty())
                 .forEach(applications -> update(applications, to));
 
-        recruitment.move(to.getType());
+        recruitment.updateProcess(to.getType());
     }
 
     private void update(List<Application> applications, Process to) {
