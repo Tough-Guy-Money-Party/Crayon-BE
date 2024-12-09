@@ -65,10 +65,10 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationListResponse> readAll(long processId) {
-        Process process = processGetService.find(processId);
-
+    public List<ApplicationListResponse> readAll(Long processId, Long userId) {
+        Process process = checkAuthorityByProcessId(processId, userId);
         List<Application> applications = applicationGetService.findAll(process);
+
         return applications.stream().map(ApplicationListResponse::toResponse).toList();
     }
 
@@ -89,6 +89,14 @@ public class ApplicationManageUseCase {
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
+    }
+
+    private Process checkAuthorityByProcessId(Long processId, Long userId) {
+        Process process = processGetService.find(processId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(process, manager);
+
+        return process;
     }
 
     private Application checkAuthorityByApplication(String applicationId, Long userId) {

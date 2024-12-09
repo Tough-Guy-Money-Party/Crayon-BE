@@ -131,8 +131,9 @@ public class ApplicationController {
 
     @GetMapping("/manager/{processId}/applicant/all")
     @Operation(summary = "[Manager] 지원자 목록 조회")
-    public ResponseDto<List<ApplicationListResponse>> readAllApplicants(@PathVariable Long processId) {
-        List<ApplicationListResponse> response = applicationManageUseCase.readAll(processId);
+    public ResponseDto<List<ApplicationListResponse>> readAllApplicants(@PathVariable Long processId,
+                                                                        @CurrentUser @Parameter(hidden = true) Long userId) {
+        List<ApplicationListResponse> response = applicationManageUseCase.readAll(processId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
     }
 
