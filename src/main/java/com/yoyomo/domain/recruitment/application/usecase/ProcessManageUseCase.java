@@ -10,6 +10,7 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
+import com.yoyomo.domain.recruitment.exception.ProcessStepUnModifiableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,8 @@ import java.util.UUID;
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.CANNOT_UPDATE_TO_EVALUATION_STEP;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.PROCESS_STEP_CANNOT_UPDATE;
 
 @Service
 @RequiredArgsConstructor
@@ -76,12 +79,13 @@ public class ProcessManageUseCase {
         Process process = processGetService.find(processId);
 
         Type currentProcess = recruitment.getCurrentProcess();
+
         if(!process.getType().equals(currentProcess)) {
-            throw new RuntimeException("현재 진행 중이지 않은 프로세스의 스텝을 수정할 수 없습니다.");
+            throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
         }
 
         if(step.equals(ProcessStep.EVALUATION) && LocalDateTime.now().isAfter(process.getMailScheduleAt())) {
-            throw new RuntimeException("메일 발송 후에는 심사 스텝으로 돌아갈 수 없습니다.");
+            throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
         }
 
         process.updateStep(step);
