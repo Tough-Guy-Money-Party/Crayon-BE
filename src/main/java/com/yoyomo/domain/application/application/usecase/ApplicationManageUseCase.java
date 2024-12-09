@@ -1,11 +1,13 @@
 package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
-import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
+import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -21,11 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,6 @@ public class ApplicationManageUseCase {
     private final UserGetService userGetService;
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
-    private final ApplicationMapper applicationMapper;
     private final AnswerGetService answerGetService;
     private final ProcessGetService processGetService;
     private final RecruitmentGetService recruitmentGetService;

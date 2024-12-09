@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequ
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
@@ -103,11 +105,11 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
-    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId,
+    public ResponseDto<Page<ApplicationListResponse>> readAll(@PathVariable UUID recruitmentId,
                                              @CurrentUser @Parameter(hidden = true) Long userId,
                                              @RequestParam Integer stage, @RequestParam Integer page,
                                              @RequestParam Integer size) {
-        Page<Detail> response = applicationManageUseCase.readAll(recruitmentId, stage, userId,
+        Page<ApplicationListResponse> response = applicationManageUseCase.readAll(recruitmentId, stage, userId,
                 PageRequest.of(page, size));
 
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
@@ -146,9 +148,9 @@ public class ApplicationController {
     @PatchMapping("/manager/{recruitmentId}/from/{fromProcessId}/to/{toProcessId}")
     @Operation(summary = "[Manager] 합격자 이동")
     public ResponseDto<Void> moveApplicant(@PathVariable UUID recruitmentId,
-                                        @PathVariable Long fromProcessId,
-                                        @PathVariable Long toProcessId,
-                                        @CurrentUser @Parameter(hidden = true) Long userId) {
+                                           @PathVariable Long fromProcessId,
+                                           @PathVariable Long toProcessId,
+                                           @CurrentUser @Parameter(hidden = true) Long userId) {
         applicationManageUseCase.moveApplicant(recruitmentId, fromProcessId, toProcessId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_MOVE_PASS.getMessage());
     }
