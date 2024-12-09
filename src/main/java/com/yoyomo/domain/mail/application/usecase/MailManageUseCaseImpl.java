@@ -51,6 +51,7 @@ public class MailManageUseCaseImpl {
         create(dto);
     }
 
+    @Transactional
     public void direct(MailRequest dto) {
         create(dto);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
