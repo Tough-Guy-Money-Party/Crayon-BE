@@ -52,7 +52,7 @@ public class RecruitmentController {
     }
 
     @PatchMapping("/{recruitmentId}/process/{processId}")
-    @Operation(summary = "프로세스 스텝 이동(1-2-3")
+    @Operation(summary = "프로세스 스텝 이동(1-2-3)")
     public ResponseDto<Void> process(@PathVariable UUID recruitmentId, @PathVariable Long processId, @RequestParam ProcessStep step,
                                      @CurrentUser @Parameter(hidden = true) Long userId) {
         processManageUseCase.updateStep(recruitmentId, processId, step, userId);
