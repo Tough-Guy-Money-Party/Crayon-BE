@@ -1,6 +1,10 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -14,18 +18,14 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Page<Detail> readAll(String recruitmentId, Integer stage, Long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> readAll(String recruitmentId, Integer stage, Long userId, Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
@@ -70,11 +70,7 @@ public class ApplicationManageUseCase {
 
         Map<UUID, Answer> answerMap = answerGetService.findAllApplicationMapByApplicationIds(applicationIds);
 
-        return applications.map(application -> Detail.toDetail(
-                application,
-                answerMap.get(application.getId()),
-                types
-        ));
+        return applications.map(ApplicationListResponse::toResponse);
     }
 
     @Transactional
