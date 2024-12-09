@@ -2,23 +2,14 @@ package com.yoyomo.domain.recruitment.domain.entity;
 
 import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
+import com.yoyomo.domain.recruitment.exception.ProcessStepUnModifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
+
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
 
 @Getter
 @Builder
@@ -64,5 +55,17 @@ public class Process extends BaseEntity {
 
     public void reserve(LocalDateTime scheduledTime) {
         this.mailScheduleAt = scheduledTime;
+    }
+
+    public void check(Type currentProcess, ProcessStep step) {
+        if(this.getType() != currentProcess) {
+            throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
+        }
+        if(!(this.getMailScheduleAt()==null)&&step.equals(ProcessStep.EVALUATION) && LocalDateTime.now().isAfter(this.getMailScheduleAt())) {
+            throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
+        }
+        if(this.getType()==Type.INTERVIEW && step.equals(ProcessStep.MOVING)) {
+            throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_MOVING_STEP);
+        }
     }
 }

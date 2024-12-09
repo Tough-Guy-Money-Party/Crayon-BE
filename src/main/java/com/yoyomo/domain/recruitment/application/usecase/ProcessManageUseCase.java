@@ -10,12 +10,10 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.recruitment.exception.ProcessStepUnModifiableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +22,6 @@ import java.util.UUID;
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
 import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.CANNOT_UPDATE_TO_EVALUATION_STEP;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.PROCESS_STEP_CANNOT_UPDATE;
 
 @Service
 @RequiredArgsConstructor
@@ -80,14 +76,9 @@ public class ProcessManageUseCase {
 
         Type currentProcess = recruitment.getCurrentProcess();
 
-        if(!process.getType().equals(currentProcess)) {
-            throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
-        }
-
-        if(step.equals(ProcessStep.EVALUATION) && LocalDateTime.now().isAfter(process.getMailScheduleAt())) {
-            throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
-        }
+        process.check(currentProcess, step);
 
         process.updateStep(step);
     }
 }
+
