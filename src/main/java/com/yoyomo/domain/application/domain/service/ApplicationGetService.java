@@ -5,7 +5,6 @@ import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.user.domain.entity.User;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +46,8 @@ public class ApplicationGetService {
                 .toList();
     }
 
-    public Page<Application> findByName(Recruitment recruitment, String name, Pageable pageable) {
-        return applicationRepository.findAllByUser_NameAndProcess_RecruitmentAndDeletedAtIsNull(name, recruitment,
-                pageable);
+    public Page<Application> findByName(String name, Process process, Pageable pageable) {
+        return applicationRepository.findAllByUserNameContainingAndProcessAndDeletedAtIsNull(name, process, pageable);
     }
 
     public Map<Process, Long> countInProcesses(UUID recruitmentId, List<Process> processes) {
