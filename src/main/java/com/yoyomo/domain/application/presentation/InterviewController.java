@@ -1,0 +1,35 @@
+package com.yoyomo.domain.application.presentation;
+
+import com.yoyomo.domain.application.application.dto.request.InterviewRecordRequest;
+import com.yoyomo.global.common.annotation.CurrentUser;
+import com.yoyomo.global.common.dto.ResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW_RECORD;
+import static org.springframework.http.HttpStatus.OK;
+
+@Tag(name = "INTERVIEW_RECORD")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/interviews")
+public class InterviewController {
+
+    @PostMapping
+    @Operation(summary = "면접 기록 추가")
+    public ResponseDto<Void> saveInterviewRecord(@RequestParam UUID applicationId,
+                                                 @RequestBody @Valid InterviewRecordRequest request,
+                                                 @CurrentUser @Parameter(hidden = true) Long userId) {
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW_RECORD.getMessage());
+    }
+}
