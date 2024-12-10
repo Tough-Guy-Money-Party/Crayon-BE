@@ -142,7 +142,7 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
-    @PatchMapping("/manager/{recruitmentId}/from/{fromProcessId}/to/{toProcessId}")
+    @PatchMapping("/manager/{recruitmentId}/process")
     @Operation(summary = "[Manager] 합격자 이동")
     public ResponseDto<Void> moveApplicant(@PathVariable UUID recruitmentId,
                                            @RequestBody @Valid ApplicationMoveRequest dto,
