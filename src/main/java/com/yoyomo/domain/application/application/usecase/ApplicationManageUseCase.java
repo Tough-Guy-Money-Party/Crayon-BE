@@ -88,7 +88,7 @@ public class ApplicationManageUseCase {
         Process from = processGetService.find(dto.fromProcessId());
         Process to = processGetService.find(dto.toProcessId());
 
-        List<Application> applications = applicationGetService.findAll(dto.fromProcessId(), Status.DOCUMENT_PASS);
+        List<Application> applications = applicationGetService.findAll(from, Status.DOCUMENT_PASS);
 
         applicationUpdateService.updateProcess(applications, to);
 

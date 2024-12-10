@@ -25,7 +25,7 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     Page<Application> findAllByUserNameContainingAndProcessAndDeletedAtIsNull(String userName, Process process, Pageable pageable);
 
-    List<Application> findAllByProcess_IdAndStatusAndDeletedAtIsNull(Long processId, Status status);
+    List<Application> findAllByProcessAndStatusAndDeletedAtIsNull(Process process, Status status);
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
