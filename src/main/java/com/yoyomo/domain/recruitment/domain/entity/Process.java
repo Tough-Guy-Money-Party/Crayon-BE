@@ -57,15 +57,25 @@ public class Process extends BaseEntity {
         this.mailScheduleAt = scheduledTime;
     }
 
-    public void check(Type currentProcess, ProcessStep step) {
+    public void checkMovable(Type currentProcess, ProcessStep step) {
         if(this.getType() != currentProcess) {
             throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
         }
-        if(!(this.getMailScheduleAt()==null)&&step.equals(ProcessStep.EVALUATION) && LocalDateTime.now().isAfter(this.getMailScheduleAt())) {
+
+        if(step==ProcessStep.EVALUATION && this.isAfterMailSent()) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
+
         }
-        if(this.getType()==Type.INTERVIEW && step.equals(ProcessStep.MOVING)) {
+
+        if(this.getType()==Type.INTERVIEW && step==ProcessStep.MOVING) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_MOVING_STEP);
         }
+    }
+
+    private boolean isAfterMailSent() {
+        if(this.getMailScheduleAt()!=null) {
+            return LocalDateTime.now().isAfter(this.getMailScheduleAt());
+        }
+        return false;
     }
 }

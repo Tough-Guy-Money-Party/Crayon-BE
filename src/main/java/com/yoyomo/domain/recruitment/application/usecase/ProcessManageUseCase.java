@@ -76,7 +76,7 @@ public class ProcessManageUseCase {
 
         Type currentProcess = recruitment.getCurrentProcess();
 
-        process.check(currentProcess, step);
+        process.checkMovable(currentProcess, step);
 
         process.updateStep(step);
     }
