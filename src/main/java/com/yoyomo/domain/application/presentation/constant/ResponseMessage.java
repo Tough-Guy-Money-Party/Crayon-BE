@@ -29,6 +29,7 @@ public enum ResponseMessage {
     ANSWER_NOT_FOUND("답변 이력이 존재하지 않습니다."),
     EVALUATION_NOT_FOUND("평가 이력이 존재하지 않습니다."),
     EVALUATION_ALREADY_EXIST("이미 평가 이력이 존재합니다."),
+    INTERVIEW_RECORD_ALREADY_EXIST("이미 면접 기록 이력이 존재합니다."),
     ACCESS_DENIED("권한이 없습니다.");
     private final String message;
 }
