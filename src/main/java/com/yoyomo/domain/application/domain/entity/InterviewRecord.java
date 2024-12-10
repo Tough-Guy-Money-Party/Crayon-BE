@@ -38,6 +38,6 @@ public class InterviewRecord {
     private User manager;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String record;
+    private String content;
 }
 

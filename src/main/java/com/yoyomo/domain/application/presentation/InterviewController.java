@@ -1,6 +1,8 @@
 package com.yoyomo.domain.application.presentation;
 
 import com.yoyomo.domain.application.application.dto.request.InterviewRecordRequest;
+import com.yoyomo.domain.application.application.dto.response.InterviewRecordResponse;
+import com.yoyomo.domain.application.application.usecase.InterviewRecordManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,11 +27,15 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/interviews")
 public class InterviewController {
 
+    private final InterviewRecordManageUseCase interviewRecordManageUseCase;
+
     @PostMapping
     @Operation(summary = "면접 기록 추가")
-    public ResponseDto<Void> saveInterviewRecord(@RequestParam UUID applicationId,
-                                                 @RequestBody @Valid InterviewRecordRequest request,
-                                                 @CurrentUser @Parameter(hidden = true) Long userId) {
-        return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW_RECORD.getMessage());
+    public ResponseDto<InterviewRecordResponse> saveInterviewRecord(@RequestParam UUID applicationId,
+                                                                    @CurrentUser @Parameter(hidden = true) Long userId,
+                                                                    @RequestBody @Valid InterviewRecordRequest request) {
+        InterviewRecordResponse response = interviewRecordManageUseCase.saveInterviewRecord(applicationId, userId, request);
+
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE_INTERVIEW_RECORD.getMessage(), response);
     }
 }

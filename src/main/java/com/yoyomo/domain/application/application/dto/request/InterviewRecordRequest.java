@@ -9,13 +9,13 @@ import java.util.UUID;
 public record InterviewRecordRequest(
 
         @NotNull
-        String record
+        String content
 ) {
     public InterviewRecord toInterviewRecord(User manager, UUID applicationId) {
         return InterviewRecord.builder()
                 .applicationId(applicationId)
                 .manager(manager)
-                .record(record)
+                .content(content)
                 .build();
     }
 }
