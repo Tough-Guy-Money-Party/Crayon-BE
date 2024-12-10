@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
@@ -47,7 +48,7 @@ public class ApplicationManageUseCase {
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
         List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
 
-        return Detail.toDetail(application, answer, types);
+        return Detail.toResponse(application, answer, types);
     }
 
     public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId, Pageable pageable) {
@@ -81,13 +82,13 @@ public class ApplicationManageUseCase {
     todo 후에 확장된다면 전략 패턴으로 리팩토링
      */
     @Transactional
-    public void moveApplicant(UUID recruitmentId, Long fromProcessId, Long toProcessId, Long userId) {
+    public void moveApplicant(UUID recruitmentId, ApplicationMoveRequest dto, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        Process from = processGetService.find(fromProcessId);
-        Process to = processGetService.find(toProcessId);
+        Process from = processGetService.find(dto.fromProcessId());
+        Process to = processGetService.find(dto.toProcessId());
 
-        List<Application> applications = applicationGetService.findAll(fromProcessId, Status.DOCUMENT_PASS);
+        List<Application> applications = applicationGetService.findAll(dto.fromProcessId(), Status.DOCUMENT_PASS);
 
         applicationUpdateService.updateProcess(applications, to);
 

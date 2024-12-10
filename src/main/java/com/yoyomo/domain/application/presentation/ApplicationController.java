@@ -1,9 +1,6 @@
 package com.yoyomo.domain.application.presentation;
 
-import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
-import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
-import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
-import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.request.*;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
@@ -148,10 +145,9 @@ public class ApplicationController {
     @PatchMapping("/manager/{recruitmentId}/from/{fromProcessId}/to/{toProcessId}")
     @Operation(summary = "[Manager] 합격자 이동")
     public ResponseDto<Void> moveApplicant(@PathVariable UUID recruitmentId,
-                                           @PathVariable Long fromProcessId,
-                                           @PathVariable Long toProcessId,
+                                           @RequestBody @Valid ApplicationMoveRequest dto,
                                            @CurrentUser @Parameter(hidden = true) Long userId) {
-        applicationManageUseCase.moveApplicant(recruitmentId, fromProcessId, toProcessId, userId);
+        applicationManageUseCase.moveApplicant(recruitmentId, dto, userId);
         return ResponseDto.of(OK.value(), SUCCESS_MOVE_PASS.getMessage());
     }
 
