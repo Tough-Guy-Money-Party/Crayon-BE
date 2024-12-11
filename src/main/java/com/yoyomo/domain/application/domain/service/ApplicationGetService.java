@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.user.domain.entity.User;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class ApplicationGetService {
 
     private final ApplicationRepository applicationRepository;
+    private final ProcessRepository processRepository;
 
     public List<Application> findAll(User user) {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(user);
@@ -33,6 +35,10 @@ public class ApplicationGetService {
 
     public Page<Application> findAll(Process process, Pageable pageable) {
         return applicationRepository.findAllByProcessOrderByPending(process, pageable);
+    }
+
+    public List<Application> findAll(Process process) {
+        return applicationRepository.findAllByProcessOrderByPending(process);
     }
 
     public Application find(String id) {
