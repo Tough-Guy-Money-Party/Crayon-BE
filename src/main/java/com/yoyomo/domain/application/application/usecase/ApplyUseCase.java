@@ -3,10 +3,16 @@ package com.yoyomo.domain.application.application.usecase;
 import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
+import com.yoyomo.domain.application.application.dto.response.MyApplicationResponse;
 import com.yoyomo.domain.application.application.mapper.ApplicationMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.service.*;
+import com.yoyomo.domain.application.domain.service.AnswerGetService;
+import com.yoyomo.domain.application.domain.service.AnswerSaveService;
+import com.yoyomo.domain.application.domain.service.AnswerUpdateService;
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
+import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -18,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -59,14 +63,14 @@ public class ApplyUseCase {
                 .toList();
     }
 
-    public MyResponse read(String applicationId, Long userId) {
+    public MyApplicationResponse read(String applicationId, Long userId) {
         User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
         application.checkAuthorization(applicant);
 
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
-        return applicationMapper.toMyResponse(application, answer);
+        return MyApplicationResponse.toResponse(application, answer);
     }
 
     @Transactional

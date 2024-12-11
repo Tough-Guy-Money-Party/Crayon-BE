@@ -1,8 +1,7 @@
 package com.yoyomo.domain.application.application.usecase;
 
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
-
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -16,13 +15,14 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +36,14 @@ public class ApplicationManageUseCase {
     private final ClubManagerAuthService clubManagerAuthService;
 
     @Transactional(readOnly = true)
-    public Detail read(String applicationId, Long userId) {
+    public ApplicationDetailResponse read(String applicationId, Long userId) {
         Application application = checkAuthorityByApplication(applicationId, userId);
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
         List<Type> types = recruitmentGetService.findAllTypesByRecruitment(recruitment);
 
-        return Detail.toDetail(application, answer, types);
+        return ApplicationDetailResponse.toResponse(application, answer, types);
     }
 
     public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId,
