@@ -33,6 +33,6 @@ public class InterviewRecordManageUseCase {
         InterviewRecord interviewRecord = request.toInterviewRecord(manager, application.getId());
         InterviewRecord savedRecord = interviewRecordSaveService.save(interviewRecord);
 
-        return InterviewRecordResponse.toResponse(savedRecord);
+        return InterviewRecordResponse.toResponse(savedRecord.getId());
     }
 }
