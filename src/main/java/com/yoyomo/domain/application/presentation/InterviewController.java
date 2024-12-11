@@ -47,6 +47,7 @@ public class InterviewController {
     @Operation(summary = "면접 기록 조회")
     public ResponseDto<List<InterviewRecordDetailResponse>> saveInterviewRecord(@RequestParam UUID applicationId,
                                                                                 @CurrentUser @Parameter(hidden = true) Long userId) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ_INTERVIEW_RECORD.getMessage());
+        List<InterviewRecordDetailResponse> responses = interviewRecordManageUseCase.readAll(applicationId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_READ_INTERVIEW_RECORD.getMessage(), responses);
     }
 }
