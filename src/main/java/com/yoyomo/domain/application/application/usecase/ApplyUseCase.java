@@ -19,9 +19,9 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,13 +56,15 @@ public class ApplyUseCase {
         application.addAnswer(answer.getId());
     }
 
-    public List<Response> readAll(Long userId) {
+    @Transactional(readOnly = true)
+    public List<Response> readAll(long userId) {
         User applicant = userGetService.find(userId);
         return applicationGetService.findAll(applicant).stream()
                 .map(applicationMapper::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public MyApplicationResponse read(String applicationId, Long userId) {
         User applicant = userGetService.find(userId);
         Application application = applicationGetService.find(applicationId);
