@@ -48,5 +48,7 @@ public class InterviewRecord {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    private String image;
 }
 
