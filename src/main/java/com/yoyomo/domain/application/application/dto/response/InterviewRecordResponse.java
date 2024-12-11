@@ -9,7 +9,8 @@ public record InterviewRecordResponse(
         Long interviewRecordId,
         String manager,
         boolean isMine,
-        String content
+        String content,
+        String image
 ) {
 
     public static InterviewRecordResponse toResponse(InterviewRecord interviewRecord) {
@@ -18,6 +19,7 @@ public record InterviewRecordResponse(
                 .manager(interviewRecord.getManager().getName())
                 .isMine(true)
                 .content(interviewRecord.getContent())
+                .image(interviewRecord.getImage())
                 .build();
     }
 }
