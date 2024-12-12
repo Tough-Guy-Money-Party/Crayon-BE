@@ -23,7 +23,7 @@ public class ProcessResponseDTO {
             LocalDateTime announceEndAt,
             Integer applicantCount,
             ProcessStep processStep,
-            LocalDateTime mailScheduleAt
+            LocalDateTime mailScheduledAt
     ) {
 
         public static ProcessResponseDTO.Response toResponse(Process process, long applicantCount, ProcessStep processStep) {
@@ -38,7 +38,7 @@ public class ProcessResponseDTO {
                     .announceEndAt(process.getAnnounceEndAt())
                     .applicantCount((int) applicantCount)
                     .processStep(processStep)
-                    .mailScheduleAt(process.getMailScheduleAt())
+                    .mailScheduledAt(process.getMailScheduledAt())
                     .build();
         }
 

@@ -43,7 +43,7 @@ public class Process extends BaseEntity {
 
     private LocalDateTime announceEndAt;
 
-    private LocalDateTime mailScheduleAt;
+    private LocalDateTime mailScheduledAt;
 
     @ManyToOne
     @JoinColumn(name = "recruitment_id")
@@ -54,7 +54,7 @@ public class Process extends BaseEntity {
     }
 
     public void reserve(LocalDateTime scheduledTime) {
-        this.mailScheduleAt = scheduledTime;
+        this.mailScheduledAt = scheduledTime;
     }
 
     public void checkMovable(Type currentProcess, ProcessStep step) {
@@ -62,19 +62,19 @@ public class Process extends BaseEntity {
             throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
         }
 
-        if(step==ProcessStep.EVALUATION && this.isAfterMailSent()) {
+        if(step == ProcessStep.EVALUATION && this.isAfterMailSent()) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
 
         }
 
-        if(this.getType()==Type.INTERVIEW && step==ProcessStep.MOVING) {
+        if(this.getType() == Type.INTERVIEW && step == ProcessStep.MOVING) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_MOVING_STEP);
         }
     }
 
     private boolean isAfterMailSent() {
-        if(this.getMailScheduleAt()!=null) {
-            return LocalDateTime.now().isAfter(this.getMailScheduleAt());
+        if(this.getMailScheduledAt() != null) {
+            return LocalDateTime.now().isAfter(this.getMailScheduledAt());
         }
         return false;
     }
