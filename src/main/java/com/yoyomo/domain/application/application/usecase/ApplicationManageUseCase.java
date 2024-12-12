@@ -1,14 +1,11 @@
 package com.yoyomo.domain.application.application.usecase;
 
-import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -51,7 +48,8 @@ public class ApplicationManageUseCase {
         return Detail.toResponse(application, answer, types);
     }
 
-    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId, Pageable pageable) {
+    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId,
+                                                Pageable pageable) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
         Process process = processGetService.find(recruitment, stage);
 
@@ -67,6 +65,15 @@ public class ApplicationManageUseCase {
         Page<Application> applications = applicationGetService.findAll(process, pageable);
         return applications.map(ApplicationListResponse::toResponse);
     }
+
+    @Transactional(readOnly = true)
+    public List<ApplicationListResponse> readAll(Long processId, Long userId) {
+        Process process = checkAuthorityByProcessId(processId, userId);
+        List<Application> applications = applicationGetService.findAll(process);
+
+        return applications.stream().map(ApplicationListResponse::toResponse).toList();
+    }
+
 
     @Transactional
     public void updateProcess(StageUpdateRequest dto, Long userId, UUID recruitmentId) {
@@ -101,6 +108,14 @@ public class ApplicationManageUseCase {
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
+    }
+
+    private Process checkAuthorityByProcessId(Long processId, Long userId) {
+        Process process = processGetService.find(processId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(process, manager);
+
+        return process;
     }
 
     private Application checkAuthorityByApplication(String applicationId, Long userId) {

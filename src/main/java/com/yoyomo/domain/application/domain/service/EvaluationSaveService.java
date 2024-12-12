@@ -14,7 +14,7 @@ public class EvaluationSaveService {
     private final EvaluationRepository evaluationRepository;
 
     public Evaluation save(User manager, Evaluation evaluation) {
-        if (evaluationRepository.existsByManager(manager)) {
+        if (evaluationRepository.existsByManagerAndApplication(manager, evaluation.getApplication())) {
             throw new EvaluationAlreadyExistException();
         }
         return evaluationRepository.save(evaluation);

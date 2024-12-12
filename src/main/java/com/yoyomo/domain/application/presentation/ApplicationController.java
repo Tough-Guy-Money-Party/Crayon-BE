@@ -1,6 +1,9 @@
 package com.yoyomo.domain.application.presentation;
 
-import com.yoyomo.domain.application.application.dto.request.*;
+import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
+import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
+import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
+import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
@@ -16,7 +19,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +35,14 @@ import java.util.UUID;
 import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
@@ -112,6 +130,14 @@ public class ApplicationController {
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
     }
 
+    @GetMapping("/manager/{processId}/applicant/all")
+    @Operation(summary = "[Manager] 지원자 목록 조회")
+    public ResponseDto<List<ApplicationListResponse>> readAllApplicants(@PathVariable Long processId,
+                                                                        @CurrentUser @Parameter(hidden = true) Long userId) {
+        List<ApplicationListResponse> response = applicationManageUseCase.readAll(processId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
+    }
+
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")
     public ResponseDto<Detail> read(@PathVariable String applicationId,
@@ -123,7 +149,8 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/search")
     @Operation(summary = "[Manager] 이름으로 지원서 검색")
-    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable UUID recruitmentId, @Parameter(hidden = true) @CurrentUser Long userId,
+    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable UUID recruitmentId,
+                                                             @Parameter(hidden = true) @CurrentUser Long userId,
                                                              @RequestParam String name, @RequestParam Integer stage,
                                                              @RequestParam Integer page, @RequestParam Integer size) {
         Page<ApplicationListResponse> responses = applicationManageUseCase.search(name, recruitmentId, stage, userId,
