@@ -28,7 +28,7 @@ import java.util.UUID;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = {"manager", "application_id"}
+                        columnNames = {"manager_id", "application_id"}
                 )
         }
 )
@@ -43,7 +43,7 @@ public class InterviewRecord {
     private UUID applicationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "manager_id", nullable = false)
     private User manager;
 
     @Column(nullable = false, columnDefinition = "TEXT")
