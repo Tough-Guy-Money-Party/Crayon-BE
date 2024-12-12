@@ -58,22 +58,21 @@ public class Process extends BaseEntity {
     }
 
     public void checkMovable(Type currentProcess, ProcessStep step) {
-        if(this.getType() != currentProcess) {
+        if (this.type != currentProcess) {
             throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
         }
 
-        if(step == ProcessStep.EVALUATION && this.isAfterMailSent()) {
+        if (step == ProcessStep.EVALUATION && this.isAfterMailSent()) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
-
         }
 
-        if(this.getType() == Type.INTERVIEW && step == ProcessStep.MOVING) {
+        if (this.type == Type.INTERVIEW && step == ProcessStep.MOVING) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_MOVING_STEP);
         }
     }
 
     private boolean isAfterMailSent() {
-        if(this.getMailScheduledAt() != null) {
+        if (this.mailScheduledAt != null) {
             return LocalDateTime.now().isAfter(this.getMailScheduledAt());
         }
         return false;
