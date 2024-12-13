@@ -88,6 +88,6 @@ dependencies {
     implementation 'software.amazon.awssdk:lambda:2.26.4'
 }
 
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
+tasks.named('test') {
+    useJUnitPlatform()
+}
