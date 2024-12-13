@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_DELETE_INTERVIEW_RECORD;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_INTERVIEW_RECORD;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW_RECORD;
 import static org.springframework.http.HttpStatus.OK;
@@ -57,6 +58,8 @@ public class InterviewController {
     @Operation(summary = "면접 기록 삭제")
     public ResponseDto<Void> saveInterviewRecord(@PathVariable Long interviewRecordId,
                                                  @CurrentUser @Parameter(hidden = true) Long userId) {
-        return ResponseDto.of(OK.value(), SUCCESS_READ_INTERVIEW_RECORD.getMessage());
+        interviewRecordManageUseCase.delete(interviewRecordId, userId);
+
+        return ResponseDto.of(OK.value(), SUCCESS_DELETE_INTERVIEW_RECORD.getMessage());
     }
 }

@@ -8,6 +8,7 @@ import com.yoyomo.domain.application.domain.entity.InterviewRecord;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.InterviewRecordGetService;
 import com.yoyomo.domain.application.domain.service.InterviewRecordSaveService;
+import com.yoyomo.domain.application.domain.service.InterviewRecordUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -27,6 +28,7 @@ public class InterviewRecordManageUseCase {
     private final ClubManagerAuthService clubManagerAuthService;
     private final ApplicationGetService applicationGetService;
     private final InterviewRecordGetService interviewRecordGetService;
+    private final InterviewRecordUpdateService interviewRecordUpdateService;
 
     @Transactional
     public InterviewRecordResponse saveInterviewRecord(UUID applicationId, long managerId, InterviewRecordRequest request) {
@@ -51,5 +53,11 @@ public class InterviewRecordManageUseCase {
         return interviewRecords.stream()
                 .map(record -> InterviewRecordDetailResponse.toResponse(record, manager))
                 .toList();
+    }
+
+    @Transactional
+    public void delete(long interviewRecordId, long userId) {
+        InterviewRecord interviewRecord = interviewRecordGetService.find(interviewRecordId);
+        interviewRecordUpdateService.delete(interviewRecord, userId);
     }
 }

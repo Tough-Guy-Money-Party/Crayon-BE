@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.InterviewRecord;
 import com.yoyomo.domain.application.domain.repository.InterviewRecordRepository;
+import com.yoyomo.domain.application.exception.InterviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,10 @@ public class InterviewRecordGetService {
 
     public List<InterviewRecord> findAll(UUID applicationId) {
         return interviewRecordRepository.findAllByApplicationIdOrderByCreatedAtDesc(applicationId);
+    }
+
+    public InterviewRecord find(long interviewRecordId) {
+        return interviewRecordRepository.findById(interviewRecordId)
+                .orElseThrow(InterviewNotFoundException::new);
     }
 }

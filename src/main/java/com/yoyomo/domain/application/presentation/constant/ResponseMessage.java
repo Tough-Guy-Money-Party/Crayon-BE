@@ -21,6 +21,7 @@ public enum ResponseMessage {
 
     SUCCESS_SAVE_INTERVIEW_RECORD("면접 기록 생성에 성공했습니다."),
     SUCCESS_READ_INTERVIEW_RECORD("면접 기록 조회에 성공했습니다."),
+    SUCCESS_DELETE_INTERVIEW_RECORD("면접 기록 삭제에 성공했습니다."),
 
     SUCCESS_GENERATE_CODE("이메일 인증 코드 발송에 성공했습니다."),
     SUCCESS_VERIFY_CODE("이메일 인증에 성공했습니다."),

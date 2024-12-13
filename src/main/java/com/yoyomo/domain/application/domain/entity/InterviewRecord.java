@@ -55,5 +55,9 @@ public class InterviewRecord extends BaseEntity {
     public boolean isMine(User manager) {
         return this.manager == manager;
     }
+
+    public boolean isMine(long userId) {
+        return this.manager.getId() == userId;
+    }
 }
 
