@@ -14,5 +14,5 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     List<Evaluation> findAllByProcessIdAndApplication(long processId, Application application);
 
-    boolean existsByManager(User manager);
+    boolean existsByManagerAndApplication(User manager, Application application);
 }

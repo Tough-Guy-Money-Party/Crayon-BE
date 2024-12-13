@@ -17,8 +17,8 @@ public record ApplicationListResponse(
         return new ApplicationListResponse(
                 application.getId(),
                 application.getUserName(),
-                application.getTel(),
                 application.getEmail(),
+                application.getTel(),
                 application.getStatus(),
                 application.getCreatedAt()
         );

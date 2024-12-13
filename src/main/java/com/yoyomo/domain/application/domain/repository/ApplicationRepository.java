@@ -20,7 +20,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     List<Application> findByProcessIdAndDeletedAtIsNull(Long processId, Pageable pageable);
 
-    Page<Application> findAllByUserNameContainingAndProcessAndDeletedAtIsNull(String userName, Process process, Pageable pageable);
+    Page<Application> findAllByUserNameContainingAndProcessAndDeletedAtIsNull(String userName, Process process,
+                                                                              Pageable pageable);
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
@@ -36,6 +37,16 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
             """)
     Page<Application> findAllByProcessOrderByPending(@Param("process") Process process,
                                                      Pageable pageable);
+
+    @Query("""
+            SELECT a 
+            FROM Application a
+            WHERE a.process = :process AND a.deletedAt IS NULL
+            ORDER BY 
+                CASE WHEN a.status = 'PENDING' THEN 0 ELSE 1 END ASC, 
+                a.createdAt DESC
+            """)
+    List<Application> findAllByProcessOrderByPending(@Param("process") Process process);
 
 
     @Query("""

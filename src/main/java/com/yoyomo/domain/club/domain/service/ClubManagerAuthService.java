@@ -4,6 +4,7 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -26,6 +27,17 @@ public class ClubManagerAuthService {
     public void checkAuthorization(UUID recruitmentId, User manager) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(RecruitmentNotFoundException::new);
+
+        Club club = recruitment.getClub();
+        checkAuthorization(club, manager);
+    }
+
+    public void checkAuthorization(Process process, User manager) {
+        Recruitment recruitment = process.getRecruitment();
+
+        if (recruitment == null) {
+            throw new RecruitmentNotFoundException();
+        }
 
         Club club = recruitment.getClub();
         checkAuthorization(club, manager);
