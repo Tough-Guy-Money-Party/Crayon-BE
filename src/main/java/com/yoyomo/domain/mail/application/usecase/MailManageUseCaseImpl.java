@@ -66,10 +66,13 @@ public class MailManageUseCaseImpl {
         });
     }
 
+    @Transactional
     public void cancel(Long processId) {
-        processGetService.exists(processId);
+        Process process = processGetService.find(processId);
+
         try {
             mailUpdateService.cancelMail(processId).join();
+            process.cancelMail();
         } catch (CompletionException e) {
             throw new MailCancelException(e.getMessage());
         }

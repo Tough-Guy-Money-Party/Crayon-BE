@@ -57,6 +57,10 @@ public class Process extends BaseEntity {
         this.mailScheduledAt = scheduledTime;
     }
 
+    public void cancelMail() {
+        this.mailScheduledAt = null;
+    }
+
     public void checkMovable(Type currentProcess, ProcessStep step) {
         if (this.type != currentProcess) {
             throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
