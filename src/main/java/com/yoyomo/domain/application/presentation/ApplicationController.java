@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.OK;
