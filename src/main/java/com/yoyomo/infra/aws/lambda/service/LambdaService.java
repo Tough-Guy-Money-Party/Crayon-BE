@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.lambda.model.InvocationType;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @Slf4j
 @Service
@@ -26,7 +27,7 @@ public class LambdaService {
                 .thenAccept(response -> log.info("[LambdaService] 람다 호출 성공"))
                 .exceptionally(e -> {
                     log.error("[LambdaService] 람다 호출 중 에러 발생");
-                    return null;
+                    throw new CompletionException(e);
                 });
     }
 }

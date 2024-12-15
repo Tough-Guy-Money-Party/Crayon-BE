@@ -31,8 +31,9 @@ public record MailRequest(
                 .source(source)
                 .destination(destination)
                 .scheduledTime(scheduledTime())
-                .status(Status.SCHEDULED.toString())
+                .status(Status.SCHEDULED)
                 .ttl(ttl)
+                .processId(processId)
                 .build();
     }
 }
