@@ -12,6 +12,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +41,7 @@ public class Application extends BaseEntity {
     @Column(name = "application_id")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -91,7 +92,7 @@ public class Application extends BaseEntity {
     }
 
     public void checkAuthorization(User user) {
-        if (!this.getUser().equals(user)) {
+        if (!this.user.equals(user)) {
             throw new AccessDeniedException();
         }
     }

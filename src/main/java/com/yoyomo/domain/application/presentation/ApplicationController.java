@@ -4,7 +4,9 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequ
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
-import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
+import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
+import com.yoyomo.domain.application.application.dto.response.MyApplicationResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
@@ -18,14 +20,29 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Detail;
 import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
@@ -59,16 +76,17 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내가 쓴 지원서 불러오기")
-    public ResponseDto<MyResponse> readApplication(@PathVariable String applicationId,
-                                                   @CurrentUser @Parameter(hidden = true) Long userId) {
-        MyResponse response = applyUseCase.read(applicationId, userId);
+    public ResponseDto<MyApplicationResponse> readApplication(@PathVariable String applicationId,
+                                                              @CurrentUser @Parameter(hidden = true) Long userId) {
+        MyApplicationResponse response = applyUseCase.read(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
     @PatchMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내 지원서 응답 수정")
-    public ResponseDto<Void> update(@PathVariable String applicationId, @RequestBody @Valid ApplicationUpdateRequest dto,
+    public ResponseDto<Void> update(@PathVariable String applicationId,
+                                    @RequestBody @Valid ApplicationUpdateRequest dto,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         applyUseCase.update(applicationId, dto, userId);
 
@@ -102,31 +120,40 @@ public class ApplicationController {
 
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
-    public ResponseDto<Page<Detail>> readAll(@PathVariable String recruitmentId,
-                                             @CurrentUser @Parameter(hidden = true) Long userId,
-                                             @RequestParam Integer stage, @RequestParam Integer page,
-                                             @RequestParam Integer size) {
-        Page<Detail> response = applicationManageUseCase.readAll(recruitmentId, stage, userId,
+    public ResponseDto<Page<ApplicationListResponse>> readAll(@PathVariable UUID recruitmentId,
+                                                              @CurrentUser @Parameter(hidden = true) Long userId,
+                                                              @RequestParam Integer stage, @RequestParam Integer page,
+                                                              @RequestParam Integer size) {
+        Page<ApplicationListResponse> response = applicationManageUseCase.readAll(recruitmentId, stage, userId,
                 PageRequest.of(page, size));
 
         return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
     }
 
+    @GetMapping("/manager/{processId}/applicant/all")
+    @Operation(summary = "[Manager] 지원자 목록 조회")
+    public ResponseDto<List<ApplicationListResponse>> readAllApplicants(@PathVariable Long processId,
+                                                                        @CurrentUser @Parameter(hidden = true) Long userId) {
+        List<ApplicationListResponse> response = applicationManageUseCase.readAll(processId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
+    }
+
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")
-    public ResponseDto<Detail> read(@PathVariable String applicationId,
-                                    @CurrentUser @Parameter(hidden = true) Long userId) {
-        Detail response = applicationManageUseCase.read(applicationId, userId);
+    public ResponseDto<ApplicationDetailResponse> read(@PathVariable String applicationId,
+                                                       @CurrentUser @Parameter(hidden = true) Long userId) {
+        ApplicationDetailResponse response = applicationManageUseCase.read(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
     @GetMapping("/manager/{recruitmentId}/search")
     @Operation(summary = "[Manager] 이름으로 지원서 검색")
-    public ResponseDto<Page<Response>> search(@RequestParam String name, @PathVariable String recruitmentId,
-                                              @CurrentUser @Parameter(hidden = true) Long userId,
-                                              @RequestParam Integer page, @RequestParam Integer size) {
-        Page<Response> responses = applicationManageUseCase.search(name, recruitmentId, userId,
+    public ResponseDto<Page<ApplicationListResponse>> search(@PathVariable UUID recruitmentId,
+                                                             @Parameter(hidden = true) @CurrentUser Long userId,
+                                                             @RequestParam String name, @RequestParam Integer stage,
+                                                             @RequestParam Integer page, @RequestParam Integer size) {
+        Page<ApplicationListResponse> responses = applicationManageUseCase.search(name, recruitmentId, stage, userId,
                 PageRequest.of(page, size));
 
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
@@ -134,8 +161,9 @@ public class ApplicationController {
 
     @PatchMapping("/manager/{recruitmentId}")
     @Operation(summary = "[Manager] 지원서 단계 수정 (다중/단일)")
-    public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto, @CurrentUser @Parameter(hidden = true) Long userId,
-                                    @PathVariable String recruitmentId) {
+    public ResponseDto<Void> update(@RequestBody @Valid StageUpdateRequest dto,
+                                    @CurrentUser @Parameter(hidden = true) Long userId,
+                                    @PathVariable UUID recruitmentId) {
         applicationManageUseCase.updateProcess(dto, userId, recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
