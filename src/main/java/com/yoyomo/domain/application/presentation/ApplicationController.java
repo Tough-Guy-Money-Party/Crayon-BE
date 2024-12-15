@@ -1,8 +1,13 @@
 package com.yoyomo.domain.application.presentation;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
+import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
+import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
+import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.request.*;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
-import com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.MyResponse;
+import com.yoyomo.domain.application.application.dto.response.MyApplicationResponse;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
@@ -58,9 +63,9 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     @Operation(summary = "[Applicant] 내가 쓴 지원서 불러오기")
-    public ResponseDto<MyResponse> readApplication(@PathVariable String applicationId,
-                                                   @CurrentUser @Parameter(hidden = true) Long userId) {
-        MyResponse response = applyUseCase.read(applicationId, userId);
+    public ResponseDto<MyApplicationResponse> readApplication(@PathVariable String applicationId,
+                                                              @CurrentUser @Parameter(hidden = true) Long userId) {
+        MyApplicationResponse response = applyUseCase.read(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
@@ -122,9 +127,9 @@ public class ApplicationController {
 
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
     @Operation(summary = "[Manager] 지원서 상세 조회")
-    public ResponseDto<Detail> read(@PathVariable String applicationId,
-                                    @CurrentUser @Parameter(hidden = true) Long userId) {
-        Detail response = applicationManageUseCase.read(applicationId, userId);
+    public ResponseDto<ApplicationDetailResponse> read(@PathVariable String applicationId,
+                                                       @CurrentUser @Parameter(hidden = true) Long userId) {
+        ApplicationDetailResponse response = applicationManageUseCase.read(applicationId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }

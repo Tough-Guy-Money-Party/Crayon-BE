@@ -28,4 +28,9 @@ public class ProcessGetService {
     public List<Process> findAll(Recruitment recruitment) {
         return processRepository.findAllByRecruitment(recruitment);
     }
+
+    public void exists(Long processId) {
+        processRepository.findById(processId)
+                .orElseThrow(ProcessNotFoundException::new);
+    }
 }

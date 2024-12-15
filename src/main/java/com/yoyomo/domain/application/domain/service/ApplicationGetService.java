@@ -52,6 +52,11 @@ public class ApplicationGetService {
                 .orElseThrow(ApplicationNotFoundException::new);
     }
 
+    public Application find(UUID applicationId) {
+        return applicationRepository.findByIdAndDeletedAtIsNull(applicationId)
+                .orElseThrow(ApplicationNotFoundException::new);
+    }
+
     public List<UUID> getApplicationIds(Page<Application> applications) {
         return applications.stream()
                 .map(Application::getId)
