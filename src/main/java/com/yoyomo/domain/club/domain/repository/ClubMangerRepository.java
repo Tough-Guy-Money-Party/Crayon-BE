@@ -19,4 +19,7 @@ public interface ClubMangerRepository extends JpaRepository<ClubManager, Long> {
     List<Club> findAllMyClubs(long managerId);
 
     List<ClubManager> findAllByClubId(UUID clubId);
+
+    @Query("SELECT cm FROM ClubManager cm WHERE cm.club = :club AND cm.manager.id = :userId")
+    Optional<ClubManager> findByClubAndUserId(Club club, long userId);
 }
