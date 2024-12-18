@@ -14,9 +14,11 @@ import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCE
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_SAVE;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE_CODE;
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE_MANAGERS;
 import static com.yoyomo.domain.user.application.dto.response.UserResponseDTO.ManagerInfo;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.yoyomo.domain.club.application.dto.request.ClubManagerUpdateDto;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Participation;
 import com.yoyomo.domain.club.application.usecase.ClubConfigureUseCase;
@@ -139,8 +141,10 @@ public class ClubController {
 
     @PatchMapping("/owner")
     @Operation(summary = "동아리 권한 이전")
-    public ResponseDto<Void> updateOwner(@RequestBody String email,
+    public ResponseDto<Void> updateOwner(@RequestBody ClubManagerUpdateDto dto,
                                          @CurrentUser @Parameter(hidden = true) Long userId) {
-        return null;
+
+        clubManagerUseCase.updateOwner(dto, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_MANAGERS.getMessage());
     }
 }
