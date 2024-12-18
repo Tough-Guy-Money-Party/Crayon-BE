@@ -1,5 +1,6 @@
 package com.yoyomo.domain.club.application.usecase;
 
+import com.yoyomo.domain.club.application.dto.request.ClubManagerUpdateDto;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapperImpl;
@@ -16,11 +17,10 @@ import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -74,5 +74,16 @@ public class ClubManagerUseCase {
         clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
 
         clubManagerDeleteService.delete(dto.userIds());
+    }
+
+    @Transactional
+    public void updateOwner(ClubManagerUpdateDto dto, Long userId) {
+        Club club = clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
+
+        ClubManager owner = clubManagerGetService.findByUserId(club, userId);
+        ClubManager manager = clubManagerGetService.findByEmail(club, dto.email());
+
+        manager.toOwner();
+        owner.toManager();
     }
 }
