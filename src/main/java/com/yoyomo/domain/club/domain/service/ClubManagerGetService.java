@@ -21,6 +21,11 @@ public class ClubManagerGetService {
                 .orElseThrow(ClubManagerNotFoundException::new);
     }
 
+    public ClubManager findByUserId(Club club, long userId) {
+        return clubMangerRepository.findByClubAndUserId(club, userId)
+                .orElseThrow(ClubManagerNotFoundException::new);
+    }
+
     public List<ClubManager> readAllManagers(UUID clubId) {
         return clubMangerRepository.findAllByClubId(clubId);
     }

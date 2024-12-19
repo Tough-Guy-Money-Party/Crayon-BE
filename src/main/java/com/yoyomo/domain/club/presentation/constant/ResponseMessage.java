@@ -13,6 +13,7 @@ public enum ResponseMessage {
     SUCCESS_GET_MANAGERS("동아리 관리자 조회에 성공했습니다."),
     SUCCESS_DELETE_MANAGERS("동아리 관리자 삭제에 성공했습니다."),
     SUCCESS_PARTICIPATION("동아리 관리자 추가에 성공했습니다."),
+    SUCCESS_UPDATE_MANAGERS("동아리 관리자 수정에 성공했습니다"),
     SUCCESS_READ_CODE("동아리 코드 조회에 성공했습니다."),
     SUCCESS_UPDATE_CODE("동아리 코드 재생성에 성공했습니다."),
 

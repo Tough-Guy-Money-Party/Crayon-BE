@@ -52,6 +52,14 @@ public class ClubManager {
         return new ClubManager(club, manager, ManagerRole.OWNER);
     }
 
+    public void toManager() {
+        this.managerRole = ManagerRole.MANAGER;
+    }
+
+    public void toOwner() {
+        this.managerRole = ManagerRole.OWNER;
+    }
+
     public boolean isOwner() {
         return managerRole.isOwner();
     }
