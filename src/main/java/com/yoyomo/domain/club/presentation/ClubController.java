@@ -139,12 +139,13 @@ public class ClubController {
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE_CODE.getMessage(), code);
     }
 
-    @PatchMapping("/owner")
+    @PatchMapping("/{clubId}/owner")
     @Operation(summary = "동아리 권한 이전")
     public ResponseDto<Void> updateOwner(@RequestBody ClubManagerUpdateDto dto,
+                                         @PathVariable UUID clubId,
                                          @CurrentUser @Parameter(hidden = true) Long userId) {
 
-        clubManagerUseCase.updateOwner(dto, userId);
+        clubManagerUseCase.updateOwner(dto, userId, clubId);
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE_MANAGERS.getMessage());
     }
 }
