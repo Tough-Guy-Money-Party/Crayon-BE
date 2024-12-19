@@ -77,11 +77,11 @@ public class ClubManagerUseCase {
     }
 
     @Transactional
-    public void updateOwner(ClubManagerUpdateDto dto, Long userId) {
-        Club club = clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
+    public void updateOwner(ClubManagerUpdateDto dto, Long userId, UUID clubId) {
+        Club club = clubValidateService.checkOwnerAuthority(clubId, userId);
 
         ClubManager owner = clubManagerGetService.findByUserId(club, userId);
-        ClubManager manager = clubManagerGetService.findByEmail(club, dto.email());
+        ClubManager manager = clubManagerGetService.findByUserId(club, dto.userId());
 
         manager.toOwner();
         owner.toManager();
