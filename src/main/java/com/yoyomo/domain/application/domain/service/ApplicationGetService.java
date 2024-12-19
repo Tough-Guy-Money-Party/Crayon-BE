@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
@@ -36,6 +37,10 @@ public class ApplicationGetService {
 
     public Page<Application> findAll(Process process, Pageable pageable) {
         return applicationRepository.findAllByProcessOrderByPending(process, pageable);
+    }
+
+    public List<Application> findAll(Process process, Status status) {
+        return applicationRepository.findAllByProcessAndStatusAndDeletedAtIsNull(process, status);
     }
 
     public List<Application> findAll(Process process) {

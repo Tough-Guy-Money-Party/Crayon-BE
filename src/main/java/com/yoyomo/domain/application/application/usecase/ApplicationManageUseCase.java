@@ -1,12 +1,15 @@
 package com.yoyomo.domain.application.application.usecase;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -30,6 +33,7 @@ public class ApplicationManageUseCase {
 
     private final UserGetService userGetService;
     private final ApplicationGetService applicationGetService;
+    private final ApplicationUpdateService applicationUpdateService;
     private final AnswerGetService answerGetService;
     private final ProcessGetService processGetService;
     private final RecruitmentGetService recruitmentGetService;
@@ -81,6 +85,23 @@ public class ApplicationManageUseCase {
         dto.ids().stream()
                 .map(applicationGetService::find)
                 .forEach(application -> application.update(process));
+    }
+
+    /*
+    todo 후에 확장된다면 전략 패턴으로 리팩토링
+     */
+    @Transactional
+    public void moveApplicant(UUID recruitmentId, ApplicationMoveRequest dto, Long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+
+        Process from = processGetService.find(dto.fromProcessId());
+        Process to = processGetService.find(dto.toProcessId());
+
+        List<Application> applications = applicationGetService.findAll(from, Status.DOCUMENT_PASS);
+
+        applicationUpdateService.updateProcess(applications, to);
+
+        recruitment.updateProcess(to.getType());
     }
 
     private Recruitment checkAuthorityByRecruitmentId(UUID recruitmentId, Long userId) {

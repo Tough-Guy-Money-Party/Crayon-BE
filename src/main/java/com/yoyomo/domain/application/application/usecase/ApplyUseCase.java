@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class ApplyUseCase {
 
 
     @Transactional
-    public void apply(ApplicationSaveRequest dto, String recruitmentId, Long userId) {
+    public void apply(ApplicationSaveRequest dto, UUID recruitmentId, Long userId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         recruitment.checkAvailable();
 

@@ -1,25 +1,27 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
-
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
-import com.yoyomo.domain.user.domain.service.UserGetService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,6 @@ public class ProcessManageUseCase {
     private final ApplicationGetService applicationGetService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final ProcessGetService processGetService;
-    private final UserGetService userGetService;
 
     public List<Process> save(List<Save> dto, Recruitment recruitment) {
         return processSaveService.saveAll(dto, recruitment);
@@ -50,7 +51,7 @@ public class ProcessManageUseCase {
 
         return processes.stream()
                 .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L),
-                        recruitment.getProcessStep()))
+                        process.getProcessStep()))
                 .sorted(Comparator.comparingInt(Response::stage))
                 .toList();
     }
@@ -65,4 +66,19 @@ public class ProcessManageUseCase {
                 .sorted(Comparator.comparing(Process::getStage))
                 .toList();
     }
+
+    @Transactional
+    public void updateStep(UUID recruitmentId, Long processId, ProcessStep step, Long userId) {
+        clubManagerAuthService.checkAuthorization(recruitmentId, userId);
+
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        Process process = processGetService.find(processId);
+
+        Type currentProcess = recruitment.getCurrentProcess();
+
+        process.checkMovable(currentProcess, step);
+
+        process.updateStep(step);
+    }
 }
+

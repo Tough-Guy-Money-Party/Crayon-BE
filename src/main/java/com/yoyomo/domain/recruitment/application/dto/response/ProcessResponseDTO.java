@@ -13,6 +13,7 @@ public class ProcessResponseDTO {
 
     @Builder
     public record Response(
+            long id,
             int stage,
             Type type,
             String title,
@@ -21,11 +22,13 @@ public class ProcessResponseDTO {
             LocalDateTime announceStartAt,
             LocalDateTime announceEndAt,
             Integer applicantCount,
-            ProcessStep processStep
+            ProcessStep processStep,
+            LocalDateTime mailScheduledAt
     ) {
 
         public static ProcessResponseDTO.Response toResponse(Process process, long applicantCount, ProcessStep processStep) {
             return Response.builder()
+                    .id(process.getId())
                     .stage(process.getStage())
                     .type(process.getType())
                     .title(process.getTitle())
@@ -35,6 +38,7 @@ public class ProcessResponseDTO {
                     .announceEndAt(process.getAnnounceEndAt())
                     .applicantCount((int) applicantCount)
                     .processStep(processStep)
+                    .mailScheduledAt(process.getMailScheduledAt())
                     .build();
         }
 
