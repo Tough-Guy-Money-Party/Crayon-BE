@@ -18,6 +18,7 @@ public enum ResponseMessage {
     SUCCESS_UPDATE_EVALUATION("평가 수정에 성공했습니다."),
     SUCCESS_DELETE_EVALUATION("평가 삭제에 성공했습니다."),
     SUCCESS_READ_RESULT("모집 결과 조회에 성공했습니다."),
+    SUCCESS_MOVE_PASS("합격자 이동에 성공했습니다."),
 
     SUCCESS_SAVE_INTERVIEW_RECORD("면접 기록 생성에 성공했습니다."),
 

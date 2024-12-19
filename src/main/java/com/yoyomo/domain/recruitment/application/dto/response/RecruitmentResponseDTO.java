@@ -4,9 +4,11 @@ import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
+import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
+import lombok.Builder;
+
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Builder;
 
 public class RecruitmentResponseDTO {
 
@@ -39,14 +41,29 @@ public class RecruitmentResponseDTO {
         }
     }
 
+    @Builder
     public record DetailResponse(
             String title,
             String generation,
             String position,
             String clubName,
+            Type currentProcess,
             List<ProcessResponseDTO.Response> processes,
             int processCount,
             Info form
     ) {
+        public static DetailResponse toDetailResponse(Recruitment recruitment, List<ProcessResponseDTO.Response> processes, Info form) {
+            return DetailResponse.builder()
+                    .title(recruitment.getTitle())
+                    .generation(recruitment.getGeneration())
+                    .position(recruitment.getPosition())
+                    .clubName(recruitment.getClub().getName())
+                    .currentProcess(recruitment.getCurrentProcess())
+                    .processes(processes)
+                    .processCount(processes.size())
+                    .form(form)
+                    .build();
+        }
     }
 }
+

@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -48,10 +49,12 @@ public class MailManageUseCaseImpl {
     @Value("${mail.sourceAddress}")
     private String mailSourceAddress;
 
+    @Transactional
     public void reserve(MailRequest dto) {
         create(dto);
     }
 
+    @Transactional
     public void direct(MailRequest dto) {
         create(dto);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
@@ -63,10 +66,13 @@ public class MailManageUseCaseImpl {
         });
     }
 
+    @Transactional
     public void cancel(Long processId) {
-        processGetService.exists(processId);
+        Process process = processGetService.find(processId);
+
         try {
             mailUpdateService.cancelMail(processId).join();
+            process.cancelMail();
         } catch (CompletionException e) {
             throw new MailCancelException(e.getMessage());
         }
@@ -76,6 +82,8 @@ public class MailManageUseCaseImpl {
         long processId = dto.processId();
 
         Process process = processGetService.find(processId);
+        process.reserve(dto.scheduledTime());
+
         Recruitment recruitment = process.getRecruitment();
 
         List<CompletableFuture<Void>> uploadFutures = new ArrayList<>();
