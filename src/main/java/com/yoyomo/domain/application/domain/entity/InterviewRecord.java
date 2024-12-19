@@ -50,8 +50,6 @@ public class InterviewRecord extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    private String image;
-
     public boolean isMine(User manager) {
         return this.manager == manager;
     }
