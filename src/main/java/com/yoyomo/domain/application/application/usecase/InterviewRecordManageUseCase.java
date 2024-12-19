@@ -56,8 +56,14 @@ public class InterviewRecordManageUseCase {
     }
 
     @Transactional
-    public void delete(long interviewRecordId, long userId) {
+    public void delete(long interviewRecordId, long managerId) {
         InterviewRecord interviewRecord = interviewRecordGetService.find(interviewRecordId);
-        interviewRecordUpdateService.delete(interviewRecord, userId);
+        interviewRecordUpdateService.delete(interviewRecord, managerId);
+    }
+
+    @Transactional
+    public void update(long interviewRecordId, long managerId, InterviewRecordRequest request) {
+        InterviewRecord interviewRecord = interviewRecordGetService.find(interviewRecordId);
+        interviewRecordUpdateService.update(interviewRecord, managerId, request.content());
     }
 }
