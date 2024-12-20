@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 public class LoggingAspect {
+
     @Pointcut("execution(public * com.yoyomo.infra.aws.usecase.DistrubuteUsecase.*(..))")
-    private void distrubuteUsecaseMethods() {
+    private void logForDistributeMethod() {
     }
 
-    @Around("distrubuteUsecaseMethods()")
+    @Around("logForDistributeMethod()")
     public Object logDistrubuteUsecaseExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().toShortString();
         Object[] methodArgs = joinPoint.getArgs();
