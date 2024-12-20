@@ -86,8 +86,10 @@ dependencies {
 
     //Lambda 추가
     implementation 'software.amazon.awssdk:lambda:2.26.4'
+
+    runtimeOnly 'com.h2database:h2'
 }
 
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
+tasks.named('test') {
+    useJUnitPlatform()
+}

@@ -1,0 +1,78 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;NON_KEYWORDS=user
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  application:
+    kakao-client-id: secret
+    kakao-redirect-uri: secret
+
+  data:
+    mongodb:
+      uri: mongodb://${HOST:localhost}:${PORT:27017}/${DATABASE:crayon}
+      host: ${HOST:localhost}
+      port: ${PORT:27017}
+      database: ${DATABASE:crayon}
+      authentication-database: admin
+      uuid-representation: standard
+    redis:
+      host: localhost
+      port: 6379
+      password: secret
+
+  main:
+    allow-bean-definition-overriding: true
+
+crayon:
+  jwt:
+    key: secret
+    access:
+      expiration: 922337203685477599
+      header: Authorization
+    refresh:
+      expiration: 604800000
+      header: Authorization-refresh
+    masterToken: secret
+
+cloud:
+  aws:
+    credentials:
+      accessKey: secret
+      secretKey: secret
+      mailAccessKey: secret
+      mailSecretKey: secret
+    region:
+      static: secret
+    stack:
+      auto: false
+    route53:
+      hostedZoneId: secret
+    accountId: secret
+    acm: secret
+
+vite:
+  uri: secret
+
+application:
+  bucket:
+    name: secret
+
+mail:
+  lambda:
+    arn: secret
+  sourceAddress: secret
+  scheduler:
+    arn: secret
+
+kakao:
+  token_uri: secret
+  redirect_uri: secret
+  grant_type: secret
+  client_id: secret
+  user_info_uri: secret

@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.entity;
 
 
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,7 +33,7 @@ import java.util.UUID;
                 )
         }
 )
-public class InterviewRecord {
+public class InterviewRecord extends BaseEntity {
 
     @Id
     @Column(name = "interview_record_id")
@@ -49,6 +50,12 @@ public class InterviewRecord {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    private String image;
+    public boolean isMine(User manager) {
+        return this.manager == manager;
+    }
+
+    public boolean isMine(long userId) {
+        return this.manager.getId() == userId;
+    }
 }
 
