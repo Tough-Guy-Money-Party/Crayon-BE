@@ -73,9 +73,7 @@ public class MailManageUseCaseImpl {
 
     @Transactional
     public void cancel(Long processId, long userId) {
-        Process process = processGetService.find(processId);
-        User manager = userGetService.find(userId);
-        clubManagerAuthService.checkAuthorization(process, manager);
+        Process process = checkAuthority(processId, userId);
 
         process.checkMailScheduled();
 
@@ -90,9 +88,7 @@ public class MailManageUseCaseImpl {
     private void create(MailRequest dto, long userId) {
         long processId = dto.processId();
 
-        Process process = processGetService.find(processId);
-        User manager = userGetService.find(userId);
-        clubManagerAuthService.checkAuthorization(process, manager);
+        Process process = checkAuthority(processId, userId);
 
         process.reserve(dto.scheduledTime());
 
@@ -152,5 +148,13 @@ public class MailManageUseCaseImpl {
             log.error("[MailManageUseCaseImpl] | DynamoDB 업로드 중 예외 발생: {}", ex.getMessage());
             throw new DynamodbUploadException();
         }
+    }
+
+    private Process checkAuthority(Long processId, long userId) {
+        Process process = processGetService.find(processId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(process, manager);
+
+        return process;
     }
 }
