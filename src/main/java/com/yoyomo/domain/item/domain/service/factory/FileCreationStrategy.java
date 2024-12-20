@@ -5,11 +5,8 @@ import com.yoyomo.domain.item.application.mapper.ItemMapper;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.Option;
 import com.yoyomo.domain.item.domain.entity.Select;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
 public class FileCreationStrategy {
     private static FileCreationStrategy instance;
     private static ItemMapper itemMapper;
