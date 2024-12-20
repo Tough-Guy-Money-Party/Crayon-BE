@@ -73,7 +73,7 @@ public class MailManageUseCaseImpl {
 
     @Transactional
     public void cancel(Long processId, long userId) {
-        Process process = checkAuthority(processId, userId);
+        Process process = checkAuthorityByProcessId(processId, userId);
 
         process.checkMailScheduled();
 
@@ -88,7 +88,7 @@ public class MailManageUseCaseImpl {
     private void create(MailRequest dto, long userId) {
         long processId = dto.processId();
 
-        Process process = checkAuthority(processId, userId);
+        Process process = checkAuthorityByProcessId(processId, userId);
 
         process.reserve(dto.scheduledTime());
 
@@ -150,7 +150,7 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private Process checkAuthority(Long processId, long userId) {
+    private Process checkAuthorityByProcessId(Long processId, long userId) {
         Process process = processGetService.find(processId);
         User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(process, manager);
