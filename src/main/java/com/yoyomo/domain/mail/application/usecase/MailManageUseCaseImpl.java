@@ -2,6 +2,7 @@ package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
@@ -15,6 +16,8 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
+import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,8 @@ public class MailManageUseCaseImpl {
     private final ProcessGetService processGetService;
     private final MailTemplateSaveService mailTemplateSaveService;
     private final LambdaService lambdaService;
+    private final ClubManagerAuthService clubManagerAuthService;
+    private final UserGetService userGetService;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -50,13 +55,13 @@ public class MailManageUseCaseImpl {
     private String mailSourceAddress;
 
     @Transactional
-    public void reserve(MailRequest dto) {
-        create(dto);
+    public void reserve(MailRequest dto, long userId) {
+        create(dto, userId);
     }
 
     @Transactional
-    public void direct(MailRequest dto) {
-        create(dto);
+    public void direct(MailRequest dto, long userId) {
+        create(dto, userId);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
 
         lambdaInvocation.thenRun(() ->
@@ -67,8 +72,12 @@ public class MailManageUseCaseImpl {
     }
 
     @Transactional
-    public void cancel(Long processId) {
+    public void cancel(Long processId, long userId) {
         Process process = processGetService.find(processId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(process, manager);
+
+        process.checkMailScheduled();
 
         try {
             mailUpdateService.cancelMail(processId).join();
@@ -78,10 +87,13 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private void create(MailRequest dto) {
+    private void create(MailRequest dto, long userId) {
         long processId = dto.processId();
 
         Process process = processGetService.find(processId);
+        User manager = userGetService.find(userId);
+        clubManagerAuthService.checkAuthorization(process, manager);
+
         process.reserve(dto.scheduledTime());
 
         Recruitment recruitment = process.getRecruitment();
