@@ -6,7 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.route53.Route53Client;
-import software.amazon.awssdk.services.route53.model.*;
+import software.amazon.awssdk.services.route53.model.AliasTarget;
+import software.amazon.awssdk.services.route53.model.Change;
+import software.amazon.awssdk.services.route53.model.ChangeAction;
+import software.amazon.awssdk.services.route53.model.ChangeBatch;
+import software.amazon.awssdk.services.route53.model.ChangeResourceRecordSetsRequest;
+import software.amazon.awssdk.services.route53.model.ListResourceRecordSetsRequest;
+import software.amazon.awssdk.services.route53.model.ListResourceRecordSetsResponse;
+import software.amazon.awssdk.services.route53.model.RRType;
+import software.amazon.awssdk.services.route53.model.ResourceRecordSet;
 
 @Slf4j
 @Service
@@ -38,8 +46,7 @@ public class Route53Service {
                 .changeBatch(changeBatch)
                 .build();
 
-        ChangeResourceRecordSetsResponse response = route53Client.changeResourceRecordSets(request);
-        Route53Service.log.info("Route 53 record created: " + response.changeInfo().statusAsString());
+        route53Client.changeResourceRecordSets(request);
     }
 
     public void delete(String subdomain) {
@@ -69,8 +76,7 @@ public class Route53Service {
                 .changeBatch(changeBatch)
                 .build();
 
-        ChangeResourceRecordSetsResponse response = route53Client.changeResourceRecordSets(deleteRequest);
-        System.out.println("Route 53 record deleted for subdomain: " + subdomain);
+        route53Client.changeResourceRecordSets(deleteRequest);
     }
 
 }

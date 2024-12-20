@@ -1,13 +1,12 @@
 package com.yoyomo.infra.aws.cloudfront.Service;
 
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
+import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import com.yoyomo.infra.aws.exception.DistributeNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,6 @@ import software.amazon.awssdk.services.cloudfront.model.ViewerProtocolPolicy;
 @Service
 @RequiredArgsConstructor
 public class CloudfrontService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CloudfrontService.class);
     private final CloudFrontClient cloudFrontClient;
     private final CloudfrontGetService cloudfrontGetService;
 
@@ -162,13 +159,14 @@ public class CloudfrontService {
                 .orElseThrow(DistributeNotFoundException::new);
     }
 
-    public void disableDitribute(String subDomain) {
+    public String disableDitribute(String subDomain) {
         String distributionId = findDistributionId(subDomain);
         GetDistributionConfigRequest getDistributionConfigRequest = GetDistributionConfigRequest.builder()
                 .id(distributionId)
                 .build();
 
-        GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(getDistributionConfigRequest);
+        GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(
+                getDistributionConfigRequest);
 
         DistributionConfig distributionConfig = getDistributionConfigResponse.distributionConfig().toBuilder()
                 .enabled(false)
@@ -181,12 +179,11 @@ public class CloudfrontService {
                 .build();
 
         cloudFrontClient.updateDistribution(updateDistributionRequest);
-        logger.info("CloudFront distribution disabled: {}", distributionId);
+        return distributionId;
     }
 
     @Scheduled(cron = "0 0 3 * * ?")
     public void deleteInactiveDistributions() {
-        logger.info("배포 삭제 시작");
         List<DistributionSummary> inactiveDistributions = findInactiveDistributions();
         inactiveDistributions.forEach(this::deleteDistribution);
     }
@@ -206,7 +203,8 @@ public class CloudfrontService {
                     .id(distributionId)
                     .build();
 
-            GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(getDistributionConfigRequest);
+            GetDistributionConfigResponse getDistributionConfigResponse = cloudFrontClient.getDistributionConfig(
+                    getDistributionConfigRequest);
 
             DeleteDistributionRequest deleteRequest = DeleteDistributionRequest.builder()
                     .id(distributionId)
@@ -214,9 +212,8 @@ public class CloudfrontService {
                     .build();
 
             cloudFrontClient.deleteDistribution(deleteRequest);
-            logger.info("배포 삭제 완료: {}", distributionId);
         } catch (CloudFrontException e) {
-            logger.error("배포 삭제 실패: {} - {}", distributionId, e.awsErrorDetails().errorMessage());
+            throw new UnavailableSubdomainException(e.statusCode(), e.getMessage());
         }
     }
 
