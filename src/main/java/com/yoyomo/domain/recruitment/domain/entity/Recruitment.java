@@ -1,5 +1,9 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
+
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
@@ -7,18 +11,27 @@ import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -56,7 +69,7 @@ public class Recruitment extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Type currentProcess = Type.DOCUMENTATION;
+    private Type currentProcess = Type.FORM;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
@@ -82,8 +95,9 @@ public class Recruitment extends BaseEntity {
     }
 
     public void checkModifiable() {
-        if (this.isActive)
+        if (this.isActive) {
             throw new RecruitmentUnmodifiableException();
+        }
     }
 
     public void clearProcesses() {
