@@ -1,15 +1,14 @@
 package com.yoyomo.domain.recruitment.application.mapper;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import java.time.LocalDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import java.time.LocalDateTime;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -28,6 +27,6 @@ public interface RecruitmentMapper {
     }
 
     default LocalDateTime getEndAt(Save dto) {
-        return dto.processes().get(dto.processes().size() - 1).period().announcement().time().endAt();
+        return dto.processes().get(0).period().evaluation().time().endAt();
     }
 }
