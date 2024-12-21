@@ -1,5 +1,6 @@
 package com.yoyomo.domain.landing.presentation;
 
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_CREATE_SUBDOMAIN;
 import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
 import static com.yoyomo.domain.landing.presentation.constant.ResponseMessage.SUCCESS_READ;
 import static org.springframework.http.HttpStatus.OK;
@@ -58,7 +59,7 @@ public class LandingController {
             @CurrentUser @Parameter(hidden = true) Long userId) {
 
         landingGeneralManageUsecase.create(userId, clubId, request);
-        return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_CREATE_SUBDOMAIN.getMessage());
     }
 
     @Operation(summary = "[Landing] 랜딩 포괄설정 조회")
