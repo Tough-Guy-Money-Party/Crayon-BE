@@ -13,6 +13,7 @@ import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
 import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
+import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -36,6 +37,7 @@ public class LandingGeneralManageUsecase {
     private final ClubValidateService clubValidateService;
     private final UserGetService userGetService;
     private final ClubManagerAuthService clubManagerAuthService;
+    private final LandingSaveService landingSaveService;
 
     @Transactional(readOnly = true)
     public LandingResponseDTO.General readGeneral(String clubId, long userId) {
@@ -95,5 +97,6 @@ public class LandingGeneralManageUsecase {
         clubValidateService.checkDuplicatedSubDomain(subDomain);
         distributeUsecaseImpl.create(subDomain);
         club.addSubDomain(request.subDomain());
+        landingSaveService.save(club);
     }
 }
