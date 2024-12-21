@@ -16,7 +16,6 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
-import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -152,8 +151,7 @@ public class MailManageUseCaseImpl {
 
     private Process checkAuthorityByProcessId(Long processId, long userId) {
         Process process = processGetService.find(processId);
-        User manager = userGetService.find(userId);
-        clubManagerAuthService.checkAuthorization(process, manager);
+        clubManagerAuthService.checkAuthorization(process, userId);
 
         return process;
     }

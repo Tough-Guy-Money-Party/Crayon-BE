@@ -112,10 +112,9 @@ public class ApplicationManageUseCase {
         return recruitment;
     }
 
-    private Process checkAuthorityByProcessId(Long processId, Long userId) {
+    private Process checkAuthorityByProcessId(Long processId, long userId) {
         Process process = processGetService.find(processId);
-        User manager = userGetService.find(userId);
-        clubManagerAuthService.checkAuthorization(process, manager);
+        clubManagerAuthService.checkAuthorization(process, userId);
 
         return process;
     }
