@@ -11,9 +11,7 @@ import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubValidateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import com.yoyomo.infra.aws.usecase.DistrubuteUsecase;
 import jakarta.transaction.Transactional;
-import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,13 +25,9 @@ public class ClubConfigureUseCase {
     private final ClubUpdateService clubUpdateService;
     private final ClubValidateService clubValidateService;
     private final ClubMapper clubMapper;
-    private final DistrubuteUsecase distributeUsecaseImpl;
 
     @Transactional
-    public Response save(Save dto, Long userId) throws IOException {
-        clubValidateService.checkDuplicatedSubDomain(dto.subDomain());
-        distributeUsecaseImpl.create(dto.subDomain());
-
+    public Response save(Save dto, Long userId) {
         User manager = userGetService.find(userId);
         Club club = clubSaveService.save(clubMapper.from(dto), manager);
 
