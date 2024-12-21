@@ -12,12 +12,11 @@ import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.infra.aws.usecase.DistrubuteUsecaseImpl;
+import com.yoyomo.infra.aws.usecase.DistrubuteUsecase;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class LandingGeneralManageUsecase {
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
-    private final DistrubuteUsecaseImpl distributeUsecaseImpl;
+    private final DistrubuteUsecase distributeUsecaseImpl;
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
 

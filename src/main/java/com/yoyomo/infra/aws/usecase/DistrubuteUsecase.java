@@ -11,16 +11,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DistrubuteUsecaseImpl implements DistributeUsecase {
+public class DistrubuteUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
     private final String BASEURL = ".crayon.land";
 
-    @Override
-    public void create(String subDomain) throws IOException {
+    public String create(String subDomain) throws IOException {
         checkValidSubdomain(subDomain);
-        
+
         String fullSubDomain = subDomain + BASEURL;
         //버킷 생성
         s3Service.createBucket(fullSubDomain);
@@ -30,6 +29,8 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
 
         // S3에 next app 업로드
         tryUpload(subDomain);
+
+        return subDomain;
     }
 
     private void tryUpload(String subDomain) throws IOException {
@@ -61,9 +62,7 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
         }
     }
 
-
-    @Override
-    public void delete(String subDomain) throws IOException {
+    public String delete(String subDomain) throws IOException {
         String fullSubDomain = subDomain + BASEURL;
 
         //cloudfront 배포 비활성화
@@ -74,6 +73,8 @@ public class DistrubuteUsecaseImpl implements DistributeUsecase {
 
         //route53 도메인 레코드 비활성화
         route53Service.delete(fullSubDomain);
+
+        return subDomain;
     }
 
 }

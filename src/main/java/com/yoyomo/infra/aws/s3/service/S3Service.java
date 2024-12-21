@@ -1,16 +1,8 @@
 package com.yoyomo.infra.aws.s3.service;
 
-import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
+import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.infra.aws.exception.ImageSaveFailureException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +14,24 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.Delete;
+import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+import software.amazon.awssdk.services.s3.model.PublicAccessBlockConfiguration;
+import software.amazon.awssdk.services.s3.model.PutBucketPolicyRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 
 @Service
@@ -51,7 +60,6 @@ public class S3Service {
                             .restrictPublicBuckets(false)
                             .build()));
 
-            //cloudfront배포를 위한 S3권한 해제
             applyBucketPolicy(bucketName);
 
         } catch (S3Exception e) {
@@ -80,7 +88,6 @@ public class S3Service {
                 .build();
 
         s3Client.putBucketPolicy(policyRequest);
-        System.out.println("Bucket policy applied for bucket: " + bucketName);
     }
 
     public void upload(String bucketName) throws IOException {
@@ -105,7 +112,7 @@ public class S3Service {
             });
 
         } catch (S3Exception e) {
-            throw new UnavailableSubdomainException(e.statusCode(),e.getMessage());
+            throw new UnavailableSubdomainException(e.statusCode(), e.getMessage());
         }
     }
 
@@ -123,13 +130,13 @@ public class S3Service {
         s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath.toFile()));
     }
 
-    public void delete(String subDomain) {
+    public String delete(String subDomain) {
 
         deleteAllElements(subDomain);
 
         deleteBucket(subDomain);
 
-        System.out.println("S3 bucket deleted: " + subDomain);
+        return subDomain;
     }
 
     private void deleteAllElements(String bucketName) {
@@ -155,7 +162,6 @@ public class S3Service {
                         .build();
                 s3Client.deleteObjects(deleteObjectsRequest);
             }
-
 
             listObjectsRequest = listObjectsRequest.toBuilder()
                     .continuationToken(listObjectsResponse.nextContinuationToken())
