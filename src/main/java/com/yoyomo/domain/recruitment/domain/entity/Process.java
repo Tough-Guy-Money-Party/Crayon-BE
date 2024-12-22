@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import com.yoyomo.domain.mail.exception.MailNotScheduledException;
 import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.exception.ProcessStepUnModifiableException;
@@ -59,6 +60,12 @@ public class Process extends BaseEntity {
 
     public void cancelMail() {
         this.mailScheduledAt = null;
+    }
+
+    public void checkMailScheduled() {
+        if (this.mailScheduledAt == null) {
+           throw new MailNotScheduledException();
+        }
     }
 
     public void checkMovable(Type currentProcess, ProcessStep step) {

@@ -11,10 +11,11 @@ import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
 import com.yoyomo.domain.user.exception.UserNotFoundException;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +33,16 @@ public class ClubManagerAuthService {
         checkAuthorization(club, manager);
     }
 
-    public void checkAuthorization(Process process, User manager) {
+    public void checkAuthorization(Process process, long userId) {
         Recruitment recruitment = process.getRecruitment();
 
         if (recruitment == null) {
             throw new RecruitmentNotFoundException();
         }
 
+        User manager = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Club club = recruitment.getClub();
+
         checkAuthorization(club, manager);
     }
 
