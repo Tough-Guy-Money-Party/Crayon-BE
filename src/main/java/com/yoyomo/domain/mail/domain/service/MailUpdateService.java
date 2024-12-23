@@ -42,14 +42,14 @@ public class MailUpdateService {
     private final BatchDivider batchDivider;
 
     public CompletableFuture<Void> updateScheduledTime(long processId, MailUpdateRequest dto) {
-        return doProcess(processId,Type.UPDATE, dto.scheduledTime());
+        return processMailOperation(processId,Type.UPDATE, dto.scheduledTime());
     }
 
     public CompletableFuture<Void> cancelMail(long processId) {
-        return doProcess(processId, Type.CANCEL, null);
+        return processMailOperation(processId, Type.CANCEL, null);
     }
 
-    public CompletableFuture<Void> doProcess(long processId, Type type, LocalDateTime scheduledTime) {
+    public CompletableFuture<Void> processMailOperation(long processId, Type type, LocalDateTime scheduledTime) {
         ScanEnhancedRequest scanRequest = buildScanRequest(processId);
         MailStrategy strategy = mailStrategyFactory.getStrategy(type);
 
