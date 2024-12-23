@@ -16,7 +16,7 @@ public class FormRequestDTO {
 
     public record Update(
             @NotEmpty String title,
-            @NotEmpty String description,
+            String description,
             @Valid List<ItemRequest> itemRequests
     ) {
     }
