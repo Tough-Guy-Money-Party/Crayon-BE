@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 public class MailCancelStrategy implements MailStrategy {
 
-    LocalDateTime scheduledTime = null;
+    private LocalDateTime scheduledTime = null;
 
     @Override
     public void apply(MailTransformDto dto) {
