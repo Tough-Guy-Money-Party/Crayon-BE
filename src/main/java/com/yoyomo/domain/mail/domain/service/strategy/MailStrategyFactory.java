@@ -13,8 +13,8 @@ public class MailStrategyFactory {
     private final Set<MailStrategy> strategies;
 
     public MailStrategy getStrategy(Type type) {
-        return strategies.stream().
-                filter(strategy -> strategy.isSupport(type))
+        return strategies.stream()
+                .filter(strategy -> strategy.isSupport(type))
                 .findFirst()
                 .orElseThrow(MailStrategyMismatchException::new);
     }

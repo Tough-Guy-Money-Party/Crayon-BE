@@ -2,11 +2,11 @@ package com.yoyomo.domain.mail.domain.service;
 
 import com.yoyomo.domain.mail.application.dto.request.MailTransformDto;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
-import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.service.strategy.MailStrategy;
 import com.yoyomo.domain.mail.domain.service.strategy.MailStrategyFactory;
 import com.yoyomo.domain.mail.domain.service.strategy.Type;
+import com.yoyomo.global.common.util.BatchDivider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import software.amazon.awssdk.services.dynamodb.model.TransactWriteItem;
 import software.amazon.awssdk.services.dynamodb.model.TransactWriteItemsRequest;
 import software.amazon.awssdk.services.dynamodb.model.Update;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,23 +41,27 @@ public class MailUpdateService {
     private final BatchDivider batchDivider;
 
     public CompletableFuture<Void> updateScheduledTime(long processId, MailUpdateRequest dto) {
-        return processMailOperation(processId,Type.UPDATE, dto.scheduledTime());
+        MailStrategy strategy = mailStrategyFactory.getStrategy(Type.UPDATE);
+        strategy.setScheduledTime(dto.scheduledTime());
+
+        return processMailOperation(processId, strategy);
     }
 
     public CompletableFuture<Void> cancelMail(long processId) {
-        return processMailOperation(processId, Type.CANCEL, null);
+        MailStrategy strategy = mailStrategyFactory.getStrategy(Type.CANCEL);
+
+        return processMailOperation(processId, strategy);
     }
 
-    public CompletableFuture<Void> processMailOperation(long processId, Type type, LocalDateTime scheduledTime) {
+    public CompletableFuture<Void> processMailOperation(long processId, MailStrategy strategy) {
         ScanEnhancedRequest scanRequest = buildScanRequest(processId);
-        MailStrategy strategy = mailStrategyFactory.getStrategy(type);
 
         PagePublisher<Mail> publisher = mailTable.scan(scanRequest);
         List<Mail> mailsToCancel = new ArrayList<>();
 
         return publisher
                 .subscribe(page -> mailsToCancel.addAll(page.items()))
-                .thenCompose(unused -> processMailsInBatches(mailsToCancel, strategy, scheduledTime))
+                .thenCompose(unused -> processMailsInBatches(mailsToCancel, strategy))
                 .thenRun(() -> log.info("[MailUpdateService] 메일 예약 취소 작업 완료"))
                 .exceptionally(e -> {
                     log.error("[MailUpdateService] 메일 예약 취소 중 예외 발생", e);
@@ -66,7 +69,7 @@ public class MailUpdateService {
                 });
     }
 
-    private CompletableFuture<Void> processMailsInBatches(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
+    private CompletableFuture<Void> processMailsInBatches(List<Mail> mails, MailStrategy strategy) {
         if (mails.isEmpty()) {
             log.info("[MailUpdateService] 취소할 메일이 없습니다.");
             return CompletableFuture.completedFuture(null);
@@ -77,13 +80,13 @@ public class MailUpdateService {
         CompletableFuture<Void> result = CompletableFuture.completedFuture(null);
 
         for (List<Mail> batch : batches) {
-            result = result.thenCompose(unused -> executeBatchUpdate(batch, strategy, scheduledTime));
+            result = result.thenCompose(unused -> executeBatchUpdate(batch, strategy));
         }
         return result;
     }
 
-    private CompletableFuture<Void> executeBatchUpdate(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
-        TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails, strategy, scheduledTime);
+    private CompletableFuture<Void> executeBatchUpdate(List<Mail> mails, MailStrategy strategy) {
+        TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails, strategy);
 
         return dynamoDbAsyncClient.transactWriteItems(transactWriteRequest)
                 .thenAccept(unused -> log.info("[MailUpdateService] 트랜잭션 취소 성공 (배치 크기: {})", mails.size()))
@@ -110,10 +113,10 @@ public class MailUpdateService {
                 .build();
     }
 
-    private TransactWriteItemsRequest buildTransactRequest(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
+    private TransactWriteItemsRequest buildTransactRequest(List<Mail> mails, MailStrategy strategy) {
         List<TransactWriteItem> transactItems = mails.stream()
                 .map(mail -> {
-                    MailTransformDto dto = MailTransformDto.of(mail, scheduledTime);
+                    MailTransformDto dto = MailTransformDto.of(mail, strategy.getScheduledTime());
                     return buildTransactItem(dto, strategy);
                 })
                 .collect(Collectors.toList());

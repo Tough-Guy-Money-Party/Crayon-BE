@@ -5,10 +5,13 @@ import com.yoyomo.domain.mail.domain.entity.Mail;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Component
 public class MailCancelStrategy implements MailStrategy {
+
+    LocalDateTime scheduledTime = null;
 
     @Override
     public void apply(MailTransformDto dto) {
@@ -38,6 +41,16 @@ public class MailCancelStrategy implements MailStrategy {
     @Override
     public boolean isSupport(Type type) {
         return type == Type.CANCEL;
+    }
+
+    @Override
+    public void setScheduledTime(LocalDateTime scheduledTime) {
+        this.scheduledTime = null;
+    }
+
+    @Override
+    public LocalDateTime getScheduledTime() {
+        return scheduledTime;
     }
 }
 
