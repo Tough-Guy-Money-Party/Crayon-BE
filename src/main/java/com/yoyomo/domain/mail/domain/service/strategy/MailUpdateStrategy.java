@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Component
-public class MailUpdateStrategy implements MailStrategy{
+public class MailUpdateStrategy implements MailStrategy {
 
     private LocalDateTime scheduledTime;
 
