@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import com.yoyomo.domain.mail.exception.MailAlreadySentException;
 import com.yoyomo.domain.mail.exception.MailNotScheduledException;
 import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
@@ -62,9 +63,17 @@ public class Process extends BaseEntity {
         this.mailScheduledAt = null;
     }
 
+    public void updateSchedule(LocalDateTime scheduledTime) {
+        this.mailScheduledAt = scheduledTime;
+    }
+
     public void checkMailScheduled() {
         if (this.mailScheduledAt == null) {
-           throw new MailNotScheduledException();
+            throw new MailNotScheduledException();
+        }
+
+        if (isAfterMailSent()) {
+            throw new MailAlreadySentException();
         }
     }
 
