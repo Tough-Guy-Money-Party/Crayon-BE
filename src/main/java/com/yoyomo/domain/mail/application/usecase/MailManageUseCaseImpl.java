@@ -80,7 +80,7 @@ public class MailManageUseCaseImpl {
         process.checkMailScheduled();
 
         try {
-            mailUpdateService.cancel(processId).join();
+            mailUpdateService.cancelMail(processId).join();
             process.cancelMail();
         } catch (CompletionException e) {
             throw new MailCancelException(e.getMessage());
