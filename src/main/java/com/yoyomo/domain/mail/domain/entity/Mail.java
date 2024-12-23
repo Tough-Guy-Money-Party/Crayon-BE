@@ -44,7 +44,7 @@ public class Mail {
         return scheduledTime;
     }
 
-    public void updateScheduledTime( LocalDateTime scheduledTime ) {
+    public void updateScheduledTime(LocalDateTime scheduledTime) {
         this.scheduledTime = scheduledTime;
     }
 
