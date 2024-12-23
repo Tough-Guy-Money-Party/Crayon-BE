@@ -50,8 +50,9 @@ public class SecurityConfig {
                                 .requestMatchers("/user/login/**").permitAll()
                                 .requestMatchers("/api/notion/**").permitAll()
                                 .requestMatchers("/landing/general-for-react").permitAll()
+                                .requestMatchers("/health-check").permitAll()
                                 .anyRequest().permitAll());
-
+        
         http
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
                 .exceptionHandling(exceptionHandling ->
