@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
+import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.service.MailSaveService;
@@ -12,11 +13,11 @@ import com.yoyomo.domain.mail.domain.service.MailUtilService;
 import com.yoyomo.domain.mail.exception.DynamodbUploadException;
 import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.mail.exception.MailCancelException;
+import com.yoyomo.domain.mail.exception.MailUpdateException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_UPDATE_FAIL;
 
 
 @Slf4j
@@ -45,7 +49,6 @@ public class MailManageUseCaseImpl {
     private final MailTemplateSaveService mailTemplateSaveService;
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
-    private final UserGetService userGetService;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -71,16 +74,34 @@ public class MailManageUseCaseImpl {
     }
 
     @Transactional
-    public void cancel(Long processId, long userId) {
+    public void cancel(long processId, long userId) {
         Process process = checkAuthorityByProcessId(processId, userId);
 
         process.checkMailScheduled();
 
         try {
-            mailUpdateService.cancelMail(processId).join();
+            mailUpdateService.cancel(processId).join();
             process.cancelMail();
         } catch (CompletionException e) {
             throw new MailCancelException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void update(long processId, MailUpdateRequest dto, long userId) {
+        Process process = checkAuthorityByProcessId(processId, userId);
+
+        process.checkMailScheduled();
+
+        if (dto.scheduledTime().isBefore(LocalDateTime.now())) {
+            throw new MailUpdateException(MAIL_UPDATE_FAIL.getMessage());
+        }
+
+        try {
+            mailUpdateService.updateScheduledTime(processId, dto).join();
+            process.updateSchedule(dto.scheduledTime());
+        } catch (CompletionException e) {
+            throw new MailUpdateException(e.getMessage());
         }
     }
 
