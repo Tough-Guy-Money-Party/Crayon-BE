@@ -17,7 +17,7 @@ import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import com.yoyomo.infra.aws.usecase.DistrubuteUsecase;
+import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class LandingGeneralManageUsecase {
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
-    private final DistrubuteUsecase distributeUsecaseImpl;
+    private final DistributeUsecase distributeUsecase;
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
     private final UserGetService userGetService;
@@ -64,8 +64,8 @@ public class LandingGeneralManageUsecase {
             String oldDomain = club.getSubDomain();
 
             //TODO: update 로직으로 변경 예정
-            distributeUsecaseImpl.create(subDomain);
-            distributeUsecaseImpl.delete(oldDomain);
+            distributeUsecase.create(subDomain);
+            distributeUsecase.delete(oldDomain);
         }
     }
 
@@ -95,7 +95,7 @@ public class LandingGeneralManageUsecase {
         String subDomain = request.subDomain();
 
         clubValidateService.checkDuplicatedSubDomain(subDomain);
-        distributeUsecaseImpl.create(subDomain);
+        distributeUsecase.create(subDomain);
         club.addSubDomain(request.subDomain());
         landingSaveService.save(club);
     }

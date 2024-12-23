@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DistrubuteUsecase {
+public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
