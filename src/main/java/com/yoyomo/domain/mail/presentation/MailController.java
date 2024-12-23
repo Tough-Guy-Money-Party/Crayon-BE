@@ -1,6 +1,7 @@
 package com.yoyomo.domain.mail.presentation;
 
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
+import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
 import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -36,6 +37,15 @@ public class MailController {
                                       @CurrentUser @Parameter(hidden = true) Long userId) {
         mailManageUseCase.direct(dto, userId);
         return ResponseDto.of(OK.value(), DIRECT_MAIL_SEND_SUCCESS.getMessage());
+    }
+
+    @PostMapping("/{processId}")
+    @Operation(summary = "메일 예약 시간 수정")
+    public ResponseDto<String> update(@PathVariable Long processId,
+                                      @RequestBody @Valid MailUpdateRequest dto,
+                                      @CurrentUser @Parameter(hidden = true) Long userId) {
+        mailManageUseCase.update(processId, dto, userId);
+        return ResponseDto.of(OK.value(), UPDATE_MAIL_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{processId}")
