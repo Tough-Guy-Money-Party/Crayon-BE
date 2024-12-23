@@ -2,7 +2,7 @@ package com.yoyomo.domain.mail.domain.service;
 
 import com.yoyomo.domain.mail.application.dto.request.MailTransformDto;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
-import com.yoyomo.domain.mail.application.support.BatchDivider;
+import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.mail.domain.service.strategy.MailStrategy;
 import com.yoyomo.domain.mail.domain.service.strategy.MailStrategyFactory;
@@ -41,11 +41,11 @@ public class MailUpdateService {
     private final MailStrategyFactory mailStrategyFactory;
     private final BatchDivider batchDivider;
 
-    public CompletableFuture<Void> update(long processId, MailUpdateRequest dto) {
+    public CompletableFuture<Void> updateScheduledTime(long processId, MailUpdateRequest dto) {
         return doProcess(processId,Type.UPDATE, dto.scheduledTime());
     }
 
-    public CompletableFuture<Void> cancel(long processId) {
+    public CompletableFuture<Void> cancelMail(long processId) {
         return doProcess(processId, Type.CANCEL, null);
     }
 
@@ -58,7 +58,7 @@ public class MailUpdateService {
 
         return publisher
                 .subscribe(page -> mailsToCancel.addAll(page.items()))
-                .thenCompose(unused -> processInBatches(mailsToCancel, strategy, scheduledTime))
+                .thenCompose(unused -> processMailsInBatches(mailsToCancel, strategy, scheduledTime))
                 .thenRun(() -> log.info("[MailUpdateService] 메일 예약 취소 작업 완료"))
                 .exceptionally(e -> {
                     log.error("[MailUpdateService] 메일 예약 취소 중 예외 발생", e);
@@ -66,7 +66,7 @@ public class MailUpdateService {
                 });
     }
 
-    private CompletableFuture<Void> processInBatches(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
+    private CompletableFuture<Void> processMailsInBatches(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
         if (mails.isEmpty()) {
             log.info("[MailUpdateService] 취소할 메일이 없습니다.");
             return CompletableFuture.completedFuture(null);
@@ -77,12 +77,12 @@ public class MailUpdateService {
         CompletableFuture<Void> result = CompletableFuture.completedFuture(null);
 
         for (List<Mail> batch : batches) {
-            result = result.thenCompose(unused -> update(batch, strategy, scheduledTime));
+            result = result.thenCompose(unused -> executeBatchUpdate(batch, strategy, scheduledTime));
         }
         return result;
     }
 
-    private CompletableFuture<Void> update(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
+    private CompletableFuture<Void> executeBatchUpdate(List<Mail> mails, MailStrategy strategy, LocalDateTime scheduledTime) {
         TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails, strategy, scheduledTime);
 
         return dynamoDbAsyncClient.transactWriteItems(transactWriteRequest)
