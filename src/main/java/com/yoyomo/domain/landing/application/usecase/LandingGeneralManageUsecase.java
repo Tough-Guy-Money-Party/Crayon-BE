@@ -15,7 +15,6 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import java.io.IOException;
@@ -89,9 +88,7 @@ public class LandingGeneralManageUsecase {
 
     @Transactional
     public void create(long userId, UUID clubId, CreateSubDomainRequest request) {
-        User manager = userGetService.find(userId);
-        Club club = clubGetService.find(clubId);
-        clubManagerAuthService.checkAuthorization(club, manager);
+        Club club = clubValidateService.checkOwnerAuthority(clubId, userId);
         String subDomain = request.subDomain();
 
         clubValidateService.checkDuplicatedSubDomain(subDomain);
