@@ -1,6 +1,12 @@
 package com.yoyomo.domain.mail.domain.service;
 
+import com.yoyomo.domain.mail.application.dto.request.MailTransformDto;
+import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
 import com.yoyomo.domain.mail.domain.entity.Mail;
+import com.yoyomo.domain.mail.domain.service.strategy.MailStrategy;
+import com.yoyomo.domain.mail.domain.service.strategy.MailStrategyFactory;
+import com.yoyomo.domain.mail.domain.service.strategy.Type;
+import com.yoyomo.global.common.util.BatchDivider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,12 +34,26 @@ public class MailUpdateService {
 
     private static final int BATCH_SIZE = 25;
     private static final String KEY_NAME = "id";
-    private static final String ATTRIBUTE_NAME = "status";
 
     private final DynamoDbAsyncTable<Mail> mailTable;
     private final DynamoDbAsyncClient dynamoDbAsyncClient;
+    private final MailStrategyFactory mailStrategyFactory;
+    private final BatchDivider batchDivider;
 
-    public CompletableFuture<Void> cancelMail(Long processId) {
+    public CompletableFuture<Void> updateScheduledTime(long processId, MailUpdateRequest dto) {
+        MailStrategy strategy = mailStrategyFactory.getStrategy(Type.UPDATE);
+        strategy.setScheduledTime(dto.scheduledTime());
+
+        return processMailOperation(processId, strategy);
+    }
+
+    public CompletableFuture<Void> cancelMail(long processId) {
+        MailStrategy strategy = mailStrategyFactory.getStrategy(Type.CANCEL);
+
+        return processMailOperation(processId, strategy);
+    }
+
+    public CompletableFuture<Void> processMailOperation(long processId, MailStrategy strategy) {
         ScanEnhancedRequest scanRequest = buildScanRequest(processId);
 
         PagePublisher<Mail> publisher = mailTable.scan(scanRequest);
@@ -41,7 +61,7 @@ public class MailUpdateService {
 
         return publisher
                 .subscribe(page -> mailsToCancel.addAll(page.items()))
-                .thenCompose(unused -> processInBatches(mailsToCancel))
+                .thenCompose(unused -> processMailsInBatches(mailsToCancel, strategy))
                 .thenRun(() -> log.info("[MailUpdateService] 메일 예약 취소 작업 완료"))
                 .exceptionally(e -> {
                     log.error("[MailUpdateService] 메일 예약 취소 중 예외 발생", e);
@@ -49,24 +69,24 @@ public class MailUpdateService {
                 });
     }
 
-    private CompletableFuture<Void> processInBatches(List<Mail> mails) {
+    private CompletableFuture<Void> processMailsInBatches(List<Mail> mails, MailStrategy strategy) {
         if (mails.isEmpty()) {
             log.info("[MailUpdateService] 취소할 메일이 없습니다.");
             return CompletableFuture.completedFuture(null);
         }
 
-        List<List<Mail>> batches = divide(mails, BATCH_SIZE);
+        List<List<Mail>> batches = batchDivider.divide(mails, BATCH_SIZE);
 
         CompletableFuture<Void> result = CompletableFuture.completedFuture(null);
 
         for (List<Mail> batch : batches) {
-            result = result.thenCompose(unused -> update(batch));
+            result = result.thenCompose(unused -> executeBatchUpdate(batch, strategy));
         }
         return result;
     }
 
-    private CompletableFuture<Void> update(List<Mail> mails) {
-        TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails);
+    private CompletableFuture<Void> executeBatchUpdate(List<Mail> mails, MailStrategy strategy) {
+        TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails, strategy);
 
         return dynamoDbAsyncClient.transactWriteItems(transactWriteRequest)
                 .thenAccept(unused -> log.info("[MailUpdateService] 트랜잭션 취소 성공 (배치 크기: {})", mails.size()))
@@ -93,17 +113,12 @@ public class MailUpdateService {
                 .build();
     }
 
-    private List<List<Mail>> divide(List<Mail> mails, int batchSize) {
-        List<List<Mail>> batches = new ArrayList<>();
-        for (int i = 0; i < mails.size(); i += batchSize) {
-            batches.add(mails.subList(i, Math.min(i + batchSize, mails.size())));
-        }
-        return batches;
-    }
-
-    private TransactWriteItemsRequest buildTransactRequest(List<Mail> mails) {
+    private TransactWriteItemsRequest buildTransactRequest(List<Mail> mails, MailStrategy strategy) {
         List<TransactWriteItem> transactItems = mails.stream()
-                .map(this::buildTransactItem)
+                .map(mail -> {
+                    MailTransformDto dto = MailTransformDto.of(mail, strategy.getScheduledTime());
+                    return buildTransactItem(dto, strategy);
+                })
                 .collect(Collectors.toList());
 
         return TransactWriteItemsRequest.builder()
@@ -111,21 +126,19 @@ public class MailUpdateService {
                 .build();
     }
 
-    private TransactWriteItem buildTransactItem(Mail mail) {
-        mail.cancel();
+    private TransactWriteItem buildTransactItem(MailTransformDto dto, MailStrategy strategy) {
+        strategy.apply(dto);
         Map<String, AttributeValue> key = Map.of(
-                KEY_NAME, AttributeValue.builder().s(mail.getId()).build()
+                KEY_NAME, AttributeValue.builder().s(dto.mail().getId()).build()
         );
 
         return TransactWriteItem.builder()
                 .update(Update.builder()
                         .tableName(mailTable.tableName())
                         .key(key)
-                        .updateExpression("SET #status = :status")
-                        .expressionAttributeNames(Map.of("#status", ATTRIBUTE_NAME))
-                        .expressionAttributeValues(Map.of(
-                                ":status", AttributeValue.builder().s(String.valueOf(mail.getStatus())).build()
-                        ))
+                        .updateExpression(strategy.getUpdateExpression())
+                        .expressionAttributeNames(strategy.getExpressionAttributeNames())
+                        .expressionAttributeValues(strategy.getExpressionValues(dto))
                         .build())
                 .build();
     }
