@@ -16,6 +16,7 @@ public enum ResponseMessage {
     SUCCESS_UPDATE_MANAGERS("동아리 관리자 수정에 성공했습니다"),
     SUCCESS_READ_CODE("동아리 코드 조회에 성공했습니다."),
     SUCCESS_UPDATE_CODE("동아리 코드 재생성에 성공했습니다."),
+    SUCCESS_CREATE_SUBDOMAIN("서브도메인 생성에 성공했습니다"),
 
     ACCESS_DENIED("잘못된 접근입니다."),
     DUPLICATED_PARTICIPATION("이미 참여한 동아리입니다."),

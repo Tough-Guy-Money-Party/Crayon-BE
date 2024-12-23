@@ -3,6 +3,7 @@ package com.yoyomo.infra.aws.usecase;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
 import com.yoyomo.infra.aws.constant.ReservedSubDomain;
+import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import java.io.IOException;
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DistrubuteUsecase {
+public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
     private final String BASEURL = ".crayon.land";
 
-    public String create(String subDomain) throws IOException {
+    public String create(String subDomain) {
         checkValidSubdomain(subDomain);
 
         String fullSubDomain = subDomain + BASEURL;
@@ -33,13 +34,13 @@ public class DistrubuteUsecase {
         return subDomain;
     }
 
-    private void tryUpload(String subDomain) throws IOException {
+    private void tryUpload(String subDomain) {
         String fullSubDomain = subDomain + BASEURL;
         try {
             s3Service.upload(fullSubDomain);
-        } catch (Exception e) {
+        } catch (IOException e) {
             delete(subDomain);
-            throw e;
+            throw new FileNotFoundException();
         }
     }
 
@@ -62,7 +63,7 @@ public class DistrubuteUsecase {
         }
     }
 
-    public String delete(String subDomain) throws IOException {
+    public String delete(String subDomain) {
         String fullSubDomain = subDomain + BASEURL;
 
         //cloudfront 배포 비활성화

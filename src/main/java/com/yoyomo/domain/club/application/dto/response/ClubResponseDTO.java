@@ -4,16 +4,18 @@ public class ClubResponseDTO {
 
     public record Response(
             String id,
-            String name,
-            String subDomain
-    ) {}
+            String name
+    ) {
+    }
 
     public record Participation(
             String id,
             String name
-    ) {}
+    ) {
+    }
 
     public record Code(
             String code
-    ) {}
+    ) {
+    }
 }

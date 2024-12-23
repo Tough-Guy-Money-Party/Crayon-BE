@@ -1,5 +1,11 @@
 package com.yoyomo.domain.landing.presentation;
 
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_CREATE_SUBDOMAIN;
+import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static com.yoyomo.domain.landing.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static org.springframework.http.HttpStatus.OK;
+
+import com.yoyomo.domain.landing.application.dto.request.CreateSubDomainRequest;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.NotionSave;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.Style;
@@ -14,6 +20,8 @@ import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,12 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
-
-import static com.yoyomo.domain.club.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static com.yoyomo.domain.landing.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "LANDING")
 @RestController()
@@ -47,6 +49,17 @@ public class LandingController {
         landingGeneralManageUsecase.update(dto, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
+    }
+
+    @Operation(summary = "[Landing] 서브도메인을 입력받아 홍보사이트를 배포합니다.")
+    @PostMapping("/subdomain/{clubId}")
+    public ResponseDto<Void> create(
+            @PathVariable UUID clubId,
+            @RequestBody CreateSubDomainRequest request,
+            @CurrentUser @Parameter(hidden = true) Long userId) {
+
+        landingGeneralManageUsecase.create(userId, clubId, request);
+        return ResponseDto.of(OK.value(), SUCCESS_CREATE_SUBDOMAIN.getMessage());
     }
 
     @Operation(summary = "[Landing] 랜딩 포괄설정 조회")
