@@ -4,6 +4,7 @@ import com.yoyomo.domain.template.domain.entity.MailTemplate;
 import lombok.Builder;
 import software.amazon.awssdk.services.ses.model.GetTemplateResponse;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -12,7 +13,8 @@ public record MailTemplateGetResponse(
         String customTemplateName,
         String subject,
         String htmlPart,
-        String textPart
+        String textPart,
+        LocalDateTime createdAt
 ) {
     public static MailTemplateGetResponse of(MailTemplate mailTemplate, GetTemplateResponse response) {
         return MailTemplateGetResponse.builder()
@@ -21,6 +23,7 @@ public record MailTemplateGetResponse(
                 .subject(response.template().subjectPart())
                 .htmlPart(response.template().htmlPart())
                 .textPart(response.template().textPart())
+                .createdAt(mailTemplate.getCreatedAt())
                 .build();
     }
 }
