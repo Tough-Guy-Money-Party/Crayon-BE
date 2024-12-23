@@ -44,6 +44,10 @@ public class Mail {
         return scheduledTime;
     }
 
+    public void updateScheduledTime( LocalDateTime scheduledTime ) {
+        this.scheduledTime = scheduledTime;
+    }
+
     public void cancel() {
         this.status= Status.CANCELED;
     }
