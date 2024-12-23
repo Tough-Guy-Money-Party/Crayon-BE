@@ -56,7 +56,7 @@ class InterviewRecordUpdateServiceTest {
         userRepository.deleteAll();
     }
 
-    @DisplayName("면접 기록 작성자가 아니라면 삭제에 성공한다.")
+    @DisplayName("면접 기록 작성자라면 삭제에 성공한다.")
     @Test
     void delete() {
         // given
@@ -75,11 +75,24 @@ class InterviewRecordUpdateServiceTest {
         InterviewRecord interviewRecord = TestFixture.interviewRecord(user);
         interviewRecordRepository.save(interviewRecord);
 
-        // when
         User newUser = userRepository.save(TestFixture.user());
 
-        // then
+        // when & then
         assertThatThrownBy(() -> interviewRecordUpdateService.delete(interviewRecord, newUser.getId()))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @DisplayName("면접 기록 작성자가 아니라면 수정에 실패한다.")
+    @Test
+    void update_fail() {
+        // given
+        InterviewRecord interviewRecord = TestFixture.interviewRecord(user);
+        interviewRecordRepository.save(interviewRecord);
+
+        User newUser = userRepository.save(TestFixture.user());
+
+        // when & then
+        assertThatThrownBy(() -> interviewRecordUpdateService.update(interviewRecord, newUser.getId(), "newContent"))
                 .isInstanceOf(AccessDeniedException.class);
     }
 }

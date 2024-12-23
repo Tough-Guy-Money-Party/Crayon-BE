@@ -18,4 +18,12 @@ public class InterviewRecordUpdateService {
         }
         interviewRecordRepository.delete(interviewRecord);
     }
+
+    public void update(InterviewRecord interviewRecord, long managerId, String content) {
+        if (!interviewRecord.isMine(managerId)) {
+            throw new AccessDeniedException();
+        }
+
+        interviewRecord.update(content);
+    }
 }

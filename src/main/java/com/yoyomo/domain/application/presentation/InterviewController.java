@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_DELETE_INTERVIEW_RECORD;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_INTERVIEW_RECORD;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW_RECORD;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE_INTERVIEW_RECORD;
 import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "INTERVIEW_RECORD")
@@ -48,7 +50,7 @@ public class InterviewController {
 
     @GetMapping
     @Operation(summary = "면접 기록 조회")
-    public ResponseDto<List<InterviewRecordDetailResponse>> saveInterviewRecord(@RequestParam UUID applicationId,
+    public ResponseDto<List<InterviewRecordDetailResponse>> findInterviewRecord(@RequestParam UUID applicationId,
                                                                                 @CurrentUser @Parameter(hidden = true) Long userId) {
         List<InterviewRecordDetailResponse> responses = interviewRecordManageUseCase.readAll(applicationId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_READ_INTERVIEW_RECORD.getMessage(), responses);
@@ -56,10 +58,20 @@ public class InterviewController {
 
     @DeleteMapping("/{interviewRecordId}")
     @Operation(summary = "면접 기록 삭제")
-    public ResponseDto<Void> saveInterviewRecord(@PathVariable Long interviewRecordId,
-                                                 @CurrentUser @Parameter(hidden = true) Long userId) {
+    public ResponseDto<Void> deleteInterviewRecord(@PathVariable Long interviewRecordId,
+                                                   @CurrentUser @Parameter(hidden = true) Long userId) {
         interviewRecordManageUseCase.delete(interviewRecordId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_DELETE_INTERVIEW_RECORD.getMessage());
+    }
+
+    @PatchMapping("/{interviewRecordId}")
+    @Operation(summary = "면접 기록 수정")
+    public ResponseDto<Void> updateInterviewRecord(@PathVariable Long interviewRecordId,
+                                                   @CurrentUser @Parameter(hidden = true) Long userId,
+                                                   @RequestBody @Valid InterviewRecordRequest request) {
+        interviewRecordManageUseCase.update(interviewRecordId, userId, request);
+
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_INTERVIEW_RECORD.getMessage());
     }
 }
