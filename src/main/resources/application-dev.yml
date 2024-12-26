@@ -1,0 +1,59 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${RDB_USERNAME}
+    password: ${RDB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+  application:
+    kakao-client-id: ${KAKAO_CLIENT_ID}
+    kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
+  data:
+    mongodb:
+      uri: mongodb://${USERNAME}:${PASSWORD}@${HOST:localhost}:${PORT:27017}/${DATABASE:crayon}
+      host: ${HOST:localhost}
+      port: ${PORT:27017}
+      database: ${DATABASE:crayon}
+      username: ${USERNAME}
+      password: ${PASSWORD}
+      authentication-database: admin
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASS}
+  main:
+    allow-bean-definition-overriding: true
+
+crayon:
+  jwt:
+    key: ${JWT_ACCESS_SECRET}
+    access:
+      expiration: 922337203685477599
+      header: Authorization
+    refresh:
+      expiration: 604800000
+      header: Authorization-refresh
+    masterToken: ${MASTER_TOKEN}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    route53:
+      hostedZoneId: ${HOSTED_ZONE_ID}
+    accountId: ${AWS_ACCOUNT_ID}
+    acm: ${ACM}
+
+vite:
+  uri: ${VITE_PUBLIC_API_URL}
