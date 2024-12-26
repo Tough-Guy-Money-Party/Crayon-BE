@@ -19,7 +19,7 @@ public class AnswerUpdateService {
     private final AnswerRepository answerRepository;
 
     public void update(UUID applicationId, List<Item> items) {
-        Answer answer = answerRepository.findByApplicationId(applicationId)
+        Answer answer = answerRepository.findByApplicationId(applicationId.toString())
                 .orElseThrow(ApplicationNotFoundException::new);
 
         answer.update(items);
