@@ -57,7 +57,7 @@ jobs:
       - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev .
+          docker build -f Dockerfile-dev -t ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev
       # EC2 ssh 연결 후 이미지 pull
       - name: Deploy to server
