@@ -3,6 +3,7 @@ package com.yoyomo.fixture;
 import com.yoyomo.domain.application.domain.entity.InterviewRecord;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
+import com.yoyomo.domain.mail.domain.entity.Mail;
 import com.yoyomo.domain.user.domain.entity.User;
 
 import java.util.UUID;
@@ -33,6 +34,18 @@ public class TestFixture {
                 .applicationId(UUID.randomUUID())
                 .manager(manager)
                 .content("면접 태도가 좋네요")
+                .build();
+    }
+
+    public static Mail mail() {
+        return Mail.builder()
+                .processId(9999L)
+                .id(UUID.randomUUID().toString())
+                .build();
+    }
+
+    public static Mail invalidMail() {
+        return Mail.builder()
                 .build();
     }
 }
