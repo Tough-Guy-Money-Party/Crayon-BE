@@ -45,10 +45,10 @@ cloud:
     credentials:
       accessKey: secret
       secretKey: secret
-      mailAccessKey: secret
-      mailSecretKey: secret
+      mailAccessKey: ${MAIL_AWS_ACCESS_KEY_ID}
+      mailSecretKey: ${MAIL_AWS_SECRET_ACCESS_KEY}
     region:
-      static: secret
+      static: ap-northeast-2
     stack:
       auto: false
     route53:
@@ -62,13 +62,6 @@ vite:
 application:
   bucket:
     name: secret
-
-mail:
-  lambda:
-    arn: secret
-  sourceAddress: secret
-  scheduler:
-    arn: secret
 
 kakao:
   token_uri: secret
