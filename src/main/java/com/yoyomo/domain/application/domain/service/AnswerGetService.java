@@ -19,7 +19,7 @@ public class AnswerGetService {
     private final AnswerRepository answerRepository;
 
     public Answer findByApplicationId(UUID applicationId) {
-        return answerRepository.findByApplicationId(applicationId)
+        return answerRepository.findByApplicationId(applicationId.toString())
                 .orElseThrow(AnswerNotFoundException::new);
     }
 

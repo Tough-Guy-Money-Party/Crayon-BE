@@ -57,7 +57,3 @@ cloud:
 
 vite:
   uri: ${VITE_PUBLIC_API_URL}
-
-sentry:
-  dsn: ${SENTRY_DSN}
-  tracesSampleRate: 1.0

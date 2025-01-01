@@ -11,32 +11,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
+import software.amazon.awssdk.enhanced.dynamodb.model.TransactUpdateItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.TransactWriteItemsEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.TransactWriteItem;
-import software.amazon.awssdk.services.dynamodb.model.TransactWriteItemsRequest;
-import software.amazon.awssdk.services.dynamodb.model.Update;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MailUpdateService {
 
-    private static final int BATCH_SIZE = 25;
-    private static final String KEY_NAME = "id";
+    private static final int BATCH_SIZE = 50;
 
     private final DynamoDbAsyncTable<Mail> mailTable;
-    private final DynamoDbAsyncClient dynamoDbAsyncClient;
+    private final DynamoDbEnhancedAsyncClient dynamoDbEnhancedAsyncClient;
     private final MailStrategyFactory mailStrategyFactory;
     private final BatchDivider batchDivider;
 
@@ -62,16 +59,16 @@ public class MailUpdateService {
         return publisher
                 .subscribe(page -> mailsToCancel.addAll(page.items()))
                 .thenCompose(unused -> processMailsInBatches(mailsToCancel, strategy))
-                .thenRun(() -> log.info("[MailUpdateService] 메일 예약 취소 작업 완료"))
+                .thenRun(() -> log.info("[MailUpdateService] 메일 예약 수정/취소 작업 완료"))
                 .exceptionally(e -> {
-                    log.error("[MailUpdateService] 메일 예약 취소 중 예외 발생", e);
+                    log.error("[MailUpdateService] 메일 예약 수정/취소 중 예외 발생", e);
                     throw new CompletionException(e);
                 });
     }
 
     private CompletableFuture<Void> processMailsInBatches(List<Mail> mails, MailStrategy strategy) {
         if (mails.isEmpty()) {
-            log.info("[MailUpdateService] 취소할 메일이 없습니다.");
+            log.info("[MailUpdateService] 수정/취소 메일이 없습니다.");
             return CompletableFuture.completedFuture(null);
         }
 
@@ -86,10 +83,10 @@ public class MailUpdateService {
     }
 
     private CompletableFuture<Void> executeBatchUpdate(List<Mail> mails, MailStrategy strategy) {
-        TransactWriteItemsRequest transactWriteRequest = buildTransactRequest(mails, strategy);
+        TransactWriteItemsEnhancedRequest transactWriteRequest = buildTransactRequest(mails, strategy);
 
-        return dynamoDbAsyncClient.transactWriteItems(transactWriteRequest)
-                .thenAccept(unused -> log.info("[MailUpdateService] 트랜잭션 취소 성공 (배치 크기: {})", mails.size()))
+        return dynamoDbEnhancedAsyncClient.transactWriteItems(transactWriteRequest)
+                .thenAccept(unused -> log.info("[MailUpdateService] 트랜잭션 수정/취소 성공 (배치 크기: {})", mails.size()))
                 .exceptionally(e -> {
                     log.error("[MailUpdateService] 트랜잭션 중 예외 발생", e);
                     throw new CompletionException(e);
@@ -113,34 +110,21 @@ public class MailUpdateService {
                 .build();
     }
 
-    private TransactWriteItemsRequest buildTransactRequest(List<Mail> mails, MailStrategy strategy) {
-        List<TransactWriteItem> transactItems = mails.stream()
-                .map(mail -> {
-                    MailTransformDto dto = MailTransformDto.of(mail, strategy.getScheduledTime());
-                    return buildTransactItem(dto, strategy);
-                })
-                .collect(Collectors.toList());
+    private TransactWriteItemsEnhancedRequest buildTransactRequest(List<Mail> mails, MailStrategy strategy) {
+        TransactWriteItemsEnhancedRequest.Builder requestBuilder = TransactWriteItemsEnhancedRequest.builder();
 
-        return TransactWriteItemsRequest.builder()
-                .transactItems(transactItems)
-                .build();
-    }
+        mails.forEach(mail -> {
+            MailTransformDto dto = MailTransformDto.of(mail, strategy.getScheduledTime());
+            strategy.apply(dto);
 
-    private TransactWriteItem buildTransactItem(MailTransformDto dto, MailStrategy strategy) {
-        strategy.apply(dto);
-        Map<String, AttributeValue> key = Map.of(
-                KEY_NAME, AttributeValue.builder().s(dto.mail().getId()).build()
-        );
+            TransactUpdateItemEnhancedRequest<Mail> updateRequest = TransactUpdateItemEnhancedRequest.builder(Mail.class)
+                    .item(mail)
+                    .build();
 
-        return TransactWriteItem.builder()
-                .update(Update.builder()
-                        .tableName(mailTable.tableName())
-                        .key(key)
-                        .updateExpression(strategy.getUpdateExpression())
-                        .expressionAttributeNames(strategy.getExpressionAttributeNames())
-                        .expressionAttributeValues(strategy.getExpressionValues(dto))
-                        .build())
-                .build();
+            requestBuilder.addUpdateItem(mailTable, updateRequest);
+        });
+
+        return requestBuilder.build();
     }
 }
 
