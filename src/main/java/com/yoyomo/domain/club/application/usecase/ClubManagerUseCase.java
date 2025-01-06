@@ -17,10 +17,11 @@ import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class ClubManagerUseCase {
     public void deleteManagers(ClubRequestDTO.Delete dto, Long userId) {
         clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
 
-        clubManagerDeleteService.delete(dto.userIds());
+        clubManagerDeleteService.delete(dto.userIds(), userId);
     }
 
     @Transactional
