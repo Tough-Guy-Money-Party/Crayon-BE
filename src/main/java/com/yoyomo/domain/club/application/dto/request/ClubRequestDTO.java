@@ -2,6 +2,7 @@ package com.yoyomo.domain.club.application.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class ClubRequestDTO {
     }
 
     public record Delete(
-            @NotEmpty UUID clubId,
+            @NotNull UUID clubId,
             @NotNull List<Long> userIds
     ) {
     }
