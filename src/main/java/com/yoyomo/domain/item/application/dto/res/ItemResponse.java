@@ -2,10 +2,11 @@ package com.yoyomo.domain.item.application.dto.res;
 
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.type.Type;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -23,19 +24,15 @@ public class ItemResponse {
             return null;
         }
 
-        List<ItemResponse> list1 = new ArrayList<ItemResponse>(list.size());
+        List<ItemResponse> list1 = new ArrayList<>(list.size());
         for (Item item : list) {
-            list1.add(itemToItemResponse(item));
+            list1.add(toResponse(item));
         }
 
         return list1;
     }
 
-    private static ItemResponse itemToItemResponse(Item item) {
-        if (item == null) {
-            return null;
-        }
-
+    public static ItemResponse toResponse(Item item) {
         return ItemResponse.builder()
                 .id(item.getId())
                 .title(item.getTitle())
