@@ -77,4 +77,8 @@ public class Club extends BaseEntity {
     public void addSubDomain(String subDomain) {
         this.subDomain = subDomain;
     }
+
+    public boolean checkExistsSubDomain() {
+        return !subDomain.isEmpty();
+    }
 }
