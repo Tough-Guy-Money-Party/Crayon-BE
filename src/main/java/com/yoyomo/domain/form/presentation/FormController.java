@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
 import static com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
@@ -85,7 +87,16 @@ public class FormController {
     @Operation(summary = "내 동아리의 폼 목록 검색")
     public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
         List<Response> responses = formManageUseCase.search(keyword, clubId, userId);
-        
+
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
+    }
+
+    @GetMapping
+    @Operation(summary = "지원서 폼 조회")
+    public ResponseDto<Void> read(@RequestParam UUID recruitmentId,
+                                  @CurrentUser @Parameter(hidden = true) Long userId) {
+        formManageUseCase.read(recruitmentId, userId);
+
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
     }
 }
