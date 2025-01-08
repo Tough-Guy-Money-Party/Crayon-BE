@@ -6,10 +6,9 @@ import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.Option;
 import com.yoyomo.domain.item.domain.entity.Select;
 import com.yoyomo.domain.item.domain.entity.type.Type;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +30,6 @@ public class SelectCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
-                .image(request.image())
                 .required(request.required())
                 .options(options)
                 .build();

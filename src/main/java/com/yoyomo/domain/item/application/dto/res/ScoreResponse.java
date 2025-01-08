@@ -18,7 +18,6 @@ public class ScoreResponse extends ItemResponse {
                 .description(score.getDescription())
                 .type(score.getType())
                 .order(score.getOrder())
-                .imageName(score.getImage().getName())
                 .required(score.isRequired())
                 .meaningOfHigh(score.getMeaningOfHigh())
                 .meaningOfLow(score.getMeaningOfLow())

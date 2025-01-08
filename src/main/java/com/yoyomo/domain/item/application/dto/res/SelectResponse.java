@@ -1,10 +1,9 @@
 package com.yoyomo.domain.item.application.dto.res;
 
 import com.yoyomo.domain.item.domain.entity.Select;
+import java.util.List;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -22,7 +21,6 @@ public class SelectResponse extends ItemResponse {
                 .description(select.getDescription())
                 .type(select.getType())
                 .order(select.getOrder())
-                .imageName(select.getImage().getName())
                 .required(select.isRequired())
                 .options(options)
                 .build();

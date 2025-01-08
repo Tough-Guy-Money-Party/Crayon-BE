@@ -17,7 +17,6 @@ public class DateResponse extends ItemResponse {
                 .description(date.getDescription())
                 .type(date.getType())
                 .order(date.getOrder())
-                .imageName(date.getImage().getName())
                 .required(date.isRequired())
                 .answer(date.getAnswer())
                 .build();

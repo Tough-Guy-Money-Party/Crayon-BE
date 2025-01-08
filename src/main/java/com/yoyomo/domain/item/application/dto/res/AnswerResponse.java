@@ -17,7 +17,6 @@ public class AnswerResponse extends ItemResponse {
                 .description(answer.getDescription())
                 .type(answer.getType())
                 .order(answer.getOrder())
-                .imageName(answer.getImage().getName())
                 .required(answer.isRequired())
                 .answer(answer.getAnswer())
                 .build();
