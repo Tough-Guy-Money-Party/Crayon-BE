@@ -1,7 +1,5 @@
 package com.yoyomo.domain.form.application.usecase;
 
-import static java.util.Collections.emptyList;
-
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -17,16 +15,21 @@ import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
+import com.yoyomo.domain.item.application.dto.res.ItemResponse;
+import com.yoyomo.domain.item.application.mapper.ItemResponseFactory;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+
+import static java.util.Collections.emptyList;
 
 @Service
 @RequiredArgsConstructor
@@ -41,13 +44,19 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     private final FormUpdateService formUpdateService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final RecruitmentGetService recruitmentGetService;
+    private final ItemResponseFactory itemResponseFactory;
 
     @Override
     public DetailResponse read(String id) {
         Form form = formGetService.find(id);
         List<String> linkedRecruitmentIds = recruitmentGetService.findAllLinkedRecruitments(form.getId());
 
-        return formMapper.toDetailResponse(form, linkedRecruitmentIds);
+        List<ItemResponse> itemResponses = form.getItems()
+                .stream()
+                .map(itemResponseFactory::createItem)
+                .toList();
+
+        return DetailResponse.toResponse(form, itemResponses, linkedRecruitmentIds);// select
     }
 
     @Override

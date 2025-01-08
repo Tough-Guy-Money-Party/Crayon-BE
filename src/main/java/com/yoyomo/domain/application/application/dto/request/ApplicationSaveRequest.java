@@ -13,7 +13,7 @@ import java.util.List;
 
 public record ApplicationSaveRequest(
         @NotBlank
-        String userName,
+        String name,
 
         @Email
         @NotBlank
@@ -31,7 +31,7 @@ public record ApplicationSaveRequest(
                 .user(applicant)
                 .recruitmentId(recruitment.getId())
                 .process(recruitment.getDocumentProcess())
-                .userName(userName)
+                .userName(name)
                 .email(email)
                 .tel(tel)
                 .build();

@@ -3,11 +3,12 @@ package com.yoyomo.domain.form.application.dto.response;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.Builder;
 
 public class FormResponseDTO {
 
@@ -16,6 +17,7 @@ public class FormResponseDTO {
     ) {
     }
 
+    @Builder
     public record DetailResponse(
             String title,
             String description,
@@ -24,6 +26,17 @@ public class FormResponseDTO {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
+
+        public static DetailResponse toResponse(Form form, List<ItemResponse> items, List<String> recruitmentIds) {
+            return DetailResponse.builder()
+                    .title(form.getTitle())
+                    .description(form.getDescription())
+                    .items(items)
+                    .recruitmentIds(recruitmentIds)
+                    .createdAt(form.getCreatedAt())
+                    .updatedAt(form.getUpdatedAt())
+                    .build();
+        }
     }
 
     public record Info(
