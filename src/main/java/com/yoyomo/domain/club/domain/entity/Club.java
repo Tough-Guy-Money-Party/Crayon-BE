@@ -79,6 +79,6 @@ public class Club extends BaseEntity {
     }
 
     public boolean checkExistsSubDomain() {
-        return !subDomain.isEmpty();
+        return !(subDomain == null);
     }
 }
