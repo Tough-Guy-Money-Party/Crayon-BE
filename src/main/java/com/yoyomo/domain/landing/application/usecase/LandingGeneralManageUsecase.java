@@ -94,6 +94,7 @@ public class LandingGeneralManageUsecase {
         clubValidateService.checkDuplicatedSubDomain(subDomain);
         distributeUsecase.create(subDomain);
         club.addSubDomain(request.subDomain());
-        landingSaveService.save(club);
+        Landing landing = landingSaveService.save(club);
+        club.addLanding(landing);
     }
 }
