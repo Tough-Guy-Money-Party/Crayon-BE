@@ -78,6 +78,10 @@ public class Club extends BaseEntity {
         this.subDomain = subDomain;
     }
 
+    public void addLanding(Landing landing) {
+        this.landing = landing;
+    }
+
     public boolean checkExistsSubDomain() {
         return !(subDomain == null);
     }
