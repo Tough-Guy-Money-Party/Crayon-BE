@@ -2,6 +2,7 @@ package com.yoyomo.domain.form.presentation;
 
 
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
+import com.yoyomo.domain.form.application.dto.response.FormDetailResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.global.common.annotation.CurrentUser;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
 import static com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
@@ -93,10 +93,10 @@ public class FormController {
 
     @GetMapping
     @Operation(summary = "지원서 폼 조회")
-    public ResponseDto<Void> read(@RequestParam UUID recruitmentId,
-                                  @CurrentUser @Parameter(hidden = true) Long userId) {
-        formManageUseCase.read(recruitmentId, userId);
+    public ResponseDto<FormDetailResponse> read(@RequestParam UUID recruitmentId,
+                                                @CurrentUser @Parameter(hidden = true) Long userId) {
+        FormDetailResponse response = formManageUseCase.read(recruitmentId, userId);
 
-        return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 }
