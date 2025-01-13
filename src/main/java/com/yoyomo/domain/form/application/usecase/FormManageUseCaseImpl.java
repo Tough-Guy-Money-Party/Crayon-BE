@@ -5,11 +5,11 @@ import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Save;
 import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
+import com.yoyomo.domain.form.application.dto.response.FormDetailResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.DetailResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.SaveResponse;
-import com.yoyomo.domain.form.application.mapper.FormMapper;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.form.domain.service.FormGetService;
@@ -19,6 +19,7 @@ import com.yoyomo.domain.item.application.dto.res.ItemResponse;
 import com.yoyomo.domain.item.application.mapper.ItemResponseFactory;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 
@@ -37,7 +39,6 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
 
     private final FormSaveService formSaveService;
     private final ItemManageUseCase itemManageUseCase;
-    private final FormMapper formMapper;
     private final ClubGetService clubGetService;
     private final UserGetService userGetService;
     private final FormGetService formGetService;
@@ -113,6 +114,15 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         return forms.stream()
                 .map(form -> Response.toResponse(form, linkedRecruitments.getOrDefault(form.getId(), emptyList())))
                 .toList();
+    }
+
+    @Override
+    public FormDetailResponse read(UUID recruitmentId, long userId) {
+        Recruitment recruitment = recruitmentGetService.find(recruitmentId);
+        Club club = recruitment.getClub();
+        Form form = formGetService.find(recruitment.getFormId());
+
+        return FormDetailResponse.toResponse(club, form.getItems());
     }
 
     private Form checkAuthorityByFormId(Long userId, String formId) {
