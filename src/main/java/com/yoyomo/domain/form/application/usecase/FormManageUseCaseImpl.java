@@ -122,7 +122,12 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         Club club = recruitment.getClub();
         Form form = formGetService.find(recruitment.getFormId());
 
-        return FormDetailResponse.toResponse(club, form.getItems());
+        List<ItemResponse> itemResponses = form.getItems()
+                .stream()
+                .map(itemResponseFactory::createItem)
+                .toList();
+
+        return FormDetailResponse.toResponse(club, itemResponses);
     }
 
     private Form checkAuthorityByFormId(Long userId, String formId) {
