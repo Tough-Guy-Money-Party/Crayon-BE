@@ -15,7 +15,6 @@ public class ItemResponse {
     private String description;
     private Type type;
     private int order;
-    private String imageName;
     private boolean required;
 
     public static List<ItemResponse> itemListToItemResponseList(List<Item> list) {
@@ -23,19 +22,15 @@ public class ItemResponse {
             return null;
         }
 
-        List<ItemResponse> list1 = new ArrayList<ItemResponse>(list.size());
+        List<ItemResponse> list1 = new ArrayList<>(list.size());
         for (Item item : list) {
-            list1.add(itemToItemResponse(item));
+            list1.add(toResponse(item));
         }
 
         return list1;
     }
 
-    private static ItemResponse itemToItemResponse(Item item) {
-        if (item == null) {
-            return null;
-        }
-
+    public static ItemResponse toResponse(Item item) {
         return ItemResponse.builder()
                 .id(item.getId())
                 .title(item.getTitle())

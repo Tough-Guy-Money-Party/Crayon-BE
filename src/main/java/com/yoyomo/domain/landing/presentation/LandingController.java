@@ -103,4 +103,12 @@ public class LandingController {
         All response = landingAllSettingManageUsecase.readAll(subDomain);
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
+
+    @GetMapping("/check/{clubId}")
+    @Operation(summary = "홍보페이지 유무 조회")
+    public ResponseDto<Boolean> check(@PathVariable UUID clubId,
+                                      @CurrentUser @Parameter(hidden = true) Long userId) {
+        boolean response = landingAllSettingManageUsecase.check(clubId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
 }

@@ -24,7 +24,6 @@ public class AnswerCreationStrategy implements ItemCreationStrategy {
                 .title(request.title())
                 .description(request.description())
                 .order(request.order())
-                .image(request.image())
                 .required(request.required())
                 .answer(request.answer())
                 .maxLength(request.maxLength())

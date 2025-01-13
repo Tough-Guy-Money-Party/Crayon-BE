@@ -35,6 +35,7 @@ public enum ResponseMessage {
     EVALUATION_ALREADY_EXIST("이미 평가 이력이 존재합니다."),
     INTERVIEW_RECORD_ALREADY_EXIST("이미 면접 기록 이력이 존재합니다."),
     INTERVIEW_RECORD_NOT_FOUND("면접 기록이 존재하지 않습니다."),
+    CANNOT_SELF_DELETE("본인은 삭제할 수 없습니다."),
     ACCESS_DENIED("권한이 없습니다.");
     private final String message;
 }
