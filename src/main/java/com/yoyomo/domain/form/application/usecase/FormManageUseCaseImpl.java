@@ -127,7 +127,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
                 .map(itemResponseFactory::createItem)
                 .toList();
 
-        return FormDetailResponse.toResponse(club, itemResponses);
+        return FormDetailResponse.toResponse(club, recruitment, form, itemResponses);
     }
 
     private Form checkAuthorityByFormId(Long userId, String formId) {

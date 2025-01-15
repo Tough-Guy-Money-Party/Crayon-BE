@@ -8,7 +8,7 @@ import java.util.List;
 public record ItemRequest(
         @NotEmpty String title,
         @NotNull Type type,
-        @NotEmpty String description,
+        String description,
         @NotNull int order,
         @NotNull boolean required,
 
