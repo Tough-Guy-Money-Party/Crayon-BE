@@ -14,12 +14,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 import static com.yoyomo.domain.template.presentation.constant.ResponseMessage.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "MAIL_TEMPLATE")
 @RestController
@@ -33,15 +34,15 @@ public class MailTemplateController {
     @Operation(summary = "이메일 템플릿 목록 조회 API 입니다. 템플릿 ID와 이름만 반환합니다.")
     public ResponseDto<Page<MailTemplateListResponse>> read(@PathVariable String clubId,
                                                             @RequestParam Integer page, @RequestParam Integer size) {
-        Page<MailTemplateListResponse> response = mailTemplateManageUseCase.findAll(clubId, PageRequest.of(page, size));
-        return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
+        Page<MailTemplateListResponse> response = mailTemplateManageUseCase.findAll(clubId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+        return ResponseDto.of(OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
     }
 
     @GetMapping("/detail/{templateId}")
     @Operation(summary = "이메일 템플릿 상세 조회 API 입니다. 템플릿 ID를 이용해 템플릿 전체를 반환합니다.")
     public ResponseDto<MailTemplateGetResponse> read(@PathVariable UUID templateId) {
         MailTemplateGetResponse response = mailTemplateManageUseCase.find(templateId);
-        return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
+        return ResponseDto.of(OK.value(), SUCCESS_TEMPLATE_READ.getMessage(), response);
     }
 
     @PostMapping("/{clubId}")
@@ -50,7 +51,7 @@ public class MailTemplateController {
                                     @PathVariable UUID clubId,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         mailTemplateManageUseCase.save(dto, clubId, userId);
-        return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_SAVE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_TEMPLATE_SAVE.getMessage());
     }
 
     @PatchMapping("/{templateId}")
@@ -59,7 +60,7 @@ public class MailTemplateController {
                                       @PathVariable UUID templateId,
                                       @CurrentUser @Parameter(hidden = true) Long userId) {
         mailTemplateManageUseCase.update(dto, templateId, userId);
-        return ResponseDto.of((HttpStatus.OK.value()), SUCCESS_TEMPLATE_UPDATE.getMessage());
+        return ResponseDto.of((OK.value()), SUCCESS_TEMPLATE_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{templateId}")
@@ -67,6 +68,6 @@ public class MailTemplateController {
     public ResponseDto<String> delete(@PathVariable UUID templateId,
                                       @CurrentUser @Parameter(hidden = true) Long userId) {
         mailTemplateManageUseCase.delete(templateId, userId);
-        return ResponseDto.of(HttpStatus.OK.value(), SUCCESS_TEMPLATE_DELETE.getMessage());
+        return ResponseDto.of(OK.value(), SUCCESS_TEMPLATE_DELETE.getMessage());
     }
 }
