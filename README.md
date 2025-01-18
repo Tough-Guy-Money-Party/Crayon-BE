@@ -109,5 +109,5 @@ CRAYON은 지원서의 모든 질문을 폼으로 생성하고 관리할 수 있
 
 # 5. Architecture
 
-<img src ="https://github.com/user-attachments/assets/ee1d7149-c9f7-47d4-b365-e653c21a7ec0" width ="100%"/>
+<img src ="https://github.com/user-attachments/assets/a6118929-8665-4f6b-b3c7-894843404b72" width ="100%"/>
 
