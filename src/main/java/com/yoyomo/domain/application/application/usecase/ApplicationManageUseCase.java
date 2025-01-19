@@ -18,14 +18,13 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -94,8 +93,8 @@ public class ApplicationManageUseCase {
     public void moveApplicant(UUID recruitmentId, ApplicationMoveRequest dto, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
 
-        Process from = processGetService.find(dto.fromProcessId());
-        Process to = processGetService.find(dto.toProcessId());
+        Process from = processGetService.find(recruitment, dto.fromStage());
+        Process to = processGetService.find(recruitment, dto.toStage());
 
         List<Application> applications = applicationGetService.findAll(from, Status.DOCUMENT_PASS);
 
