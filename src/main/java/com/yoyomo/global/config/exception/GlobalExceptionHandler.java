@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -79,8 +80,8 @@ public class GlobalExceptionHandler {
         int status = 500;
 
         // 발생한 예외가 ErrorResponse에 속한다면 예외에서 상태 코드 추출
-        if(ex instanceof ErrorResponse){
-            status = ((ErrorResponse)ex).getStatusCode().value();
+        if (ex instanceof ErrorResponse) {
+            status = ((ErrorResponse) ex).getStatusCode().value();
         }
 
         log.error(ex.getMessage(), ex);
@@ -115,4 +116,16 @@ public class GlobalExceptionHandler {
                 .body(ResponseDto.of(status, ex.getMessage(), dto));
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDto<Void>> handle(MethodArgumentNotValidException ex) {
+        int statusCode = ex.getStatusCode().value();
+        String className = ex.getObjectName();
+        String error = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+
+        log.error(LOG_FORMAT, className, statusCode, error);
+
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(ResponseDto.of(statusCode, error));
+    }
 }
