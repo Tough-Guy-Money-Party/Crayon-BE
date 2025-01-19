@@ -16,7 +16,7 @@ public enum ResponseMessage {
     SUCCESS_MOVE_PROCESS_STEP("프로세스 스텝 변경에 성공했습니다."),
 
     RECRUITMENT_CANNOT_UPDATE("진행중인 모집은 수정할 수 없습니다."),
-    PROCESS_NOT_FOUND("존재하지 않는 모집입니다."),
+    PROCESS_NOT_FOUND("존재하지 않는 프로세스입니다."),
     RECRUITMENT_NOT_FOUND("존재하지 않는 모집입니다."),
     RECRUITMENT_DELETED("마감된 모집입니다."),
     EMPTY_PROCESS("프로세스가 존재하지 않는 모집입니다."),
