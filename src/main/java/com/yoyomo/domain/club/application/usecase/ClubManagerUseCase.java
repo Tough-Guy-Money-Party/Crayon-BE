@@ -74,7 +74,7 @@ public class ClubManagerUseCase {
     public void deleteManagers(ClubRequestDTO.Delete dto, Long userId) {
         clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
 
-        clubManagerDeleteService.delete(dto.userIds(), userId);
+        clubManagerDeleteService.delete(dto.clubId(), dto.userIds(), userId);
     }
 
     @Transactional

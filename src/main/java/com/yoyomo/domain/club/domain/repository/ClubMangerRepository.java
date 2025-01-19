@@ -3,11 +3,13 @@ package com.yoyomo.domain.club.domain.repository;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.user.domain.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 public interface ClubMangerRepository extends JpaRepository<ClubManager, Long> {
 
@@ -22,4 +24,8 @@ public interface ClubMangerRepository extends JpaRepository<ClubManager, Long> {
 
     @Query("SELECT cm FROM ClubManager cm WHERE cm.club = :club AND cm.manager.id = :userId")
     Optional<ClubManager> findByClubAndUserId(Club club, long userId);
+
+    @Modifying
+    @Query("DELETE FROM ClubManager cm WHERE cm.club.id = :clubId AND cm.manager.id IN :userIds")
+    void deleteAllByClubIdAndIds(UUID clubId, List<Long> userIds);
 }
