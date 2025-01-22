@@ -64,7 +64,7 @@ public enum CustomType {
 
     public static Optional<CustomType> findCustomType(String placeholder) {
         for (CustomType customType : CustomType.values()) {
-            if (customType.getPlaceholder().equals(placeholder)) {
+            if (customType.getPlaceholder().equalsIgnoreCase(placeholder)) {
                 return Optional.of(customType);
             }
         }

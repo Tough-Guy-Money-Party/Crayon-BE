@@ -10,17 +10,18 @@ public enum Status {
 
     public static Status getStatus(Recruitment recruitment) {
         if (recruitment.isActive()) {
-            if (recruitment.isBefore())
+            if (recruitment.isBefore()) {
                 return SCHEDULED;
-            else if (recruitment.isAfter())
+            } else if (recruitment.isAfter()) {
                 return COMPLETE;
-            else
-                return RECRUITING;
-        } else {
-            if (recruitment.getDeletedAt() == null) {
-                return BEFORE;
             } else {
+                return RECRUITING;
+            }
+        } else {
+            if (recruitment.getDeletedAt() != null || recruitment.isAfter()) { //false 인 경우 ->
                 return COMPLETE;
+            } else {
+                return BEFORE;
             }
         }
     }
