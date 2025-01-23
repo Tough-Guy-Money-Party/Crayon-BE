@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class ApplicationVerifyService {
     private final ApplicationRepository applicationRepository;
 
-    public void checkConflict(UUID recruitmentId, User applicant) {
+    public void checkDuplicate(UUID recruitmentId, User applicant) {
         Optional<Application> application = applicationRepository.findByRecruitmentIdAndUser(recruitmentId, applicant);
 
         if (application.isPresent()) {

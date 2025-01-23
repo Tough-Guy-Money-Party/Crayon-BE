@@ -49,7 +49,7 @@ public class ApplyUseCase {
         recruitment.checkAvailable();
 
         User applicant = userGetService.find(userId);
-        applicationVerifyService.checkConflict(recruitment.getId(), applicant);
+        applicationVerifyService.checkDuplicate(recruitment.getId(), applicant);
 
         List<Item> items = itemManageUseCase.create(dto.answers());
         Application application = dto.toApplication(recruitment, applicant);
