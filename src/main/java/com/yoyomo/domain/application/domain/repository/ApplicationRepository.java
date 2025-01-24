@@ -28,6 +28,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
+    Optional<Application> findByRecruitmentIdAndUser(UUID recruitment, User applicant);
+
     @Query("""
             SELECT a 
             FROM Application a
