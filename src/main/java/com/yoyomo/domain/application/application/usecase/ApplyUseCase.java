@@ -13,18 +13,18 @@ import com.yoyomo.domain.application.domain.service.AnswerUpdateService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
+import com.yoyomo.domain.application.domain.service.ApplicationVerifyService;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +40,7 @@ public class ApplyUseCase {
     private final ApplicationUpdateService applicationUpdateService;
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
     private final UserGetService userGetService;
+    private final ApplicationVerifyService applicationVerifyService;
 
 
     @Transactional
@@ -48,6 +49,7 @@ public class ApplyUseCase {
         recruitment.checkAvailable();
 
         User applicant = userGetService.find(userId);
+        applicationVerifyService.checkDuplicate(recruitment.getId(), applicant);
 
         List<Item> items = itemManageUseCase.create(dto.answers());
         Application application = dto.toApplication(recruitment, applicant);
