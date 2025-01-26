@@ -2,8 +2,10 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Interview;
+import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
+import com.yoyomo.domain.application.domain.repository.ProcessResultRepository;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -20,6 +24,7 @@ public class ApplicationUpdateService {
 
     private final RecruitmentGetService recruitmentGetService;
     private final ApplicationRepository applicationRepository;
+    private final ProcessResultRepository processResultRepository;
 
     public void delete(Application application) {
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
@@ -32,10 +37,21 @@ public class ApplicationUpdateService {
     }
 
     public void evaluate(Application application, Status status) {
-        application.evaluate(status);
+        Optional<ProcessResult> optionalProcessResult = processResultRepository.findByApplicationIdAndProcessId(application.getId(), application.getProcess().getId());
+
+        optionalProcessResult.ifPresentOrElse(processResult -> processResult.updateStatus(status),
+                () -> {
+                    ProcessResult processResult = ProcessResult.builder()
+                            .applicationId(application.getId())
+                            .processId(application.getProcess().getId())
+                            .status(status)
+                            .build();
+
+                    processResultRepository.save(processResult);
+                });
     }
 
-    public void updateProcess(List<Application> applications, Process to) {
-        applicationRepository.updateProcess(to, Status.BEFORE_EVALUATION, applications);
+    public void updatePassApplicants(List<UUID> applications, Process process) {
+        applicationRepository.updateProcess(applications, process, Status.BEFORE_EVALUATION);
     }
 }
