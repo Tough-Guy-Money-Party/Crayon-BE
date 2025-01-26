@@ -1,5 +1,18 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_MOVE_PROCESS_STEP;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.OK;
+
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
@@ -11,19 +24,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "RECRUITMENT")
 @RestController
@@ -53,7 +67,8 @@ public class RecruitmentController {
 
     @PatchMapping("/{recruitmentId}/process/{processId}")
     @Operation(summary = "프로세스 스텝 이동(1-2-3)")
-    public ResponseDto<Void> process(@PathVariable UUID recruitmentId, @PathVariable Long processId, @RequestParam ProcessStep step,
+    public ResponseDto<Void> process(@PathVariable UUID recruitmentId, @PathVariable Long processId,
+                                     @RequestParam ProcessStep step,
                                      @CurrentUser @Parameter(hidden = true) Long userId) {
         processManageUseCase.updateStep(recruitmentId, processId, step, userId);
         return ResponseDto.of(OK.value(), SUCCESS_MOVE_PROCESS_STEP.getMessage());
@@ -97,7 +112,7 @@ public class RecruitmentController {
     }
 
     @DeleteMapping("/{recruitmentId}/force")
-    @Operation(summary = "모집 취소")
+    @Operation(summary = "모집 삭제")
     public ResponseDto<Void> cancel(@PathVariable String recruitmentId,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
         recruitmentManageUseCase.cancel(recruitmentId, userId);

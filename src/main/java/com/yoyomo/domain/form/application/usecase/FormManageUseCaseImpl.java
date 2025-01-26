@@ -1,5 +1,7 @@
 package com.yoyomo.domain.form.application.usecase;
 
+import static java.util.Collections.emptyList;
+
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -23,15 +25,12 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import static java.util.Collections.emptyList;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
