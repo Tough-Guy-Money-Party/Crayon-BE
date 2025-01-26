@@ -3,6 +3,8 @@ package com.yoyomo.global.config.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
+import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -50,12 +52,17 @@ public class JwtProvider {
                 .sign(Algorithm.HMAC512(key));
     }
 
-    public String createRefreshToken() {
+    public String createRefreshToken(Long id) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .withClaim(ID_CLAIM, id)
                 .sign(Algorithm.HMAC512(key));
+    }
+
+    public String extractRefreshToken(String token) {
+        return token.replace(BEARER, "");
     }
 
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
@@ -71,12 +78,6 @@ public class JwtProvider {
         setRefreshTokenHeader(response, refreshToken);
 
         log.info("Access Token, Refresh Token 헤더 설정 완료");
-    }
-
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(refreshHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
@@ -129,6 +130,16 @@ public class JwtProvider {
         } catch (Exception e) {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
+        }
+    }
+
+    public void validateToken(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
+        } catch (TokenExpiredException e) {
+            throw new ExpiredTokenException();
+        } catch (Exception e) {
+            throw new InvalidTokenException();
         }
     }
 }
