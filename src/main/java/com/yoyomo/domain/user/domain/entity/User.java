@@ -1,6 +1,7 @@
 package com.yoyomo.domain.user.domain.entity;
 
 import com.yoyomo.global.common.entity.BaseEntity;
+import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,5 +39,11 @@ public class User extends BaseEntity {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void checkRefreshToken(String refreshToken) {
+        if (!this.refreshToken.equals(refreshToken)) {
+            throw new InvalidTokenException();
+        }
     }
 }
