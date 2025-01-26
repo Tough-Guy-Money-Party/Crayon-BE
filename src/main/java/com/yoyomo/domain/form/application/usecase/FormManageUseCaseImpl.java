@@ -17,7 +17,6 @@ import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.form.domain.service.FormSaveService;
 import com.yoyomo.domain.form.domain.service.FormUpdateService;
-import com.yoyomo.domain.form.exception.FormUnmodifiableException;
 import com.yoyomo.domain.item.application.dto.res.ItemResponse;
 import com.yoyomo.domain.item.application.mapper.ItemResponseFactory;
 import com.yoyomo.domain.item.application.usecase.ItemManageUseCase;
@@ -99,14 +98,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     @Override
     public void delete(String formId, Long userId) {
         checkAuthorityByFormId(userId, formId);
-        checkIsLinked(formId);
         formUpdateService.delete(formId);
-    }
-
-    private void checkIsLinked(String formId) {
-        if (!(recruitmentGetService.findAllLinkedRecruitments(formId).isEmpty())) {
-            throw new FormUnmodifiableException();
-        }
     }
 
     @Override
