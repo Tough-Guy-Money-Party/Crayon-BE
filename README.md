@@ -42,16 +42,16 @@
 
 우리에게 친숙한 노션으로 동아리를 표현하고 번거로운 설정없이 나만의 도메인을 적용해요.
 
-## 동아리 관리하기
+## 모집 관리하기
 
 **기수별/직군별 모집은 생성은 모집만들기로 간편하게!😬**
 
 
-<img width = "50%" src = "https://github.com/user-attachments/assets/fd28cc90-e6a8-40c1-8369-a196cdb6282b" />
+<img width = "50%" src = "https://github.com/user-attachments/assets/67ca17db-f9e2-4e27-ac04-039a45451a88" />
 
 모집을 할 때마다 직군 및 분야별로 시각화, 기간 관리 등 신경을 쓸게 많아요
 
-CRAYON은 모집 프로세스별 기간을 쉽게 관리하고 직군과 분야를 설정해서 쉽게 모집을 관리할 수 있어요
+CRAYON은 모집 프로세스별 기간을 쉽게 관리하고 직군과 분야를 설정해서 쉽게 모집을 관리할 수 있어요.
 
 ## 지원자 관리하기
 
@@ -68,7 +68,7 @@ CRAYON은 모집 프로세스별 기간을 쉽게 관리하고 직군과 분야�
 **지원자에게 다양한 질문, 다양한 양식으로 물어보고 싶지 않나요?**
 
 
-<img src = "https://github.com/user-attachments/assets/5f164fa3-6d09-4d08-98b0-35c22dcf0eff" width ="50%"/>
+<img src = "https://github.com/user-attachments/assets/778d7d42-5cfa-4f83-b2a1-a468f20bb79c" width ="50%"/>
 
 CRAYON은 지원서의 모든 질문을 폼으로 생성하고 관리할 수 있어요.
 
