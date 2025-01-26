@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 .requestMatchers("/applications").permitAll()
                                 .requestMatchers("/results/{clubId}/details").permitAll()
                                 .requestMatchers("/user/login/**").permitAll()
+                                .requestMatchers("/user/refresh").permitAll()
                                 .requestMatchers("/api/notion/**").permitAll()
                                 .requestMatchers("/landing/general-for-react").permitAll()
                                 .requestMatchers("/health-check").permitAll()
