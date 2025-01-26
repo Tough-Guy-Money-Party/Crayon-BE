@@ -32,7 +32,7 @@ public class RecruitmentGetService {
     }
 
     public Page<Recruitment> findAll(Club club, Pageable pageable) {
-        return recruitmentRepository.findAllByClub(club, pageable);
+        return recruitmentRepository.findAllByClubOrderByCreatedAtDesc(club, pageable);
     }
 
     public List<String> findAllLinkedRecruitments(String formId) {
