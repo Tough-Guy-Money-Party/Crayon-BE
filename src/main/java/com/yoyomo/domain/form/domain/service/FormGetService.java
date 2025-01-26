@@ -3,11 +3,10 @@ package com.yoyomo.domain.form.domain.service;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.repository.FormRepository;
 import com.yoyomo.domain.form.exception.FormNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class FormGetService {
     }
 
     public List<Form> findAll(String clubId) {
-        return formRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
+        return formRepository.findAllByClubIdAndDeletedAtIsNullOrderByCreatedAtDesc(clubId);
     }
 
     public List<String> findAllIds(List<Form> forms) {
