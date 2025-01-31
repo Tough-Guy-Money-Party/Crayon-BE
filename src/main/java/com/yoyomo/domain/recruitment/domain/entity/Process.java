@@ -1,17 +1,29 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.CANNOT_UPDATE_TO_EVALUATION_STEP;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.PROCESS_STEP_CANNOT_UPDATE;
+
 import com.yoyomo.domain.mail.exception.MailAlreadySentException;
 import com.yoyomo.domain.mail.exception.MailNotScheduledException;
 import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.exception.ProcessStepUnModifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -84,10 +96,6 @@ public class Process extends BaseEntity {
 
         if (step == ProcessStep.EVALUATION && this.isAfterMailSent()) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
-        }
-
-        if (this.type == Type.INTERVIEW && step == ProcessStep.MOVING) {
-            throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_MOVING_STEP);
         }
     }
 
