@@ -7,6 +7,7 @@ import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import com.yoyomo.infra.redis.RedisQueueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +19,8 @@ public class DistributeUsecase {
     private final RedisQueueService redisQueueService;
     private final String BASEURL = ".crayon.land";
 
-    public String create(String subDomain) {
+    @Async
+    public void create(String subDomain) {
         checkValidSubdomain(subDomain);
 
         String fullSubDomain = subDomain + BASEURL;
@@ -30,10 +32,9 @@ public class DistributeUsecase {
         // route53 레코드 생성
         createRecord(fullSubDomain);
 
-        return subDomain;
     }
 
-    private void createRecord(String subDomain) {
+    public void createRecord(String subDomain) {
         String distributeId = cloudfrontService.create(subDomain);
         String cloudfrontDomainName = cloudfrontService.getCloudfrontDomainName(distributeId);
 
