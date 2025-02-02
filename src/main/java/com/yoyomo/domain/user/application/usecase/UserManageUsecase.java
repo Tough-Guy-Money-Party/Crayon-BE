@@ -65,6 +65,7 @@ public class UserManageUsecase {
         userSaveService.save(user);
 
         JwtResponse tokenDto = getTokenDto(user);
+        user.updateRefreshToken(tokenDto.getRefreshToken());
 
         return mapper.toResponseDTO(user, tokenDto);
     }
@@ -73,6 +74,7 @@ public class UserManageUsecase {
         User user = userGetService.findByEmail(email);
 
         JwtResponse tokenDto = getTokenDto(user);
+        user.updateRefreshToken(tokenDto.getRefreshToken());
 
         return mapper.toResponseDTO(user, tokenDto);
     }
