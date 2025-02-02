@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RedisQueueWorker {
+    private static final String DOMAIN_FORMAT = "%s.crayon.land";
+    
     private final RedisQueueService redisQueueService;
     private final S3Service s3Service;
 
@@ -21,7 +23,7 @@ public class RedisQueueWorker {
             }
 
             try {
-                String fullSubDomain = subDomain + ".crayon.land";
+                String fullSubDomain = String.format(DOMAIN_FORMAT, subDomain);
                 s3Service.upload(fullSubDomain);
             } catch (Exception e) {
                 throw new UnavailableSubdomainException(e.getMessage());
