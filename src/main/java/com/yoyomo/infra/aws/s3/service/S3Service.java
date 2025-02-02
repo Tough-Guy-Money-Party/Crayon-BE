@@ -191,12 +191,14 @@ public class S3Service {
                         .build();
 
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, image.getSize()));
+
+                String url = "https://" + BUCKETNAME + ".s3.amazonaws.com/" + key;
+                urls.add(url);
+
             } catch (IOException | S3Exception e) {
                 throw new ImageSaveFailureException();
             }
 
-            String url = s3Client.utilities().getUrl(b -> b.bucket(BUCKETNAME).key(key)).toExternalForm();
-            urls.add(url);
         }
 
         return urls;
