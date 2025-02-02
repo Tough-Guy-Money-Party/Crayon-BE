@@ -1,6 +1,5 @@
 package com.yoyomo.infra.redis;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -8,18 +7,18 @@ import org.springframework.stereotype.Service;
 public class RedisQueueService {
     private static final String QUEUE_NAME = "uploadQueue";
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> queueRedisTemplate;
 
-    public RedisQueueService(@Qualifier("queueRedisTemplate") RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public RedisQueueService(RedisTemplate<String, String> queueRedisTemplate) {
+        this.queueRedisTemplate = queueRedisTemplate;
     }
 
     public void enqueueUpload(String subDomain) {
-        redisTemplate.opsForList().leftPush(QUEUE_NAME, subDomain);
+        queueRedisTemplate.opsForList().leftPush(QUEUE_NAME, subDomain);
     }
 
     public String dequeueUpload() {
-        return redisTemplate.opsForList().rightPop(QUEUE_NAME);
+        return queueRedisTemplate.opsForList().rightPop(QUEUE_NAME);
     }
 }
 

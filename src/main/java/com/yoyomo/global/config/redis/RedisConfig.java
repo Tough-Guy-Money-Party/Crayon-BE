@@ -1,5 +1,6 @@
 package com.yoyomo.global.config.redis;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,8 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean(name = "queueRedisTemplate")
+    @Bean
+    @Qualifier("queueRedisTemplate")
     public RedisTemplate<String, String> queueRedisTemplate() {
         LettuceConnectionFactory queueConnectionFactory = new LettuceConnectionFactory();
         queueConnectionFactory.setDatabase(1);
@@ -57,5 +59,4 @@ public class RedisConfig {
         template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
-
 }
