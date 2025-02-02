@@ -38,8 +38,8 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @RequiredArgsConstructor
 public class S3Service {
 
+    private static final String S3_URL_FORMAT = "https://%s.s3.amazonaws.com/%s";
     private final S3Client s3Client;
-
     @Value("${application.bucket.name}")
     private String BUCKETNAME;
 
@@ -192,8 +192,8 @@ public class S3Service {
                         .build();
 
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, image.getSize()));
-
-                String url = "https://" + BUCKETNAME + ".s3.amazonaws.com/" + key;
+                
+                String url = String.format(S3_URL_FORMAT, BUCKETNAME, key);
                 urls.add(url);
 
             } catch (IOException | S3Exception e) {
