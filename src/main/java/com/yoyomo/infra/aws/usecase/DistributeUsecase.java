@@ -34,7 +34,7 @@ public class DistributeUsecase {
 
     }
 
-    public void createRecord(String subDomain) {
+    private void createRecord(String subDomain) {
         String distributeId = cloudfrontService.create(subDomain);
         String cloudfrontDomainName = cloudfrontService.getCloudfrontDomainName(distributeId);
 
