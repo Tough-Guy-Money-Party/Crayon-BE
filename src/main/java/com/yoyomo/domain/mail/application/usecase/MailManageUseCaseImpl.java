@@ -1,7 +1,9 @@
 package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
@@ -18,6 +20,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
+import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +29,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_UPDATE_FAIL;
 
@@ -49,6 +53,8 @@ public class MailManageUseCaseImpl {
     private final MailTemplateSaveService mailTemplateSaveService;
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
+    private final BatchDivider batchDivider;
+    private final ProcessResultGetService processResultGetService;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -114,50 +120,35 @@ public class MailManageUseCaseImpl {
 
         Recruitment recruitment = process.getRecruitment();
 
-        List<CompletableFuture<Void>> uploadFutures = new ArrayList<>();
+        List<Application> applications = applicationGetService.findAll(process);
+        List<Mail> mails = createMail(applications, process, dto, recruitment);
+        List<CompletableFuture<Void>> uploadFutures = batchDivider.divide(mails, PAGE_SIZE)
+                .stream()
+                .map(mailSaveService::upload)
+                .toList();
 
-        process(processId, uploadFutures, dto, recruitment);
         checkUpload(uploadFutures);
     }
 
-    private void process(long processId, List<CompletableFuture<Void>> uploadFutures, MailRequest dto, Recruitment recruitment) {
-        Stream.iterate(0, pageNumber -> pageNumber + 1)
-                .map(pageNumber -> applicationGetService.findAll(processId, pageNumber, PAGE_SIZE))
-                .takeWhile(applications -> !applications.isEmpty())
-                .forEach(applications -> uploadApplications(applications, uploadFutures, dto, recruitment));
-    }
-
-    private void uploadApplications(List<Application> applications, List<CompletableFuture<Void>> uploadFutures, MailRequest dto, Recruitment recruitment) {
-        Set<CustomType> passCustomType = mailUtilService.extract(dto.passTemplate());
-        Set<CustomType> failCustomType = mailUtilService.extract(dto.failTemplate());
+    private List<Mail> createMail(List<Application> applications, Process process, MailRequest dto, Recruitment recruitment) {
+        Set<CustomType> passCustomTypes = mailUtilService.extract(dto.passTemplate());
+        Set<CustomType> failCustomTypes = mailUtilService.extract(dto.failTemplate());
 
         UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
         UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
 
-        List<Mail> mailList = convertToMails(applications, dto, recruitment, passCustomType, passTemplateId, failCustomType, failTemplateId);
+        Map<UUID, Status> processResults = processResultGetService.findAll(process, applications);
 
-        CompletableFuture<Void> uploadFuture = mailSaveService.upload(mailList);
-        uploadFutures.add(uploadFuture);
-    }
-
-    private List<Mail> convertToMails(List<Application> applications, MailRequest dto, Recruitment recruitment,
-                                      Set<CustomType> passCustomTypes, UUID passTemplateId,
-                                      Set<CustomType> failCustomTypes, UUID failTemplateId) {
         return applications.stream()
                 .map(application -> {
-                    boolean isPass = application.getStatus().isPass();
+                    boolean isPass = processResults.getOrDefault(application.getId(), Status.BEFORE_EVALUATION).isPass();
                     UUID templateId = isPass ? passTemplateId : failTemplateId;
                     Set<CustomType> customTypes = isPass ? passCustomTypes : failCustomTypes;
-                    return convert(dto, application, recruitment, customTypes, templateId);
+                    Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
+                    String destination = application.getEmail();
+                    return dto.toMail(mailSourceAddress, destination, customData, templateId);
                 })
-                .collect(Collectors.toList());
-    }
-
-    private Mail convert(MailRequest dto, Application application, Recruitment recruitment,
-                         Set<CustomType> customTypes, UUID templateId) {
-        Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
-        String destination = application.getEmail();
-        return dto.toMail(mailSourceAddress, destination, customData, templateId);
+                .toList();
     }
 
     private void checkUpload(List<CompletableFuture<Void>> uploadFutures) {

@@ -27,6 +27,10 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASS}
+      database: 0
+      queues:
+        database: 1 # 메시지 큐용 데이터베이스
+
   main:
     allow-bean-definition-overriding: true
 

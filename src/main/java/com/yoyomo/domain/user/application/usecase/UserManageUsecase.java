@@ -5,6 +5,7 @@ import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
+import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.KakaoServiceNew;
@@ -12,6 +13,7 @@ import com.yoyomo.global.config.kakao.dto.KakaoAccount;
 import com.yoyomo.global.config.kakao.dto.KakaoTokenResponse;
 import com.yoyomo.global.config.kakao.dto.KakaoUserInfoResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,21 @@ public class UserManageUsecase {
         return registerMemberIfNew(userInfo);
     }
 
+    public UserResponseDTO.Response reissueToken(String token) {
+        Pair<Long, String> pair = validateRefreshToken(token);
+
+        long userId = pair.getFirst();
+        String refreshToken = pair.getSecond();
+
+        User user = userGetService.find(userId);
+        user.checkRefreshToken(refreshToken);
+
+        JwtResponse tokenDto = getTokenDto(user);
+        user.updateRefreshToken(tokenDto.getRefreshToken());
+
+        return mapper.toResponseDTO(user, tokenDto);
+    }
+
     private UserResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
         String email = userInfo.getKakao_account().getEmail();
 
@@ -47,22 +64,36 @@ public class UserManageUsecase {
         User user = mapper.from(account);
         userSaveService.save(user);
 
-        JwtResponse tokenDto = new JwtResponse(
-                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
-                jwtProvider.createRefreshToken()
-        );
+        JwtResponse tokenDto = getTokenDto(user);
+        user.updateRefreshToken(tokenDto.getRefreshToken());
 
         return mapper.toResponseDTO(user, tokenDto);
     }
 
     private UserResponseDTO.Response getUserResponse(String email) {
         User user = userGetService.findByEmail(email);
-        JwtResponse tokenDto = new JwtResponse(
-                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
-                jwtProvider.createRefreshToken()
-        );
+
+        JwtResponse tokenDto = getTokenDto(user);
+        user.updateRefreshToken(tokenDto.getRefreshToken());
 
         return mapper.toResponseDTO(user, tokenDto);
+    }
+
+    private JwtResponse getTokenDto(User user) {
+        return new JwtResponse(
+                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
+                jwtProvider.createRefreshToken(user.getId())
+        );
+    }
+
+    private Pair<Long, String> validateRefreshToken(String token) {
+        String refreshToken = jwtProvider.extractRefreshToken(token);
+        jwtProvider.validateToken(refreshToken);
+
+        Long userId = jwtProvider.extractId(refreshToken)
+                .orElseThrow(UserNotFoundException::new);
+
+        return Pair.of(userId, refreshToken);
     }
 
 }

@@ -3,11 +3,11 @@ package com.yoyomo.infra.aws.usecase;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
 import com.yoyomo.infra.aws.constant.ReservedSubDomain;
-import com.yoyomo.infra.aws.exception.FileNotFoundException;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
-import java.io.IOException;
+import com.yoyomo.infra.redis.RedisQueueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,32 +16,22 @@ public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
+    private final RedisQueueService redisQueueService;
     private final String BASEURL = ".crayon.land";
 
-    public String create(String subDomain) {
+    @Async
+    public void create(String subDomain) {
         checkValidSubdomain(subDomain);
 
         String fullSubDomain = subDomain + BASEURL;
         //버킷 생성
         s3Service.createBucket(fullSubDomain);
 
+        redisQueueService.enqueueUpload(subDomain);
+
         // route53 레코드 생성
         createRecord(fullSubDomain);
 
-        // S3에 next app 업로드
-        tryUpload(subDomain);
-
-        return subDomain;
-    }
-
-    private void tryUpload(String subDomain) {
-        String fullSubDomain = subDomain + BASEURL;
-        try {
-            s3Service.upload(fullSubDomain);
-        } catch (IOException e) {
-            delete(subDomain);
-            throw new FileNotFoundException();
-        }
     }
 
     private void createRecord(String subDomain) {

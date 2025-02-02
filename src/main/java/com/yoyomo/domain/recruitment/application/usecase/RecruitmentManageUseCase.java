@@ -6,6 +6,7 @@ import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentR
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
+import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -15,6 +16,7 @@ import com.yoyomo.domain.form.domain.service.FormGetService;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
@@ -47,6 +49,9 @@ public class RecruitmentManageUseCase {
     private final ClubManagerAuthService clubManagerAuthService;
 
     private final ProcessManageUseCase processManageUseCase;
+    private final ProcessDeleteService processDeleteService;
+
+    private final ApplicationDeleteService applicationDeleteService;
 
     @Transactional
     public void save(Save dto, Long userId) {
@@ -101,6 +106,9 @@ public class RecruitmentManageUseCase {
     @Transactional
     public void cancel(String recruitmentId, Long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+
+        applicationDeleteService.deleteByRecruitmentId(recruitment);
+        processDeleteService.deleteAllByRecruitment(recruitment);
         recruitmentDeleteService.delete(recruitment);
     }
 
