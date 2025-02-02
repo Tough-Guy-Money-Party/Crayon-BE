@@ -46,7 +46,7 @@ public class RedisConfig {
     }
 
     @Bean(name = "queueRedisTemplate")
-    public RedisTemplate<String, String> queueRedisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, String> queueRedisTemplate() {
         LettuceConnectionFactory queueConnectionFactory = new LettuceConnectionFactory();
         queueConnectionFactory.setDatabase(1);
         queueConnectionFactory.afterPropertiesSet();
