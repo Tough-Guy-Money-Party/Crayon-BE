@@ -11,39 +11,39 @@ import java.util.function.Supplier;
 @Getter
 @AllArgsConstructor
 public enum CustomType {
-    CLUB_NAME("CLUB_NAME") {
+    CLUB_NAME("clubName") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> recruitment.getClub().getName(), "");
         }
     },
-    USER_NAME("USER_NAME") {
+    USER_NAME("userName") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> application.getUser().getName(), "");
         }
     },
-    RECRUITMENT_NAME("RECRUITMENT_NAME") {
+    RECRUITMENT_NAME("recruitmentName") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(recruitment::getTitle, "");
 
         }
     },
-    INTERVIEW_DATE("INTERVIEW_DATE") {
+    INTERVIEW_DATE("interviewDate") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> application.getInterview().getDate(), "");
 
         }
     },
-    INTERVIEW_PLACE("INTERVIEW_PLACE") {
+    INTERVIEW_PLACE("interviewPlace") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> application.getInterview().getPlace(), "");
         }
     },
-    PROCESS("PROCESS") {
+    PROCESS("process") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> application.getProcess().getTitle(), "");
