@@ -30,7 +30,7 @@ public enum CustomType {
 
         }
     },
-    INTERVIEW_DATE("interviewName") {
+    INTERVIEW_DATE("interviewDate") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
             return get(() -> application.getInterview().getDate(), "");
