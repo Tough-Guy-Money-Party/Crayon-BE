@@ -22,7 +22,7 @@ public class MailUtilService {
 
         for (CustomType customType : customTypes) {
             String value = customType.extractValue(application, recruitment);
-            dataMap.put(customType.getPlaceholder(), value);
+            dataMap.put(customType.toString(), value);
         }
         return dataMap;
     }
