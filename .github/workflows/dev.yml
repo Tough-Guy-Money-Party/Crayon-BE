@@ -68,16 +68,15 @@ jobs:
           key: ${{ secrets.ORACLE_TEST_SERVER_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=running")
+            # spring-dev 컨테이너의 ID 가져오기 (실행 중 또는 종료 상태 모두 포함)
+            EXISTING_CONTAINER_ID=$(sudo docker ps -aq -f "name=spring-dev")
             if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker stop $EXISTING_CONTAINER_ID
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=exited")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker rm $EXISTING_CONTAINER_ID
+              sudo docker stop spring-dev || true
+              sudo docker rm spring-dev
             fi
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev-arm
-            sudo docker network create test-server-network || true
+
             sudo docker run --network test-server-network --name spring-dev -d -p 8080:8080 --env-file ./crayon.env -v ${{ secrets.ORACLE_DIR }}:${{ secrets.DOCKER_DIR }} -e TZ=Asia/Seoul ${{ secrets.DOCKERHUB_USERNAME }}/crayon-dev-arm
+
             sudo docker image prune -a -f
+      
