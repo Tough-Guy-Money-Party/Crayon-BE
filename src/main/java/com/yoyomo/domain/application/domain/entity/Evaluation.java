@@ -39,9 +39,6 @@ public class Evaluation {
     @Enumerated(EnumType.STRING)
     private Rating rating;
 
-    @Column(nullable = false, name = "process_id")
-    private long processId;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User manager;

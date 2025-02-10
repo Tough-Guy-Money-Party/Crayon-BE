@@ -12,7 +12,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     List<Evaluation> findAllByApplicationId(UUID applicationId);
 
-    List<Evaluation> findAllByProcessIdAndApplication(long processId, Application application);
+    List<Evaluation> findAllByApplication(Application application);
 
     boolean existsByManagerAndApplication(User manager, Application application);
 }
