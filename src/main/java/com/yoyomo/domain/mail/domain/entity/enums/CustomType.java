@@ -21,7 +21,7 @@ public enum CustomType {
     USER_NAME("userName") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return get(() -> application.getUser().getName(), "");
+            return get(application::getUserName, "");
         }
     },
     RECRUITMENT_NAME("recruitmentName") {
