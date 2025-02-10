@@ -1,18 +1,6 @@
 package com.yoyomo.domain.recruitment.presentation;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_MOVE_PROCESS_STEP;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static org.springframework.http.HttpStatus.OK;
-
+import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
@@ -24,8 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +20,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.UUID;
+
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_MOVE_PROCESS_STEP;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "RECRUITMENT")
 @RestController
@@ -93,11 +95,12 @@ public class RecruitmentController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
-    @PatchMapping("/{recruitmentId}")
+    @PutMapping("/{recruitmentId}")
     @Operation(summary = "모집 수정")
-    public ResponseDto<Void> update(@PathVariable String recruitmentId, @RequestBody @Valid Update dto,
+    public ResponseDto<Void> update(@PathVariable String recruitmentId,
+                                    @RequestBody @Valid RecruitmentUpdateRequest request,
                                     @CurrentUser @Parameter(hidden = true) Long userId) {
-        recruitmentManageUseCase.update(recruitmentId, dto, userId);
+        recruitmentManageUseCase.update(recruitmentId, request, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }

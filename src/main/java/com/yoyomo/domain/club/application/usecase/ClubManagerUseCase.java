@@ -3,7 +3,7 @@ package com.yoyomo.domain.club.application.usecase;
 import com.yoyomo.domain.club.application.dto.request.ClubManagerUpdateDto;
 import com.yoyomo.domain.club.application.dto.request.ClubRequestDTO;
 import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
-import com.yoyomo.domain.club.application.mapper.ClubMapperImpl;
+import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -31,7 +31,7 @@ public class ClubManagerUseCase {
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final ClubValidateService clubValidateService;
-    private final ClubMapperImpl clubMapper;
+    private final ClubMapper clubMapper;
     private final ClubManagerSaveService clubManagerSaveService;
     private final ClubManagerDeleteService clubManagerDeleteService;
     private final ClubManagerGetService clubManagerGetService;
