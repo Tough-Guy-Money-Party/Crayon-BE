@@ -21,9 +21,9 @@ public class GlobalExceptionHandler {
     // 사용자 정의 예외처리
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ResponseDto<Void>> handle(ApplicationException ex) {
-        // 개발 용이성을 위해 전체 에러 로그를 다시 출력. 개발 완료 후 제거할 것
-        log.error(ex.getMessage(), ex);
-        log.error(LOG_FORMAT, ex.getClass().getSimpleName(), ex.getErrorCode(), ex.getMessage());
+        StackTraceElement[] stackTrace = ex.getStackTrace();
+        String className = stackTrace[0].getClassName();
+        log.error(LOG_FORMAT, className, ex.getErrorCode(), ex.getMessage());
 
         return ResponseEntity
                 .status(ex.getErrorCode())
