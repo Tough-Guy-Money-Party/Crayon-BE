@@ -1,11 +1,5 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
-
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -13,6 +7,7 @@ import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
+import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -24,13 +19,19 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -80,12 +81,10 @@ public class RecruitmentManageUseCase {
     }
 
     @Transactional
-    public void update(String recruitmentId, Update dto, Long userId) {
+    public void update(String recruitmentId, RecruitmentUpdateRequest request, long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         recruitment.checkModifiable();
-        List<Process> processes = processManageUseCase.update(dto.processes(), recruitment);
-        recruitment.addProcesses(processes);
-        recruitmentUpdateService.update(recruitment, dto);
+        recruitment.update(request.title(), request.position(), request.startAt(), request.endAt());
     }
 
     @Transactional
