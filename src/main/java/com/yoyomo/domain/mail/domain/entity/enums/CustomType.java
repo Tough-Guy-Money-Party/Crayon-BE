@@ -2,6 +2,7 @@ package com.yoyomo.domain.mail.domain.entity.enums;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.global.common.util.DateFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,7 +21,7 @@ public enum CustomType {
     USER_NAME("userName") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return get(() -> application.getUser().getName(), "");
+            return get(application::getUserName, "");
         }
     },
     RECRUITMENT_NAME("recruitmentName") {
@@ -33,8 +34,9 @@ public enum CustomType {
     INTERVIEW_DATE("interviewDate") {
         @Override
         public String extractValue(Application application, Recruitment recruitment) {
-            return get(() -> application.getInterview().getDate(), "");
-
+            String date = application.getInterview().getDate();
+            String formattedDate = DateFormatter.formatMailDate(date);
+            return get(() -> formattedDate, "");
         }
     },
     INTERVIEW_PLACE("interviewPlace") {

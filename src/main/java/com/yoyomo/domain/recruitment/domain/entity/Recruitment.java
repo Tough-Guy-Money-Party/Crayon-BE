@@ -1,9 +1,5 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Update;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
-
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
@@ -22,16 +18,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
 
 @Getter
 @Builder
@@ -81,12 +81,6 @@ public class Recruitment extends BaseEntity {
     public void addProcesses(List<Process> processes) {
         this.processes.clear();
         this.processes.addAll(processes);
-    }
-
-    public void update(Update dto) {
-        this.title = dto.title();
-        this.position = dto.position();
-        this.generation = dto.generation();
     }
 
     public void activate(String formId) {
@@ -145,5 +139,12 @@ public class Recruitment extends BaseEntity {
 
     public void updateProcess(Type type) {
         this.currentProcess = type;
+    }
+
+    public void update(String title, String position, LocalDateTime startAt, LocalDateTime endAt) {
+        this.title = title;
+        this.position = position;
+        this.startAt = startAt;
+        this.endAt = endAt;
     }
 }
