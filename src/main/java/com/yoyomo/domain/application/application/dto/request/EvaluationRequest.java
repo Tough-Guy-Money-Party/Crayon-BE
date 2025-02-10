@@ -14,7 +14,6 @@ public record EvaluationRequest(
     public Evaluation toEvaluation(User manager, Application application) {
         return Evaluation.builder()
                 .rating(rating)
-                .processId(application.getProcess().getId())
                 .manager(manager)
                 .application(application)
                 .build();
