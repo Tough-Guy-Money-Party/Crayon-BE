@@ -18,6 +18,7 @@ import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
+import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class EvaluationManageUseCase {
     private final EvaluationMemoGetService evaluationMemoGetService;
     private final ProcessResultGetService processResultGetService;
     private final EvaluationMemoUpdateService evaluationMemoUpdateService;
+    private final MailManageUseCaseImpl mailManageUseCaseImpl;
 
     @Transactional(readOnly = true)
     public EvaluationResponses findEvaluations(String applicationId, long userId) {
@@ -106,7 +108,6 @@ public class EvaluationManageUseCase {
     @Transactional
     public void updateMemo(long memoId, EvaluationMemoRequest request, long managerId) {
         User manager = userGetService.find(managerId);
-        EvaluationMemo memo = evaluationMemoGetService.findByIdAndManagerAndManager(memoId, manager);
-        memo.update(request.memo());
+        evaluationMemoUpdateService.update(request.memo(), memoId, manager);
     }
 }
