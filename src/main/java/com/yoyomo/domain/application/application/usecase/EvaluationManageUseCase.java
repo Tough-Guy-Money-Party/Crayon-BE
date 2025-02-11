@@ -102,4 +102,11 @@ public class EvaluationManageUseCase {
 
         evaluationUpdateService.delete(evaluation, managerId);
     }
+
+    @Transactional
+    public void updateMemo(long memoId, EvaluationMemoRequest request, long managerId) {
+        User manager = userGetService.find(managerId);
+        EvaluationMemo memo = evaluationMemoGetService.findByIdAndManagerAndManager(memoId, manager);
+        memo.update(request.memo());
+    }
 }

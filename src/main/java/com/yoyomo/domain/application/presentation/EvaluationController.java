@@ -103,4 +103,14 @@ public class EvaluationController {
 
         return ResponseDto.of(OK.value(), SUCCESS_DELETE_EVALUATION.getMessage());
     }
+
+    @PatchMapping("/memo/{memoId}")
+    @Operation(summary = "평가 메모 수정")
+    public ResponseDto<Void> updateMemo(@PathVariable Long memoId,
+                                        @RequestBody @Valid EvaluationMemoRequest request,
+                                        @CurrentUser @Parameter(hidden = true) Long userId) {
+        evaluationManageUseCase.updateMemo(memoId, request, userId);
+
+        return ResponseDto.of(OK.value(), SUCCESS_UPDATE_EVALUATION.getMessage());
+    }
 }
