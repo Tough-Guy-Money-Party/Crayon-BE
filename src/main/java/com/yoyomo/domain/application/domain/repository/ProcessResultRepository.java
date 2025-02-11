@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,7 +24,12 @@ public interface ProcessResultRepository extends JpaRepository<ProcessResult, Lo
 
     Optional<ProcessResult> findByApplicationIdAndProcessId(UUID applicationId, Long processId);
 
-    List<ProcessResult> findAllByProcessIdAndStatus(long processId, Status status);
+    @Query("""
+            SELECT pr
+            FROM ProcessResult pr
+            WHERE pr.processId = :processId AND (pr.status = 'DOCUMENT_PASS' OR pr.status = 'FINAL_PASS')
+            """)
+    List<ProcessResult> findAllPassByProcessId(long processId);
 
     List<ProcessResult> findAllByApplicationIdAndProcessIdIsLessThanEqual(UUID applicationId, long processId);
 }

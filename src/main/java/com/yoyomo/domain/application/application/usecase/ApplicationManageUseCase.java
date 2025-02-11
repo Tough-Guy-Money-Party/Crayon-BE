@@ -107,7 +107,7 @@ public class ApplicationManageUseCase {
         Process from = processGetService.find(recruitment, dto.fromStage());
         Process to = processGetService.find(recruitment, dto.toStage());
 
-        List<UUID> passApplicationIds = processResultGetService.findAllApplicationIds(from, Status.DOCUMENT_PASS);
+        List<UUID> passApplicationIds = processResultGetService.findAllPassApplicationIds(from);
         applicationUpdateService.updatePassApplicants(passApplicationIds, to);
 
         recruitment.updateProcess(to.getType());
