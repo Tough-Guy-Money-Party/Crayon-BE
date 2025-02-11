@@ -36,8 +36,17 @@ public class Form {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    
+
     private LocalDateTime deletedAt;
+
+    public static Form replicate(Form form) {
+        return Form.builder()
+                .clubId(form.clubId)
+                .title(form.title)
+                .description(form.description)
+                .items(form.getItems())
+                .build();
+    }
 
     public void update(String title, String description, List<Item> items) {
         this.title = title;
