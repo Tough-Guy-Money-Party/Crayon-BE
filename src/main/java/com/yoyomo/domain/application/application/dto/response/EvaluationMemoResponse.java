@@ -7,7 +7,8 @@ import lombok.Builder;
 public record EvaluationMemoResponse(
         long id,
         String managerName,
-        String memo
+        String memo,
+        boolean isMine
 ) {
     public static EvaluationMemoResponse toResponse(EvaluationMemo memo) {
         return EvaluationMemoResponse.builder()
