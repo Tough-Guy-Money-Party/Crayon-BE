@@ -141,4 +141,11 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         Club club = clubGetService.find(clubId);
         clubManagerAuthService.checkAuthorization(club, manager);
     }
+
+    @Override
+    public void create(String formId, Long userId) {
+        Form form = checkAuthorityByFormId(userId, formId);
+        Form newForm = Form.replicate(form);
+        formSaveService.save(newForm);
+    }
 }
