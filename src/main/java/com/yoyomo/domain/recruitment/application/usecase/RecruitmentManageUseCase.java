@@ -1,5 +1,10 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
@@ -12,6 +17,7 @@ import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
+import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
@@ -19,19 +25,13 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
-
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +53,7 @@ public class RecruitmentManageUseCase {
     private final ProcessDeleteService processDeleteService;
 
     private final ApplicationDeleteService applicationDeleteService;
+    private final ProcessSaveService processSaveService;
 
     @Transactional
     public void save(Save dto, Long userId) {
@@ -124,5 +125,22 @@ public class RecruitmentManageUseCase {
         if (recruitment.getDeletedAt() != null) {
             throw new RecruitmentDeletedException();
         }
+    }
+
+    @Transactional
+    public void create(String recruitmentId, long userId) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+        Recruitment newRecruitment = Recruitment.replicate(recruitment);
+
+        List<Process> newProcesses = recruitment.getProcesses()
+                .stream()
+                .map(Process::replicate)
+                .toList();
+
+        newProcesses.forEach(process -> process.addRecruitment(newRecruitment));
+        newRecruitment.addNewProcesses(newProcesses);
+
+        processSaveService.saveAll(newProcesses);
+        recruitmentSaveService.save(newRecruitment);
     }
 }
