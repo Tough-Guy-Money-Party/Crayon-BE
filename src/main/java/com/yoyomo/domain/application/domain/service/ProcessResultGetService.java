@@ -28,8 +28,8 @@ public class ProcessResultGetService {
                 .collect(Collectors.toMap(ProcessResult::getApplicationId, ProcessResult::getStatus));
     }
 
-    public List<UUID> findAllApplicationIds(Process process, Status status) {
-        List<ProcessResult> processResults = processResultRepository.findAllByProcessIdAndStatus(process.getId(), status);
+    public List<UUID> findAllPassApplicationIds(Process process) {
+        List<ProcessResult> processResults = processResultRepository.findAllPassByProcessId(process.getId());
         return processResults.stream()
                 .map(ProcessResult::getApplicationId)
                 .toList();
@@ -44,7 +44,7 @@ public class ProcessResultGetService {
     public List<ProcessResult> find(Application application) {
         long processId = application.getProcess().getId();
         List<ProcessResult> processResults = processResultRepository.findAllByApplicationIdAndProcessIdIsLessThanEqual(application.getId(), processId);
-        
+
         ProcessResult currentProcessResult = processResults.stream()
                 .filter(processResult -> processResult.getProcessId() == processId)
                 .findFirst()

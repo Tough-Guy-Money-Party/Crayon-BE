@@ -13,10 +13,12 @@ import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.application.domain.service.EvaluationGetService;
 import com.yoyomo.domain.application.domain.service.EvaluationMemoGetService;
 import com.yoyomo.domain.application.domain.service.EvaluationMemoSaveService;
+import com.yoyomo.domain.application.domain.service.EvaluationMemoUpdateService;
 import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
+import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,8 @@ public class EvaluationManageUseCase {
     private final EvaluationMemoSaveService evaluationMemoSaveService;
     private final EvaluationMemoGetService evaluationMemoGetService;
     private final ProcessResultGetService processResultGetService;
+    private final EvaluationMemoUpdateService evaluationMemoUpdateService;
+    private final MailManageUseCaseImpl mailManageUseCaseImpl;
 
     @Transactional(readOnly = true)
     public EvaluationResponses findEvaluations(String applicationId, long userId) {
@@ -89,9 +93,21 @@ public class EvaluationManageUseCase {
     }
 
     @Transactional
+    public void deleteMemo(long memoId, long managerId) {
+        User manager = userGetService.find(managerId);
+        evaluationMemoUpdateService.delete(memoId, manager);
+    }
+
+    @Transactional
     public void deleteRating(long evaluationId, long managerId) {
         Evaluation evaluation = evaluationGetService.find(evaluationId);
 
         evaluationUpdateService.delete(evaluation, managerId);
+    }
+
+    @Transactional
+    public void updateMemo(long memoId, EvaluationMemoRequest request, long managerId) {
+        User manager = userGetService.find(managerId);
+        evaluationMemoUpdateService.update(request.memo(), memoId, manager);
     }
 }

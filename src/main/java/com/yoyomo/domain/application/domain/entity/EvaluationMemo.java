@@ -48,4 +48,8 @@ public class EvaluationMemo extends BaseEntity {
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void update(String memo) {
+        this.memo = memo;
+    }
 }
