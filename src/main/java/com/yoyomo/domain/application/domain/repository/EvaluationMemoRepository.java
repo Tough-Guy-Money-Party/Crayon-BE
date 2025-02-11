@@ -14,6 +14,8 @@ public interface EvaluationMemoRepository extends JpaRepository<EvaluationMemo, 
 
     List<EvaluationMemo> findAllByProcessIdAndApplication(long processId, Application application);
 
+    @Modifying
+    @Query("DELETE FROM EvaluationMemo em WHERE em.id = :memoId AND em.manager = :manager")
     int deleteByIdAndManager(long memoId, User manager);
 
     Optional<EvaluationMemo> findByIdAndManager(long memoId, User manager);
