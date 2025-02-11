@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EvaluationMemoRepository extends JpaRepository<EvaluationMemo, Long> {
 
@@ -17,8 +16,6 @@ public interface EvaluationMemoRepository extends JpaRepository<EvaluationMemo, 
     @Modifying
     @Query("DELETE FROM EvaluationMemo em WHERE em.id = :memoId AND em.manager = :manager")
     int deleteByIdAndManager(long memoId, User manager);
-
-    Optional<EvaluationMemo> findByIdAndManager(long memoId, User manager);
 
     @Modifying
     @Query("UPDATE EvaluationMemo em SET em.memo = :memo WHERE em.id = :memoId AND em.manager = :manager")
