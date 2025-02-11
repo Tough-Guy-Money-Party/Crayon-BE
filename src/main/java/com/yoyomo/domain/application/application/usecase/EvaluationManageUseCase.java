@@ -13,6 +13,7 @@ import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.application.domain.service.EvaluationGetService;
 import com.yoyomo.domain.application.domain.service.EvaluationMemoGetService;
 import com.yoyomo.domain.application.domain.service.EvaluationMemoSaveService;
+import com.yoyomo.domain.application.domain.service.EvaluationMemoUpdateService;
 import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
@@ -39,6 +40,7 @@ public class EvaluationManageUseCase {
     private final EvaluationMemoSaveService evaluationMemoSaveService;
     private final EvaluationMemoGetService evaluationMemoGetService;
     private final ProcessResultGetService processResultGetService;
+    private final EvaluationMemoUpdateService evaluationMemoUpdateService;
 
     @Transactional(readOnly = true)
     public EvaluationResponses findEvaluations(String applicationId, long userId) {
@@ -86,6 +88,12 @@ public class EvaluationManageUseCase {
 
         EvaluationMemo evaluationMemo = request.toEvaluationMemo(manager, application);
         evaluationMemoSaveService.save(evaluationMemo);
+    }
+
+    @Transactional
+    public void deleteMemo(long memoId, long managerId) {
+        User manager = userGetService.find(managerId);
+        evaluationMemoUpdateService.delete(memoId, manager);
     }
 
     @Transactional
