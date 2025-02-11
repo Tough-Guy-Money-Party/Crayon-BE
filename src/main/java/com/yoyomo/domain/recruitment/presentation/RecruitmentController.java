@@ -1,5 +1,17 @@
 package com.yoyomo.domain.recruitment.presentation;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_MOVE_PROCESS_STEP;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
+import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
+import static org.springframework.http.HttpStatus.OK;
+
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
@@ -12,6 +24,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,21 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.UUID;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_MOVE_PROCESS_STEP;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_READ_PROCESSES;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "RECRUITMENT")
 @RestController
@@ -130,5 +129,13 @@ public class RecruitmentController {
         List<ProcessResponseDTO.Response> responses = processManageUseCase.readAll(recruitmentId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ_PROCESSES.getMessage(), responses);
+    }
+
+    @PostMapping("/replication/{recruitmentId}")
+    @Operation(summary = "모집 복제")
+    public ResponseDto<Void> create(@PathVariable String recruitmentId,
+                                    @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.create(recruitmentId, userId);
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
     }
 }
