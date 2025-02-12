@@ -18,7 +18,7 @@ public interface FormManageUseCase {
 
     List<Response> readAll(Long userId, String clubId);
 
-    SaveResponse create(FormRequestDTO.Save dto, String clubId, Long userId);
+    SaveResponse replicate(FormRequestDTO.Save dto, String clubId, Long userId);
 
     void update(String id, Update dto, Long userId);
 
@@ -28,6 +28,6 @@ public interface FormManageUseCase {
 
     FormDetailResponse read(UUID recruitmentId, long userId);
 
-    void create(String formId, Long userId);
+    void replicate(String formId, Long userId);
 
 }

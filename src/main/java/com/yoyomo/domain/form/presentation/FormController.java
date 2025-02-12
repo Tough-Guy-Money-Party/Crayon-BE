@@ -46,7 +46,7 @@ public class FormController {
     @Operation(summary = "폼 생성")    // 수정: 이미지 로직 추가
     public ResponseDto<SaveResponse> save(@RequestBody @Valid Save dto, @PathVariable String clubId,
                                           @CurrentUser @Parameter(hidden = true) Long userId) {
-        SaveResponse response = formManageUseCase.create(dto, clubId, userId);
+        SaveResponse response = formManageUseCase.replicate(dto, clubId, userId);
 
         return ResponseDto.of(OK.value(), SUCCESS_CREATE.getMessage(), response);
     }
@@ -105,9 +105,9 @@ public class FormController {
 
     @PostMapping("/replication/{formId}")
     @Operation(summary = "지원서 양식 복제")
-    public ResponseDto<Void> save(@PathVariable String formId,
-                                  @CurrentUser @Parameter(hidden = true) Long userId) {
-        formManageUseCase.create(formId, userId);
+    public ResponseDto<Void> replicate(@PathVariable String formId,
+                                       @CurrentUser @Parameter(hidden = true) Long userId) {
+        formManageUseCase.replicate(formId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_CREATE.getMessage());
     }
 }

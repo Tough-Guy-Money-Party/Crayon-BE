@@ -128,7 +128,7 @@ public class RecruitmentManageUseCase {
     }
 
     @Transactional
-    public void create(String recruitmentId, long userId) {
+    public void replicate(String recruitmentId, long userId) {
         Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
         Recruitment newRecruitment = Recruitment.replicate(recruitment);
 

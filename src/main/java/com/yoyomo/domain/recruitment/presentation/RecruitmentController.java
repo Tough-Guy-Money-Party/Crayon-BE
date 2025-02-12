@@ -133,9 +133,9 @@ public class RecruitmentController {
 
     @PostMapping("/replication/{recruitmentId}")
     @Operation(summary = "모집 복제")
-    public ResponseDto<Void> create(@PathVariable String recruitmentId,
-                                    @CurrentUser @Parameter(hidden = true) Long userId) {
-        recruitmentManageUseCase.create(recruitmentId, userId);
+    public ResponseDto<Void> replicate(@PathVariable String recruitmentId,
+                                       @CurrentUser @Parameter(hidden = true) Long userId) {
+        recruitmentManageUseCase.replicate(recruitmentId, userId);
         return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
     }
 }
