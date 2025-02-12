@@ -63,7 +63,7 @@ public class JwtProvider {
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
-        if (accessToken.startsWith(BEARER)) {
+        if (accessToken != null && accessToken.startsWith(BEARER)) {
             return accessToken.replace(BEARER, "");
         }
         throw new InvalidTokenException();
@@ -78,19 +78,6 @@ public class JwtProvider {
                     .asLong();
         } catch (Exception e) {
             throw new InvalidTokenException();
-        }
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
-            return true;
-        } catch (TokenExpiredException e) {
-            log.error("만료된 토큰입니다. {}", e.getMessage());
-            return false;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
         }
     }
 

@@ -18,13 +18,12 @@ import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
-import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class EvaluationManageUseCase {
 
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
-    private final UserGetService userGetService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final EvaluationSaveService evaluationSaveService;
     private final EvaluationGetService evaluationGetService;
@@ -41,7 +39,6 @@ public class EvaluationManageUseCase {
     private final EvaluationMemoGetService evaluationMemoGetService;
     private final ProcessResultGetService processResultGetService;
     private final EvaluationMemoUpdateService evaluationMemoUpdateService;
-    private final MailManageUseCaseImpl mailManageUseCaseImpl;
 
     @Transactional(readOnly = true)
     public EvaluationResponses findEvaluations(String applicationId, User manager) {

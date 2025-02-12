@@ -1,6 +1,7 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -12,6 +13,7 @@ import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
+import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
@@ -19,14 +21,15 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
@@ -38,7 +41,6 @@ import static com.yoyomo.domain.recruitment.application.dto.response.Recruitment
 @RequiredArgsConstructor
 public class RecruitmentManageUseCase {
 
-    private final UserGetService userGetService;
     private final ClubGetService clubGetService;
 
     private final RecruitmentGetService recruitmentGetService;
@@ -55,6 +57,8 @@ public class RecruitmentManageUseCase {
 
     private final ApplicationDeleteService applicationDeleteService;
     private final ProcessSaveService processSaveService;
+    private final ProcessGetService processGetService;
+    private final ApplicationGetService applicationGetService;
 
     @Transactional
     public void save(Save dto, User manager) {
@@ -66,12 +70,19 @@ public class RecruitmentManageUseCase {
         recruitment.addProcesses(processes);
     }
 
+    @Transactional(readOnly = true)
     public DetailResponse read(UUID recruitmentId, User user) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId, user);
-        Info form = formManageUseCase.readForm(recruitment.getFormId());
+        List<Process> processes = processGetService.findAll(recruitment);
+        Map<Process, Long> processApplicantCount = applicationGetService.countInProcesses(recruitment.getId(),
+                processes);
+        List<ProcessResponseDTO.Response> processResponses = processes.stream()
+                .map(process -> ProcessResponseDTO.Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L)))
+                .sorted(Comparator.comparingInt(ProcessResponseDTO.Response::stage))
+                .toList();
 
-        return DetailResponse.toDetailResponse(recruitment, processes, form);
+        Info form = formManageUseCase.readForm(recruitment.getFormId());
+        return DetailResponse.toDetailResponse(recruitment, processResponses, form);
     }
 
     @Transactional(readOnly = true)

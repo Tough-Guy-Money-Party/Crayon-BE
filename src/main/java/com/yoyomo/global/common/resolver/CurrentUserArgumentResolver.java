@@ -1,7 +1,6 @@
 package com.yoyomo.global.common.resolver;
 
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtProvider jwtProvider;
-    private final UserGetService userGetService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {   // parameter가 해당 resolver를 지원하는 여부 확인
@@ -28,13 +26,13 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public User resolveArgument(MethodParameter parameter,
+    public Long resolveArgument(MethodParameter parameter,
                                 ModelAndViewContainer mavContainer,
                                 NativeWebRequest webRequest,
                                 WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = jwtProvider.extractAccessToken(httpServletRequest);
-        Long userId = jwtProvider.extractId(accessToken);
-        return userGetService.find(userId);
+        jwtProvider.validateToken(accessToken);
+        return jwtProvider.extractId(accessToken);
     }
 }

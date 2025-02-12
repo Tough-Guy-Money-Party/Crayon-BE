@@ -51,8 +51,7 @@ public class ProcessManageUseCase {
                 processes);
 
         return processes.stream()
-                .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L),
-                        process.getProcessStep()))
+                .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L)))
                 .sorted(Comparator.comparingInt(Response::stage))
                 .toList();
     }

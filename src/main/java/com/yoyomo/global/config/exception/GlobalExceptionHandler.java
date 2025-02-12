@@ -16,14 +16,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
-    private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
+
+    private static final String LOG_FORMAT_WITH_METHOD = "Class = {}, Method = {}, Message = {}, Exception Class = {}";
+    private static final String LOG_FORMAT = "Class = {}, Code = {}, Message = {}";
 
     // 사용자 정의 예외처리
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ResponseDto<Void>> handle(ApplicationException ex) {
         StackTraceElement[] stackTrace = ex.getStackTrace();
         String className = stackTrace[0].getClassName();
-        log.error(LOG_FORMAT, className, ex.getErrorCode(), ex.getMessage());
+        String methodName = stackTrace[0].getMethodName();
+
+        String exceptionMessage = ex.getMessage();
+
+        log.info(LOG_FORMAT_WITH_METHOD, className, methodName, exceptionMessage, ex.getClass().getCanonicalName());
 
         return ResponseEntity
                 .status(ex.getErrorCode())

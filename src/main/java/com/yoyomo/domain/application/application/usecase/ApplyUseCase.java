@@ -19,7 +19,6 @@ import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,6 @@ public class ApplyUseCase {
     private final AnswerUpdateService answerUpdateService;
     private final ApplicationUpdateService applicationUpdateService;
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
-    private final UserGetService userGetService;
     private final ApplicationVerifyService applicationVerifyService;
 
 
