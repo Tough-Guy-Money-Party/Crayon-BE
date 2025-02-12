@@ -7,6 +7,7 @@ import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.annotation.CurrentUser;
+import com.yoyomo.global.common.annotation.RequiredAuth;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -96,8 +97,8 @@ public class FormController {
     @GetMapping
     @Operation(summary = "지원서 폼 조회")
     public ResponseDto<FormDetailResponse> read(@RequestParam UUID recruitmentId,
-                                                @CurrentUser User user) {
-        FormDetailResponse response = formManageUseCase.read(recruitmentId, user);
+                                                @RequiredAuth Long userId) {
+        FormDetailResponse response = formManageUseCase.read(recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }

@@ -8,6 +8,7 @@ import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCas
 import com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.annotation.CurrentUser;
+import com.yoyomo.global.common.annotation.RequiredAuth;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,8 +80,8 @@ public class RecruitmentController {
     @GetMapping("/{recruitmentId}")
     @Operation(summary = "모집 상세 조회")
     public ResponseDto<DetailResponse> read(@PathVariable UUID recruitmentId,
-                                            @CurrentUser User user) {
-        DetailResponse response = recruitmentManageUseCase.read(recruitmentId, user);
+                                            @RequiredAuth Long userId) {
+        DetailResponse response = recruitmentManageUseCase.read(recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }

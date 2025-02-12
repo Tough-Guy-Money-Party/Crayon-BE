@@ -71,7 +71,7 @@ public class RecruitmentManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public DetailResponse read(UUID recruitmentId, User user) {
+    public DetailResponse read(UUID recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<Process> processes = processGetService.findAll(recruitment);
         Map<Process, Long> processApplicantCount = applicationGetService.countInProcesses(recruitment.getId(),

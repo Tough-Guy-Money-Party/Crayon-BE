@@ -116,7 +116,7 @@ public class FormManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public FormDetailResponse read(UUID recruitmentId, User user) {
+    public FormDetailResponse read(UUID recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Club club = recruitment.getClub();
         Form form = formGetService.find(recruitment.getFormId());
