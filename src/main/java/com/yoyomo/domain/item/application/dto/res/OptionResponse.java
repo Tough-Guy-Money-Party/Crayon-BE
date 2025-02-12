@@ -7,13 +7,15 @@ import lombok.Builder;
 public record OptionResponse(
         String id,
         String title,
-        boolean selected
+        boolean selected,
+        boolean isEtc
 ) {
     public static OptionResponse toResponse(Option option) {
         return OptionResponse.builder()
                 .id(option.getId())
                 .title(option.getTitle())
                 .selected(option.isSelected())
+                .selected(option.isEtc())
                 .build();
     }
 }
