@@ -15,7 +15,7 @@ public record OptionResponse(
                 .id(option.getId())
                 .title(option.getTitle())
                 .selected(option.isSelected())
-                .selected(option.isEtc())
+                .isEtc(option.isEtc())
                 .build();
     }
 }
