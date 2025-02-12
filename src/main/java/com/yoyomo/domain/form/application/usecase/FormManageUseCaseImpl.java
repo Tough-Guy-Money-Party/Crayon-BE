@@ -81,7 +81,7 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
     }
 
     @Override
-    public SaveResponse create(Save dto, String clubId, Long userId) {
+    public SaveResponse replicate(Save dto, String clubId, Long userId) {
         checkAuthorityByClubId(userId, clubId);
         List<Item> items = itemManageUseCase.create(dto.itemRequests());
         Form form = formSaveService.save(dto, items, clubId);
@@ -140,5 +140,12 @@ public class FormManageUseCaseImpl implements FormManageUseCase {
         User manager = userGetService.find(userId);
         Club club = clubGetService.find(clubId);
         clubManagerAuthService.checkAuthorization(club, manager);
+    }
+
+    @Override
+    public void replicate(String formId, Long userId) {
+        Form form = checkAuthorityByFormId(userId, formId);
+        Form newForm = Form.replicate(form);
+        formSaveService.save(newForm);
     }
 }

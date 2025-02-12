@@ -21,11 +21,10 @@ import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +53,7 @@ public class EvaluationManageUseCase {
         List<Evaluation> evaluations = evaluationGetService.findAllInStage(application);
         Evaluation myEvaluation = evaluationGetService.findMyEvaluation(evaluations, manager);
         List<EvaluationMemo> memos = evaluationMemoGetService.findAllInStage(application);
-        return EvaluationResponses.toResponse(processResult, myEvaluation, evaluations, memos);
+        return EvaluationResponses.toResponse(processResult, myEvaluation, evaluations, memos, manager);
     }
 
     @Transactional
