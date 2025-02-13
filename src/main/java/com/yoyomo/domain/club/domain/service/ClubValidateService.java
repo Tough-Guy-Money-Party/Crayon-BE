@@ -8,8 +8,6 @@ import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.repository.UserRepository;
-import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,18 +18,15 @@ import java.util.UUID;
 public class ClubValidateService {
 
     private final ClubRepository clubRepository;
-    private final UserRepository userRepository;
     private final ClubMangerRepository clubMangerRepository;
 
-    public Club checkAuthority(String clubId, long userId) {
-        return checkAuthority(UUID.fromString(clubId), userId);
+    public Club checkAuthority(String clubId, User manager) {
+        return checkAuthority(UUID.fromString(clubId), manager);
     }
 
-    public Club checkOwnerAuthority(UUID clubId, long userId) {
+    public Club checkOwnerAuthority(UUID clubId, User manager) {
         Club club = clubRepository.findByIdAndDeletedAtIsNull(clubId)
                 .orElseThrow(ClubNotFoundException::new);
-        User manager = userRepository.findByIdAndDeletedAtIsNull(userId)
-                .orElseThrow(UserNotFoundException::new);
 
         ClubManager clubManager = clubMangerRepository.findByClubAndManager(club, manager)
                 .orElseThrow(ClubAccessDeniedException::new);
@@ -42,11 +37,9 @@ public class ClubValidateService {
         throw new ClubAccessDeniedException();
     }
 
-    public Club checkAuthority(UUID clubId, long userId) {
+    public Club checkAuthority(UUID clubId, User manager) {
         Club club = clubRepository.findByIdAndDeletedAtIsNull(clubId)
                 .orElseThrow(ClubNotFoundException::new);
-        User manager = userRepository.findByIdAndDeletedAtIsNull(userId)
-                .orElseThrow(UserNotFoundException::new);
 
         if (clubMangerRepository.existsByClubAndManager(club, manager)) {
             return club;

@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
 import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @Getter
@@ -38,17 +36,15 @@ public class JwtProvider {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
 
-    public String createAccessToken(Long id, String email) {
+    public String createAccessToken(Long id) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(ID_CLAIM, id)
-                .withClaim(EMAIL_CLAIM, email)
                 .sign(Algorithm.HMAC512(key));
     }
 
@@ -65,59 +61,24 @@ public class JwtProvider {
         return token.replace(BEARER, "");
     }
 
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(accessHeader, accessToken);
-
-        log.info("재발급된 Access Token : {}", accessToken);
-    }
-
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
-
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
-    }
-
-    public Optional<String> extractAccessToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(accessToken -> accessToken.startsWith(BEARER))
-                .map(accessToken -> accessToken.replace(BEARER, ""));
-    }
-
-    public Optional<String> extractEmail(String accessToken) {
-        try {
-            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
-                    .build()
-                    .verify(accessToken)
-                    .getClaim(EMAIL_CLAIM)
-                    .asString());
-        } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
-            return Optional.empty();
+    public String extractAccessToken(HttpServletRequest request) {
+        String accessToken = request.getHeader(accessHeader);
+        if (accessToken.startsWith(BEARER)) {
+            return accessToken.replace(BEARER, "");
         }
+        throw new InvalidTokenException();
     }
 
-    public Optional<Long> extractId(String accessToken) {
+    public Long extractId(String accessToken) {
         try {
-            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+            return JWT.require(Algorithm.HMAC512(key))
                     .build()
                     .verify(accessToken)
                     .getClaim(ID_CLAIM)
-                    .asLong());
+                    .asLong();
         } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
-            return Optional.empty();
+            throw new InvalidTokenException();
         }
-    }
-
-    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
-    }
-
-    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
     }
 
     public boolean isTokenValid(String token) {

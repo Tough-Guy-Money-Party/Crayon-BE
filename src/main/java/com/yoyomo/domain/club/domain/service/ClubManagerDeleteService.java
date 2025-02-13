@@ -2,6 +2,7 @@ package com.yoyomo.domain.club.domain.service;
 
 import com.yoyomo.domain.application.exception.ManagerDeleteException;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class ClubManagerDeleteService {
 
     private final ClubMangerRepository clubMangerRepository;
 
-    public void delete(UUID uuid, List<Long> userIds, long userId) {
-        if (userIds.contains(userId)) {
+    public void delete(UUID uuid, List<Long> userIds, User user) {
+        if (userIds.contains(user.getId())) {
             throw new ManagerDeleteException();
         }
         clubMangerRepository.deleteAllByClubIdAndIds(uuid, userIds);

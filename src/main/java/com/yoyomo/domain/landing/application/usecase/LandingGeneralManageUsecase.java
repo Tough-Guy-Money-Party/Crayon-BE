@@ -2,7 +2,6 @@ package com.yoyomo.domain.landing.application.usecase;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
-import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.club.domain.service.ClubUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubValidateService;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
@@ -15,13 +14,14 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
-import com.yoyomo.domain.user.domain.service.UserGetService;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
-import java.io.IOException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,30 +34,28 @@ public class LandingGeneralManageUsecase {
     private final DistributeUsecase distributeUsecase;
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
-    private final UserGetService userGetService;
-    private final ClubManagerAuthService clubManagerAuthService;
     private final LandingSaveService landingSaveService;
 
     @Transactional(readOnly = true)
-    public LandingResponseDTO.General readGeneral(String clubId, long userId) {
+    public LandingResponseDTO.General readGeneral(String clubId, User user) {
         Club club = clubGetService.find(clubId);
-        clubValidateService.checkAuthority(club.getId(), userId);
+        clubValidateService.checkAuthority(club.getId(), user);
 
         Landing landing = landingGetService.find(club);
         return landingMapper.toGeneralResponse(club, landing);
     }
 
     @Transactional
-    public void update(General dto, long userId) throws IOException {
+    public void update(General dto, User user) throws IOException {
         Club club = clubGetService.find(dto.clubId());
-        clubValidateService.checkOwnerAuthority(club.getId(), userId);
+        clubValidateService.checkOwnerAuthority(club.getId(), user);
 
         updateSubDomainIfChanged(dto, club);
         Landing landing = landingGetService.find(club);
         landingUpdateService.update(landing, club, dto);
     }
 
-    private void updateSubDomainIfChanged(General dto, Club club) throws IOException {
+    private void updateSubDomainIfChanged(General dto, Club club) {
         if (isSubDomainChanged(dto, club)) {
             String subDomain = checkDuplicatedSubDomain(dto.subDomain());
             String oldDomain = club.getSubDomain();
@@ -80,15 +78,15 @@ public class LandingGeneralManageUsecase {
     }
 
     @Transactional
-    public void update(LandingRequestDTO.NotionSave dto, long userId) {
+    public void update(LandingRequestDTO.NotionSave dto, User user) {
         Club club = clubGetService.find(dto.clubId());
-        clubValidateService.checkOwnerAuthority(club.getId(), userId);
+        clubValidateService.checkOwnerAuthority(club.getId(), user);
         clubUpdateService.update(club, dto.notionPageLink());
     }
 
     @Transactional
-    public void create(long userId, UUID clubId, CreateSubDomainRequest request) {
-        Club club = clubValidateService.checkOwnerAuthority(clubId, userId);
+    public void create(User user, UUID clubId, CreateSubDomainRequest request) {
+        Club club = clubValidateService.checkOwnerAuthority(clubId, user);
         String subDomain = request.subDomain();
 
         clubValidateService.checkDuplicatedSubDomain(subDomain);

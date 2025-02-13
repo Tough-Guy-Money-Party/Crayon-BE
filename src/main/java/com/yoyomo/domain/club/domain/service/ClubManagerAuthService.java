@@ -33,14 +33,13 @@ public class ClubManagerAuthService {
         checkAuthorization(club, manager);
     }
 
-    public void checkAuthorization(Process process, long userId) {
+    public void checkAuthorization(Process process, User manager) {
         Recruitment recruitment = process.getRecruitment();
 
         if (recruitment == null) {
             throw new RecruitmentNotFoundException();
         }
 
-        User manager = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Club club = recruitment.getClub();
 
         checkAuthorization(club, manager);

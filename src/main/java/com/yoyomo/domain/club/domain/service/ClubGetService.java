@@ -4,10 +4,12 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
-import java.util.List;
-import java.util.UUID;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ public class ClubGetService {
                 .orElseThrow(ClubNotFoundException::new);
     }
 
-    public List<Club> findAllByManagerId(long managerId) {
-        return clubMangerRepository.findAllMyClubs(managerId);
+    public List<Club> findAllByManager(User manager) {
+        return clubMangerRepository.findAllMyClubs(manager);
     }
 }
