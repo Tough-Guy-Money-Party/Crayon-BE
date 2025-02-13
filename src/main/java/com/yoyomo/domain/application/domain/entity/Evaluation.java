@@ -54,4 +54,8 @@ public class Evaluation {
     public void update(Rating rating) {
         this.rating = rating;
     }
+
+    public boolean isNotMine(User manager) {
+        return this.manager != manager;
+    }
 }

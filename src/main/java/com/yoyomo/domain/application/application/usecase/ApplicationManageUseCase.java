@@ -19,7 +19,6 @@ import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +33,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ApplicationManageUseCase {
 
-    private final UserGetService userGetService;
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
     private final AnswerGetService answerGetService;
@@ -44,8 +42,8 @@ public class ApplicationManageUseCase {
     private final ProcessResultGetService processResultGetService;
 
     @Transactional(readOnly = true)
-    public ApplicationDetailResponse read(String applicationId, Long userId) {
-        Application application = checkAuthorityByApplication(applicationId, userId);
+    public ApplicationDetailResponse read(String applicationId, User user) {
+        Application application = checkAuthorityByApplication(applicationId, user);
         Answer answer = answerGetService.findByApplicationId(application.getId());
 
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
@@ -55,9 +53,9 @@ public class ApplicationManageUseCase {
         return ApplicationDetailResponse.toResponse(application, answer, types, processResult);
     }
 
-    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, long userId,
+    public Page<ApplicationListResponse> search(String name, UUID recruitmentId, int stage, User user,
                                                 Pageable pageable) {
-        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
         Process process = processGetService.find(recruitment, stage);
 
         Page<Application> applications = applicationGetService.findByName(name, process, pageable);
@@ -67,8 +65,8 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public Page<ApplicationListResponse> readAll(UUID recruitmentId, int stage, long userId, Pageable pageable) {
-        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+    public Page<ApplicationListResponse> readAll(UUID recruitmentId, int stage, User user, Pageable pageable) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
         Process process = processGetService.find(recruitment, stage);
 
         Page<Application> applications = applicationGetService.findAll(process, pageable);
@@ -78,8 +76,8 @@ public class ApplicationManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationListResponse> readAll(Long processId, Long userId) {
-        Process process = checkAuthorityByProcessId(processId, userId);
+    public List<ApplicationListResponse> readAll(Long processId, User user) {
+        Process process = checkAuthorityByProcessId(processId, user);
         List<Application> applications = applicationGetService.findAll(process);
         Map<UUID, Status> processResults = processResultGetService.findAll(process, applications);
 
@@ -88,8 +86,8 @@ public class ApplicationManageUseCase {
 
 
     @Transactional
-    public void updateProcess(StageUpdateRequest dto, Long userId, UUID recruitmentId) {
-        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+    public void updateProcess(StageUpdateRequest dto, User user, UUID recruitmentId) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
         Process process = processGetService.find(recruitment, dto.to());
 
         dto.ids().stream()
@@ -101,8 +99,8 @@ public class ApplicationManageUseCase {
     todo 후에 확장된다면 전략 패턴으로 리팩토링
      */
     @Transactional
-    public void moveApplicant(UUID recruitmentId, ApplicationMoveRequest dto, Long userId) {
-        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, userId);
+    public void moveApplicant(UUID recruitmentId, ApplicationMoveRequest dto, User user) {
+        Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
 
         Process from = processGetService.find(recruitment, dto.fromStage());
         Process to = processGetService.find(recruitment, dto.toStage());
@@ -113,24 +111,22 @@ public class ApplicationManageUseCase {
         recruitment.updateProcess(to.getType());
     }
 
-    private Recruitment checkAuthorityByRecruitmentId(UUID recruitmentId, Long userId) {
+    private Recruitment checkAuthorityByRecruitmentId(UUID recruitmentId, User manager) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
     }
 
-    private Process checkAuthorityByProcessId(Long processId, long userId) {
+    private Process checkAuthorityByProcessId(Long processId, User user) {
         Process process = processGetService.find(processId);
-        clubManagerAuthService.checkAuthorization(process, userId);
+        clubManagerAuthService.checkAuthorization(process, user);
 
         return process;
     }
 
-    private Application checkAuthorityByApplication(String applicationId, Long userId) {
+    private Application checkAuthorityByApplication(String applicationId, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
 
         Recruitment recruitment = recruitmentGetService.find(application.getRecruitmentId());
         clubManagerAuthService.checkAuthorization(recruitment.getClub(), manager);

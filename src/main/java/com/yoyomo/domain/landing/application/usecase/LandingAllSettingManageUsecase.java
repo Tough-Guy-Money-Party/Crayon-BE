@@ -5,11 +5,13 @@ import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubValidateService;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO.All;
 import com.yoyomo.domain.landing.domain.entity.Landing;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.infra.notion.service.NotionGetService;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +30,9 @@ public class LandingAllSettingManageUsecase {
     }
 
     @Transactional(readOnly = true)
-    public boolean check(UUID clubId, long userId) {
+    public boolean check(UUID clubId, User user) {
         Club club = clubGetService.find(clubId);
-        clubValidateService.checkAuthority(club.getId(), userId);
+        clubValidateService.checkAuthority(club.getId(), user);
 
         return club.checkExistsSubDomain();
     }

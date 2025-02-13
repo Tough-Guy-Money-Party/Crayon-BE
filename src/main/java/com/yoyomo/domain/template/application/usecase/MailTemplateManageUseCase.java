@@ -13,7 +13,6 @@ import com.yoyomo.domain.template.domain.service.MailTemplateGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class MailTemplateManageUseCase {
 
     private final ClubGetService clubGetService;
-    private final UserGetService userGetService;
     private final MailTemplateSaveService mailTemplateSaveService;
     private final MailTemplateGetService mailTemplateGetService;
     private final MailTemplateUpdateService mailTemplateUpdateService;
@@ -35,8 +33,8 @@ public class MailTemplateManageUseCase {
     private final ClubManagerAuthService clubManagerAuthService;
 
     @Transactional
-    public void save(MailTemplateSaveRequest dto, UUID clubId, Long userId) {
-        Club club = checkAuthorityByClub(clubId.toString(), userId);
+    public void save(MailTemplateSaveRequest dto, UUID clubId, User user) {
+        Club club = checkAuthorityByClub(clubId.toString(), user);
 
         mailTemplateSaveService.save(dto, club);
     }
@@ -53,30 +51,28 @@ public class MailTemplateManageUseCase {
     }
 
     @Transactional
-    public void update(MailTemplateUpdateRequest dto, UUID templateId, Long userId) {
-        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
+    public void update(MailTemplateUpdateRequest dto, UUID templateId, User user) {
+        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, user);
 
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
     }
 
     @Transactional
-    public void delete(UUID templateId, Long userId) {
-        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, userId);
+    public void delete(UUID templateId, User user) {
+        MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, user);
 
         mailTemplateDeleteService.delete(mailTemplate);
     }
 
-    private Club checkAuthorityByClub(String clubId, Long userId) {
+    private Club checkAuthorityByClub(String clubId, User manager) {
         Club club = clubGetService.find(clubId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(club, manager);
 
         return club;
     }
 
-    private MailTemplate checkAuthorityByMailTemplate(UUID templateId, Long userId) {
+    private MailTemplate checkAuthorityByMailTemplate(UUID templateId, User manager) {
         MailTemplate mailTemplate = mailTemplateGetService.findFromLocal(templateId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(mailTemplate.getClub(), manager);
 
         return mailTemplate;

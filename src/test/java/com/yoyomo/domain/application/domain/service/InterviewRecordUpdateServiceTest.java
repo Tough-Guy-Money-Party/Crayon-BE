@@ -63,7 +63,7 @@ class InterviewRecordUpdateServiceTest {
         InterviewRecord savedInterviewRecord = interviewRecordRepository.save(TestFixture.interviewRecord(user));
 
         // when & then
-        assertThatCode(() -> interviewRecordUpdateService.delete(savedInterviewRecord, user.getId()))
+        assertThatCode(() -> interviewRecordUpdateService.delete(savedInterviewRecord, user))
                 .doesNotThrowAnyException();
         assertThat(interviewRecordRepository.findById(savedInterviewRecord.getId())).isEmpty();
     }
@@ -78,7 +78,7 @@ class InterviewRecordUpdateServiceTest {
         User newUser = userRepository.save(TestFixture.user());
 
         // when & then
-        assertThatThrownBy(() -> interviewRecordUpdateService.delete(interviewRecord, newUser.getId()))
+        assertThatThrownBy(() -> interviewRecordUpdateService.delete(interviewRecord, newUser))
                 .isInstanceOf(AccessDeniedException.class);
     }
 
@@ -92,7 +92,7 @@ class InterviewRecordUpdateServiceTest {
         User newUser = userRepository.save(TestFixture.user());
 
         // when & then
-        assertThatThrownBy(() -> interviewRecordUpdateService.update(interviewRecord, newUser.getId(), "newContent"))
+        assertThatThrownBy(() -> interviewRecordUpdateService.update(interviewRecord, newUser, "newContent"))
                 .isInstanceOf(AccessDeniedException.class);
     }
 }

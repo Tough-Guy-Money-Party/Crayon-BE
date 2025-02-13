@@ -5,7 +5,6 @@ import com.yoyomo.domain.user.application.mapper.UserMapper;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.service.UserGetService;
 import com.yoyomo.domain.user.domain.service.UserSaveService;
-import com.yoyomo.domain.user.exception.UserNotFoundException;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.jwt.presentation.JwtResponse;
 import com.yoyomo.global.config.kakao.KakaoServiceNew;
@@ -26,7 +25,7 @@ public class UserManageUsecase {
     private final UserSaveService userSaveService;
     private final KakaoServiceNew kakaoServiceNew;
     private final JwtProvider jwtProvider;
-    private final UserMapper mapper;
+    private final UserMapper userMapper;
 
     public UserResponseDTO.Response authenticate(String code) {
         KakaoTokenResponse tokenResponse = kakaoServiceNew.getToken(code);
@@ -47,7 +46,7 @@ public class UserManageUsecase {
         JwtResponse tokenDto = getTokenDto(user);
         user.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return mapper.toResponseDTO(user, tokenDto);
+        return userMapper.toResponseDTO(user, tokenDto);
     }
 
     private UserResponseDTO.Response registerMemberIfNew(KakaoUserInfoResponse userInfo) {
@@ -61,13 +60,13 @@ public class UserManageUsecase {
     }
 
     private UserResponseDTO.Response registerNewUser(KakaoAccount account) {
-        User user = mapper.from(account);
+        User user = userMapper.from(account);
         userSaveService.save(user);
 
         JwtResponse tokenDto = getTokenDto(user);
         user.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return mapper.toResponseDTO(user, tokenDto);
+        return userMapper.toResponseDTO(user, tokenDto);
     }
 
     private UserResponseDTO.Response getUserResponse(String email) {
@@ -76,12 +75,12 @@ public class UserManageUsecase {
         JwtResponse tokenDto = getTokenDto(user);
         user.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return mapper.toResponseDTO(user, tokenDto);
+        return userMapper.toResponseDTO(user, tokenDto);
     }
 
     private JwtResponse getTokenDto(User user) {
         return new JwtResponse(
-                jwtProvider.createAccessToken(user.getId(), user.getEmail()),
+                jwtProvider.createAccessToken(user.getId()),
                 jwtProvider.createRefreshToken(user.getId())
         );
     }
@@ -90,8 +89,7 @@ public class UserManageUsecase {
         String refreshToken = jwtProvider.extractRefreshToken(token);
         jwtProvider.validateToken(refreshToken);
 
-        Long userId = jwtProvider.extractId(refreshToken)
-                .orElseThrow(UserNotFoundException::new);
+        Long userId = jwtProvider.extractId(refreshToken);
 
         return Pair.of(userId, refreshToken);
     }

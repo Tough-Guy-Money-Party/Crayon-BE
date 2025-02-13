@@ -56,8 +56,6 @@ public class Application extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.BEFORE_EVALUATION;
 
-    private String answerId;
-
     @Column(nullable = false, name = "recruitment_id")
     private UUID recruitmentId;
 
@@ -77,14 +75,6 @@ public class Application extends BaseEntity {
 
     public void addInterview(Interview interview) {
         this.interview = interview;
-    }
-
-    public void addAnswer(String answerId) {
-        this.answerId = answerId;
-    }
-
-    public void evaluate(Status status) {
-        this.status = status;
     }
 
     public void delete() {

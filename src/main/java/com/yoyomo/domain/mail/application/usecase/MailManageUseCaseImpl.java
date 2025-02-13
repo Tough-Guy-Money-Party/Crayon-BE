@@ -20,6 +20,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_
 @Service
 @RequiredArgsConstructor
 public class MailManageUseCaseImpl {
+    
     private static final int PAGE_SIZE = 100;
 
     private final MailSaveService mailSaveService;
@@ -63,13 +65,13 @@ public class MailManageUseCaseImpl {
     private String mailSourceAddress;
 
     @Transactional
-    public void reserve(MailRequest dto, long userId) {
-        create(dto, userId);
+    public void reserve(MailRequest dto, User user) {
+        create(dto, user);
     }
 
     @Transactional
-    public void direct(MailRequest dto, long userId) {
-        create(dto, userId);
+    public void direct(MailRequest dto, User user) {
+        create(dto, user);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
 
         lambdaInvocation.thenRun(() ->
@@ -80,8 +82,8 @@ public class MailManageUseCaseImpl {
     }
 
     @Transactional
-    public void cancel(long processId, long userId) {
-        Process process = checkAuthorityByProcessId(processId, userId);
+    public void cancel(long processId, User user) {
+        Process process = checkAuthorityByProcessId(processId, user);
 
         process.checkMailScheduled();
 
@@ -94,8 +96,8 @@ public class MailManageUseCaseImpl {
     }
 
     @Transactional
-    public void update(long processId, MailUpdateRequest dto, long userId) {
-        Process process = checkAuthorityByProcessId(processId, userId);
+    public void update(long processId, MailUpdateRequest dto, User user) {
+        Process process = checkAuthorityByProcessId(processId, user);
 
         process.checkMailScheduled();
 
@@ -111,10 +113,10 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private void create(MailRequest dto, long userId) {
+    private void create(MailRequest dto, User user) {
         long processId = dto.processId();
 
-        Process process = checkAuthorityByProcessId(processId, userId);
+        Process process = checkAuthorityByProcessId(processId, user);
 
         process.reserve(dto.scheduledTime());
 
@@ -161,9 +163,9 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private Process checkAuthorityByProcessId(Long processId, long userId) {
+    private Process checkAuthorityByProcessId(Long processId, User user) {
         Process process = processGetService.find(processId);
-        clubManagerAuthService.checkAuthorization(process, userId);
+        clubManagerAuthService.checkAuthorization(process, user);
 
         return process;
     }

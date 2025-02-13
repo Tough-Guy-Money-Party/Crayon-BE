@@ -31,9 +31,8 @@ public class InterviewRecordManageUseCase {
     private final InterviewRecordUpdateService interviewRecordUpdateService;
 
     @Transactional
-    public InterviewRecordResponse saveInterviewRecord(UUID applicationId, long managerId, InterviewRecordRequest request) {
+    public InterviewRecordResponse saveInterviewRecord(UUID applicationId, User manager, InterviewRecordRequest request) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(managerId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         InterviewRecord interviewRecord = request.toInterviewRecord(manager, application.getId());
@@ -43,9 +42,8 @@ public class InterviewRecordManageUseCase {
     }
 
     @Transactional(readOnly = true)
-    public List<InterviewRecordDetailResponse> readAll(UUID applicationId, long managerId) {
+    public List<InterviewRecordDetailResponse> readAll(UUID applicationId, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(managerId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         List<InterviewRecord> interviewRecords = interviewRecordGetService.findAll(applicationId);
@@ -56,14 +54,14 @@ public class InterviewRecordManageUseCase {
     }
 
     @Transactional
-    public void delete(long interviewRecordId, long managerId) {
+    public void delete(long interviewRecordId, User manager) {
         InterviewRecord interviewRecord = interviewRecordGetService.find(interviewRecordId);
-        interviewRecordUpdateService.delete(interviewRecord, managerId);
+        interviewRecordUpdateService.delete(interviewRecord, manager);
     }
 
     @Transactional
-    public void update(long interviewRecordId, long managerId, InterviewRecordRequest request) {
+    public void update(long interviewRecordId, User manager, InterviewRecordRequest request) {
         InterviewRecord interviewRecord = interviewRecordGetService.find(interviewRecordId);
-        interviewRecordUpdateService.update(interviewRecord, managerId, request.content());
+        interviewRecordUpdateService.update(interviewRecord, manager, request.content());
     }
 }

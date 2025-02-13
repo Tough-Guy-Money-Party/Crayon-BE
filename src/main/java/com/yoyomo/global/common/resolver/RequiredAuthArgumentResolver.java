@@ -1,7 +1,6 @@
 package com.yoyomo.global.common.resolver;
 
-import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.global.common.annotation.CurrentUser;
+import com.yoyomo.global.common.annotation.RequiredAuth;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +13,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
+public class RequiredAuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtProvider jwtProvider;
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {   // parameter가 해당 resolver를 지원하는 여부 확인
-        boolean hasAnnotation = parameter.hasParameterAnnotation(CurrentUser.class);    // @CurrentUser이 존재하는가?
-        boolean parameterType = User.class.isAssignableFrom(parameter.getParameterType());  // 파라미터 타입이 Long을 상속하거나 구현하였는가?
-        return hasAnnotation && parameterType;  // 둘 다 충족할 시 true
+    public boolean supportsParameter(MethodParameter parameter) {
+        boolean hasAnnotation = parameter.hasParameterAnnotation(RequiredAuth.class);
+        boolean parameterType = Long.class.isAssignableFrom(parameter.getParameterType());
+        return hasAnnotation && parameterType;
     }
 
     @Override

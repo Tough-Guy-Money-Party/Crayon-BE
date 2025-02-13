@@ -17,8 +17,8 @@ public interface ClubMangerRepository extends JpaRepository<ClubManager, Long> {
 
     boolean existsByClubAndManager(Club club, User manager);
 
-    @Query("SELECT cm.club FROM ClubManager cm WHERE cm.manager.id = :managerId")
-    List<Club> findAllMyClubs(long managerId);
+    @Query("SELECT cm.club FROM ClubManager cm WHERE cm.manager = :manager")
+    List<Club> findAllMyClubs(User manager);
 
     List<ClubManager> findAllByClubId(UUID clubId);
 

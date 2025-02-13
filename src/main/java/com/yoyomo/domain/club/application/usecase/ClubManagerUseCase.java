@@ -15,7 +15,6 @@ import com.yoyomo.domain.club.domain.service.ClubValidateService;
 import com.yoyomo.domain.user.application.dto.response.UserResponseDTO;
 import com.yoyomo.domain.user.application.mapper.ManagerMapper;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClubManagerUseCase {
 
-    private final UserGetService userGetService;
     private final ClubGetService clubGetService;
     private final ClubUpdateService clubUpdateService;
     private final ClubValidateService clubValidateService;
@@ -37,8 +35,8 @@ public class ClubManagerUseCase {
     private final ClubManagerGetService clubManagerGetService;
     private final ManagerMapper managerMapper;
 
-    public List<UserResponseDTO.ManagerInfo> getManagers(UUID clubId, Long userId) {
-        clubValidateService.checkAuthority(clubId, userId);
+    public List<UserResponseDTO.ManagerInfo> getManagers(UUID clubId, User user) {
+        clubValidateService.checkAuthority(clubId, user);
         List<ClubManager> clubManagers = clubManagerGetService.readAllManagers(clubId);
 
         return clubManagers.stream()
@@ -48,40 +46,39 @@ public class ClubManagerUseCase {
     }
 
     @Transactional
-    public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, Long userId) {
+    public ClubResponseDTO.Participation participate(ClubRequestDTO.Participation dto, User user) {
         Club club = clubGetService.findByCode(dto.code());
-        User user = userGetService.find(userId);
 
         clubManagerSaveService.saveManager(user, club);
         return clubMapper.toParticipation(club);
     }
 
-    public ClubResponseDTO.Code readCode(String clubId, Long userId) {
-        Club club = clubValidateService.checkAuthority(clubId, userId);
+    public ClubResponseDTO.Code readCode(String clubId, User user) {
+        Club club = clubValidateService.checkAuthority(clubId, user);
 
         return new ClubResponseDTO.Code(club.getCode());
     }
 
     @Transactional
-    public ClubResponseDTO.Code updateCode(String clubId, Long userId) {
-        Club club = clubValidateService.checkAuthority(clubId, userId);
+    public ClubResponseDTO.Code updateCode(String clubId, User user) {
+        Club club = clubValidateService.checkAuthority(clubId, user);
 
         String updatedCode = clubUpdateService.update(club);
         return new ClubResponseDTO.Code(updatedCode);
     }
 
     @Transactional
-    public void deleteManagers(ClubRequestDTO.Delete dto, Long userId) {
-        clubValidateService.checkOwnerAuthority(dto.clubId(), userId);
+    public void deleteManagers(ClubRequestDTO.Delete dto, User user) {
+        clubValidateService.checkOwnerAuthority(dto.clubId(), user);
 
-        clubManagerDeleteService.delete(dto.clubId(), dto.userIds(), userId);
+        clubManagerDeleteService.delete(dto.clubId(), dto.userIds(), user);
     }
 
     @Transactional
-    public void updateOwner(ClubManagerUpdateDto dto, Long userId, UUID clubId) {
-        Club club = clubValidateService.checkOwnerAuthority(clubId, userId);
+    public void updateOwner(ClubManagerUpdateDto dto, User user, UUID clubId) {
+        Club club = clubValidateService.checkOwnerAuthority(clubId, user);
 
-        ClubManager owner = clubManagerGetService.findByUserId(club, userId);
+        ClubManager owner = clubManagerGetService.findByUserId(club, user);
         ClubManager manager = clubManagerGetService.findByUserId(club, dto.userId());
 
         manager.toOwner();

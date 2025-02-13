@@ -26,7 +26,7 @@ public class ProcessResponseDTO {
             LocalDateTime mailScheduledAt
     ) {
 
-        public static ProcessResponseDTO.Response toResponse(Process process, long applicantCount, ProcessStep processStep) {
+        public static ProcessResponseDTO.Response toResponse(Process process, long applicantCount) {
             return Response.builder()
                     .id(process.getId())
                     .stage(process.getStage())
@@ -37,7 +37,7 @@ public class ProcessResponseDTO {
                     .announceStartAt(process.getAnnounceStartAt())
                     .announceEndAt(process.getAnnounceEndAt())
                     .applicantCount((int) applicantCount)
-                    .processStep(processStep)
+                    .processStep(process.getProcessStep())
                     .mailScheduledAt(process.getMailScheduledAt())
                     .build();
         }
