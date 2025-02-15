@@ -24,7 +24,7 @@ spring:
       password: ${PASSWORD}
       authentication-database: admin
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: redis-container
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASS}
       database: 0
