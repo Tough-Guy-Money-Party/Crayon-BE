@@ -9,7 +9,6 @@ import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,18 +19,16 @@ public class InterviewManageUseCase {
     private final InterviewMapper interviewMapper;
     private final ApplicationUpdateService applicationUpdateService;
     private final ApplicationGetService applicationGetService;
-    private final UserGetService userGetService;
     private final ClubManagerAuthService clubManagerAuthService;
 
-    public void saveInterview(String applicationId, InterviewRequestDTO.Save dto, Long userId) {
-        Application application = checkAuthorityByApplication(applicationId, userId);
+    public void saveInterview(String applicationId, InterviewRequestDTO.Save dto, User user) {
+        Application application = checkAuthorityByApplication(applicationId, user);
         Interview interview = interviewMapper.from(dto);
         applicationUpdateService.update(application, interview);
     }
 
-    private Application checkAuthorityByApplication(String applicationId, Long userId) {
+    private Application checkAuthorityByApplication(String applicationId, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         return application;

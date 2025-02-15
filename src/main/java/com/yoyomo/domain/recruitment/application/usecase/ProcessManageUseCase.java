@@ -10,6 +10,7 @@ import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,16 +43,15 @@ public class ProcessManageUseCase {
         기존 로직이 ApplicationDTO.Detail로 데이터 변환을 하고 있었는데 필요성을 느끼지 못해 Response로 간소화 하여 구현하였음
     */
     @Transactional(readOnly = true)
-    public List<Response> readAll(UUID recruitmentId, long userId) {
-        clubManagerAuthService.checkAuthorization(recruitmentId, userId);
+    public List<Response> readAll(UUID recruitmentId, User user) {
+        clubManagerAuthService.checkAuthorization(recruitmentId, user);
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         List<Process> processes = processGetService.findAll(recruitment);
         Map<Process, Long> processApplicantCount = applicationGetService.countInProcesses(recruitment.getId(),
                 processes);
 
         return processes.stream()
-                .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L),
-                        process.getProcessStep()))
+                .map(process -> Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L)))
                 .sorted(Comparator.comparingInt(Response::stage))
                 .toList();
     }
@@ -68,8 +68,8 @@ public class ProcessManageUseCase {
     }
 
     @Transactional
-    public void updateStep(UUID recruitmentId, Long processId, ProcessStep step, Long userId) {
-        clubManagerAuthService.checkAuthorization(recruitmentId, userId);
+    public void updateStep(UUID recruitmentId, Long processId, ProcessStep step, User user) {
+        clubManagerAuthService.checkAuthorization(recruitmentId, user);
 
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
         Process process = processGetService.find(processId);

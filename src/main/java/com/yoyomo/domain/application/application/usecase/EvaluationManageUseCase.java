@@ -18,13 +18,12 @@ import com.yoyomo.domain.application.domain.service.EvaluationSaveService;
 import com.yoyomo.domain.application.domain.service.EvaluationUpdateService;
 import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
-import com.yoyomo.domain.mail.application.usecase.MailManageUseCaseImpl;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class EvaluationManageUseCase {
 
     private final ApplicationGetService applicationGetService;
     private final ApplicationUpdateService applicationUpdateService;
-    private final UserGetService userGetService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final EvaluationSaveService evaluationSaveService;
     private final EvaluationGetService evaluationGetService;
@@ -41,12 +39,10 @@ public class EvaluationManageUseCase {
     private final EvaluationMemoGetService evaluationMemoGetService;
     private final ProcessResultGetService processResultGetService;
     private final EvaluationMemoUpdateService evaluationMemoUpdateService;
-    private final MailManageUseCaseImpl mailManageUseCaseImpl;
 
     @Transactional(readOnly = true)
-    public EvaluationResponses findEvaluations(String applicationId, long userId) {
+    public EvaluationResponses findEvaluations(String applicationId, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
         List<ProcessResult> processResult = processResultGetService.find(application);
 
@@ -57,9 +53,8 @@ public class EvaluationManageUseCase {
     }
 
     @Transactional
-    public void saveRating(String applicationId, EvaluationRequest request, long userId) {
+    public void saveRating(String applicationId, EvaluationRequest request, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         Evaluation evaluation = request.toEvaluation(manager, application);
@@ -67,24 +62,22 @@ public class EvaluationManageUseCase {
     }
 
     @Transactional
-    public void updateRating(long evaluationId, EvaluationRequest request, long userId) {
+    public void updateRating(long evaluationId, EvaluationRequest request, User manager) {
         Evaluation evaluation = evaluationGetService.find(evaluationId);
-        evaluationUpdateService.update(evaluation, request.rating(), userId);
+        evaluationUpdateService.update(evaluation, request.rating(), manager);
     }
 
     @Transactional
-    public void updateStatus(String applicationId, ApplicationStatusRequest request, long userId) {
+    public void updateStatus(String applicationId, ApplicationStatusRequest request, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         applicationUpdateService.evaluate(application, request.status());
     }
 
     @Transactional
-    public void createMemo(String applicationId, EvaluationMemoRequest request, long userId) {
+    public void createMemo(String applicationId, EvaluationMemoRequest request, User manager) {
         Application application = applicationGetService.find(applicationId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
 
         EvaluationMemo evaluationMemo = request.toEvaluationMemo(manager, application);
@@ -92,21 +85,19 @@ public class EvaluationManageUseCase {
     }
 
     @Transactional
-    public void deleteMemo(long memoId, long managerId) {
-        User manager = userGetService.find(managerId);
+    public void deleteMemo(long memoId, User manager) {
         evaluationMemoUpdateService.delete(memoId, manager);
     }
 
     @Transactional
-    public void deleteRating(long evaluationId, long managerId) {
+    public void deleteRating(long evaluationId, User manager) {
         Evaluation evaluation = evaluationGetService.find(evaluationId);
 
-        evaluationUpdateService.delete(evaluation, managerId);
+        evaluationUpdateService.delete(evaluation, manager);
     }
 
     @Transactional
-    public void updateMemo(long memoId, EvaluationMemoRequest request, long managerId) {
-        User manager = userGetService.find(managerId);
+    public void updateMemo(long memoId, EvaluationMemoRequest request, User manager) {
         evaluationMemoUpdateService.update(request.memo(), memoId, manager);
     }
 }

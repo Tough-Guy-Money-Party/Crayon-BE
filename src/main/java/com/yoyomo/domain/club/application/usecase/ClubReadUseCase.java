@@ -4,6 +4,7 @@ import com.yoyomo.domain.club.application.dto.response.ClubResponseDTO;
 import com.yoyomo.domain.club.application.mapper.ClubMapper;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class ClubReadUseCase {
     private final ClubGetService clubGetService;
     private final ClubMapper clubMapper;
 
-    public List<ClubResponseDTO.Response> readAll(long managerId) {
-        List<Club> myClubs = clubGetService.findAllByManagerId(managerId);
+    public List<ClubResponseDTO.Response> readAll(User manager) {
+        List<Club> myClubs = clubGetService.findAllByManager(manager);
 
         return myClubs.stream()
                 .map(clubMapper::toResponse)

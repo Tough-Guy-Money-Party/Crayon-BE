@@ -1,11 +1,7 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
-
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
+import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -17,6 +13,7 @@ import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponseDTO
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessDeleteService;
+import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.recruitment.domain.service.ProcessSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentDeleteService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentGetService;
@@ -24,20 +21,26 @@ import com.yoyomo.domain.recruitment.domain.service.RecruitmentSaveService;
 import com.yoyomo.domain.recruitment.domain.service.RecruitmentUpdateService;
 import com.yoyomo.domain.recruitment.exception.RecruitmentDeletedException;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.domain.user.domain.service.UserGetService;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Info;
+import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+
 @Service
 @RequiredArgsConstructor
 public class RecruitmentManageUseCase {
 
-    private final UserGetService userGetService;
     private final ClubGetService clubGetService;
 
     private final RecruitmentGetService recruitmentGetService;
@@ -54,11 +57,12 @@ public class RecruitmentManageUseCase {
 
     private final ApplicationDeleteService applicationDeleteService;
     private final ProcessSaveService processSaveService;
+    private final ProcessGetService processGetService;
+    private final ApplicationGetService applicationGetService;
 
     @Transactional
-    public void save(Save dto, Long userId) {
+    public void save(Save dto, User manager) {
         Club club = clubGetService.find(dto.clubId());
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(club, manager);
 
         Recruitment recruitment = recruitmentSaveService.save(dto, club);
@@ -66,12 +70,19 @@ public class RecruitmentManageUseCase {
         recruitment.addProcesses(processes);
     }
 
-    public DetailResponse read(UUID recruitmentId, long userId) {
+    @Transactional(readOnly = true)
+    public DetailResponse read(UUID recruitmentId) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        List<ProcessResponseDTO.Response> processes = processManageUseCase.readAll(recruitmentId, userId);
-        Info form = formManageUseCase.readForm(recruitment.getFormId());
+        List<Process> processes = processGetService.findAll(recruitment);
+        Map<Process, Long> processApplicantCount = applicationGetService.countInProcesses(recruitment.getId(),
+                processes);
+        List<ProcessResponseDTO.Response> processResponses = processes.stream()
+                .map(process -> ProcessResponseDTO.Response.toResponse(process, processApplicantCount.getOrDefault(process, 0L)))
+                .sorted(Comparator.comparingInt(ProcessResponseDTO.Response::stage))
+                .toList();
 
-        return DetailResponse.toDetailResponse(recruitment, processes, form);
+        Info form = formManageUseCase.readForm(recruitment.getFormId());
+        return DetailResponse.toDetailResponse(recruitment, processResponses, form);
     }
 
     @Transactional(readOnly = true)
@@ -82,39 +93,38 @@ public class RecruitmentManageUseCase {
     }
 
     @Transactional
-    public void update(String recruitmentId, RecruitmentUpdateRequest request, long userId) {
-        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+    public void update(String recruitmentId, RecruitmentUpdateRequest request, User user) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
         recruitment.checkModifiable();
         recruitment.update(request.title(), request.position(), request.startAt(), request.endAt());
     }
 
     @Transactional
-    public void close(String recruitmentId, Long userId) {
-        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+    public void close(String recruitmentId, User user) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
         recruitmentUpdateService.delete(recruitment);
     }
 
     @Transactional
-    public void activate(String recruitmentId, String formId, Long userId) {
+    public void activate(String recruitmentId, String formId, User user) {
         checkDeletedRecruitment(recruitmentId);
-        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
 
         Form form = formGetService.find(formId);
         recruitmentUpdateService.update(recruitment, form.getId());
     }
 
     @Transactional
-    public void cancel(String recruitmentId, Long userId) {
-        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+    public void cancel(String recruitmentId, User user) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
 
         applicationDeleteService.deleteByRecruitmentId(recruitment);
         processDeleteService.deleteAllByRecruitment(recruitment);
         recruitmentDeleteService.delete(recruitment);
     }
 
-    private Recruitment checkAuthorityByRecruitment(String recruitmentId, Long userId) {
+    private Recruitment checkAuthorityByRecruitment(String recruitmentId, User manager) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
-        User manager = userGetService.find(userId);
         clubManagerAuthService.checkAuthorization(recruitment.getId(), manager);
 
         return recruitment;
@@ -128,8 +138,8 @@ public class RecruitmentManageUseCase {
     }
 
     @Transactional
-    public void replicate(String recruitmentId, long userId) {
-        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, userId);
+    public void replicate(String recruitmentId, User user) {
+        Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
         Recruitment newRecruitment = Recruitment.replicate(recruitment);
 
         List<Process> newProcesses = recruitment.getProcesses()
