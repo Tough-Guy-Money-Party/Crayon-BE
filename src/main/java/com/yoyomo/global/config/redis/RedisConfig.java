@@ -34,6 +34,18 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisConnectionFactory queueConnectionFactory() {
+        RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
+        redisConfiguration.setHostName(host);
+        redisConfiguration.setPort(port);
+        redisConfiguration.setPassword(password);
+        redisConfiguration.setDatabase(1);
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration);
+        lettuceConnectionFactory.afterPropertiesSet();
+        return lettuceConnectionFactory;
+    }
+
+    @Bean
     public RedisTemplate<String, String> redisTemplate() {
 
         // redisTemplate를 받아와서 set, get, delete를 사용 //String으로 수정
@@ -50,12 +62,9 @@ public class RedisConfig {
     @Bean
     @Qualifier("queueRedisTemplate")
     public RedisTemplate<String, String> queueRedisTemplate() {
-        LettuceConnectionFactory queueConnectionFactory = new LettuceConnectionFactory();
-        queueConnectionFactory.setDatabase(1);
-        queueConnectionFactory.afterPropertiesSet();
 
         RedisTemplate<String, String> template = new RedisTemplate<>();
-        template.setConnectionFactory(queueConnectionFactory);
+        template.setConnectionFactory(queueConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
         return template;
