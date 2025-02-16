@@ -11,7 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000",
-                        "https://test.api.crayon.land", "http://test.api.crayon.land",
+                        "https://test.api.crayon.land", "http://test.api.crayon.land", "https://test.crayon.land",
+                        "http://test.crayon.land",
                         "https://crayon.land", "http://crayon.land",
                         "https://www.crayon.land", "http://www.crayon.land"
                 )
