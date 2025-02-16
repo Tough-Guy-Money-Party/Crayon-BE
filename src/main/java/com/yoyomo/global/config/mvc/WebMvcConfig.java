@@ -23,7 +23,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/user/**",
-                        "/forms",
                         "/health-check",
                         "/general-for-react",
                         "/api/notion/page/**",

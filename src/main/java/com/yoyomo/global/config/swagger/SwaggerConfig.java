@@ -1,7 +1,6 @@
 package com.yoyomo.global.config.swagger;
 
 import com.yoyomo.global.common.annotation.CurrentUser;
-import com.yoyomo.global.common.annotation.RequiredAuth;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -17,7 +16,6 @@ public class SwaggerConfig {
 
     static {
         SpringDocUtils.getConfig().addAnnotationsToIgnore(CurrentUser.class);
-        SpringDocUtils.getConfig().addAnnotationsToIgnore(RequiredAuth.class);
     }
 
     @Bean
