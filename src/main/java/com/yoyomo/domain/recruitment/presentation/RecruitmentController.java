@@ -86,7 +86,7 @@ public class RecruitmentController {
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
 
-    @GetMapping("all/{clubId}")
+    @GetMapping("/all/{clubId}")
     @Operation(summary = "모집 목록 조회")
     public ResponseDto<Page<Response>> readAll(@RequestParam(defaultValue = "0") Integer page,
                                                @RequestParam(defaultValue = "7") Integer size,
