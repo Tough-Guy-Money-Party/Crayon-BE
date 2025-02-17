@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/user/**",
                         "/health-check",
-                        "/general-for-react",
+                        "/landing/general-for-react",
                         "/api/notion/page/**",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
