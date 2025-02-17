@@ -1,15 +1,15 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Save;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.Update;
+
 import com.yoyomo.domain.recruitment.application.mapper.ProcessMapper;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,10 @@ public class ProcessSaveService {
                         .map(save -> processMapper.from(save, recruitment))
                         .toList()
         );
+    }
+
+    public void saveAll(List<Process> processes) {
+        processRepository.saveAll(processes);
     }
 
     public Process save(Update dto, Recruitment recruitment) {

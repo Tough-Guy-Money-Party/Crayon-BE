@@ -9,6 +9,7 @@ import com.yoyomo.domain.landing.application.mapper.LandingMapper;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
+import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,18 +25,18 @@ public class LandingStyleManagementUsecase {
     private final ClubValidateService clubValidateService;
 
     @Transactional
-    public void update(LandingRequestDTO.Style dto, long userId) {
+    public void update(LandingRequestDTO.Style dto, User user) {
         Club club = clubGetService.find(dto.clubId());
-        clubValidateService.checkOwnerAuthority(club.getId(), userId);
+        clubValidateService.checkOwnerAuthority(club.getId(), user);
 
         Landing landing = landingGetService.find(club);
         landingUpdateService.update(landing, dto);
     }
 
     @Transactional(readOnly = true)
-    public LandingResponseDTO.Style read(String clubId, long userId) {
+    public LandingResponseDTO.Style read(String clubId, User user) {
         Club club = clubGetService.find(clubId);
-        clubValidateService.checkAuthority(club.getId(), userId);
+        clubValidateService.checkAuthority(club.getId(), user);
 
         Landing landing = landingGetService.find(club);
         return landingMapper.toStyleResponse(club, landing);

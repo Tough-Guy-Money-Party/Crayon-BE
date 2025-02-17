@@ -5,10 +5,10 @@ import com.yoyomo.domain.form.application.dto.request.FormRequestDTO.Update;
 import com.yoyomo.domain.form.application.dto.response.FormDetailResponse;
 import com.yoyomo.domain.form.application.dto.response.FormResponseDTO.Response;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +45,10 @@ public class FormController {
 
     @PostMapping("/{clubId}")
     @Operation(summary = "폼 생성")    // 수정: 이미지 로직 추가
-    public ResponseDto<SaveResponse> save(@RequestBody @Valid Save dto, @PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
-        SaveResponse response = formManageUseCase.create(dto, clubId, userId);
+    public ResponseDto<SaveResponse> save(@RequestBody @Valid Save dto,
+                                          @PathVariable String clubId,
+                                          @CurrentUser User user) {
+        SaveResponse response = formManageUseCase.create(dto, clubId, user);
 
         return ResponseDto.of(OK.value(), SUCCESS_CREATE.getMessage(), response);
     }
@@ -61,42 +63,49 @@ public class FormController {
 
     @GetMapping("/all/{clubId}")
     @Operation(summary = "내 동아리의 폼 목록 조회")
-    public ResponseDto<List<Response>> readAll(@CurrentUser @Parameter(hidden = true) Long userId, @PathVariable String clubId) {
-        List<Response> responses = formManageUseCase.readAll(userId, clubId);
+    public ResponseDto<List<Response>> readAll(@CurrentUser User user, @PathVariable String clubId) {
+        List<Response> responses = formManageUseCase.readAll(user, clubId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), responses);
     }
 
     @PutMapping("/{formId}")
     @Operation(summary = "폼 수정")
-    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto, @CurrentUser @Parameter(hidden = true) Long userId) {
-        formManageUseCase.update(formId, dto, userId);
+    public ResponseDto<Void> update(@PathVariable String formId, @RequestBody @Valid Update dto, @CurrentUser User user) {
+        formManageUseCase.update(formId, dto, user);
 
         return ResponseDto.of(OK.value(), SUCCESS_UPDATE.getMessage());
     }
 
     @DeleteMapping("/{formId}")
     @Operation(summary = "폼 삭제")
-    public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser @Parameter(hidden = true) Long userId) {
-        formManageUseCase.delete(formId, userId);
+    public ResponseDto<Void> delete(@PathVariable String formId, @CurrentUser User user) {
+        formManageUseCase.delete(formId, user);
 
         return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
     }
 
     @GetMapping("/{clubId}/search")
     @Operation(summary = "내 동아리의 폼 목록 검색")
-    public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser @Parameter(hidden = true) Long userId) {
-        List<Response> responses = formManageUseCase.search(keyword, clubId, userId);
+    public ResponseDto<List<Response>> search(@RequestParam String keyword, @PathVariable String clubId, @CurrentUser User user) {
+        List<Response> responses = formManageUseCase.search(keyword, clubId, user);
 
         return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
     }
 
     @GetMapping
     @Operation(summary = "지원서 폼 조회")
-    public ResponseDto<FormDetailResponse> read(@RequestParam UUID recruitmentId,
-                                                @CurrentUser @Parameter(hidden = true) Long userId) {
-        FormDetailResponse response = formManageUseCase.read(recruitmentId, userId);
+    public ResponseDto<FormDetailResponse> read(@RequestParam UUID recruitmentId) {
+        FormDetailResponse response = formManageUseCase.read(recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
+    }
+
+    @PostMapping("/replication/{formId}")
+    @Operation(summary = "지원서 양식 복제")
+    public ResponseDto<Void> replicate(@PathVariable String formId,
+                                       @CurrentUser User user) {
+        formManageUseCase.replicate(formId, user);
+        return ResponseDto.of(OK.value(), SUCCESS_CREATE.getMessage());
     }
 }

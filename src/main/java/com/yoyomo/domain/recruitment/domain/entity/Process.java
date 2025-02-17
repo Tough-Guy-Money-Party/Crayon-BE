@@ -1,5 +1,6 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import static com.yoyomo.domain.recruitment.domain.entity.enums.ProcessStep.EVALUATION;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.CANNOT_UPDATE_TO_EVALUATION_STEP;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.PROCESS_STEP_CANNOT_UPDATE;
 
@@ -44,7 +45,7 @@ public class Process extends BaseEntity {
     @Builder.Default
     @Column(nullable = false, name = "process_step")
     @Enumerated(EnumType.STRING)
-    private ProcessStep processStep = ProcessStep.EVALUATION;
+    private ProcessStep processStep = EVALUATION;
 
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -62,6 +63,23 @@ public class Process extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "recruitment_id")
     private Recruitment recruitment;
+
+    public static Process replicate(Process process) {
+        return Process.builder()
+                .title(process.title)
+                .stage(process.stage)
+                .processStep(EVALUATION)
+                .type(process.type)
+                .startAt(process.startAt)
+                .endAt(process.endAt)
+                .announceStartAt(process.announceStartAt)
+                .announceEndAt(process.announceEndAt)
+                .build();
+    }
+
+    public void addRecruitment(Recruitment recruitment) {
+        this.recruitment = recruitment;
+    }
 
     public void updateStep(ProcessStep step) {
         this.processStep = step;
@@ -94,7 +112,7 @@ public class Process extends BaseEntity {
             throw new ProcessStepUnModifiableException(PROCESS_STEP_CANNOT_UPDATE);
         }
 
-        if (step == ProcessStep.EVALUATION && this.isAfterMailSent()) {
+        if (step == EVALUATION && this.isAfterMailSent()) {
             throw new ProcessStepUnModifiableException(CANNOT_UPDATE_TO_EVALUATION_STEP);
         }
     }

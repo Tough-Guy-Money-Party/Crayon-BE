@@ -1,7 +1,6 @@
 package com.yoyomo.domain.club.domain.service;
 
 import com.yoyomo.domain.club.domain.entity.Club;
-import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -14,7 +13,6 @@ import com.yoyomo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,14 +31,13 @@ public class ClubManagerAuthService {
         checkAuthorization(club, manager);
     }
 
-    public void checkAuthorization(Process process, long userId) {
+    public void checkAuthorization(Process process, User manager) {
         Recruitment recruitment = process.getRecruitment();
 
         if (recruitment == null) {
             throw new RecruitmentNotFoundException();
         }
 
-        User manager = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Club club = recruitment.getClub();
 
         checkAuthorization(club, manager);
@@ -56,13 +53,9 @@ public class ClubManagerAuthService {
     }
 
     public void checkAuthorization(Club club, User manager) {
-        List<User> managers = clubMangerRepository.findAllByClubId(club.getId())
-                .stream()
-                .map(ClubManager::getManager)
-                .toList();
-
-        if (!managers.contains(manager)) {
-            throw new ClubAccessDeniedException();
+        if (clubMangerRepository.existsByClubAndManager(club, manager)) {
+            return;
         }
+        throw new ClubAccessDeniedException();
     }
 }

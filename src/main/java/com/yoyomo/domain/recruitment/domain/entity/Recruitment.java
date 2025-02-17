@@ -1,5 +1,8 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
+
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
@@ -12,26 +15,23 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -71,15 +71,33 @@ public class Recruitment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Type currentProcess = Type.FORM;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     private Club club;
 
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
 
+    public static Recruitment replicate(Recruitment recruitment) {
+        return Recruitment.builder()
+                .generation(recruitment.generation)
+                .title(recruitment.title)
+                .submit(recruitment.submit)
+                .isActive(false)
+                .startAt(recruitment.startAt)
+                .endAt(recruitment.endAt)
+                .currentProcess(Type.FORM)
+                .club(recruitment.club)
+                .processes(new ArrayList<>())
+                .build();
+    }
+
     public void addProcesses(List<Process> processes) {
         this.processes.clear();
+        this.processes.addAll(processes);
+    }
+
+    public void addNewProcesses(List<Process> processes) {
         this.processes.addAll(processes);
     }
 
@@ -148,3 +166,4 @@ public class Recruitment extends BaseEntity {
         this.endAt = endAt;
     }
 }
+
