@@ -1,13 +1,12 @@
 package com.yoyomo.global.config.jwt;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,29 +14,41 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Slf4j
-@Getter
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
-    @Value("${crayon.jwt.key}")
-    private String key;
-
-    @Value("${crayon.jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
-
-    @Value("${crayon.jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
-
-    @Value("${crayon.jwt.access.header}")
-    private String accessHeader;
-
-    @Value("${crayon.jwt.refresh.header}")
-    private String refreshHeader;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
+
+    public JwtProvider(@Value("${crayon.jwt.key}") String key,
+                       @Value("${crayon.jwt.access.expiration}") Long accessTokenExpirationPeriod,
+                       @Value("${crayon.jwt.refresh.expiration}") Long refreshTokenExpirationPeriod,
+                       @Value("${crayon.jwt.access.header}") String accessHeader,
+                       @Value("${crayon.jwt.refresh.header}") String refreshHeader,
+                       @Value("${crayon.jwt.issuer}") String issuer
+    ) {
+        this.key = key;
+        this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
+        this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
+        this.accessHeader = accessHeader;
+        this.refreshHeader = refreshHeader;
+        this.issuer = issuer;
+        this.jwtVerifier = JWT.require(Algorithm.HMAC512(key))
+                .withClaimPresence(ID_CLAIM)
+                .withIssuer(issuer)
+                .build();
+    }
+
+    private final String key;
+    private final Long accessTokenExpirationPeriod;
+    private final Long refreshTokenExpirationPeriod;
+    private final String accessHeader;
+    private final String refreshHeader;
+    private final String issuer;
+    private final JWTVerifier jwtVerifier;
+
 
     public String createAccessToken(Long id) {
         Date now = new Date();
@@ -45,6 +56,7 @@ public class JwtProvider {
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(ID_CLAIM, id)
+                .withIssuer(issuer)
                 .sign(Algorithm.HMAC512(key));
     }
 
@@ -70,24 +82,16 @@ public class JwtProvider {
     }
 
     public Long extractId(String accessToken) {
-        try {
-            return JWT.require(Algorithm.HMAC512(key))
-                    .build()
-                    .verify(accessToken)
-                    .getClaim(ID_CLAIM)
-                    .asLong();
-        } catch (Exception e) {
-            throw new InvalidTokenException();
-        }
+        return validateToken(accessToken)
+                .getClaim(ID_CLAIM)
+                .asLong();
     }
 
-    public void validateToken(String token) {
+    private DecodedJWT validateToken(String token) {
         try {
-            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
-        } catch (TokenExpiredException e) {
-            throw new ExpiredTokenException();
-        } catch (Exception e) {
-            throw new InvalidTokenException();
+            return jwtVerifier.verify(token);
+        } catch (JWTVerificationException e) {
+            throw new InvalidTokenException(e);
         }
     }
 }
