@@ -5,7 +5,9 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
 import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +91,8 @@ public class JwtProvider {
     private DecodedJWT validateToken(String token) {
         try {
             return jwtVerifier.verify(token);
+        } catch (TokenExpiredException e) {
+            throw new ExpiredTokenException();
         } catch (JWTVerificationException e) {
             throw new InvalidTokenException(e);
         }
