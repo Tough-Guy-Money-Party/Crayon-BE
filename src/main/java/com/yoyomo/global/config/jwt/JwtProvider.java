@@ -1,6 +1,7 @@
 package com.yoyomo.global.config.jwt;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Slf4j
 @Component
@@ -21,6 +22,7 @@ public class JwtProvider {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
+    private static final int TOKEN_PREFIX_LENGTH = 7;
 
     public JwtProvider(@Value("${crayon.jwt.key}") String key,
                        @Value("${crayon.jwt.access.expiration}") Long accessTokenExpirationPeriod,
@@ -34,11 +36,12 @@ public class JwtProvider {
         this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
         this.accessHeader = accessHeader;
         this.refreshHeader = refreshHeader;
-        this.issuer = issuer;
         this.jwtVerifier = JWT.require(Algorithm.HMAC512(key))
                 .withClaimPresence(ID_CLAIM)
                 .withIssuer(issuer)
                 .build();
+        this.jwtBuilder = JWT.create()
+                .withIssuer(issuer);
     }
 
     private final String key;
@@ -46,37 +49,33 @@ public class JwtProvider {
     private final Long refreshTokenExpirationPeriod;
     private final String accessHeader;
     private final String refreshHeader;
-    private final String issuer;
     private final JWTVerifier jwtVerifier;
-
+    private final JWTCreator.Builder jwtBuilder;
 
     public String createAccessToken(Long id) {
-        Date now = new Date();
-        return JWT.create()
-                .withSubject(ACCESS_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+        return jwtBuilder
                 .withClaim(ID_CLAIM, id)
-                .withIssuer(issuer)
+                .withSubject(ACCESS_TOKEN_SUBJECT)
+                .withExpiresAt(Instant.now().plusMillis(accessTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(key));
     }
 
     public String createRefreshToken(Long id) {
-        Date now = new Date();
-        return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+        return jwtBuilder
                 .withClaim(ID_CLAIM, id)
+                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withExpiresAt(Instant.now().plusMillis(refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(key));
     }
 
     public String extractRefreshToken(String token) {
-        return token.replace(BEARER, "");
+        return token.substring(TOKEN_PREFIX_LENGTH);
     }
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
         if (accessToken != null && accessToken.startsWith(BEARER)) {
-            return accessToken.replace(BEARER, "");
+            return accessToken.substring(TOKEN_PREFIX_LENGTH);
         }
         throw new InvalidTokenException();
     }
