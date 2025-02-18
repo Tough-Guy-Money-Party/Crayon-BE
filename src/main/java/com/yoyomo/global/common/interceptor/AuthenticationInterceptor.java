@@ -21,7 +21,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         String accessToken = jwtProvider.extractAccessToken(request);
-        jwtProvider.validateToken(accessToken);
         jwtProvider.extractId(accessToken);
         return true;
     }

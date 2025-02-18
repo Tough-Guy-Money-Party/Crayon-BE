@@ -34,17 +34,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-crayon:
-  jwt:
-    key: ${JWT_ACCESS_SECRET}
-    access:
-      expiration: 922337203685477599
-      header: Authorization
-    refresh:
-      expiration: 604800000
-      header: Authorization-refresh
-    masterToken: ${MASTER_TOKEN}
-
 cloud:
   aws:
     credentials:
