@@ -26,6 +26,14 @@ public class JwtProvider {
     private static final String BEARER = "Bearer ";
     private static final int TOKEN_PREFIX_LENGTH = 7;
 
+    private final String key;
+    private final Long accessTokenExpirationPeriod;
+    private final Long refreshTokenExpirationPeriod;
+    private final String accessHeader;
+    private final String refreshHeader;
+    private final JWTVerifier jwtVerifier;
+    private final JWTCreator.Builder jwtBuilder;
+
     public JwtProvider(@Value("${crayon.jwt.key}") String key,
                        @Value("${crayon.jwt.access.expiration}") Long accessTokenExpirationPeriod,
                        @Value("${crayon.jwt.refresh.expiration}") Long refreshTokenExpirationPeriod,
@@ -45,14 +53,6 @@ public class JwtProvider {
         this.jwtBuilder = JWT.create()
                 .withIssuer(issuer);
     }
-
-    private final String key;
-    private final Long accessTokenExpirationPeriod;
-    private final Long refreshTokenExpirationPeriod;
-    private final String accessHeader;
-    private final String refreshHeader;
-    private final JWTVerifier jwtVerifier;
-    private final JWTCreator.Builder jwtBuilder;
 
     public String createAccessToken(Long id) {
         return jwtBuilder
