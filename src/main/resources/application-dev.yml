@@ -50,3 +50,8 @@ cloud:
 
 vite:
   uri: ${VITE_PUBLIC_API_URL}
+
+crayon:
+  jwt:
+    access:
+      expiration: 922337203685477599
