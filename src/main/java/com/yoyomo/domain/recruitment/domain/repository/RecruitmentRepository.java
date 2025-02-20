@@ -3,12 +3,16 @@ package com.yoyomo.domain.recruitment.domain.repository;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.form.domain.repository.dto.LinkedRecruitment;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
-import java.util.List;
-import java.util.UUID;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> {
 
@@ -27,4 +31,8 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> 
     List<LinkedRecruitment> findByForms(List<String> formIds);
 
     List<Recruitment> findAllByFormId(String formId);
+
+    @Lock(value = LockModeType.OPTIMISTIC)
+    @Query("SELECT r FROM Recruitment r WHERE r.id = :recruitmentId")
+    Optional<Recruitment> findByIdWithOptimisticLock(UUID recruitmentId);
 }

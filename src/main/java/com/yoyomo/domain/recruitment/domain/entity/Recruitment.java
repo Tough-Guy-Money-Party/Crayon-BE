@@ -1,8 +1,5 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
-
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
@@ -22,16 +19,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
 
 @Getter
 @Builder
@@ -77,6 +79,9 @@ public class Recruitment extends BaseEntity {
 
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Process> processes = new ArrayList<>();
+
+    @Version
+    private Long version;
 
     public static Recruitment replicate(Recruitment recruitment) {
         return Recruitment.builder()
