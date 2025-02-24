@@ -41,7 +41,6 @@ public class ApplyUseCase {
     private final ItemManageUseCase itemManageUseCase; // todo 삭제
     private final ApplicationVerifyService applicationVerifyService;
 
-
     @Transactional
     public void apply(ApplicationSaveRequest dto, UUID recruitmentId, User applicant) {
         Recruitment recruitment = recruitmentGetService.find(recruitmentId);
@@ -52,7 +51,7 @@ public class ApplyUseCase {
         List<Item> items = itemManageUseCase.create(dto.answers());
         Application application = dto.toApplication(recruitment, applicant);
 
-        applicationSaveService.save(recruitment, application);
+        applicationSaveService.save(recruitment.getId(), application);
         answerSaveService.save(items, application.getId());
     }
 
