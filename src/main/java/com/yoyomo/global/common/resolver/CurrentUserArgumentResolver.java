@@ -34,6 +34,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
                                 WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = jwtProvider.extractAccessToken(httpServletRequest);
+        jwtProvider.validateToken(accessToken);
         Long id = jwtProvider.extractId(accessToken);
         return userGetService.find(id);
     }

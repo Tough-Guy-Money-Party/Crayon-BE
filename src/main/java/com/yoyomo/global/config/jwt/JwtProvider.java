@@ -1,100 +1,93 @@
 package com.yoyomo.global.config.jwt;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.yoyomo.global.config.jwt.exception.ExpiredTokenException;
 import com.yoyomo.global.config.jwt.exception.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.util.Date;
 
 @Slf4j
+@Getter
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
+    @Value("${crayon.jwt.key}")
+    private String key;
+
+    @Value("${crayon.jwt.access.expiration}")
+    private Long accessTokenExpirationPeriod;
+
+    @Value("${crayon.jwt.refresh.expiration}")
+    private Long refreshTokenExpirationPeriod;
+
+    @Value("${crayon.jwt.access.header}")
+    private String accessHeader;
+
+    @Value("${crayon.jwt.refresh.header}")
+    private String refreshHeader;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
-    private static final int TOKEN_PREFIX_LENGTH = 7;
-
-    private final String key;
-    private final Long accessTokenExpirationPeriod;
-    private final Long refreshTokenExpirationPeriod;
-    private final String accessHeader;
-    private final String refreshHeader;
-    private final JWTVerifier jwtVerifier;
-    private final JWTCreator.Builder jwtBuilder;
-
-    public JwtProvider(@Value("${crayon.jwt.key}") String key,
-                       @Value("${crayon.jwt.access.expiration}") Long accessTokenExpirationPeriod,
-                       @Value("${crayon.jwt.refresh.expiration}") Long refreshTokenExpirationPeriod,
-                       @Value("${crayon.jwt.access.header}") String accessHeader,
-                       @Value("${crayon.jwt.refresh.header}") String refreshHeader,
-                       @Value("${crayon.jwt.issuer}") String issuer
-    ) {
-        this.key = key;
-        this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
-        this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
-        this.accessHeader = accessHeader;
-        this.refreshHeader = refreshHeader;
-        this.jwtVerifier = JWT.require(Algorithm.HMAC512(key))
-                .withClaimPresence(ID_CLAIM)
-                .withIssuer(issuer)
-                .build();
-        this.jwtBuilder = JWT.create()
-                .withIssuer(issuer);
-    }
 
     public String createAccessToken(Long id) {
-        return jwtBuilder
-                .withClaim(ID_CLAIM, id)
+        Date now = new Date();
+        return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
-                .withExpiresAt(Instant.now().plusMillis(accessTokenExpirationPeriod))
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+                .withClaim(ID_CLAIM, id)
                 .sign(Algorithm.HMAC512(key));
     }
 
     public String createRefreshToken(Long id) {
-        return jwtBuilder
-                .withClaim(ID_CLAIM, id)
+        Date now = new Date();
+        return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
-                .withExpiresAt(Instant.now().plusMillis(refreshTokenExpirationPeriod))
+                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .withClaim(ID_CLAIM, id)
                 .sign(Algorithm.HMAC512(key));
     }
 
     public String extractRefreshToken(String token) {
-        return token.substring(TOKEN_PREFIX_LENGTH);
+        return token.replace(BEARER, "");
     }
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
         if (accessToken != null && accessToken.startsWith(BEARER)) {
-            return accessToken.substring(TOKEN_PREFIX_LENGTH);
+            return accessToken.replace(BEARER, "");
         }
         throw new InvalidTokenException();
     }
 
     public Long extractId(String accessToken) {
-        return validateToken(accessToken)
-                .getClaim(ID_CLAIM)
-                .asLong();
+        try {
+            return JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(accessToken)
+                    .getClaim(ID_CLAIM)
+                    .asLong();
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
     }
 
-    private DecodedJWT validateToken(String token) {
+    public void validateToken(String token) {
         try {
-            return jwtVerifier.verify(token);
+            JWT.require(Algorithm.HMAC512(key)).build().verify(token);
         } catch (TokenExpiredException e) {
             throw new ExpiredTokenException();
-        } catch (JWTVerificationException e) {
-            throw new InvalidTokenException(e);
+        } catch (Exception e) {
+            throw new InvalidTokenException();
         }
     }
 }

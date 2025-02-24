@@ -45,14 +45,3 @@ kakao:
   grant_type: ${KAKAO_GRANT_TYPE}
   client_id: ${KAKAO_CLIENT_ID}
   user_info_uri: ${KAKAO_USER_INFO_URI}
-
-crayon:
-  jwt:
-    key: ${JWT_ACCESS_SECRET}
-    access:
-      expiration: 1800000
-      header: Authorization
-    refresh:
-      expiration: 604800000
-      header: Authorization-refresh
-    issuer: ${JWT_ISSUER}

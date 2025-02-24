@@ -87,8 +87,11 @@ public class UserManageUsecase {
 
     private Pair<Long, String> validateRefreshToken(String token) {
         String refreshToken = jwtProvider.extractRefreshToken(token);
+        jwtProvider.validateToken(refreshToken);
+
         Long userId = jwtProvider.extractId(refreshToken);
 
         return Pair.of(userId, refreshToken);
     }
+
 }
