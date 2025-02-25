@@ -33,4 +33,8 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, UUID> 
     @Modifying
     @Query("UPDATE Recruitment r SET r.totalApplicantsCount = r.totalApplicantsCount + 1 WHERE r.id = :recruitmentId")
     void increaseApplicantCount(UUID recruitmentId);
+
+    @Modifying
+    @Query("UPDATE Recruitment r SET r.totalApplicantsCount = r.totalApplicantsCount - 1 WHERE r.id = :recruitmentId")
+    void decreaseApplicantCount(UUID recruitmentId);
 }
