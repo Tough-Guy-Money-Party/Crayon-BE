@@ -1,5 +1,6 @@
 package com.yoyomo.global.config.redis;
 
+import com.yoyomo.infra.redis.RedisQueueWorker;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,17 +9,19 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+    private static final String QUEUE_TOPIC = "upload:topic";
 
     @Value("${spring.data.redis.port}")
     private int port;
-
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.password}")
     private String password;
 
@@ -68,5 +71,19 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
         return template;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
+                                                                       RedisQueueWorker redisQueueWorker) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.addMessageListener(messageListenerAdapter(redisQueueWorker), new ChannelTopic(QUEUE_TOPIC));
+        container.setConnectionFactory(redisConnectionFactory);
+        return container;
+    }
+
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter(RedisQueueWorker redisQueueWorker) {
+        return new MessageListenerAdapter(redisQueueWorker, "onMessage");
     }
 }
