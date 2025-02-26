@@ -7,11 +7,11 @@ import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
+import com.yoyomo.domain.mail.domain.entity.CommonData;
+import com.yoyomo.domain.mail.domain.entity.CustomData;
 import com.yoyomo.domain.mail.domain.entity.Mail;
-import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
 import com.yoyomo.domain.mail.domain.service.MailSaveService;
 import com.yoyomo.domain.mail.domain.service.MailUpdateService;
-import com.yoyomo.domain.mail.domain.service.MailUtilService;
 import com.yoyomo.domain.mail.exception.DynamodbUploadException;
 import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.mail.exception.MailCancelException;
@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -44,11 +43,10 @@ import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_
 @Service
 @RequiredArgsConstructor
 public class MailManageUseCaseImpl {
-    
+
     private static final int PAGE_SIZE = 100;
 
     private final MailSaveService mailSaveService;
-    private final MailUtilService mailUtilService;
     private final MailUpdateService mailUpdateService;
     private final ApplicationGetService applicationGetService;
     private final ProcessGetService processGetService;
@@ -133,22 +131,19 @@ public class MailManageUseCaseImpl {
     }
 
     private List<Mail> createMail(List<Application> applications, Process process, MailRequest dto, Recruitment recruitment) {
-        Set<CustomType> passCustomTypes = mailUtilService.extract(dto.passTemplate());
-        Set<CustomType> failCustomTypes = mailUtilService.extract(dto.failTemplate());
-
         UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
         UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
 
         Map<UUID, Status> processResults = processResultGetService.findAll(process, applications);
+        CommonData commonData = CommonData.of(process, recruitment);
+        List<CustomData> customData = applications.stream()
+                .map(application -> CustomData.of(application, processResults.getOrDefault(application.getId(), Status.BEFORE_EVALUATION)))
+                .toList();
 
-        return applications.stream()
-                .map(application -> {
-                    boolean isPass = processResults.getOrDefault(application.getId(), Status.BEFORE_EVALUATION).isPass();
-                    UUID templateId = isPass ? passTemplateId : failTemplateId;
-                    Set<CustomType> customTypes = isPass ? passCustomTypes : failCustomTypes;
-                    Map<String, String> customData = mailUtilService.createCustomData(application, recruitment, customTypes);
-                    String destination = application.getEmail();
-                    return dto.toMail(mailSourceAddress, destination, customData, templateId);
+        return customData.stream()
+                .map(data -> {
+                    UUID templateId = data.isPass() ? passTemplateId : failTemplateId;
+                    return dto.toMail(mailSourceAddress, commonData, data, templateId);
                 })
                 .toList();
     }

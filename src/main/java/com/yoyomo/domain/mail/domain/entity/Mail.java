@@ -1,6 +1,8 @@
 package com.yoyomo.domain.mail.domain.entity;
 
 import com.yoyomo.domain.mail.application.converter.LocalDateTimeConverter;
+import com.yoyomo.domain.mail.domain.entity.enums.CustomType;
+import com.yoyomo.domain.mail.domain.entity.enums.EnumMapAttributeConverter;
 import com.yoyomo.domain.mail.domain.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +27,7 @@ public class Mail {
 
     private String id;
     private String templateId;
-    private Map<String, String> customData;
+    private Map<CustomType, String> customData;
     private String source;
     private String destination;
     private Status status;
@@ -39,16 +41,21 @@ public class Mail {
         return id;
     }
 
-    @DynamoDbConvertedBy(LocalDateTimeConverter.class)
-    public LocalDateTime getScheduledTime() {
-        return scheduledTime;
-    }
-
     public void updateScheduledTime(LocalDateTime scheduledTime) {
         this.scheduledTime = scheduledTime;
     }
 
     public void cancel() {
-        this.status= Status.CANCELED;
+        this.status = Status.CANCELED;
+    }
+
+    @DynamoDbConvertedBy(LocalDateTimeConverter.class)
+    public LocalDateTime getScheduledTime() {
+        return scheduledTime;
+    }
+
+    @DynamoDbConvertedBy(EnumMapAttributeConverter.class)
+    public Map<CustomType, String> getCustomData() {
+        return customData;
     }
 }
