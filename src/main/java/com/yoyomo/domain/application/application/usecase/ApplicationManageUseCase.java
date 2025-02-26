@@ -2,12 +2,14 @@ package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.application.domain.service.AnswerGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
 import com.yoyomo.domain.application.domain.service.ApplicationUpdateService;
@@ -69,19 +71,17 @@ public class ApplicationManageUseCase {
         Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
         Process process = processGetService.find(recruitment, stage);
 
-        Page<Application> applications = applicationGetService.findAll(process, pageable);
-        Map<UUID, Status> processResults = processResultGetService.findAll(process, applications.getContent());
+        Page<ApplicationWithStatus> applicationWithStatus = applicationGetService.findAll(process, pageable);
 
-        return ApplicationListResponse.toResponse(applications, processResults);
+        return ApplicationListResponse.toResponse(applicationWithStatus);
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationListResponse> readAll(Long processId, User user) {
+    public List<ApplicantsResponse> readAll(Long processId, User user) {
         Process process = checkAuthorityByProcessId(processId, user);
-        List<Application> applications = applicationGetService.findAll(process);
-        Map<UUID, Status> processResults = processResultGetService.findAll(process, applications);
+        List<Application> applications = applicationGetService.findAllOrderByName(process);
 
-        return ApplicationListResponse.toResponse(applications, processResults);
+        return ApplicantsResponse.toResponse(applications);
     }
 
 

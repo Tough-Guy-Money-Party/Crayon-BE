@@ -33,12 +33,12 @@ public class ApplicationGetService {
         return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
     }
 
-    public Page<Application> findAll(Process process, Pageable pageable) {
-        return applicationRepository.findAllByProcessOrderByPending(process, pageable);
+    public Page<ApplicationWithStatus> findAll(Process process, Pageable pageable) {
+        return applicationRepository.findAllWithStatusByProcess(process, pageable);
     }
 
-    public List<Application> findAll(Process process) {
-        return applicationRepository.findAllByProcessOrderByPending(process);
+    public List<Application> findAllOrderByName(Process process) {
+        return applicationRepository.findAllByProcessOrderByUserName(process);
     }
 
     public List<ApplicationWithStatus> findAllWithProcessResult(Process process) {
