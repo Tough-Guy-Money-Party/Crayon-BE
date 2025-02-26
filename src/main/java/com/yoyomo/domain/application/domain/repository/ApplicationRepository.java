@@ -2,18 +2,20 @@ package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
@@ -50,6 +52,16 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
             """)
     List<Application> findAllByProcessOrderByPending(@Param("process") Process process);
 
+    @Query("""
+            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
+                a,
+                COALESCE(pr.status, 'BEFORE_EVALUATION')
+            )
+            FROM Application a
+            LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
+            WHERE a.process = :process AND a.deletedAt IS NULL
+            """)
+    List<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process);
 
     @Query("""
             SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
@@ -71,5 +83,5 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     @Modifying
     @Query("DELETE FROM Application a WHERE a.recruitmentId = :recruitmentId")
     void deleteAllByRecruitmentId(UUID recruitmentId);
-    
+
 }

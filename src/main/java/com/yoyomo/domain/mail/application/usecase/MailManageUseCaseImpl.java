@@ -1,9 +1,6 @@
 package com.yoyomo.domain.mail.application.usecase;
 
-import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
-import com.yoyomo.domain.application.domain.service.ProcessResultGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
@@ -31,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -54,7 +50,6 @@ public class MailManageUseCaseImpl {
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final BatchDivider batchDivider;
-    private final ProcessResultGetService processResultGetService;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -120,8 +115,7 @@ public class MailManageUseCaseImpl {
 
         Recruitment recruitment = process.getRecruitment();
 
-        List<Application> applications = applicationGetService.findAll(process);
-        List<Mail> mails = createMail(applications, process, dto, recruitment);
+        List<Mail> mails = createMail(process, dto, recruitment);
         List<CompletableFuture<Void>> uploadFutures = batchDivider.divide(mails, PAGE_SIZE)
                 .stream()
                 .map(mailSaveService::upload)
@@ -130,14 +124,13 @@ public class MailManageUseCaseImpl {
         checkUpload(uploadFutures);
     }
 
-    private List<Mail> createMail(List<Application> applications, Process process, MailRequest dto, Recruitment recruitment) {
+    private List<Mail> createMail(Process process, MailRequest dto, Recruitment recruitment) {
         UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
         UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
 
-        Map<UUID, Status> processResults = processResultGetService.findAll(process, applications);
         CommonData commonData = CommonData.of(process, recruitment);
-        List<CustomData> customData = applications.stream()
-                .map(application -> CustomData.of(application, processResults.getOrDefault(application.getId(), Status.BEFORE_EVALUATION)))
+        List<CustomData> customData = applicationGetService.findAllWithProcessResult(process).stream()
+                .map(CustomData::of)
                 .toList();
 
         return customData.stream()
