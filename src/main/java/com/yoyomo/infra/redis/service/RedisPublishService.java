@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RedisService {
+public class RedisPublishService {
     private final RedisPublisher redisPublisher;
 
     public void publishSubDomain(String subDomain) {
