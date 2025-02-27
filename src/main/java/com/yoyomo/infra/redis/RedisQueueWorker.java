@@ -3,32 +3,34 @@ package com.yoyomo.infra.redis;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RedisQueueWorker {
+public class RedisQueueWorker implements MessageListener {
     private static final String DOMAIN_FORMAT = "%s.crayon.land";
-    
-    private final RedisQueueService redisQueueService;
+
+    private final RedisPublisher redisPublisher;
     private final S3Service s3Service;
 
-    @Scheduled(fixedDelay = 1000)
-    public void processUploadQueue() {
-        while (true) {
-            String subDomain = redisQueueService.dequeueUpload();
-            if (subDomain == null) {
-                break;
-            }
+    @Override
+    public void onMessage(Message message, @Nullable byte[] pattern) {
+        processUploadQueue();
+    }
 
+    public void processUploadQueue() {
+        String subDomain = redisPublisher.dequeueUpload();
+        while (subDomain != null) {
             try {
                 String fullSubDomain = String.format(DOMAIN_FORMAT, subDomain);
                 s3Service.upload(fullSubDomain);
             } catch (Exception e) {
                 throw new UnavailableSubdomainException(e.getMessage());
             }
+            subDomain = redisPublisher.dequeueUpload();
         }
     }
 }
-
