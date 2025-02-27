@@ -1,5 +1,6 @@
 package com.yoyomo.infra.redis;
 
+import com.yoyomo.infra.redis.service.RedisQueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

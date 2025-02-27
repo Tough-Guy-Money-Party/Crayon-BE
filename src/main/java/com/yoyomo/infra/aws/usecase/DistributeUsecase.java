@@ -5,7 +5,7 @@ import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
 import com.yoyomo.infra.aws.constant.ReservedSubDomain;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
-import com.yoyomo.infra.redis.RedisService;
+import com.yoyomo.infra.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

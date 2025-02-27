@@ -1,5 +1,6 @@
-package com.yoyomo.infra.redis;
+package com.yoyomo.infra.redis.service;
 
+import com.yoyomo.infra.redis.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

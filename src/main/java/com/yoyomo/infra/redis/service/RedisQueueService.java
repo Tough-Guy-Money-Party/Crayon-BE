@@ -1,4 +1,4 @@
-package com.yoyomo.infra.redis;
+package com.yoyomo.infra.redis.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

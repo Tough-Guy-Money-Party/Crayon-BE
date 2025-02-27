@@ -3,6 +3,7 @@ package com.yoyomo.infra.redis;
 import com.mongodb.lang.Nullable;
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import com.yoyomo.infra.aws.s3.service.S3Service;
+import com.yoyomo.infra.redis.service.RedisQueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
