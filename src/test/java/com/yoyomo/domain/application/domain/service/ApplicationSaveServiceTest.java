@@ -2,17 +2,16 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.fixture.CustomRepository;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
-import com.yoyomo.fixture.CustomRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +20,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.yoyomo.fixture.TestFixture.application;
-import static com.yoyomo.fixture.TestFixture.club;
-import static com.yoyomo.fixture.TestFixture.recruitment;
-import static com.yoyomo.fixture.TestFixture.user;
+import static com.yoyomo.domain.fixture.TestFixture.application;
+import static com.yoyomo.domain.fixture.TestFixture.club;
+import static com.yoyomo.domain.fixture.TestFixture.recruitment;
+import static com.yoyomo.domain.fixture.TestFixture.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ComponentScan(basePackages = "com.yoyomo.domain") // 필요한 패키지들만 명시
 class ApplicationSaveServiceTest {
 
     @Autowired

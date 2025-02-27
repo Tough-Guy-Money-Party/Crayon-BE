@@ -6,23 +6,21 @@ import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.fixture.TestFixture;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
-import com.yoyomo.fixture.TestFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@ComponentScan(basePackages = "com.yoyomo.domain") // 필요한 패키지들만 명시
 class InterviewRecordUpdateServiceTest {
 
     @Autowired
