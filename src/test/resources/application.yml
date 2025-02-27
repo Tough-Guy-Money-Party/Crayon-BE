@@ -7,7 +7,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
   application:
     kakao-client-id: secret
@@ -39,6 +39,7 @@ crayon:
       expiration: 604800000
       header: Authorization-refresh
     masterToken: secret
+    issuer: secret
 
 cloud:
   aws:
