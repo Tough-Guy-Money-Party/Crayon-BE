@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import static com.yoyomo.fixture.TestFixture.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ComponentScan(basePackages = "com.yoyomo.domain") // 필요한 패키지들만 명시
 class ApplicationSaveServiceTest {
 
     @Autowired
