@@ -6,10 +6,13 @@ import com.yoyomo.infra.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@EnableAsync
 public class RedisQueueWorker implements MessageListener {
     private static final String DOMAIN_FORMAT = "%s.crayon.land";
 
@@ -21,7 +24,7 @@ public class RedisQueueWorker implements MessageListener {
         processUpload();
     }
 
-
+    @Async
     public void processUpload() {
         String subDomain = redisQueueService.dequeue();
         try {
