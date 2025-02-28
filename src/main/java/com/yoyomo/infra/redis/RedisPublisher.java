@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 public class RedisPublisher {
     private static final String QUEUE_TOPIC = "upload:topic";
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> queueRedisTemplate;
     private final RedisQueueService redisQueueService;
 
     public void publishCreation(String subDomain) {
         redisQueueService.enqueue(subDomain);
-        redisTemplate.convertAndSend(QUEUE_TOPIC, subDomain);
+        queueRedisTemplate.convertAndSend(QUEUE_TOPIC, subDomain);
     }
 }
