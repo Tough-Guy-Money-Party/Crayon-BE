@@ -3,11 +3,9 @@ package com.yoyomo.infra.aws.usecase;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
 import com.yoyomo.infra.aws.constant.ReservedSubDomain;
-import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
-    private final ApplicationEventPublisher publisher;
     private final String BASEURL = ".crayon.land";
 
     @Async
@@ -27,9 +24,6 @@ public class DistributeUsecase {
         String fullSubDomain = subDomain + BASEURL;
         //버킷 생성
         s3Service.createBucket(fullSubDomain);
-
-        //파일 업로드 이벤트 요청
-        publisher.publishEvent(new LandingClientUploadEvent(subDomain));
 
         // route53 레코드 생성
         createRecord(fullSubDomain);
