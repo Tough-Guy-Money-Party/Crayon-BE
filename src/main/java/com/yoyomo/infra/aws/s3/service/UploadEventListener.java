@@ -1,7 +1,7 @@
 package com.yoyomo.infra.aws.s3.service;
 
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
-import com.yoyomo.infra.aws.dto.UploadEvent;
+import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
 import com.yoyomo.infra.redis.service.RedisQueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -20,7 +20,7 @@ public class UploadEventListener {
 
     @Async
     @EventListener
-    public void processUpload(UploadEvent uploadEvent) {
+    public void processUpload(LandingClientUploadEvent uploadEvent) {
         String fullSubDomain = String.format(DOMAIN_FORMAT, uploadEvent.subDomain());
         try {
             s3Service.upload(fullSubDomain);
