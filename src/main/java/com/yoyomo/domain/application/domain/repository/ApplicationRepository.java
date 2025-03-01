@@ -46,10 +46,11 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     @Query("""
             SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
                 a,
-                COALESCE(pr.status, 'BEFORE_EVALUATION')
+                COALESCE((SELECT pr.status
+                          FROM ProcessResult pr
+                          WHERE a.id = pr.applicationId), 'BEFORE_EVALUATION')
             )
             FROM Application a
-            LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
             WHERE a.process = :process AND a.deletedAt IS NULL
             """)
     Page<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process, Pageable pageable);
