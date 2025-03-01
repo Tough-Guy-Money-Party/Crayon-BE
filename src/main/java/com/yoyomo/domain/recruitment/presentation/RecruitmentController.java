@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.presentation;
 
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponse;
+import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.Save;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.DetailResponse;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_ACTIVATE;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_CANCEL;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.SUCCESS_DELETE;
@@ -78,8 +78,8 @@ public class RecruitmentController {
 
     @GetMapping("/{recruitmentId}")
     @Operation(summary = "모집 상세 조회")
-    public ResponseDto<DetailResponse> read(@PathVariable UUID recruitmentId) {
-        DetailResponse response = recruitmentManageUseCase.read(recruitmentId);
+    public ResponseDto<RecruitmentDetailsResponse> read(@PathVariable UUID recruitmentId) {
+        RecruitmentDetailsResponse response = recruitmentManageUseCase.read(recruitmentId);
 
         return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
     }
