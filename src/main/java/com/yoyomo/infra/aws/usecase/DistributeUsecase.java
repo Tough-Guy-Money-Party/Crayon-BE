@@ -6,7 +6,6 @@ import com.yoyomo.infra.aws.constant.ReservedSubDomain;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +16,6 @@ public class DistributeUsecase {
     private final Route53Service route53Service;
     private final String BASEURL = ".crayon.land";
 
-    @Async
     public void create(String subDomain) {
         checkValidSubdomain(subDomain);
 
