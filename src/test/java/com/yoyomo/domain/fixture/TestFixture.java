@@ -1,4 +1,4 @@
-package com.yoyomo.fixture;
+package com.yoyomo.domain.fixture;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.InterviewRecord;

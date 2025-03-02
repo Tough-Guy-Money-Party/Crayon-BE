@@ -15,13 +15,14 @@ import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class LandingGeneralManageUsecase {
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
     private final LandingSaveService landingSaveService;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional(readOnly = true)
     public LandingResponseDTO.General readGeneral(String clubId, User user) {
@@ -62,6 +64,8 @@ public class LandingGeneralManageUsecase {
 
             //TODO: update 로직으로 변경 예정
             distributeUsecase.create(subDomain);
+            publisher.publishEvent(new LandingClientUploadEvent(subDomain));
+
             distributeUsecase.delete(oldDomain);
         }
     }
@@ -90,7 +94,10 @@ public class LandingGeneralManageUsecase {
         String subDomain = request.subDomain();
 
         clubValidateService.checkDuplicatedSubDomain(subDomain);
+        
         distributeUsecase.create(subDomain);
+        publisher.publishEvent(new LandingClientUploadEvent(subDomain));
+
         club.addSubDomain(request.subDomain());
         Landing landing = landingSaveService.save(club);
         club.addLanding(landing);

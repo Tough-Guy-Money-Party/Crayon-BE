@@ -1,4 +1,4 @@
-package com.yoyomo.fixture;
+package com.yoyomo.domain.fixture;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -6,24 +6,21 @@ import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.fixture.TestFixture;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
-import com.yoyomo.fixture.TestFixture;
-import com.yoyomo.global.config.jwt.JwtProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
+@SpringBootTest
 class InterviewRecordUpdateServiceTest {
 
     @Autowired
@@ -40,9 +37,6 @@ class InterviewRecordUpdateServiceTest {
 
     @Autowired
     InterviewRecordUpdateService interviewRecordUpdateService;
-
-    @MockBean
-    JwtProvider jwtProvider;
 
     User user;
 
