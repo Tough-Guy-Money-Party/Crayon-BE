@@ -46,9 +46,9 @@ public class EvaluationManageUseCase {
         clubManagerAuthService.checkAuthorization(application.getRecruitmentId(), manager);
         List<ProcessResult> processResult = processResultGetService.find(application);
 
-        List<Evaluation> evaluations = evaluationGetService.findAllInStage(application);
+        List<Evaluation> evaluations = evaluationGetService.findAll(application);
         Evaluation myEvaluation = evaluationGetService.findMyEvaluation(evaluations, manager);
-        List<EvaluationMemo> memos = evaluationMemoGetService.findAllInStage(application);
+        List<EvaluationMemo> memos = evaluationMemoGetService.findAll(application);
         return EvaluationResponses.toResponse(processResult, myEvaluation, evaluations, memos, manager);
     }
 
