@@ -42,9 +42,9 @@ public class ProcessResultGetService {
     }
 
     public List<ProcessResult> find(Application application) {
-        long processId = application.getProcess().getId();
-        List<ProcessResult> processResults = processResultRepository.findAllByApplicationIdAndProcessIdIsLessThanEqual(application.getId(), processId);
+        List<ProcessResult> processResults = processResultRepository.findAllByApplicationId(application.getId());
 
+        long processId = application.getProcess().getId();
         ProcessResult currentProcessResult = processResults.stream()
                 .filter(processResult -> processResult.getProcessId() == processId)
                 .findFirst()
