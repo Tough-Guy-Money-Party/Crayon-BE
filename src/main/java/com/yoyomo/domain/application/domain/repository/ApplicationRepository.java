@@ -48,7 +48,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
                 a,
                 COALESCE((SELECT pr.status
                           FROM ProcessResult pr
-                          WHERE a.id = pr.applicationId), 'BEFORE_EVALUATION')
+                          WHERE a.id = pr.applicationId
+                          AND pr.processId = a.process.id), 'BEFORE_EVALUATION')
             )
             FROM Application a
             WHERE a.process = :process AND a.deletedAt IS NULL
