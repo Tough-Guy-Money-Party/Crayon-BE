@@ -90,6 +90,7 @@ public class JwtProvider {
 
     private DecodedJWT validateToken(String token) {
         try {
+            log.info("JwtProvide = {}", token);
             return jwtVerifier.verify(token);
         } catch (TokenExpiredException e) {
             throw new ExpiredTokenException();
