@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
+import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -32,12 +33,16 @@ public class ApplicationGetService {
         return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
     }
 
-    public Page<Application> findAll(Process process, Pageable pageable) {
-        return applicationRepository.findAllByProcessOrderByPending(process, pageable);
+    public Page<ApplicationWithStatus> findAll(Process process, Pageable pageable) {
+        return applicationRepository.findAllWithStatusByProcess(process, pageable);
     }
 
-    public List<Application> findAll(Process process) {
-        return applicationRepository.findAllByProcessOrderByPending(process);
+    public List<Application> findAllOrderByName(Process process) {
+        return applicationRepository.findAllByProcessOrderByUserName(process);
+    }
+
+    public List<ApplicationWithStatus> findAllWithProcessResult(Process process) {
+        return applicationRepository.findAllWithStatusByProcess(process);
     }
 
     public Application find(String id) {

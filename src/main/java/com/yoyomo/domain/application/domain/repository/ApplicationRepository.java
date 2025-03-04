@@ -1,19 +1,20 @@
 package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
@@ -29,27 +30,30 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 
     Optional<Application> findByRecruitmentIdAndUser(UUID recruitment, User applicant);
 
-    @Query("""
-            SELECT a 
-            FROM Application a
-            WHERE a.process = :process AND a.deletedAt IS NULL
-            ORDER BY 
-                CASE WHEN a.status = 'PENDING' THEN 0 ELSE 1 END ASC, 
-                a.createdAt DESC
-            """)
-    Page<Application> findAllByProcessOrderByPending(@Param("process") Process process,
-                                                     Pageable pageable);
+    List<Application> findAllByProcessOrderByUserName(Process process);
 
     @Query("""
-            SELECT a 
+            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
+                a,
+                COALESCE(pr.status, 'BEFORE_EVALUATION')
+            )
+            FROM Application a
+            LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
+            WHERE a.process = :process AND a.deletedAt IS NULL
+            """)
+    List<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process);
+
+    @Query("""
+            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
+                a,
+                COALESCE((SELECT pr.status
+                          FROM ProcessResult pr
+                          WHERE a.id = pr.applicationId), 'BEFORE_EVALUATION')
+            )
             FROM Application a
             WHERE a.process = :process AND a.deletedAt IS NULL
-            ORDER BY 
-                CASE WHEN a.status = 'PENDING' THEN 0 ELSE 1 END ASC, 
-                a.createdAt DESC
             """)
-    List<Application> findAllByProcessOrderByPending(@Param("process") Process process);
-
+    Page<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process, Pageable pageable);
 
     @Query("""
             SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
@@ -63,13 +67,12 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     List<ProcessApplicant> countByRecruitmentAndProcess(UUID recruitmentId, List<Process> processes);
 
     @Modifying
-    @Query("UPDATE Application a SET a.process = :process, a.status = :status WHERE a.id IN :applicationIds")
+    @Query("UPDATE Application a SET a.process = :process WHERE a.id IN :applicationIds")
     void updateProcess(@Param("applicationIds") List<UUID> applicationIds,
-                       @Param("process") Process process,
-                       @Param("status") Status status);
+                       @Param("process") Process process);
 
     @Modifying
     @Query("DELETE FROM Application a WHERE a.recruitmentId = :recruitmentId")
     void deleteAllByRecruitmentId(UUID recruitmentId);
-    
+
 }

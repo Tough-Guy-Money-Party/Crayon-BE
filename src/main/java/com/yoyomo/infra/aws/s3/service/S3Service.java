@@ -90,36 +90,48 @@ public class S3Service {
         s3Client.putBucketPolicy(policyRequest);
     }
 
-    public void upload(String bucketName) throws IOException {
+    public void upload(String bucketName) {
+        Path distPath = findFilePath();
+        validateFilePath(distPath);
+        try {
+            Stream<Path> paths = findEachFilePath(distPath);
+            List<Path> filePaths = paths.filter(Files::isRegularFile).toList();
 
-        String projectPath = "app/notion-to-site";
-        String distFolderPath = new File(projectPath, "out").getCanonicalPath();
-        Path distPath = Paths.get(distFolderPath);
-
-        if (!Files.exists(distPath)) {
-            throw new FileNotFoundException();
-        }
-
-        try (Stream<Path> paths = Files.walk(distPath)) {
-            List<Path> filePaths = paths.filter(Files::isRegularFile).collect(Collectors.toList());
-
-            filePaths.parallelStream().forEach(filePath -> {
-                try {
-                    uploadFileToS3(bucketName, filePath, distFolderPath);
-                } catch (IOException e) {
-                    throw new com.yoyomo.infra.aws.exception.FileNotFoundException();
-                }
-            });
+            filePaths.parallelStream().forEach(filePath ->
+                    uploadFileToS3(bucketName, filePath, distPath));
 
         } catch (S3Exception e) {
             throw new UnavailableSubdomainException(e.statusCode(), e.getMessage());
         }
     }
 
-    private void uploadFileToS3(String bucketName, Path filePath, String distFolderPathString) throws IOException {
-        Path distFolderPath = Paths.get(distFolderPathString);
+    private void validateFilePath(Path path) {
+        if (!Files.exists(path)) {
+            throw new FileNotFoundException();
+        }
+    }
 
-        String key = distFolderPath.relativize(filePath).toString().replace(File.separator, "/");
+    private Stream<Path> findEachFilePath(Path path) {
+        try {
+            return Files.walk(path);
+        } catch (IOException e) {
+            throw new com.yoyomo.infra.aws.exception.FileNotFoundException();
+        }
+    }
+
+    private Path findFilePath() {
+        try {
+            String projectPath = "app/notion-to-site";
+            String distFolderPath = new File(projectPath, "out").getCanonicalPath();
+            return Paths.get(distFolderPath);
+        } catch (IOException e) {
+            throw new com.yoyomo.infra.aws.exception.FileNotFoundException();
+        }
+    }
+
+    private void uploadFileToS3(String bucketName, Path filePath, Path distFolderPathString) {
+
+        String key = distFolderPathString.relativize(filePath).toString().replace(File.separator, "/");
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .cacheControl("no-cache, no-store, must-revalidate")
@@ -192,7 +204,7 @@ public class S3Service {
                         .build();
 
                 s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, image.getSize()));
-                
+
                 String url = String.format(S3_URL_FORMAT, BUCKETNAME, key);
                 urls.add(url);
 

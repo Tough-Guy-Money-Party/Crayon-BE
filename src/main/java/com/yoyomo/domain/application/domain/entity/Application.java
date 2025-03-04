@@ -1,7 +1,6 @@
 package com.yoyomo.domain.application.domain.entity;
 
 
-import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
@@ -10,8 +9,6 @@ import com.yoyomo.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -52,10 +49,6 @@ public class Application extends BaseEntity {
     @Column(length = 13)
     private String tel;
 
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.BEFORE_EVALUATION;
-
     @Column(nullable = false, name = "recruitment_id")
     private UUID recruitmentId;
 
@@ -70,7 +63,6 @@ public class Application extends BaseEntity {
 
     public void update(Process process) {
         this.process = process;
-        this.status = Status.BEFORE_EVALUATION;
     }
 
     public void addInterview(Interview interview) {

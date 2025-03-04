@@ -24,7 +24,6 @@ public class JwtProvider {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
-    private static final int TOKEN_PREFIX_LENGTH = 7;
 
     private final String key;
     private final Long accessTokenExpirationPeriod;
@@ -71,13 +70,13 @@ public class JwtProvider {
     }
 
     public String extractRefreshToken(String token) {
-        return token.substring(TOKEN_PREFIX_LENGTH);
+        return token.replace(BEARER, "");
     }
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
         if (accessToken != null && accessToken.startsWith(BEARER)) {
-            return accessToken.substring(TOKEN_PREFIX_LENGTH);
+            return accessToken.replace(BEARER, "");
         }
         throw new InvalidTokenException();
     }

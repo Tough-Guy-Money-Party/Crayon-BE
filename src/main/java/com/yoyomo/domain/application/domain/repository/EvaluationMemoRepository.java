@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface EvaluationMemoRepository extends JpaRepository<EvaluationMemo, Long> {
 
-    List<EvaluationMemo> findAllByProcessIdAndApplication(long processId, Application application);
+    List<EvaluationMemo> findAllByApplication(Application application);
 
     @Modifying
     @Query("DELETE FROM EvaluationMemo em WHERE em.id = :memoId AND em.manager = :manager")
