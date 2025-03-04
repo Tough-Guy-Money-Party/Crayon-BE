@@ -50,6 +50,6 @@ public class ApplicationUpdateService {
     }
 
     public void updatePassApplicants(List<UUID> applications, Process process) {
-        applicationRepository.updateProcess(applications, process, Status.BEFORE_EVALUATION);
+        applicationRepository.updateProcess(applications, process);
     }
 }

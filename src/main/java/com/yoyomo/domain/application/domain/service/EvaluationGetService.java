@@ -26,7 +26,7 @@ public class EvaluationGetService {
         return evaluationRepository.findAllByApplicationId(applicationId);
     }
 
-    public List<Evaluation> findAllInStage(Application application) {
+    public List<Evaluation> findAll(Application application) {
         return evaluationRepository.findAllByApplication(application);
     }
 

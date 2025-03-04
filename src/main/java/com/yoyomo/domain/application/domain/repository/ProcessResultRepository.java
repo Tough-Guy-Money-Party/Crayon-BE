@@ -31,5 +31,5 @@ public interface ProcessResultRepository extends JpaRepository<ProcessResult, Lo
             """)
     List<ProcessResult> findAllPassByProcessId(long processId);
 
-    List<ProcessResult> findAllByApplicationIdAndProcessIdIsLessThanEqual(UUID applicationId, long processId);
+    List<ProcessResult> findAllByApplicationId(UUID applicationId);
 }

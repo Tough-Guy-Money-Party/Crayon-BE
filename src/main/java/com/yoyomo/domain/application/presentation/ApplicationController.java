@@ -5,6 +5,7 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequ
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
+import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.dto.response.MyApplicationResponse;
@@ -134,10 +135,10 @@ public class ApplicationController {
 
     @GetMapping("/manager/{processId}/applicant/all")
     @Operation(summary = "[Manager] 지원자 목록 조회")
-    public ResponseDto<List<ApplicationListResponse>> readAllApplicants(@PathVariable Long processId,
-                                                                        @CurrentUser User user) {
-        List<ApplicationListResponse> response = applicationManageUseCase.readAll(processId, user);
-        return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
+    public ResponseDto<List<ApplicantsResponse>> readAllApplicants(@PathVariable Long processId,
+                                                                   @CurrentUser User user) {
+        List<ApplicantsResponse> responses = applicationManageUseCase.readAll(processId, user);
+        return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), responses);
     }
 
     @GetMapping("/manager/{applicationId}") // 수정: URL /manager 대신 다른 방법 찾기 (manager_id 라던가..)
