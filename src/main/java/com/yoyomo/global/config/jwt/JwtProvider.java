@@ -70,13 +70,13 @@ public class JwtProvider {
     }
 
     public String extractRefreshToken(String token) {
-        return token.replace(BEARER, " ");
+        return token.replace(BEARER, "");
     }
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
         if (accessToken != null && accessToken.startsWith(BEARER)) {
-            return accessToken.replace(BEARER, " ");
+            return accessToken.replace(BEARER, "");
         }
         throw new InvalidTokenException();
     }
