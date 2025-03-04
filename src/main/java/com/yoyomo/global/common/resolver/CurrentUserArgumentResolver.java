@@ -37,7 +37,6 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = jwtProvider.extractAccessToken(httpServletRequest);
         Long id = jwtProvider.extractId(accessToken);
-        log.info("class = CurrentUserArgumentResolver, accessToken = {}, id = {}", accessToken, id);
         return userGetService.find(id);
     }
 }

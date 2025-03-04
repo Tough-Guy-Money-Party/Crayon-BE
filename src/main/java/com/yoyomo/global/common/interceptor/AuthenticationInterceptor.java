@@ -23,7 +23,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         String accessToken = jwtProvider.extractAccessToken(request);
-        log.info("class = AuthenticationInterceptor, accessToken = {}", accessToken);
         jwtProvider.extractId(accessToken);
         return true;
     }
