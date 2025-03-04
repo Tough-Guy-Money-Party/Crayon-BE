@@ -76,6 +76,7 @@ public class JwtProvider {
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(accessHeader);
+        log.info("extractAccessToken = {}", accessToken);
         if (accessToken != null && accessToken.startsWith(BEARER)) {
             return accessToken.substring(TOKEN_PREFIX_LENGTH);
         }
