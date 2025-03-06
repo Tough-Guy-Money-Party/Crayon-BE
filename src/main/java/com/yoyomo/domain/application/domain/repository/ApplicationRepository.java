@@ -44,17 +44,32 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     List<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process);
 
     @Query("""
-            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
-                a,
-                COALESCE((SELECT pr.status
-                          FROM ProcessResult pr
-                          WHERE a.id = pr.applicationId
-                          AND pr.processId = a.process.id), 'BEFORE_EVALUATION')
-            )
-            FROM Application a
-            WHERE a.process = :process AND a.deletedAt IS NULL
+             SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
+                 a,
+                 pr.status
+             )
+             FROM Application a
+             LEFT JOIN ProcessResult pr ON a.id = pr.applicationId AND a.process.id = pr.processId
+             WHERE a.process = :process AND a.deletedAt IS NULL
+             ORDER BY CASE
+                     WHEN pr.status = 'PENDING'
+                     THEN 0 ELSE 1 END,
+                     a.createdAt DESC
             """)
     Page<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process, Pageable pageable);
+
+    @Query("""
+            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
+                    a,
+                    pr.status
+                )
+            FROM Application a
+                     LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
+            WHERE a.process = :process OR a.id IN :applicationIds
+            ORDER BY CASE WHEN a.id IN :applicationIds THEN 0 ELSE 1 END,
+                     a.createdAt DESC
+            """)
+    Page<ApplicationWithStatus> findAllByProcess(Process process, List<UUID> applicationIds, Pageable pageable);
 
     @Query("""
             SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
@@ -75,5 +90,4 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     @Modifying
     @Query("DELETE FROM Application a WHERE a.recruitmentId = :recruitmentId")
     void deleteAllByRecruitmentId(UUID recruitmentId);
-
 }

@@ -1,14 +1,15 @@
 package com.yoyomo.domain.application.domain.repository.dto;
 
-import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 
-public record ApplicationWithStatus(
-        Application application,
-        Status status
+import java.util.UUID;
+
+public record ProcessResultWithApplication(
+        Status status,
+        UUID applicationId
 ) {
 
-    public ApplicationWithStatus {
+    public ProcessResultWithApplication {
         if (status == null) {
             status = Status.BEFORE_EVALUATION;
         }

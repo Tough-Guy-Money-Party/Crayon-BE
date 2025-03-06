@@ -2,8 +2,11 @@ package com.yoyomo.domain.fixture;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.InterviewRecord;
+import com.yoyomo.domain.application.domain.entity.ProcessResult;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -57,6 +60,19 @@ public class TestFixture {
         return Application.builder()
                 .user(user)
                 .recruitmentId(UUID.randomUUID())
+                .build();
+    }
+
+    public static Process process() {
+        return Process.builder()
+                .build();
+    }
+
+    public static ProcessResult processResult(UUID applicationId, long processId, Status status) {
+        return ProcessResult.builder()
+                .applicationId(applicationId)
+                .processId(processId)
+                .status(status)
                 .build();
     }
 }
