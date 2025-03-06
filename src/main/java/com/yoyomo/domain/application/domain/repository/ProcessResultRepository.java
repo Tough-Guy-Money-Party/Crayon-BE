@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
+import com.yoyomo.domain.application.domain.repository.dto.ProcessResultWithApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,16 @@ public interface ProcessResultRepository extends JpaRepository<ProcessResult, Lo
     List<ProcessResult> findAllPassByProcessId(long processId);
 
     List<ProcessResult> findAllByApplicationId(UUID applicationId);
+
+    @Query("""
+            SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessResultWithApplication(
+                p.status,
+                p.applicationId
+             )
+             FROM ProcessResult p WHERE p.applicationId IN :ids
+            """)
+    List<ProcessResultWithApplication> findAll(List<UUID> ids);
+
+    @Query("SELECT pr.applicationId FROM ProcessResult pr WHERE pr.processId = :processId AND pr.status = 'PENDING'")
+    List<UUID> findPendingApplicationId(long processId);
 }
