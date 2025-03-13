@@ -2,13 +2,11 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
-import com.yoyomo.domain.application.domain.repository.ProcessResultRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.application.exception.ApplicationNotFoundException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +23,6 @@ import java.util.stream.Collectors;
 public class ApplicationGetService {
 
     private final ApplicationRepository applicationRepository;
-    private final EntityManager entityManager;
-    private final ProcessResultRepository processResultRepository;
 
     public List<Application> findAll(User user) {
         return applicationRepository.findAllByUserAndDeletedAtIsNull(user);
@@ -39,11 +35,6 @@ public class ApplicationGetService {
 
     public Page<ApplicationWithStatus> findAll(Process process, Pageable pageable) {
         return applicationRepository.findAllWithStatusByProcess(process, pageable);
-    }
-
-    public Page<ApplicationWithStatus> findAll2(Process process, Pageable pageable) {
-        List<UUID> applicationIds = processResultRepository.findPendingApplicationId(process.getId());
-        return applicationRepository.findAllByProcess(process, applicationIds, pageable);
     }
 
     public List<Application> findAllOrderByName(Process process) {

@@ -59,19 +59,6 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     Page<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process, Pageable pageable);
 
     @Query("""
-            SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
-                    a,
-                    pr.status
-                )
-            FROM Application a
-                     LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
-            WHERE a.process = :process OR a.id IN :applicationIds
-            ORDER BY CASE WHEN a.id IN :applicationIds THEN 0 ELSE 1 END,
-                     a.createdAt DESC
-            """)
-    Page<ApplicationWithStatus> findAllByProcess(Process process, List<UUID> applicationIds, Pageable pageable);
-
-    @Query("""
             SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
                 a.process,
                 COUNT(a.id)

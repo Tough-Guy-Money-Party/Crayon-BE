@@ -14,6 +14,8 @@ import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.template.domain.service.MailTemplateUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,15 +48,18 @@ public class MailTemplateManageUseCase {
                 .map(MailTemplateListResponse::of);
     }
 
+    @Cacheable(value = "mailTemplate", key = "#templateId")
     public MailTemplateGetResponse find(UUID templateId) {
         return mailTemplateGetService.findWithSes(templateId);
     }
 
     @Transactional
-    public void update(MailTemplateUpdateRequest dto, UUID templateId, User user) {
+    @CachePut(value = "mailTemplate", key = "#templateId")
+    public MailTemplateGetResponse update(MailTemplateUpdateRequest dto, UUID templateId, User user) {
         MailTemplate mailTemplate = checkAuthorityByMailTemplate(templateId, user);
 
         mailTemplateUpdateService.update(dto, mailTemplate, templateId);
+        return MailTemplateGetResponse.toResponse(mailTemplate, dto);
     }
 
     @Transactional

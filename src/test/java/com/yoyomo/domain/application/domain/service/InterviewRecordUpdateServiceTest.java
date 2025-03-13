@@ -6,6 +6,7 @@ import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
+import com.yoyomo.domain.fixture.CustomRepository;
 import com.yoyomo.domain.fixture.TestFixture;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
@@ -38,6 +39,9 @@ class InterviewRecordUpdateServiceTest {
     @Autowired
     InterviewRecordUpdateService interviewRecordUpdateService;
 
+    @Autowired
+    CustomRepository customRepository;
+
     User user;
 
     @BeforeEach
@@ -49,10 +53,7 @@ class InterviewRecordUpdateServiceTest {
 
     @AfterEach
     void tearDown() {
-        interviewRecordRepository.deleteAll();
-        clubMangerRepository.deleteAll();
-        clubRepository.deleteAll();
-        userRepository.deleteAll();
+        customRepository.clearAndReset();
     }
 
     @DisplayName("면접 기록 작성자라면 삭제에 성공한다.")

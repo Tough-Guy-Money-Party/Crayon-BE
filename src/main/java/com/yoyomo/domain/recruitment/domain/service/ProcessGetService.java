@@ -31,11 +31,6 @@ public class ProcessGetService {
         return processRepository.findAllByRecruitment(recruitment);
     }
 
-    public void exists(Long processId) {
-        processRepository.findById(processId)
-                .orElseThrow(ProcessNotFoundException::new);
-    }
-
     public List<ProcessWithApplicantCount> findAllWithApplicantCount(UUID recruitmentId) {
         return processRepository.findAllWithApplicantCount(recruitmentId);
     }

@@ -21,13 +21,13 @@ public interface ProcessRepository extends JpaRepository<Process, Long> {
     @Query("""
              SELECT new com.yoyomo.domain.recruitment.domain.dto.ProcessWithApplicantCount(
                    p,
-                   (SELECT COUNT (a.id)
-                    FROM Application a
-                    WHERE a.process.id = p.id
-                    AND a.deletedAt IS NULL)
+                   COUNT(a.id)
              )
              FROM Process p
+             LEFT JOIN
+                  Application a ON p.id = a.process.id AND a.deletedAt IS NULL
              WHERE p.recruitment.id = :recruitmentId
+             GROUP BY p.stage, p.id
              ORDER BY p.stage
             """)
     List<ProcessWithApplicantCount> findAllWithApplicantCount(UUID recruitmentId);
