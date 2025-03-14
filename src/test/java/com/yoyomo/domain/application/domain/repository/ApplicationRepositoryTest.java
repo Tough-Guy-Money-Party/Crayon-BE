@@ -1,6 +1,6 @@
 package com.yoyomo.domain.application.domain.repository;
 
-import com.yoyomo.domain.DataJpaTest;
+import com.yoyomo.domain.RepositoryTest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
@@ -28,7 +28,7 @@ import static com.yoyomo.domain.fixture.TestFixture.processResult;
 import static com.yoyomo.domain.fixture.TestFixture.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ApplicationRepositoryTest extends DataJpaTest {
+class ApplicationRepositoryTest extends RepositoryTest {
 
     @Autowired
     ProcessRepository processRepository;

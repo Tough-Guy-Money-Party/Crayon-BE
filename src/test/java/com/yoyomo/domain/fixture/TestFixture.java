@@ -63,6 +63,14 @@ public class TestFixture {
                 .build();
     }
 
+    public static Application application(User user, Process process) {
+        return Application.builder()
+                .user(user)
+                .process(process)
+                .recruitmentId(UUID.randomUUID())
+                .build();
+    }
+
     public static Process process() {
         return Process.builder()
                 .build();
