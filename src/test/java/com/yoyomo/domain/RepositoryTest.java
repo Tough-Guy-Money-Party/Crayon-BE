@@ -10,10 +10,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @MockBean(classes = {
         AnswerRepository.class,
         FormRepository.class,
+        MongoTemplate.class
 })
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
