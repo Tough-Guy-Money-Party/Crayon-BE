@@ -5,9 +5,6 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.entity.ClubManager;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
-import com.yoyomo.domain.fixture.TestFixture;
-import com.yoyomo.domain.form.domain.entity.Form;
-import com.yoyomo.domain.form.domain.repository.FormRepository;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.recruitment.exception.ModifiedRecruitmentException;
@@ -19,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -46,9 +44,6 @@ class RecruitmentUpdateServiceTest extends ApplicationTest {
     RecruitmentRepository recruitmentRepository;
 
     @Autowired
-    FormRepository formRepository;
-
-    @Autowired
     EntityManager entityManager;
 
     @Autowired
@@ -62,7 +57,6 @@ class RecruitmentUpdateServiceTest extends ApplicationTest {
         User user = userRepository.save(user());
         clubMangerRepository.save(ClubManager.asOwner(club, user));
         Recruitment recruitment = recruitmentRepository.save(recruitment(club));
-        Form form = formRepository.save(TestFixture.form(club.getId().toString()));
 
         // when
         int threadCount = 2;
@@ -87,7 +81,7 @@ class RecruitmentUpdateServiceTest extends ApplicationTest {
         Future<?> activateFuture = executorService.submit(() -> {
             try {
                 updateLatch.await();
-                recruitmentUpdateService.update(recruitment, form.getId());
+                recruitmentUpdateService.update(recruitment, UUID.randomUUID().toString());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } finally {
