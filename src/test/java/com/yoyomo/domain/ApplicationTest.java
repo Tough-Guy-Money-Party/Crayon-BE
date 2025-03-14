@@ -17,7 +17,6 @@ import org.springframework.context.annotation.FilterType;
         JwtProvider.class,
 })
 @ComponentScan(
-        basePackages = "com.yoyomo.domain",
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.REGEX,
                 pattern = {
