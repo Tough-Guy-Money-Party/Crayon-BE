@@ -16,7 +16,7 @@ public class ClubManagerSaveService {
 
     private final ClubMangerRepository clubMangerRepository;
 
-    public void saveManager(User manager, Club club) {
+    public ClubManager saveManager(User manager, Club club) {
         List<User> managers = clubMangerRepository.findAllByClubId(club.getId())
                 .stream()
                 .map(ClubManager::getManager)
@@ -27,6 +27,6 @@ public class ClubManagerSaveService {
         }
 
         ClubManager clubManager = ClubManager.asManager(club, manager);
-        clubMangerRepository.save(clubManager);
+        return clubMangerRepository.save(clubManager);
     }
 }
