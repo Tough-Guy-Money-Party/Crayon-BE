@@ -85,6 +85,9 @@ dependencies {
     implementation 'software.amazon.awssdk:lambda:2.26.4'
 
     runtimeOnly 'com.h2database:h2'
+
+    // spring cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 }
 
 tasks.named('test') {
