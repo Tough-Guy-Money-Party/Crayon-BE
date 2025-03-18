@@ -10,6 +10,7 @@ import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO;
 import com.yoyomo.domain.landing.application.dto.request.LandingRequestDTO.General;
 import com.yoyomo.domain.landing.application.dto.response.LandingResponseDTO;
 import com.yoyomo.domain.landing.application.mapper.LandingMapper;
+import com.yoyomo.domain.landing.domain.constant.ReservedSubDomain;
 import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
