@@ -19,6 +19,7 @@ import com.yoyomo.domain.landing.exception.InvalidFormatException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.util.SubdomainFormatter;
 import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
+import com.yoyomo.infra.aws.dto.LandingDeleteEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import java.io.IOException;
@@ -71,12 +72,10 @@ public class LandingGeneralManageUsecase {
             clubValidateService.checkDuplicatedSubDomain(subdomain);
             route53Service.checkDuplication(subdomain);
 
-            checkReservedSubdomain(subdomain);
-
             clubValidateService.checkDuplicatedSubDomain(subdomain);
 
             publisher.publishEvent(new LandingClientUploadEvent(subdomain));
-            distributeUsecase.delete(SubdomainFormatter.formatSubdomain(oldDomain));
+            publisher.publishEvent(new LandingDeleteEvent(SubdomainFormatter.formatSubdomain(oldDomain)));
         }
     }
 
