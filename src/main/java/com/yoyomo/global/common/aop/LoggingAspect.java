@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LoggingAspect {
 
-    @Pointcut("execution(public * com.yoyomo.infra.aws.usecase.DistributeUsecase.create(..))")
+    @Pointcut("execution(public * com.yoyomo.infra.aws.s3.service.UploadEventListener.processUpload(..))")
     private void logForDistributeMethod() {
     }
 

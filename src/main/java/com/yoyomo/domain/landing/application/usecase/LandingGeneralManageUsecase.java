@@ -21,7 +21,6 @@ import com.yoyomo.global.common.util.SubdomainFormatter;
 import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
 import com.yoyomo.infra.aws.dto.LandingDeleteEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
-import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,6 @@ public class LandingGeneralManageUsecase {
     private final ClubUpdateService clubUpdateService;
     private final LandingGetService landingGetService;
     private final LandingMapper landingMapper;
-    private final DistributeUsecase distributeUsecase;
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
     private final LandingSaveService landingSaveService;
