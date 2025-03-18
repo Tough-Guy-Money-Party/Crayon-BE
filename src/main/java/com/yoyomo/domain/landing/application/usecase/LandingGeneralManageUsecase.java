@@ -16,6 +16,7 @@ import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.util.SubdomainFormatter;
 import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
@@ -94,14 +95,14 @@ public class LandingGeneralManageUsecase {
     @Transactional
     public void create(User user, UUID clubId, CreateSubDomainRequest request) {
         Club club = clubValidateService.checkOwnerAuthority(clubId, user);
-        String subDomain = request.subDomain();
+        String subdomain = SubdomainFormatter.formatSubdomain(request.subDomain());
 
-        checkReservedSubdomain(subDomain);
-        clubValidateService.checkDuplicatedSubDomain(subDomain);
-        route53Service.checkDuplication(subDomain);
+        checkReservedSubdomain(subdomain);
+        clubValidateService.checkDuplicatedSubDomain(subdomain);
+        route53Service.checkDuplication(subdomain);
 
-        distributeUsecase.create(subDomain);
-        publisher.publishEvent(new LandingClientUploadEvent(subDomain));
+        distributeUsecase.create(subdomain);
+        publisher.publishEvent(new LandingClientUploadEvent(subdomain));
 
         club.addSubDomain(request.subDomain());
         Landing landing = landingSaveService.save(club);

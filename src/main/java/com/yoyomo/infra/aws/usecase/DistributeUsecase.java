@@ -12,15 +12,13 @@ public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
-    private final String BASEURL = ".crayon.land";
 
-    public void create(String subDomain) {
-        String fullSubDomain = subDomain + BASEURL;
+    public void create(String subdomain) {
         //버킷 생성
-        s3Service.createBucket(fullSubDomain);
+        s3Service.createBucket(subdomain);
 
         // route53 레코드 생성
-        createRecord(fullSubDomain);
+        createRecord(subdomain);
 
     }
 
@@ -31,19 +29,18 @@ public class DistributeUsecase {
         route53Service.create(subDomain, cloudfrontDomainName);
     }
 
-    public String delete(String subDomain) {
-        String fullSubDomain = subDomain + BASEURL;
+    public String delete(String subdomain) {
 
         //cloudfront 배포 비활성화
-        cloudfrontService.disableDitribute(fullSubDomain);
+        cloudfrontService.disableDitribute(subdomain);
 
         //s3버킷 삭제
-        s3Service.delete(fullSubDomain);
+        s3Service.delete(subdomain);
 
         //route53 도메인 레코드 비활성화
-        route53Service.delete(fullSubDomain);
+        route53Service.delete(subdomain);
 
-        return subDomain;
+        return subdomain;
     }
 
 }

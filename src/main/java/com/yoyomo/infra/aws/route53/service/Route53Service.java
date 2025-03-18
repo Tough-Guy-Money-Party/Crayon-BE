@@ -22,6 +22,7 @@ import software.amazon.awssdk.services.route53.model.ResourceRecordSet;
 @RequiredArgsConstructor
 public class Route53Service {
     private final Route53Client route53Client;
+    private final String RECORD_FORMAT = "%s.";
 
     @Value("${cloud.aws.route53.hostedZoneId}")
     private String hostedId;
@@ -61,7 +62,7 @@ public class Route53Service {
         ListResourceRecordSetsResponse listResponse = route53Client.listResourceRecordSets(listRequest);
 
         ResourceRecordSet recordSet = listResponse.resourceRecordSets().stream()
-                .filter(rrs -> rrs.name().equals(subdomain + ".") && rrs.type() == RRType.A)
+                .filter(rrs -> rrs.name().equals(String.format(RECORD_FORMAT, subdomain)) && rrs.type() == RRType.A)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Record set not found for subdomain: " + subdomain));
 
@@ -80,12 +81,10 @@ public class Route53Service {
         route53Client.changeResourceRecordSets(deleteRequest);
     }
 
-
-    //TODO: 포맷 지정 위치 변경
     public void checkDuplication(String subdomain) {
         ListResourceRecordSetsRequest listRequest = ListResourceRecordSetsRequest.builder()
                 .hostedZoneId(hostedId)
-                .startRecordName(subdomain + ".crayon.land.")
+                .startRecordName(subdomain)
                 .startRecordType(RRType.A)
                 .build();
 
@@ -93,7 +92,7 @@ public class Route53Service {
 
         boolean duplicated = listResponse.resourceRecordSets().stream()
                 .anyMatch(rrs ->
-                        rrs.name().equals(subdomain + ".crayon.land.")
+                        rrs.name().equals(String.format(RECORD_FORMAT, subdomain))
                                 && rrs.type() == RRType.A
                 );
 

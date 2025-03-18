@@ -8,10 +8,10 @@ import com.yoyomo.domain.club.exception.ClubAccessDeniedException;
 import com.yoyomo.domain.club.exception.ClubNotFoundException;
 import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.util.SubdomainFormatter;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +47,8 @@ public class ClubValidateService {
         throw new ClubAccessDeniedException();
     }
 
-    public void checkDuplicatedSubDomain(String subDomain) {
-        if (clubRepository.existsBySubDomain(subDomain)) {
+    public void checkDuplicatedSubDomain(String subdomain) {
+        if (clubRepository.existsBySubDomain(SubdomainFormatter.formatPrefix(subdomain))) {
             throw new DuplicatedSubDomainException();
         }
     }
