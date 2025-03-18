@@ -2,7 +2,7 @@ package com.yoyomo.infra.aws.s3.service;
 
 import com.yoyomo.domain.club.exception.UnavailableSubdomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
-import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
+import com.yoyomo.infra.aws.dto.LandingCreateEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.redis.service.RedisQueueService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @EnableAsync
-public class UploadEventListener {
+public class LandingCreateEventListener {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
@@ -23,7 +23,7 @@ public class UploadEventListener {
 
     @Async
     @EventListener
-    public void processUpload(LandingClientUploadEvent uploadEvent) {
+    public void processUpload(LandingCreateEvent uploadEvent) {
         String subdomain = uploadEvent.subdomain();
         try {
             s3Service.createBucket(subdomain);
