@@ -36,9 +36,7 @@ public class DistributeUsecase {
     }
 
     public void checkValidSubdomain(String subDomain) {
-        String fullSubDomain = subDomain + BASEURL;
         checkReservedSubDomain(subDomain);
-        cloudfrontService.validateActiveDistribution(fullSubDomain);
     }
 
     private void checkReservedSubDomain(String subDomain) {

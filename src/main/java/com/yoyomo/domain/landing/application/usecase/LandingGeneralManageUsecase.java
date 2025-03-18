@@ -16,6 +16,7 @@ import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
+import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.usecase.DistributeUsecase;
 import java.io.IOException;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class LandingGeneralManageUsecase {
     private final ClubValidateService clubValidateService;
     private final LandingSaveService landingSaveService;
     private final ApplicationEventPublisher publisher;
+    private final Route53Service route53Service;
 
     @Transactional(readOnly = true)
     public LandingResponseDTO.General readGeneral(String clubId, User user) {
@@ -94,7 +96,8 @@ public class LandingGeneralManageUsecase {
         String subDomain = request.subDomain();
 
         clubValidateService.checkDuplicatedSubDomain(subDomain);
-        
+        route53Service.checkDuplication(subDomain);
+
         distributeUsecase.create(subDomain);
         publisher.publishEvent(new LandingClientUploadEvent(subDomain));
 

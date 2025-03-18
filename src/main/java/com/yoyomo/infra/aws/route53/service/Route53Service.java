@@ -1,6 +1,7 @@
 package com.yoyomo.infra.aws.route53.service;
 
 
+import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,5 +79,28 @@ public class Route53Service {
 
         route53Client.changeResourceRecordSets(deleteRequest);
     }
+
+    public void checkDuplication(String subdomain) {
+        ListResourceRecordSetsRequest listRequest = ListResourceRecordSetsRequest.builder()
+                .hostedZoneId(hostedId)
+                .startRecordName(subdomain + ".crayon.land.")
+                .startRecordType(RRType.A)
+                .build();
+
+        ListResourceRecordSetsResponse listResponse = route53Client.listResourceRecordSets(listRequest);
+
+        boolean duplicated = listResponse.resourceRecordSets().stream()
+                .anyMatch(rrs ->
+                        rrs.name().equals(subdomain + ".crayon.land.")
+                                && rrs.type() == RRType.A
+                );
+
+        if (duplicated) {
+            throw new DuplicatedSubDomainException();
+        }
+
+
+    }
+
 
 }
