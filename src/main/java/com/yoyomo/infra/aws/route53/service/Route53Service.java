@@ -80,6 +80,8 @@ public class Route53Service {
         route53Client.changeResourceRecordSets(deleteRequest);
     }
 
+
+    //TODO: 포맷 지정 위치 변경
     public void checkDuplication(String subdomain) {
         ListResourceRecordSetsRequest listRequest = ListResourceRecordSetsRequest.builder()
                 .hostedZoneId(hostedId)

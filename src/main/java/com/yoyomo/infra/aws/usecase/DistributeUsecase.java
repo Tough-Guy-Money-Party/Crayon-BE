@@ -1,8 +1,6 @@
 package com.yoyomo.infra.aws.usecase;
 
-import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import com.yoyomo.infra.aws.cloudfront.Service.CloudfrontService;
-import com.yoyomo.infra.aws.constant.ReservedSubDomain;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +15,6 @@ public class DistributeUsecase {
     private final String BASEURL = ".crayon.land";
 
     public void create(String subDomain) {
-        checkValidSubdomain(subDomain);
-
         String fullSubDomain = subDomain + BASEURL;
         //버킷 생성
         s3Service.createBucket(fullSubDomain);
@@ -33,16 +29,6 @@ public class DistributeUsecase {
         String cloudfrontDomainName = cloudfrontService.getCloudfrontDomainName(distributeId);
 
         route53Service.create(subDomain, cloudfrontDomainName);
-    }
-
-    public void checkValidSubdomain(String subDomain) {
-        checkReservedSubDomain(subDomain);
-    }
-
-    private void checkReservedSubDomain(String subDomain) {
-        if (ReservedSubDomain.contains(subDomain)) {
-            throw new DuplicatedSubDomainException();
-        }
     }
 
     public String delete(String subDomain) {

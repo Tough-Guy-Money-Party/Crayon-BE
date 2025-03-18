@@ -95,6 +95,7 @@ public class LandingGeneralManageUsecase {
         Club club = clubValidateService.checkOwnerAuthority(clubId, user);
         String subDomain = request.subDomain();
 
+        checkReservedSubdomain(subDomain);
         clubValidateService.checkDuplicatedSubDomain(subDomain);
         route53Service.checkDuplication(subDomain);
 
@@ -104,5 +105,15 @@ public class LandingGeneralManageUsecase {
         club.addSubDomain(request.subDomain());
         Landing landing = landingSaveService.save(club);
         club.addLanding(landing);
+    }
+
+    public void checkReservedSubdomain(String subDomain) {
+        checkReservedSubDomain(subDomain);
+    }
+
+    private void checkReservedSubDomain(String subDomain) {
+        if (ReservedSubDomain.contains(subDomain)) {
+            throw new DuplicatedSubDomainException();
+        }
     }
 }
