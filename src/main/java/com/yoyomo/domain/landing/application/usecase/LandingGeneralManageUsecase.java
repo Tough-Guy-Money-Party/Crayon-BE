@@ -64,22 +64,20 @@ public class LandingGeneralManageUsecase {
 
     private void updateSubDomainIfChanged(General dto, Club club) {
         if (isSubDomainChanged(dto, club)) {
-            String subDomain = checkDuplicatedSubDomain(dto.subDomain());
+            String subdomain = checkValidFormat(dto.subDomain());
             String oldDomain = club.getSubDomain();
 
-            //TODO: update 로직으로 변경 예정
-            distributeUsecase.create(subDomain);
-            publisher.publishEvent(new LandingClientUploadEvent(subDomain));
+            checkReservedSubdomain(subdomain);
+            clubValidateService.checkDuplicatedSubDomain(subdomain);
+            route53Service.checkDuplication(subdomain);
 
-            distributeUsecase.delete(oldDomain);
-        }
-    }
+            checkReservedSubdomain(subdomain);
 
-    private String checkDuplicatedSubDomain(String subDomain) {
-        if (clubGetService.checkSubDomain(subDomain)) {
-            throw new DuplicatedSubDomainException();
+            clubValidateService.checkDuplicatedSubDomain(subdomain);
+
+            publisher.publishEvent(new LandingClientUploadEvent(subdomain));
+            distributeUsecase.delete(SubdomainFormatter.formatSubdomain(oldDomain));
         }
-        return subDomain;
     }
 
     private boolean isSubDomainChanged(General dto, Club club) {
@@ -102,7 +100,6 @@ public class LandingGeneralManageUsecase {
         clubValidateService.checkDuplicatedSubDomain(subdomain);
         route53Service.checkDuplication(subdomain);
 
-        distributeUsecase.create(subdomain);
         publisher.publishEvent(new LandingClientUploadEvent(subdomain));
 
         club.addSubDomain(request.subDomain());
