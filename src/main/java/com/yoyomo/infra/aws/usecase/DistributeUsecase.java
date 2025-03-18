@@ -12,22 +12,7 @@ public class DistributeUsecase {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
     private final Route53Service route53Service;
-
-    public void create(String subdomain) {
-        //버킷 생성
-        s3Service.createBucket(subdomain);
-
-        // route53 레코드 생성
-        createRecord(subdomain);
-
-    }
-
-    private void createRecord(String subDomain) {
-        String distributeId = cloudfrontService.create(subDomain);
-        String cloudfrontDomainName = cloudfrontService.getCloudfrontDomainName(distributeId);
-
-        route53Service.create(subDomain, cloudfrontDomainName);
-    }
+    
 
     public String delete(String subdomain) {
 
