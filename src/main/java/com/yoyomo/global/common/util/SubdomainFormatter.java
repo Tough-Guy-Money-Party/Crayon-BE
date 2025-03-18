@@ -7,7 +7,8 @@ public class SubdomainFormatter {
     }
 
     public static String formatSubdomain(String prefix) {
-        return String.format(DOMAIN_FORMAT, prefix);
+        String lowerPrefix = prefix.toLowerCase();
+        return String.format(DOMAIN_FORMAT, lowerPrefix);
     }
 
     public static String formatPrefix(String subdomain) {

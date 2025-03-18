@@ -15,6 +15,7 @@ import com.yoyomo.domain.landing.domain.entity.Landing;
 import com.yoyomo.domain.landing.domain.service.LandingGetService;
 import com.yoyomo.domain.landing.domain.service.LandingSaveService;
 import com.yoyomo.domain.landing.domain.service.LandingUpdateService;
+import com.yoyomo.domain.landing.exception.InvalidFormatException;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.util.SubdomainFormatter;
 import com.yoyomo.infra.aws.dto.LandingClientUploadEvent;
@@ -95,7 +96,7 @@ public class LandingGeneralManageUsecase {
     @Transactional
     public void create(User user, UUID clubId, CreateSubDomainRequest request) {
         Club club = clubValidateService.checkOwnerAuthority(clubId, user);
-        String subdomain = SubdomainFormatter.formatSubdomain(request.subDomain());
+        String subdomain = checkValidFormat(request.subDomain());
 
         checkReservedSubdomain(subdomain);
         clubValidateService.checkDuplicatedSubDomain(subdomain);
@@ -107,6 +108,14 @@ public class LandingGeneralManageUsecase {
         club.addSubDomain(request.subDomain());
         Landing landing = landingSaveService.save(club);
         club.addLanding(landing);
+    }
+
+    private String checkValidFormat(String prefix) {
+        if (!prefix.matches("[a-z0-9-]+")) {
+            throw new InvalidFormatException();
+        }
+
+        return SubdomainFormatter.formatSubdomain(prefix);
     }
 
     public void checkReservedSubdomain(String subDomain) {

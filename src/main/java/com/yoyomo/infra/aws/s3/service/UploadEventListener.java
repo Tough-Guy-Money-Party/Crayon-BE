@@ -13,27 +13,25 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @EnableAsync
 public class UploadEventListener {
-    private static final String DOMAIN_FORMAT = "%s.crayon.land";
-
     private final S3Service s3Service;
     private final RedisQueueService redisQueueService;
 
     @Async
     @EventListener
     public void processUpload(LandingClientUploadEvent uploadEvent) {
-        String fullSubDomain = String.format(DOMAIN_FORMAT, uploadEvent.subDomain());
+        String subdomain = uploadEvent.subdomain();
         try {
-            s3Service.upload(fullSubDomain);
+            s3Service.upload(subdomain);
         } catch (Exception e) {
-            retryUpload(fullSubDomain);
+            retryUpload(subdomain);
         }
     }
 
-    private void retryUpload(String fullSubDomain) {
+    private void retryUpload(String subdomain) {
         try {
-            s3Service.upload(fullSubDomain);
+            s3Service.upload(subdomain);
         } catch (Exception e) {
-            redisQueueService.enqueueToFailedQueue(fullSubDomain);
+            redisQueueService.enqueueToFailedQueue(subdomain);
             throw new UnavailableSubdomainException(e.getMessage());
         }
     }
