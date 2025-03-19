@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.domain.service;
 
+import com.yoyomo.domain.ApplicationTest;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
@@ -11,7 +12,6 @@ import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -30,8 +30,7 @@ import static com.yoyomo.domain.fixture.TestFixture.processResult;
 import static com.yoyomo.domain.fixture.TestFixture.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class ApplicationGetServiceTest {
+class ApplicationGetServiceTest extends ApplicationTest {
 
     @Autowired
     ProcessRepository processRepository;
@@ -47,6 +46,7 @@ class ApplicationGetServiceTest {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
     @Autowired
     private ApplicationGetService applicationGetService;
 

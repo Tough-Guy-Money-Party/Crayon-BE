@@ -7,15 +7,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @MockBean(classes = {
         AnswerRepository.class,
         FormRepository.class,
+        MongoTemplate.class
 })
-@org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class DataJpaTest {
+@Import(CustomRepository.class)
+public abstract class RepositoryTest {
 
     @Autowired
     CustomRepository customRepository;
