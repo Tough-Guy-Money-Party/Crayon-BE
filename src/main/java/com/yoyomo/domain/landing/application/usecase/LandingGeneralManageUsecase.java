@@ -101,11 +101,7 @@ public class LandingGeneralManageUsecase {
         club.addLanding(landing);
     }
 
-    public void checkReservedSubdomain(String subDomain) {
-        checkReservedSubDomain(subDomain);
-    }
-
-    private void checkReservedSubDomain(String subDomain) {
+    private void checkReservedSubdomain(String subDomain) {
         if (ReservedSubDomain.contains(subDomain)) {
             throw new DuplicatedSubDomainException();
         }
