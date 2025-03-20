@@ -6,14 +6,13 @@ import com.yoyomo.infra.aws.dto.LandingCreateEvent;
 import com.yoyomo.infra.aws.route53.service.Route53Service;
 import com.yoyomo.infra.redis.service.RedisQueueService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-@EnableAsync
 public class LandingCreateEventListener {
     private final S3Service s3Service;
     private final CloudfrontService cloudfrontService;
@@ -22,7 +21,7 @@ public class LandingCreateEventListener {
     private final RedisQueueService redisQueueService;
 
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void processUpload(LandingCreateEvent uploadEvent) {
         String subdomain = uploadEvent.subdomain();
         try {
