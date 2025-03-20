@@ -56,12 +56,12 @@ public class LandingGeneralManageUsecase {
         Club club = clubGetService.find(dto.clubId());
         clubValidateService.checkOwnerAuthority(club.getId(), user);
 
-        updateSubDomainIfChanged(dto, club);
+        updateSubdomainIfChanged(dto, club);
         Landing landing = landingGetService.find(club);
         landingUpdateService.update(landing, club, dto);
     }
 
-    private void updateSubDomainIfChanged(General dto, Club club) {
+    private void updateSubdomainIfChanged(General dto, Club club) {
         if (isSubDomainChanged(dto, club)) {
             String subdomain = checkValidFormat(dto.subDomain());
             String oldDomain = club.getSubDomain();
@@ -69,8 +69,6 @@ public class LandingGeneralManageUsecase {
             checkReservedSubdomain(subdomain);
             clubValidateService.checkDuplicatedSubDomain(subdomain);
             route53Service.checkDuplication(subdomain);
-
-            clubValidateService.checkDuplicatedSubDomain(subdomain);
 
             publisher.publishEvent(new LandingCreateEvent(subdomain));
             publisher.publishEvent(new LandingDeleteEvent(SubdomainFormatter.formatSubdomain(oldDomain)));
