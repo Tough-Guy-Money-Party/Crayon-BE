@@ -38,7 +38,7 @@ public class LandingGeneralManageUsecase {
     private final LandingUpdateService landingUpdateService;
     private final ClubValidateService clubValidateService;
     private final LandingSaveService landingSaveService;
-    private final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher landingEventPublisher;
     private final Route53Service route53Service;
 
     @Transactional(readOnly = true)
@@ -69,8 +69,8 @@ public class LandingGeneralManageUsecase {
             clubValidateService.checkDuplicatedSubDomain(subdomain);
             route53Service.checkDuplication(subdomain);
 
-            publisher.publishEvent(new LandingCreateEvent(subdomain));
-            publisher.publishEvent(new LandingDeleteEvent(SubdomainFormatter.formatSubdomain(oldDomain)));
+            landingEventPublisher.publishEvent(new LandingCreateEvent(subdomain));
+            landingEventPublisher.publishEvent(new LandingDeleteEvent(SubdomainFormatter.formatSubdomain(oldDomain)));
         }
     }
 
@@ -94,7 +94,7 @@ public class LandingGeneralManageUsecase {
         clubValidateService.checkDuplicatedSubDomain(subdomain);
         route53Service.checkDuplication(subdomain);
 
-        publisher.publishEvent(new LandingCreateEvent(subdomain));
+        landingEventPublisher.publishEvent(new LandingCreateEvent(subdomain));
 
         club.addSubDomain(request.subDomain());
         Landing landing = landingSaveService.save(club);
