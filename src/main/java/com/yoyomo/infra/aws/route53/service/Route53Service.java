@@ -1,6 +1,7 @@
 package com.yoyomo.infra.aws.route53.service;
 
 
+import com.yoyomo.domain.club.exception.DuplicatedSubDomainException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import software.amazon.awssdk.services.route53.model.ResourceRecordSet;
 @RequiredArgsConstructor
 public class Route53Service {
     private final Route53Client route53Client;
+    private final String RECORD_FORMAT = "%s.";
 
     @Value("${cloud.aws.route53.hostedZoneId}")
     private String hostedId;
@@ -60,7 +62,7 @@ public class Route53Service {
         ListResourceRecordSetsResponse listResponse = route53Client.listResourceRecordSets(listRequest);
 
         ResourceRecordSet recordSet = listResponse.resourceRecordSets().stream()
-                .filter(rrs -> rrs.name().equals(subdomain + ".") && rrs.type() == RRType.A)
+                .filter(rrs -> rrs.name().equals(String.format(RECORD_FORMAT, subdomain)) && rrs.type() == RRType.A)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Record set not found for subdomain: " + subdomain));
 
@@ -78,5 +80,28 @@ public class Route53Service {
 
         route53Client.changeResourceRecordSets(deleteRequest);
     }
+
+    public void checkDuplication(String subdomain) {
+        ListResourceRecordSetsRequest listRequest = ListResourceRecordSetsRequest.builder()
+                .hostedZoneId(hostedId)
+                .startRecordName(subdomain)
+                .startRecordType(RRType.A)
+                .build();
+
+        ListResourceRecordSetsResponse listResponse = route53Client.listResourceRecordSets(listRequest);
+
+        boolean duplicated = listResponse.resourceRecordSets().stream()
+                .anyMatch(rrs ->
+                        rrs.name().equals(String.format(RECORD_FORMAT, subdomain))
+                                && rrs.type() == RRType.A
+                );
+
+        if (duplicated) {
+            throw new DuplicatedSubDomainException();
+        }
+
+
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.yoyomo.infra.aws.constant;
+package com.yoyomo.domain.landing.domain.constant;
 
 public enum ReservedSubDomain {
     ONBOARDING("onboarding.crayon.land"),
@@ -14,11 +14,6 @@ public enum ReservedSubDomain {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-
     public static boolean contains(String subDomain) {
         for (ReservedSubDomain reserved : values()) {
             if (reserved.name().equalsIgnoreCase(subDomain)) {
@@ -26,6 +21,10 @@ public enum ReservedSubDomain {
             }
         }
         return false;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }
