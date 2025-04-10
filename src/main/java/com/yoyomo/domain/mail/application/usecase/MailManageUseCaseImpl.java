@@ -1,6 +1,7 @@
 package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
@@ -63,18 +64,20 @@ public class MailManageUseCaseImpl {
 
     @Transactional
     public void reserve(MailRequest dto, User user) {
-        List<Mail> mails = createMail(dto, user);
+        Process process = checkAuthorityByProcessId(dto.processId(), user);
+        process.reserve(dto.scheduledTime());
+
+        List<Mail> mails = createMail(process, dto);
         uploadMail(mails);
     }
 
     @Transactional
     public void direct(MailRequest dto, User user) {
-        List<Mail> mails = createMail(dto, user);
+        Process process = checkAuthorityByProcessId(dto.processId(), user);
+        process.reserve(dto.scheduledTime());
 
-        boolean isLimited = mailRateLimiter.isRateLimited(mails.size());
-        if (isLimited) {
-            throw new MailLimitExceededException(MAIL_LIMIT_EXCEEDED.getMessage());
-        }
+        List<Mail> mails = createMail(process, dto);
+        checkLimit(process.getRecruitment().getClub(), mails);
 
         uploadMail(mails);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
@@ -84,6 +87,13 @@ public class MailManageUseCaseImpl {
         ).exceptionally(e -> {
             throw new LambdaInvokeException(e.getMessage());
         });
+    }
+
+    private void checkLimit(Club club, List<Mail> mails) {
+        boolean isLimited = mailRateLimiter.isRateLimited(club.getId(), mails.size());
+        if (isLimited) {
+            throw new MailLimitExceededException(MAIL_LIMIT_EXCEEDED.getMessage());
+        }
     }
 
     @Transactional
@@ -127,15 +137,8 @@ public class MailManageUseCaseImpl {
         checkUpload(uploadFutures);
     }
 
-    private List<Mail> createMail(MailRequest dto, User user) {
-        Process process = checkAuthorityByProcessId(dto.processId(), user);
+    private List<Mail> createMail(Process process, MailRequest dto) {
         Recruitment recruitment = process.getRecruitment();
-        process.reserve(dto.scheduledTime());
-
-        return createMail(process, dto, recruitment);
-    }
-
-    private List<Mail> createMail(Process process, MailRequest dto, Recruitment recruitment) {
         UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
         UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
 

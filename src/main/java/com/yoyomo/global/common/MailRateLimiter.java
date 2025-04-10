@@ -2,39 +2,51 @@ package com.yoyomo.global.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class MailRateLimiter {
 
-    private static final String REMAINING_KEY = "global:email";
-    private static final long MAX_EMAILS_PER_DAY = 50_000;
+    private static final String TOTAL_KEY = "global:email:total";
+    private static final String CLUB_KEY = "global:email:";
+    private static final Map<String, Long> LIMIT = Map.of(
+            TOTAL_KEY, 50_000L,
+            CLUB_KEY, 300L
+    );
     private static final Duration TTL = Duration.ofHours(24);
 
     private final RedisTemplate<String, String> rateLimitRedisTemplate;
 
-    public boolean isRateLimited(int requestSize) {
-        ValueOperations<String, String> ops = rateLimitRedisTemplate.opsForValue();
+    public boolean isRateLimited(UUID clubId, int requestSize) {
+        String clubKey = CLUB_KEY + clubId;
 
-        long remaining = getRemaining(ops);
-        if (remaining < requestSize) {
+        if (exceededLimit(requestSize, clubKey)) {
             return true;
         }
 
-        ops.decrement(REMAINING_KEY, requestSize);
+        rateLimitRedisTemplate.opsForValue().decrement(TOTAL_KEY, requestSize);
+        rateLimitRedisTemplate.opsForValue().decrement(clubKey, requestSize);
         return false;
     }
 
-    private long getRemaining(ValueOperations<String, String> ops) {
-        String remaining = ops.get(REMAINING_KEY);
-        if (remaining == null) {
-            ops.set(REMAINING_KEY, String.valueOf(MAX_EMAILS_PER_DAY), TTL);
-            return MAX_EMAILS_PER_DAY;
+    private boolean exceededLimit(int requestSize, String clubKey) {
+        long totalRemaining = getRemaining(TOTAL_KEY, LIMIT.get(TOTAL_KEY));
+        long clubRemaining = getRemaining(clubKey, LIMIT.get(CLUB_KEY));
+
+        return totalRemaining < requestSize || clubRemaining < requestSize;
+    }
+
+    private long getRemaining(String key, long amount) {
+        String value = rateLimitRedisTemplate.opsForValue().get(key);
+        if (value != null) {
+            return Long.parseLong(value);
         }
-        return Long.parseLong(remaining);
+        rateLimitRedisTemplate.opsForValue().set(key, String.valueOf(amount), TTL);
+        return amount;
     }
 }
