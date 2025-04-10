@@ -67,4 +67,24 @@ public class RedisConfig {
         template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
+
+    @Bean
+    public RedisTemplate<String, String> rateLimitRedisTemplate() {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(rateLimitConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+        return template;
+    }
+
+    private RedisConnectionFactory rateLimitConnectionFactory() {
+        RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
+        redisConfiguration.setHostName(host);
+        redisConfiguration.setPort(port);
+        redisConfiguration.setPassword(password);
+        redisConfiguration.setDatabase(2);
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration);
+        lettuceConnectionFactory.afterPropertiesSet();
+        return lettuceConnectionFactory;
+    }
 }

@@ -12,12 +12,14 @@ import com.yoyomo.domain.mail.domain.service.MailUpdateService;
 import com.yoyomo.domain.mail.exception.DynamodbUploadException;
 import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.mail.exception.MailCancelException;
+import com.yoyomo.domain.mail.exception.MailLimitExceededException;
 import com.yoyomo.domain.mail.exception.MailUpdateException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.MailRateLimiter;
 import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_LIMIT_EXCEEDED;
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_UPDATE_FAIL;
 
 
@@ -50,6 +53,7 @@ public class MailManageUseCaseImpl {
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final BatchDivider batchDivider;
+    private final MailRateLimiter mailRateLimiter;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -59,12 +63,20 @@ public class MailManageUseCaseImpl {
 
     @Transactional
     public void reserve(MailRequest dto, User user) {
-        create(dto, user);
+        List<Mail> mails = createMail(dto, user);
+        uploadMail(mails);
     }
 
     @Transactional
     public void direct(MailRequest dto, User user) {
-        create(dto, user);
+        List<Mail> mails = createMail(dto, user);
+
+        boolean isLimited = mailRateLimiter.isRateLimited(mails.size());
+        if (isLimited) {
+            throw new MailLimitExceededException(MAIL_LIMIT_EXCEEDED.getMessage());
+        }
+
+        uploadMail(mails);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
 
         lambdaInvocation.thenRun(() ->
@@ -106,22 +118,21 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private void create(MailRequest dto, User user) {
-        long processId = dto.processId();
-
-        Process process = checkAuthorityByProcessId(processId, user);
-
-        process.reserve(dto.scheduledTime());
-
-        Recruitment recruitment = process.getRecruitment();
-
-        List<Mail> mails = createMail(process, dto, recruitment);
+    private void uploadMail(List<Mail> mails) {
         List<CompletableFuture<Void>> uploadFutures = batchDivider.divide(mails, PAGE_SIZE)
                 .stream()
                 .map(mailSaveService::upload)
                 .toList();
 
         checkUpload(uploadFutures);
+    }
+
+    private List<Mail> createMail(MailRequest dto, User user) {
+        Process process = checkAuthorityByProcessId(dto.processId(), user);
+        Recruitment recruitment = process.getRecruitment();
+        process.reserve(dto.scheduledTime());
+
+        return createMail(process, dto, recruitment);
     }
 
     private List<Mail> createMail(Process process, MailRequest dto, Recruitment recruitment) {

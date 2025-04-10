@@ -18,6 +18,7 @@ public enum ResponseMessage {
     MAIL_NOT_SCHEDULED("예약된 메일이 존재하지 않습니다"),
     MAIL_UPDATE_FAIL("예약시간을 현재 시간 이전으로 수정할 수 없습니다."),
     MAIL_ALREADY_SENT("이미 예약시간을 경과한 메일입니다."),
-    MAIL_STRATEGY_MISMATCH("존재하지 않는 MailStrategy Type 입니다");
+    MAIL_STRATEGY_MISMATCH("존재하지 않는 MailStrategy Type 입니다"),
+    MAIL_LIMIT_EXCEEDED("일일 메일 전송량을 초과했습니다.");
     private final String message;
 }
