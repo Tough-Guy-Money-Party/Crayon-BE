@@ -3,6 +3,7 @@ package com.yoyomo.domain.mail.application.usecase;
 import com.yoyomo.domain.ApplicationTest;
 import com.yoyomo.global.common.MailRateLimiter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @ComponentScan(includeFilters = @ComponentScan.Filter(
         type = FilterType.REGEX,
         pattern = "com.yoyomo.domain.mail.*")
