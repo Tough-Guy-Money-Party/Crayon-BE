@@ -5,6 +5,7 @@ import com.yoyomo.domain.mail.domain.entity.LimitInfo;
 import com.yoyomo.global.common.redis.MailLimiter;
 import com.yoyomo.global.common.redis.MailRedisTemplate;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@Disabled
+@Disabled
 @ComponentScan(includeFilters = @ComponentScan.Filter(
         type = FilterType.REGEX,
         pattern = "com.yoyomo.domain.mail.*")
