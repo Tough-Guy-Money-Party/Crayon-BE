@@ -5,6 +5,7 @@ import com.yoyomo.domain.fixture.CustomRepository;
 import com.yoyomo.global.config.jwt.JwtProvider;
 import com.yoyomo.global.config.kakao.KakaoServiceNew;
 import org.junit.jupiter.api.AfterEach;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.FilterType;
         ApplicationVerifyUseCase.class,
         KakaoServiceNew.class,
         JwtProvider.class,
+        RedissonClient.class
 })
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(
