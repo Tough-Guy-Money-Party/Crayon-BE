@@ -12,15 +12,22 @@ import org.mockito.Mock;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import java.time.Duration;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MailManageUseCaseImplTest extends ApplicationTest {
+
+    private static final UUID clubId = UUID.randomUUID();
+    private static final String TOTAL_KEY = "global:email:total";
+    private static final String CLUB_KEY = "global:email:" + clubId;
+    private static final long TOTAL_LIMIT = 50_000L;
+    private static final long CLUB_LIMIT = 300L;
 
     @Mock
     private RedisTemplate<String, String> redisTemplate;
@@ -31,24 +38,22 @@ class MailManageUseCaseImplTest extends ApplicationTest {
     @InjectMocks
     private MailRateLimiter mailRateLimiter;
 
-    private static final UUID clubId = UUID.randomUUID();
-    private static final String TOTAL_KEY = "global:email:total";
-    private static final String CLUB_KEY = "global:email:" + clubId;
-
     @BeforeEach
     void setup() {
         when(redisTemplate.opsForValue()).thenReturn(valueOps);
     }
 
     @DisplayName("발신 한도 제한을 넘지 않으면 참을 반환한다.")
-    @Test
-    void isRateLimited_whenRemainIsFull() {
+    @ParameterizedTest
+    @CsvSource({"1", "300"})
+    void isRateLimited_whenRemainIsFull(int requestSize) {
         // given
-        when(valueOps.get(TOTAL_KEY)).thenReturn("50000");
-        when(valueOps.get(CLUB_KEY)).thenReturn("300");
+        when(valueOps.setIfAbsent(any(), any(), any())).thenReturn(Boolean.FALSE);
+        when(valueOps.decrement(TOTAL_KEY, requestSize)).thenReturn(TOTAL_LIMIT - requestSize);
+        when(valueOps.decrement(CLUB_KEY, requestSize)).thenReturn(CLUB_LIMIT - requestSize);
 
         // when
-        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, 1);
+        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, requestSize);
 
         // then
         assertThat(isExceeded).isFalse();
@@ -58,42 +63,48 @@ class MailManageUseCaseImplTest extends ApplicationTest {
     @Test
     void isRateLimited_whenTotalRemainIsNull() {
         // given
-        when(valueOps.get(TOTAL_KEY)).thenReturn(null);
-        when(valueOps.get(CLUB_KEY)).thenReturn("300");
+        int requestSize = 1;
+        when(valueOps.setIfAbsent(eq(TOTAL_KEY), any(), any())).thenReturn(Boolean.TRUE);
+        when(valueOps.setIfAbsent(eq(CLUB_KEY), any(), any())).thenReturn(Boolean.FALSE);
 
         // when
-        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, 1);
+        mailRateLimiter.isRateLimited(clubId, requestSize);
 
         // then
-        verify(valueOps).set(eq(TOTAL_KEY), eq("50000"), eq(Duration.ofHours(24)));
-        assertThat(isExceeded).isFalse();
+        verify(valueOps, never()).decrement(TOTAL_KEY, requestSize);
+        verify(valueOps).decrement(CLUB_KEY, requestSize);
     }
 
-    @DisplayName("동아리별 발신 한도가 없으면 새롭게 한도를 설정한다.")
+    @DisplayName("동아리 발신 한도가 없으면 새롭게 한도를 설정한다.")
     @Test
     void isRateLimited_whenClubRemainIsNull() {
         // given
-        when(valueOps.get(TOTAL_KEY)).thenReturn("50000");
-        when(valueOps.get(CLUB_KEY)).thenReturn(null);
+        int requestSize = 1;
+        when(valueOps.setIfAbsent(eq(TOTAL_KEY), any(), any())).thenReturn(Boolean.FALSE);
+        when(valueOps.setIfAbsent(eq(CLUB_KEY), any(), any())).thenReturn(Boolean.TRUE);
 
         // when
-        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, 1);
+        mailRateLimiter.isRateLimited(clubId, requestSize);
 
         // then
-        verify(valueOps).set(eq(CLUB_KEY), eq("300"), eq(Duration.ofHours(24)));
-        assertThat(isExceeded).isFalse();
+        verify(valueOps).decrement(TOTAL_KEY, requestSize);
+        verify(valueOps, never()).decrement(CLUB_KEY, requestSize);
     }
 
-    @DisplayName("발신 한도에 걸리면 거짓을 반환한다.")
+    @DisplayName("발신 한도를 초과하면 거짓을 반환한다.")
     @ParameterizedTest
     @CsvSource({"0,300", "50000,0"})
-    void isRateLimited_whenTotalRemainIsZero(String totalRemain, String clubRemain) {
+    void isRateLimited_whenTotalRemainIsZero(long totalRemain, long clubRemain) {
         // given
-        when(valueOps.get(TOTAL_KEY)).thenReturn(totalRemain);
-        when(valueOps.get(CLUB_KEY)).thenReturn(clubRemain);
+        int requestSize = 1;
+        when(valueOps.setIfAbsent(eq(TOTAL_KEY), any(), any())).thenReturn(Boolean.FALSE);
+        when(valueOps.setIfAbsent(eq(CLUB_KEY), any(), any())).thenReturn(Boolean.FALSE);
+
+        when(valueOps.decrement(TOTAL_KEY, requestSize)).thenReturn(totalRemain - requestSize);
+        when(valueOps.decrement(CLUB_KEY, requestSize)).thenReturn(clubRemain - requestSize);
 
         // when
-        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, 1);
+        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, requestSize);
 
         // then
         assertThat(isExceeded).isTrue();
@@ -102,13 +113,29 @@ class MailManageUseCaseImplTest extends ApplicationTest {
     @DisplayName("현재 발신 요청량이 남은 한도보다 크다면 거짓을 반환한다.")
     @ParameterizedTest
     @CsvSource({"10,11", "11,10"})
-    void isRateLimited_whenRemainIsLessThanRequest(String totalRemain, String clubRemain) {
+    void isRateLimited_whenRemainIsLessThanRequest(long totalRemain, long clubRemain) {
         // given
-        when(valueOps.get(TOTAL_KEY)).thenReturn(totalRemain);
-        when(valueOps.get(CLUB_KEY)).thenReturn(clubRemain);
+        int requestSize = 11;
+        when(valueOps.setIfAbsent(eq(TOTAL_KEY), any(), any())).thenReturn(Boolean.FALSE);
+        when(valueOps.setIfAbsent(eq(CLUB_KEY), any(), any())).thenReturn(Boolean.FALSE);
+
+        when(valueOps.decrement(TOTAL_KEY, requestSize)).thenReturn(totalRemain - requestSize);
+        when(valueOps.decrement(CLUB_KEY, requestSize)).thenReturn(clubRemain - requestSize);
 
         // when
-        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, 11);
+        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, requestSize);
+
+        // then
+        assertThat(isExceeded).isTrue();
+    }
+
+
+    @DisplayName("현재 발신 요청량이 초기화 한도보다 크다면 거짓을 반환한다.")
+    @ParameterizedTest
+    @CsvSource({"301", "50001"})
+    void isRateLimited_whenLimitIsLessThanRequest(int requestSize) {
+        // when
+        boolean isExceeded = mailRateLimiter.isRateLimited(clubId, requestSize);
 
         // then
         assertThat(isExceeded).isTrue();
