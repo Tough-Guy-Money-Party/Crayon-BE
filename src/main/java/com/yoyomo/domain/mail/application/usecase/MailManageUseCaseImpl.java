@@ -20,7 +20,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.global.common.MailRateLimiter;
+import com.yoyomo.global.common.redis.MailLimiter;
 import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class MailManageUseCaseImpl {
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final BatchDivider batchDivider;
-    private final MailRateLimiter mailRateLimiter;
+    private final MailLimiter mailLimiter;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -90,8 +90,8 @@ public class MailManageUseCaseImpl {
     }
 
     private void checkLimit(Club club, List<Mail> mails) {
-        boolean isLimited = mailRateLimiter.isRateLimited(club.getId(), mails.size());
-        if (isLimited) {
+        boolean consumed = mailLimiter.tryConsume(club.getId(), mails.size());
+        if (!consumed) {
             throw new MailLimitExceededException(MAIL_LIMIT_EXCEEDED.getMessage());
         }
     }
