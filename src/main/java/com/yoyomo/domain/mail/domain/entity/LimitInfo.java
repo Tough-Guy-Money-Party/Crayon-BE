@@ -3,7 +3,10 @@ package com.yoyomo.domain.mail.domain.entity;
 import com.yoyomo.domain.mail.exception.InvalidLimitKeyException;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.Duration;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.INVALID_LIMIT_KEY;
@@ -11,13 +14,23 @@ import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.INVAL
 @Component
 public class LimitInfo {
 
-    private static final Duration TTL = Duration.ofHours(24);
+    private static final int DAYS_TTL_RESET = 1;
 
     private static final String TOTAL_KEY = "global:email:total";
     private static final long TOTAL_MAX = 50_000;
 
     private static final String CLUB_KEY_PREFIX = "global:email:";
     private static final long CLUB_MAX = 300;
+
+    private final Clock clock;
+
+    public LimitInfo() {
+        this.clock = Clock.systemUTC();
+    }
+
+    public LimitInfo(Clock clock) {
+        this.clock = clock;
+    }
 
     public String getTotalKey() {
         return TOTAL_KEY;
@@ -38,6 +51,10 @@ public class LimitInfo {
     }
 
     public Duration getTTL() {
-        return TTL;
+        ZonedDateTime now = ZonedDateTime.now(clock.withZone(ZoneOffset.UTC));
+        ZonedDateTime nextMidnight = now.toLocalDate()
+                .plusDays(DAYS_TTL_RESET)
+                .atStartOfDay(ZoneOffset.UTC);
+        return Duration.between(now, nextMidnight);
     }
 }
