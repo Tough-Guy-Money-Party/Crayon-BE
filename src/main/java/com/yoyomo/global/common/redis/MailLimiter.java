@@ -29,7 +29,7 @@ public class MailLimiter {
 
         boolean locked = false;
         try {
-            locked = multiLock.tryLock(3, 5, TimeUnit.SECONDS);
+            locked = multiLock.tryLock(1, 3, TimeUnit.SECONDS);
             if (!locked) {
                 return false;
             }
