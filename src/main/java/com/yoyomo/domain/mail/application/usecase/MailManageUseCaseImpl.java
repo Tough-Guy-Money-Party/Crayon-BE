@@ -1,6 +1,7 @@
 package com.yoyomo.domain.mail.application.usecase;
 
 import com.yoyomo.domain.application.domain.service.ApplicationGetService;
+import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.mail.application.dto.request.MailRequest;
 import com.yoyomo.domain.mail.application.dto.request.MailUpdateRequest;
@@ -12,12 +13,14 @@ import com.yoyomo.domain.mail.domain.service.MailUpdateService;
 import com.yoyomo.domain.mail.exception.DynamodbUploadException;
 import com.yoyomo.domain.mail.exception.LambdaInvokeException;
 import com.yoyomo.domain.mail.exception.MailCancelException;
+import com.yoyomo.domain.mail.exception.MailLimitExceededException;
 import com.yoyomo.domain.mail.exception.MailUpdateException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.global.common.redis.MailLimiter;
 import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_LIMIT_EXCEEDED;
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.MAIL_UPDATE_FAIL;
 
 
@@ -50,6 +54,7 @@ public class MailManageUseCaseImpl {
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final BatchDivider batchDivider;
+    private final MailLimiter mailLimiter;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
@@ -59,12 +64,22 @@ public class MailManageUseCaseImpl {
 
     @Transactional
     public void reserve(MailRequest dto, User user) {
-        create(dto, user);
+        Process process = checkAuthorityByProcessId(dto.processId(), user);
+        process.reserve(dto.scheduledTime());
+
+        List<Mail> mails = createMail(process, dto);
+        uploadMail(mails);
     }
 
     @Transactional
     public void direct(MailRequest dto, User user) {
-        create(dto, user);
+        Process process = checkAuthorityByProcessId(dto.processId(), user);
+        process.reserve(dto.scheduledTime());
+
+        List<Mail> mails = createMail(process, dto);
+        checkLimit(process.getRecruitment().getClub(), mails);
+
+        uploadMail(mails);
         CompletableFuture<Void> lambdaInvocation = lambdaService.invokeLambdaAsync(mailLambdaArn);
 
         lambdaInvocation.thenRun(() ->
@@ -72,6 +87,13 @@ public class MailManageUseCaseImpl {
         ).exceptionally(e -> {
             throw new LambdaInvokeException(e.getMessage());
         });
+    }
+
+    private void checkLimit(Club club, List<Mail> mails) {
+        boolean consumed = mailLimiter.tryConsume(club.getId(), mails.size());
+        if (!consumed) {
+            throw new MailLimitExceededException(MAIL_LIMIT_EXCEEDED.getMessage());
+        }
     }
 
     @Transactional
@@ -106,16 +128,7 @@ public class MailManageUseCaseImpl {
         }
     }
 
-    private void create(MailRequest dto, User user) {
-        long processId = dto.processId();
-
-        Process process = checkAuthorityByProcessId(processId, user);
-
-        process.reserve(dto.scheduledTime());
-
-        Recruitment recruitment = process.getRecruitment();
-
-        List<Mail> mails = createMail(process, dto, recruitment);
+    private void uploadMail(List<Mail> mails) {
         List<CompletableFuture<Void>> uploadFutures = batchDivider.divide(mails, PAGE_SIZE)
                 .stream()
                 .map(mailSaveService::upload)
@@ -124,7 +137,8 @@ public class MailManageUseCaseImpl {
         checkUpload(uploadFutures);
     }
 
-    private List<Mail> createMail(Process process, MailRequest dto, Recruitment recruitment) {
+    private List<Mail> createMail(Process process, MailRequest dto) {
+        Recruitment recruitment = process.getRecruitment();
         UUID passTemplateId = mailTemplateSaveService.uploadTemplate(dto.passTemplate());
         UUID failTemplateId = mailTemplateSaveService.uploadTemplate(dto.failTemplate());
 
