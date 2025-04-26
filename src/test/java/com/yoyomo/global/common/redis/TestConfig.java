@@ -15,9 +15,10 @@ import org.springframework.context.annotation.PropertySource;
  * 3. PropertySource -> yml 인식 X => .properties 사용
  */
 @ComponentScan(basePackages = {"com.yoyomo.global.common.redis"})
-@Import({LimitInfo.class, RedisConfig.class, LuaScriptConfig.class, RedissonConfig.class})
 @PropertySource("classpath:application-test.properties")
+@Import({LimitInfo.class, RedisConfig.class, LuaScriptConfig.class, RedissonConfig.class})
 @Configuration
 public class TestConfig {
 }
+
 

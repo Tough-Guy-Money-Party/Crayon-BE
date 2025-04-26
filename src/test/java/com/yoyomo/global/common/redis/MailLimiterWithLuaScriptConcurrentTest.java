@@ -3,9 +3,7 @@ package com.yoyomo.global.common.redis;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.UUID;
@@ -17,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitConfig(TestConfig.class)
-@TestPropertySource(locations = "classpath:application.yml")
 class MailLimiterWithLuaScriptConcurrentTest {
 
     private static final UUID clubId1 = UUID.randomUUID();
@@ -28,7 +25,6 @@ class MailLimiterWithLuaScriptConcurrentTest {
     MailLimiterWithLuaScript mailLimiter;
 
     @Autowired
-    @Qualifier("rateLimitRedisTemplate")
     RedisTemplate<String, Long> rateLimitRedisTemplate;
 
     @DisplayName("동시 요청의 합이 동아리 한도를 초과하면 선행 요청만 성공한다.")

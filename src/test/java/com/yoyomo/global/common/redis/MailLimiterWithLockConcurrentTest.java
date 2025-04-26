@@ -3,7 +3,6 @@ package com.yoyomo.global.common.redis;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -32,7 +31,6 @@ class MailLimiterWithLockConcurrentTest {
     MailLimiterWithLock mailLimiter;
 
     @Autowired
-    @Qualifier("rateLimitRedisTemplate")
     RedisTemplate<String, Long> rateLimitRedisTemplate;
 
     @DisplayName("동시 요청의 합이 동아리 한도를 초과하면 선행 요청만 성공한다.")
