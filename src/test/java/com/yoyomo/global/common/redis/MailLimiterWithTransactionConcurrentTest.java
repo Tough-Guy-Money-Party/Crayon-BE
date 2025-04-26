@@ -25,7 +25,7 @@ class MailLimiterWithTransactionConcurrentTest {
     private static final String CLUB1_MAIL_KEY = "mail:" + clubId1;
 
     @Autowired
-    MailLimiterWithLock mailLimiter;
+    MailLimiterWithTransaction mailLimiter;
 
     @Autowired
     @Qualifier("rateLimitRedisTemplate")
