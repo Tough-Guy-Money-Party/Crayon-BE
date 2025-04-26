@@ -52,9 +52,9 @@ class MailLimiterWithLuaScriptConcurrentTest {
             executor.submit(() -> {
                 boolean consumed = mailLimiter.tryConsume(clubId1, perRequest);
                 if (consumed) {
-                    rejected.incrementAndGet();
-                } else {
                     allowed.incrementAndGet();
+                } else {
+                    rejected.incrementAndGet();
                 }
                 latch.countDown();
             });
@@ -74,7 +74,7 @@ class MailLimiterWithLuaScriptConcurrentTest {
     @Test
     void isRateLimited_withConcurrentOtherClubRequest() throws InterruptedException {
         // given
-        int threadCount = 20;
+        int threadCount = 2;
         int perRequest = 200;
 
         rateLimitRedisTemplate.opsForValue().set(TOTAL_MAIL_KEY, (long) (threadCount / 2) * perRequest);

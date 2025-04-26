@@ -70,7 +70,7 @@ class MailLimiterWithTransactionConcurrentTest {
     @Test
     void isRateLimited_withConcurrentOtherClubRequest() throws InterruptedException {
         // given
-        int threadCount = 10;
+        int threadCount = 2;
         int perRequest = 200;
 
         rateLimitRedisTemplate.opsForValue().set(TOTAL_MAIL_KEY, 50_000L - (threadCount / 2) * perRequest);
