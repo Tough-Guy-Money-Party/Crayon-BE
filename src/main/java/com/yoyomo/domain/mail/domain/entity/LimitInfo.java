@@ -12,6 +12,7 @@ import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.INVAL
 @Component
 public class LimitInfo {
 
+    private static final int DAYS_TTL_RESET = 1;
     private static final String MAIL_KEY_PREFIX = "mail:";
     private static final String TOTAL_MAIL_KEY = MAIL_KEY_PREFIX + "total";
     private static final long CLUB_MAX = 300;
@@ -37,7 +38,7 @@ public class LimitInfo {
 
     public long getExpireAt() {
         return LocalDate.now(ZoneOffset.UTC)
-                .plusDays(1)
+                .plusDays(DAYS_TTL_RESET)
                 .atStartOfDay()
                 .toEpochSecond(ZoneOffset.UTC);
     }
