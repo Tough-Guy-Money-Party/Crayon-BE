@@ -22,11 +22,11 @@ public class MailRedisTemplate {
         return limitInfo.getClubKey(clubId);
     }
 
-    public Long increment(String key, int requestSize) {
+    public long increment(String key, int requestSize) {
         return rateLimitRedisTemplate.opsForValue().increment(key, requestSize);
     }
 
-    public Long decrement(String key, int requestSize) {
+    public long decrement(String key, int requestSize) {
         return rateLimitRedisTemplate.opsForValue().decrement(key, requestSize);
     }
 }

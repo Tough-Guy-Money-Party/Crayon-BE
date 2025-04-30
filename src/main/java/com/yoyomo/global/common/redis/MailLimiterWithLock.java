@@ -53,8 +53,8 @@ public class MailLimiterWithLock implements MailLimiter {
     }
 
     private boolean checkLimit(int requestSize, String totalKey, String clubKey) {
-        Long total = mailRedisTemplate.increment(totalKey, requestSize);
-        Long club = mailRedisTemplate.increment(clubKey, requestSize);
+        long total = mailRedisTemplate.increment(totalKey, requestSize);
+        long club = mailRedisTemplate.increment(clubKey, requestSize);
         if (total <= limitInfo.getMaxByKey(totalKey) && club <= limitInfo.getMaxByKey(clubKey)) {
             return true;
         }
