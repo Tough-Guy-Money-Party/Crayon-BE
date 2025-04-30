@@ -11,7 +11,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MailRedisTemplate {
 
-    private final RedisTemplate<String, String> rateLimitRedisTemplate;
+    private final RedisTemplate<String, Long> rateLimitRedisTemplate;
     private final LimitInfo limitInfo;
 
     public String getTotalKey() {
@@ -22,17 +22,11 @@ public class MailRedisTemplate {
         return limitInfo.getClubKey(clubId);
     }
 
-    public long getQuota(String key) {
-        long max = limitInfo.getMaxByKey(key);
-        String value = rateLimitRedisTemplate.opsForValue().get(key);
-        if (value == null) {
-            rateLimitRedisTemplate.opsForValue().set(key, String.valueOf(max), limitInfo.getTTL());
-            return max;
-        }
-        return Long.parseLong(value);
+    public long increment(String key, int requestSize) {
+        return rateLimitRedisTemplate.opsForValue().increment(key, requestSize);
     }
 
-    public void decrement(String key, int requestSize) {
-        rateLimitRedisTemplate.opsForValue().decrement(key, requestSize);
+    public long decrement(String key, int requestSize) {
+        return rateLimitRedisTemplate.opsForValue().decrement(key, requestSize);
     }
 }

@@ -3,10 +3,8 @@ package com.yoyomo.domain.mail.domain.entity;
 import com.yoyomo.domain.mail.exception.InvalidLimitKeyException;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
-import java.time.Duration;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.INVALID_LIMIT_KEY;
@@ -15,46 +13,33 @@ import static com.yoyomo.domain.mail.presentation.constant.ResponseMessage.INVAL
 public class LimitInfo {
 
     private static final int DAYS_TTL_RESET = 1;
-
-    private static final String TOTAL_KEY = "global:email:total";
+    private static final String MAIL_KEY_PREFIX = "mail:";
+    private static final String TOTAL_MAIL_KEY = MAIL_KEY_PREFIX + "total";
+    private static final long CLUB_MAX = 300;
     private static final long TOTAL_MAX = 50_000;
 
-    private static final String CLUB_KEY_PREFIX = "global:email:";
-    private static final long CLUB_MAX = 300;
-
-    private final Clock clock;
-
-    public LimitInfo() {
-        this.clock = Clock.systemUTC();
-    }
-
-    public LimitInfo(Clock clock) {
-        this.clock = clock;
-    }
-
     public String getTotalKey() {
-        return TOTAL_KEY;
+        return TOTAL_MAIL_KEY;
     }
 
     public String getClubKey(UUID clubId) {
-        return CLUB_KEY_PREFIX + clubId;
+        return MAIL_KEY_PREFIX + clubId;
     }
 
     public long getMaxByKey(String key) {
-        if (TOTAL_KEY.equals(key)) {
+        if (TOTAL_MAIL_KEY.equals(key)) {
             return TOTAL_MAX;
         }
-        if (key.startsWith(CLUB_KEY_PREFIX)) {
+        if (key.startsWith(MAIL_KEY_PREFIX)) {
             return CLUB_MAX;
         }
         throw new InvalidLimitKeyException(INVALID_LIMIT_KEY.getMessage());
     }
 
-    public Duration getTTL() {
-        ZonedDateTime now = ZonedDateTime.now(clock.withZone(ZoneOffset.UTC));
-        ZonedDateTime nextMidnight = now.toLocalDate()
+    public long getExpireAt() {
+        return LocalDate.now(ZoneOffset.UTC)
                 .plusDays(DAYS_TTL_RESET)
-                .atStartOfDay(ZoneOffset.UTC);
-        return Duration.between(now, nextMidnight);
+                .atStartOfDay()
+                .toEpochSecond(ZoneOffset.UTC);
     }
 }

@@ -20,7 +20,7 @@ import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.service.ProcessGetService;
 import com.yoyomo.domain.template.domain.service.MailTemplateSaveService;
 import com.yoyomo.domain.user.domain.entity.User;
-import com.yoyomo.global.common.redis.MailLimiter;
+import com.yoyomo.global.common.redis.MailLimiterWithLuaScript;
 import com.yoyomo.global.common.util.BatchDivider;
 import com.yoyomo.infra.aws.lambda.service.LambdaService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class MailManageUseCaseImpl {
     private final LambdaService lambdaService;
     private final ClubManagerAuthService clubManagerAuthService;
     private final BatchDivider batchDivider;
-    private final MailLimiter mailLimiter;
+    private final MailLimiterWithLuaScript mailLimiter;
 
     @Value("${mail.lambda.arn}")
     private String mailLambdaArn;
