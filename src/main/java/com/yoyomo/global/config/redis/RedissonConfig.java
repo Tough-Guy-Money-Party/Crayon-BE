@@ -6,6 +6,7 @@ import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class RedissonConfig {
@@ -24,8 +25,12 @@ public class RedissonConfig {
 	@Bean
 	public RedissonClient redissonClient() {
 		Config config = new Config();
-		config.useSingleServer().setAddress(String.format(REDISSON_HOST_FORMAT, host, port))
-			.setPassword(password);
+		if (StringUtils.hasText(password)) {
+			config.useSingleServer().setAddress(String.format(REDISSON_HOST_FORMAT, host, port))
+				.setPassword(password);
+		} else {
+			config.useSingleServer().setAddress(String.format(REDISSON_HOST_FORMAT, host, port));
+		}
 
 		return Redisson.create(config);
 	}
