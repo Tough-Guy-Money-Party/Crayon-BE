@@ -6,11 +6,7 @@ import com.yoyomo.domain.application.exception.AnswerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +17,5 @@ public class AnswerGetService {
     public Answer findByApplicationId(UUID applicationId) {
         return answerRepository.findByApplicationId(applicationId.toString())
                 .orElseThrow(AnswerNotFoundException::new);
-    }
-
-    private List<Answer> findAllByApplicationIds(List<UUID> applicationIds) {
-        return answerRepository.findAllByApplicationIds(applicationIds);
-    }
-
-    public Map<UUID, Answer> findAllApplicationMapByApplicationIds(List<UUID> applicationIds) {
-        return findAllByApplicationIds(applicationIds).stream()
-                .collect(Collectors.toMap(Answer::getApplicationId, Function.identity()));
     }
 }

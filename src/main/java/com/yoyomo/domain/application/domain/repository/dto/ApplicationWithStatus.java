@@ -7,4 +7,10 @@ public record ApplicationWithStatus(
         Application application,
         Status status
 ) {
+
+    public ApplicationWithStatus {
+        if (status == null) {
+            status = Status.BEFORE_EVALUATION;
+        }
+    }
 }

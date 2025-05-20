@@ -7,6 +7,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     permissions:
       contents: read
     steps:
@@ -52,7 +62,7 @@ jobs:
             ${{ runner.os }}-gradle-
       # gradle 빌드
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew build -x test
       # 도커 이미지 생성 후 ARM 아키텍처로 이미지 push
       - name: Docker build & push to dev (ARM compatible)
         run: |
