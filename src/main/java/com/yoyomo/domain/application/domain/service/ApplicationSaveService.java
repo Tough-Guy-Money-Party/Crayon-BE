@@ -32,6 +32,6 @@ public class ApplicationSaveService {
                 .toList();
 
         recruitmentRepository.increaseApplicantCount(recruitmentId, applicantReplies.size());
-        return applicationJdbcRepository.batchInserts(applications);
+        return applicationJdbcRepository.batchInsert(applications);
     }
 }

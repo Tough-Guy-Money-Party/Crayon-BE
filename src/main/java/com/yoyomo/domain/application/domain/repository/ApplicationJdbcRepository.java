@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.domain.repository;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.exception.BatchInsertFailException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,14 +22,14 @@ public class ApplicationJdbcRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Application> batchInserts(List<Application> applications) {
+    public List<Application> batchInsert(List<Application> applications) {
         int total = applications.size();
 
         for (int start = 0; start < total; start += BATCH_SIZE) {
             int end = Math.min(start + BATCH_SIZE, total);
             List<Application> chunk = applications.subList(start, end);
 
-            jdbcTemplate.batchUpdate(
+            int[] results = jdbcTemplate.batchUpdate(
                     "INSERT INTO application(application_id, user_name, email, tel, recruitment_id) " +
                             "VALUES (?, ?, ?, ?, ?)",
                     new BatchPreparedStatementSetter() {
@@ -50,6 +51,10 @@ public class ApplicationJdbcRepository {
                         }
                     }
             );
+
+            if (results.length != chunk.size()) {
+                throw new BatchInsertFailException();
+            }
         }
 
         return new ArrayList<>(applications);
