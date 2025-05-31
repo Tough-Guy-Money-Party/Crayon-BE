@@ -1,0 +1,64 @@
+package com.yoyomo.domain.application.domain.repository;
+
+import com.yoyomo.domain.application.domain.entity.Application;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.nio.ByteBuffer;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+@RequiredArgsConstructor
+public class ApplicationJdbcRepository {
+
+    public static final int BATCH_SIZE = 50;
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public List<Application> batchInserts(List<Application> applications) {
+        int total = applications.size();
+
+        for (int start = 0; start < total; start += BATCH_SIZE) {
+            int end = Math.min(start + BATCH_SIZE, total);
+            List<Application> chunk = applications.subList(start, end);
+
+            jdbcTemplate.batchUpdate(
+                    "INSERT INTO application(application_id, user_name, email, tel, recruitment_id) " +
+                            "VALUES (?, ?, ?, ?, ?)",
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            Application application = chunk.get(i);
+                            UUID applicationId = application.generateId();
+
+                            ps.setBytes(1, uuidToBytes(applicationId));
+                            ps.setString(2, application.getUserName());
+                            ps.setString(3, application.getEmail());
+                            ps.setString(4, application.getTel());
+                            ps.setBytes(5, uuidToBytes(application.getRecruitmentId()));
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return chunk.size();
+                        }
+                    }
+            );
+        }
+
+        return new ArrayList<>(applications);
+    }
+
+    private byte[] uuidToBytes(UUID uuid) {
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        return bb.array();
+    }
+}

@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.model.ApplicantReply;
+import com.yoyomo.domain.application.domain.repository.ApplicationJdbcRepository;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ApplicationSaveService {
 
+    private final ApplicationJdbcRepository applicationJdbcRepository;
     private final ApplicationRepository applicationRepository;
     private final RecruitmentRepository recruitmentRepository;
 
@@ -30,6 +32,6 @@ public class ApplicationSaveService {
                 .toList();
 
         recruitmentRepository.increaseApplicantCount(recruitmentId, applicantReplies.size());
-        return applicationRepository.saveAll(applications);
+        return applicationJdbcRepository.batchInserts(applications);
     }
 }
