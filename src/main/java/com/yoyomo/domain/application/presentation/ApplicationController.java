@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.presentation;
 
+import com.yoyomo.domain.application.application.dto.request.ApplicationImportRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
@@ -9,6 +10,7 @@ import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
 import com.yoyomo.domain.application.application.dto.response.MyApplicationResponse;
+import com.yoyomo.domain.application.application.usecase.ApplicationImportUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
@@ -58,6 +60,7 @@ public class ApplicationController {
     private final InterviewManageUseCase interviewManageUseCase;
     private final ApplicationManageUseCase applicationManageUseCase;
     private final ApplicationVerifyUseCase applicationVerifyUseCase;
+    private final ApplicationImportUseCase applicationImportUseCase;
 
     // Applicant
     @PostMapping("/{recruitmentId}")
@@ -120,6 +123,18 @@ public class ApplicationController {
 
         return ResponseDto.of(OK.value(), SUCCESS_VERIFY_CODE.getMessage());
     }
+
+    @PostMapping("/{recruitmentId}/import")
+    @Operation(summary = "[Manager] 외부 지원서 응답 가져오기")
+    public ResponseDto<Void> importApplications(@RequestBody ApplicationImportRequest request,
+                                                @PathVariable UUID recruitmentId,
+                                                @CurrentUser User user
+    ) {
+        applicationImportUseCase.importApplications(recruitmentId, user, request);
+
+        return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
+    }
+
 
     @GetMapping("/manager/{recruitmentId}/all")
     @Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
