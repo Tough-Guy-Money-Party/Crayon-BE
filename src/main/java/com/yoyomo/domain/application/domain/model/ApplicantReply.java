@@ -19,6 +19,15 @@ public class ApplicantReply {
     private final Applicant applicant;
     private final List<QuestionReply> questionReplyPairs;
 
+    /**
+     * 질문 목록과 답변 목록으로부터 ApplicantReply 객체를 생성합니다.
+     * 질문과 답변을 인덱스별로 매칭하고, 지원자 정보(이름, 전화번호, 이메일)와 
+     * 일반 질문 답변으로 분리합니다.
+     *
+     * @param questions 질문 목록
+     * @param replies   답변 목록
+     * @return 생성된 ApplicantReply 객체
+     */
     public static ApplicantReply of(List<Question> questions, Replies replies) {
         int length = getLength(questions, replies);
 
