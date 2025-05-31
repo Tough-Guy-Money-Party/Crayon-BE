@@ -61,6 +61,11 @@ public class Application extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
+    public UUID generateId() {
+        this.id = UUID.randomUUID();
+        return id;
+    }
+
     public void update(Process process) {
         this.process = process;
     }

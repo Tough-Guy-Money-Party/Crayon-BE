@@ -39,6 +39,7 @@ public enum ResponseMessage {
     CANNOT_MEMO_UPDATE("메모 수정에 실패했습니다."),
     CANNOT_MEMO_DELETE("메모 삭제에 실패했습니다."),
     ACCESS_DENIED("권한이 없습니다."),
-    ALREADY_APPLIED("이미 지원한 사용자 입니다.");
+    ALREADY_APPLIED("이미 지원한 사용자 입니다."),
+    FAILED_BATCH_INSERT("지원서 저장에 실패했습니다.");
     private final String message;
 }
