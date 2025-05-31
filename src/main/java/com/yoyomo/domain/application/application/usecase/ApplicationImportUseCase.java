@@ -29,10 +29,10 @@ public class ApplicationImportUseCase {
         clubManagerAuthService.checkAuthorization(recruitmentId, user);
 
         List<Question> questions = request.toQuestions();
-        List<Replies> answers = request.toAnswers();
+        List<Replies> replies = request.toReplies();
 
-        List<ApplicantReply> applicantReplies = answers.stream()
-                .map(answer -> ApplicantReply.toApplicantReply(questions, answer))
+        List<ApplicantReply> applicantReplies = replies.stream()
+                .map(reply -> ApplicantReply.of(questions, reply))
                 .toList();
 
         List<Application> applications = applicationSaveService.saveAll(recruitmentId, applicantReplies);

@@ -16,7 +16,7 @@ public record ApplicationImportRequest(
                 .toList();
     }
 
-    public List<Replies> toAnswers() {
+    public List<Replies> toReplies() {
         return rows.stream()
                 .map(RespondentRequest::toAnswers)
                 .toList();

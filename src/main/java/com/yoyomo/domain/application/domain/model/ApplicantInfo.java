@@ -12,9 +12,9 @@ public enum ApplicantInfo {
 
     private final String keyword;
 
-    public static ApplicantInfo find(Question question) {
+    public static ApplicantInfo find(QuestionReply questionReply) {
         return Arrays.stream(values())
-                .filter(info -> question.match(info.keyword))
+                .filter(info -> questionReply.match(info.keyword))
                 .findFirst()
                 .orElseThrow(); // todo: 예외처리
     }

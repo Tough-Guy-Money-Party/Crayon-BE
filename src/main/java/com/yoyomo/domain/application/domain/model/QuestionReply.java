@@ -17,7 +17,19 @@ public class QuestionReply {
         return new QuestionReply(question, reply);
     }
 
+    public boolean isApplicantInfo() {
+        return question.isApplicantInfo();
+    }
+
     public Item toAnswer() {
         return Answer.of(question.getTitle(), reply.value());
+    }
+
+    public boolean match(String keyword) {
+        return question.match(keyword);
+    }
+
+    public Reply getReply() {
+        return reply;
     }
 }

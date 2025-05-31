@@ -5,11 +5,12 @@ import com.yoyomo.domain.item.domain.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.partitioningBy;
 
 @Getter
 @AllArgsConstructor
@@ -18,33 +19,30 @@ public class ApplicantReply {
     private final Applicant applicant;
     private final List<QuestionReply> questionReplyPairs;
 
-    public static ApplicantReply toApplicantReply(List<Question> questions, Replies replies) {
-        List<Reply> replyList = replies.toList();
+    public static ApplicantReply of(List<Question> questions, Replies replies) {
+        int length = getLength(questions, replies);
 
-        Map<ApplicantInfo, Reply> applicant = new HashMap<>();
-        List<QuestionReply> pairs = new ArrayList<>();
-        for (int i = 0; i < getLength(questions, replyList); i++) {
-            Question question = questions.get(i);
-            Reply reply = replyList.get(i);
+        Map<Boolean, List<QuestionReply>> partitioned = IntStream.range(0, length)
+                .mapToObj(i -> toQuestionReply(questions, replies, i))
+                .collect(partitioningBy(QuestionReply::isApplicantInfo));
 
-            if (question.isApplicantInfo()) {
-                ApplicantInfo info = ApplicantInfo.find(question);
-                applicant.put(info, reply);
-                continue;
-            }
+        List<QuestionReply> applicantInfoPairs = partitioned.get(true);
+        List<QuestionReply> questionReplyPairs = partitioned.get(false);
 
-            QuestionReply questionReply = QuestionReply.of(question, reply);
-            pairs.add(questionReply);
-        }
-
-        return new ApplicantReply(new Applicant(applicant), pairs);
+        return new ApplicantReply(Applicant.from(applicantInfoPairs), questionReplyPairs);
     }
 
-    private static int getLength(List<Question> questions, List<Reply> replies) {
+    private static int getLength(List<Question> questions, Replies replies) {
         if (questions.size() != replies.size()) {
             return Math.min(questions.size(), replies.size());
         }
         return questions.size();
+    }
+
+    private static QuestionReply toQuestionReply(List<Question> questions, Replies replies, int i) {
+        Question question = questions.get(i);
+        Reply reply = replies.get(i);
+        return QuestionReply.of(question, reply);
     }
 
     public Application toApplication(UUID recruitmentId) {

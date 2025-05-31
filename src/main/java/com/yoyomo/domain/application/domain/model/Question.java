@@ -16,8 +16,8 @@ public class Question {
         return ApplicantInfo.anyMatch(title);
     }
 
-    public boolean match(String title) {
-        return this.title.contains(title);
+    public boolean match(String keyword) {
+        return this.title.contains(keyword);
     }
 
     public String getTitle() {
