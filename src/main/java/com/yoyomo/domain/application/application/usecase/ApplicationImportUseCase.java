@@ -25,17 +25,26 @@ public class ApplicationImportUseCase {
     private final AnswerSaveService answerSaveService;
     private final ClubManagerAuthService clubManagerAuthService;
 
-    public void importApplications(UUID recruitmentId, User user, ApplicationImportRequest request) {
-        clubManagerAuthService.checkAuthorization(recruitmentId, user);
+import org.springframework.transaction.annotation.Transactional;
 
-        List<Question> questions = request.toQuestions();
-        List<Replies> replies = request.toReplies();
+@Transactional
+public void importApplications(UUID recruitmentId, User user, ApplicationImportRequest request) {
+    clubManagerAuthService.checkAuthorization(recruitmentId, user);
 
-        List<ApplicantReply> applicantReplies = replies.stream()
-                .map(reply -> ApplicantReply.of(questions, reply))
-                .toList();
+    List<Question> questions = request.toQuestions();
+    List<Replies> replies = request.toReplies();
 
+    List<ApplicantReply> applicantReplies = replies.stream()
+            .map(reply -> ApplicantReply.of(questions, reply))
+            .toList();
+
+    try {
         List<Application> applications = applicationSaveService.saveAll(recruitmentId, applicantReplies);
         answerSaveService.save(applicantReplies, applications);
+        log.info("Successfully imported {} applications for recruitment {}", applications.size(), recruitmentId);
+    } catch (Exception e) {
+        log.error("Failed to import applications for recruitment {}", recruitmentId, e);
+        throw new ApplicationImportException("Failed to import applications", e);
     }
+}
 }
