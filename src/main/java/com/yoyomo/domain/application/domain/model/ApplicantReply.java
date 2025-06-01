@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.model;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.item.domain.entity.Item;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,7 +22,7 @@ public class ApplicantReply {
 
     /**
      * 질문 목록과 답변 목록으로부터 ApplicantReply 객체를 생성합니다.
-     * 질문과 답변을 인덱스별로 매칭하고, 지원자 정보(이름, 전화번호, 이메일)와 
+     * 질문과 답변을 인덱스별로 매칭하고, 지원자 정보(이름, 전화번호, 이메일)와
      * 일반 질문 답변으로 분리합니다.
      *
      * @param questions 질문 목록
@@ -54,12 +55,13 @@ public class ApplicantReply {
         return QuestionReply.of(question, reply);
     }
 
-    public Application toApplication(UUID recruitmentId) {
+    public Application toApplication(UUID recruitmentId, Process process) {
         return Application.builder()
                 .userName(applicant.getName())
                 .tel(applicant.getPhone())
                 .email(applicant.getEmail())
                 .recruitmentId(recruitmentId)
+                .process(process)
                 .build(); // todo: 프로세스 추가해야하나
     }
 

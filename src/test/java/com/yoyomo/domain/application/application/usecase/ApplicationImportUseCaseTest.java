@@ -70,7 +70,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
                         List.of(
                                 new DataRequest("나아연"),
                                 new DataRequest("01012345678"),
-                                new DataRequest("Date(2025,05,30,19,36,00"),
+                                new DataRequest("Date(2025,05,30,19,36,00)"),
                                 new DataRequest("죽겠어요"),
                                 new DataRequest(null)
                         )
@@ -79,7 +79,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
                         List.of(
                                 new DataRequest("이근표"),
                                 new DataRequest("01087654321"),
-                                new DataRequest("Date(2025,05,30,19,36,00"),
+                                new DataRequest("Date(2025,05,30,19,36,00)"),
                                 new DataRequest(null),
                                 new DataRequest("기절")
                         )

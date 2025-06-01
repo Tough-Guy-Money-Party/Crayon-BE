@@ -30,8 +30,8 @@ public class ApplicationJdbcRepository {
             List<Application> chunk = applications.subList(start, end);
 
             int[] results = jdbcTemplate.batchUpdate(
-                    "INSERT INTO application(application_id, user_name, email, tel, recruitment_id) " +
-                            "VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO application(application_id, user_name, email, tel, recruitment_id, process_id) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)",
                     new BatchPreparedStatementSetter() {
                         @Override
                         public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -43,6 +43,7 @@ public class ApplicationJdbcRepository {
                             ps.setString(3, application.getEmail());
                             ps.setString(4, application.getTel());
                             ps.setBytes(5, uuidToBytes(application.getRecruitmentId()));
+                            ps.setLong(6, application.getProcess().getId());
                         }
 
                         @Override

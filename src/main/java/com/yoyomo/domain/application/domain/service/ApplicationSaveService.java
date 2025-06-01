@@ -4,6 +4,8 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.model.ApplicantReply;
 import com.yoyomo.domain.application.domain.repository.ApplicationJdbcRepository;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,11 @@ public class ApplicationSaveService {
     }
 
     public List<Application> saveAll(UUID recruitmentId, List<ApplicantReply> applicantReplies) {
+        Recruitment recruitment = recruitmentRepository.findById(recruitmentId).orElseThrow();
+        Process process = recruitment.getDocumentProcess();
+
         List<Application> applications = applicantReplies.stream()
-                .map(ar -> ar.toApplication(recruitmentId))
+                .map(ar -> ar.toApplication(recruitmentId, process))
                 .toList();
 
         recruitmentRepository.increaseApplicantCount(recruitmentId, applicantReplies.size());
