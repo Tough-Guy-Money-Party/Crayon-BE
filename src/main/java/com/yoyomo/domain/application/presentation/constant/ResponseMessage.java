@@ -41,6 +41,7 @@ public enum ResponseMessage {
     ACCESS_DENIED("권한이 없습니다."),
     ALREADY_APPLIED("이미 지원한 사용자 입니다."),
     FAILED_BATCH_INSERT("지원서 저장에 실패했습니다."),
-    INVALID_APPLICANT_INFO("지원하지 않는 지원자 정보입니다.");
+    INVALID_APPLICANT_INFO("지원하지 않는 지원자 정보입니다."),
+    INVALID_DATE_FORMAT("지원하지 않는 날짜 형식입니다.");
     private final String message;
 }
