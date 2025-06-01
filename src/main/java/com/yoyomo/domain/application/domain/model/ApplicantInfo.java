@@ -1,5 +1,6 @@
 package com.yoyomo.domain.application.domain.model;
 
+import com.yoyomo.domain.application.exception.InvalidApplicantInfoException;
 import lombok.AllArgsConstructor;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public enum ApplicantInfo {
         return Arrays.stream(values())
                 .filter(info -> questionReply.match(info.keyword))
                 .findFirst()
-                .orElseThrow(); // todo: 예외처리
+                .orElseThrow(InvalidApplicantInfoException::new);
     }
 
     public static boolean anyMatch(String title) {
