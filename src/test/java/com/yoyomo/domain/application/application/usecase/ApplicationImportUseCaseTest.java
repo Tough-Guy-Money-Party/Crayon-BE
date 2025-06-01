@@ -13,17 +13,19 @@ import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
 import com.yoyomo.domain.fixture.TestFixture;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ApplicationImportUseCaseTest extends ApplicationTest {
 
@@ -38,6 +40,9 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
 
     @Autowired
     RecruitmentRepository recruitmentRepository;
+
+    @Autowired
+    ProcessRepository processRepository;
 
     @Autowired
     ApplicationRepository applicationRepository;
@@ -55,7 +60,10 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
         Club club = clubRepository.save(TestFixture.club());
         clubMangerRepository.save(TestFixture.clubManager(club, user));
 
-        Recruitment recruitment = recruitmentRepository.save(TestFixture.recruitment(club));
+        Process process = processRepository.save(TestFixture.process(1));
+        Recruitment recruitment = recruitmentRepository.save(TestFixture.recruitment(club, process));
+        process.addRecruitment(recruitment);
+        processRepository.save(process);
 
         List<QuestionRequest> questionRequests = List.of(
                 new QuestionRequest("이름을 적어", "string"),
@@ -99,7 +107,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
                 );
 
         List<Application> applications = applicationRepository.findAll();
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(applications).hasSize(2),
                 () -> assertThat(applications.get(0).getUserName()).isEqualTo("나아연"),
                 () -> assertThat(applications.get(0).getTel()).isEqualTo("01012345678"),
@@ -107,7 +115,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
         );
 
         List<Answer> answers = answerRepository.findAll();
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(answers).hasSize(2),
                 () -> assertThat(answers.get(0).getApplicationId()).isNotNull(),
                 () -> assertThat(answers.get(0).getItems()).hasSize(3)

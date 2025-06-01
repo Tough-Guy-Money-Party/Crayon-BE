@@ -19,6 +19,7 @@ public class CustomRepository {
     public void clearAndReset() {
         entityManager.createNativeQuery("DELETE FROM application").executeUpdate();
         entityManager.createNativeQuery("DELETE FROM interview_record").executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM process").executeUpdate();
         entityManager.createNativeQuery("DELETE FROM recruitment").executeUpdate();
         entityManager.createNativeQuery("DELETE FROM club_manager").executeUpdate();
         entityManager.createNativeQuery("DELETE FROM club").executeUpdate();

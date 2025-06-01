@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ApplicationImportUseCase {
 
@@ -24,7 +25,6 @@ public class ApplicationImportUseCase {
     private final AnswerSaveService answerSaveService;
     private final ClubManagerAuthService clubManagerAuthService;
 
-    @Transactional
     public void importApplications(UUID recruitmentId, User user, ApplicationImportRequest request) {
         clubManagerAuthService.checkAuthorization(recruitmentId, user);
 
