@@ -1,6 +1,7 @@
 package com.yoyomo.domain.application.domain.model;
 
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.exception.QuestionReplySizeMismatchException;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,11 @@ public class ApplicantReply {
      * @return 생성된 ApplicantReply 객체
      */
     public static ApplicantReply of(List<Question> questions, Replies replies) {
-        int length = getLength(questions, replies);
+        if (questions.size() != replies.size()) {
+            throw new QuestionReplySizeMismatchException();
+        }
 
-        Map<Boolean, List<QuestionReply>> partitioned = IntStream.range(0, length)
+        Map<Boolean, List<QuestionReply>> partitioned = IntStream.range(0, questions.size())
                 .mapToObj(i -> toQuestionReply(questions, replies, i))
                 .collect(partitioningBy(QuestionReply::isApplicantInfo));
 
@@ -40,13 +43,6 @@ public class ApplicantReply {
         List<QuestionReply> questionReplyPairs = partitioned.get(false);
 
         return new ApplicantReply(Applicant.from(applicantInfoPairs), questionReplyPairs);
-    }
-
-    private static int getLength(List<Question> questions, Replies replies) {
-        if (questions.size() != replies.size()) {
-            return Math.min(questions.size(), replies.size());
-        }
-        return questions.size();
     }
 
     private static QuestionReply toQuestionReply(List<Question> questions, Replies replies, int i) {
@@ -62,7 +58,7 @@ public class ApplicantReply {
                 .email(applicant.getEmail())
                 .recruitmentId(recruitmentId)
                 .process(process)
-                .build(); // todo: 프로세스 추가해야하나
+                .build();
     }
 
     public List<Item> toAnswers() {
