@@ -3,7 +3,7 @@ package com.yoyomo.domain.application.domain.service;
 import com.yoyomo.domain.application.application.mapper.AnswerMapper;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.model.ApplicantReply;
+import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.application.domain.repository.mongo.AnswerRepository;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.service.factory.ItemFactory;
@@ -27,15 +27,15 @@ public class AnswerSaveService {
         return answerRepository.save(answer);
     }
 
-    public void save(List<ApplicantReply> applicantReplies, List<Application> applications) {
+    public void save(List<ApplicationReply> applicantReplies, List<Application> applications) {
         List<Answer> answers = new ArrayList<>();
         for (int i = 0; i < applicantReplies.size(); i++) {
             UUID applicationId = applications.get(i).getId();
-            ApplicantReply applicantReply = applicantReplies.get(i);
+            ApplicationReply applicationReply = applicantReplies.get(i);
 
             Answer answer = Answer.builder()
                     .applicationId(applicationId.toString())
-                    .items(itemFactory.createItem(applicantReply))
+                    .items(itemFactory.createItem(applicationReply))
                     .build();
 
             answers.add(answer);

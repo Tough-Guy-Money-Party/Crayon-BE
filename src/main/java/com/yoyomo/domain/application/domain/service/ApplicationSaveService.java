@@ -1,7 +1,7 @@
 package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.model.ApplicantReply;
+import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.application.domain.repository.ApplicationJdbcRepository;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
@@ -28,7 +28,7 @@ public class ApplicationSaveService {
         return applicationRepository.save(application);
     }
 
-    public List<Application> saveAll(UUID recruitmentId, List<ApplicantReply> applicantReplies) {
+    public List<Application> saveAll(UUID recruitmentId, List<ApplicationReply> applicantReplies) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId).orElseThrow();
         Process process = recruitment.getDocumentProcess();
 

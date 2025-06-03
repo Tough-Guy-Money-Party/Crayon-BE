@@ -2,9 +2,7 @@ package com.yoyomo.domain.application.application.usecase;
 
 import com.yoyomo.domain.application.application.dto.request.ApplicationImportRequest;
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.model.ApplicantReply;
-import com.yoyomo.domain.application.domain.model.Question;
-import com.yoyomo.domain.application.domain.model.Replies;
+import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.application.domain.service.AnswerSaveService;
 import com.yoyomo.domain.application.domain.service.ApplicationSaveService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -28,14 +26,9 @@ public class ApplicationImportUseCase {
     public void importApplications(UUID recruitmentId, User user, ApplicationImportRequest request) {
         clubManagerAuthService.checkAuthorization(recruitmentId, user);
 
-        List<Question> questions = request.toQuestions();
-        List<Replies> replies = request.toReplies();
+        List<ApplicationReply> applicationReplies = request.toApplicationReplies();
 
-        List<ApplicantReply> applicantReplies = replies.stream()
-                .map(reply -> ApplicantReply.of(questions, reply))
-                .toList();
-
-        List<Application> applications = applicationSaveService.saveAll(recruitmentId, applicantReplies);
-        answerSaveService.save(applicantReplies, applications);
+        List<Application> applications = applicationSaveService.saveAll(recruitmentId, applicationReplies);
+        answerSaveService.save(applicationReplies, applications);
     }
 }

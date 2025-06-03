@@ -1,6 +1,6 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
-import com.yoyomo.domain.application.domain.model.ApplicantReply;
+import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.item.domain.entity.type.Type;
@@ -27,7 +27,7 @@ public class ItemFactory {
         return itemCreationStrategy.create(request);
     }
 
-    public List<Item> createItem(ApplicantReply applicantReplies) {
-        return answerCreationStrategy.create(applicantReplies);
+    public List<Item> createItem(ApplicationReply applicationReply) {
+        return answerCreationStrategy.create(applicationReply);
     }
 }

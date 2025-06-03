@@ -1,6 +1,6 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
-import com.yoyomo.domain.application.domain.model.ApplicantReply;
+import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
@@ -33,7 +33,7 @@ public class AnswerCreationStrategy implements ItemCreationStrategy {
                 .build();
     }
 
-    public List<Item> create(ApplicantReply applicantReply) {
-        return applicantReply.toAnswers();
+    public List<Item> create(ApplicationReply applicationReply) {
+        return applicationReply.toAnswers();
     }
 }
