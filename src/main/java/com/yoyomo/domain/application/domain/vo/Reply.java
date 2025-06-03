@@ -1,4 +1,4 @@
-package com.yoyomo.domain.application.domain.model;
+package com.yoyomo.domain.application.domain.vo;
 
 import com.yoyomo.domain.application.exception.InvalidDateFormat;
 import lombok.AllArgsConstructor;

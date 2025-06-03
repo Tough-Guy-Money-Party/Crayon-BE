@@ -1,6 +1,6 @@
 package com.yoyomo.domain.item.domain.service.factory;
 
-import com.yoyomo.domain.application.domain.model.ApplicationReply;
+import com.yoyomo.domain.application.domain.vo.ApplicationReply;
 import com.yoyomo.domain.item.application.dto.req.ItemRequest;
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;

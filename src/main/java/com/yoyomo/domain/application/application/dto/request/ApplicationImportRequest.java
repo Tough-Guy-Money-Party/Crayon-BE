@@ -1,9 +1,9 @@
 package com.yoyomo.domain.application.application.dto.request;
 
-import com.yoyomo.domain.application.domain.model.ApplicationReply;
-import com.yoyomo.domain.application.domain.model.Question;
-import com.yoyomo.domain.application.domain.model.QuestionReply;
-import com.yoyomo.domain.application.domain.model.Replies;
+import com.yoyomo.domain.application.domain.vo.ApplicationReply;
+import com.yoyomo.domain.application.domain.vo.Question;
+import com.yoyomo.domain.application.domain.vo.QuestionReply;
+import com.yoyomo.domain.application.domain.vo.Replies;
 import com.yoyomo.domain.application.exception.QuestionReplySizeMismatchException;
 
 import java.util.List;

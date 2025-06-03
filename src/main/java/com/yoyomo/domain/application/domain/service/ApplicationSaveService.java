@@ -1,9 +1,9 @@
 package com.yoyomo.domain.application.domain.service;
 
 import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.model.ApplicationReply;
 import com.yoyomo.domain.application.domain.repository.ApplicationJdbcRepository;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
+import com.yoyomo.domain.application.domain.vo.ApplicationReply;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;

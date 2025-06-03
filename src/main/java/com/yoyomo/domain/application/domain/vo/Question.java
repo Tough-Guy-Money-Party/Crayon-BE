@@ -1,4 +1,4 @@
-package com.yoyomo.domain.application.domain.model;
+package com.yoyomo.domain.application.domain.vo;
 
 import lombok.AllArgsConstructor;
 
