@@ -4,6 +4,7 @@ import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.item.domain.entity.Item;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import static java.util.stream.Collectors.groupingBy;
 
 @Getter
+@EqualsAndHashCode
 @AllArgsConstructor
 public class ApplicationReply {
 
@@ -30,8 +32,8 @@ public class ApplicationReply {
         Map<QuestionCategory, List<QuestionReply>> questionRepliesPartition = questionReplies.stream()
                 .collect(groupingBy(QuestionReply::getCategory));
 
-        List<QuestionReply> applicantQuestionReplies = questionRepliesPartition.get(QuestionCategory.APPLICANT_INFO);
-        List<QuestionReply> formQuestionReplies = questionRepliesPartition.get(QuestionCategory.FORM);
+        List<QuestionReply> applicantQuestionReplies = questionRepliesPartition.getOrDefault(QuestionCategory.APPLICANT_INFO, List.of());
+        List<QuestionReply> formQuestionReplies = questionRepliesPartition.getOrDefault(QuestionCategory.FORM, List.of());
 
         Applicant applicant = Applicant.from(applicantQuestionReplies);
         return new ApplicationReply(applicant, formQuestionReplies);

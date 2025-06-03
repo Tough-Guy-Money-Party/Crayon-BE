@@ -1,11 +1,13 @@
 package com.yoyomo.domain.application.domain.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 public class Applicant {
 

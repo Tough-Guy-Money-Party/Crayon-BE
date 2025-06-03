@@ -3,7 +3,9 @@ package com.yoyomo.domain.application.domain.vo;
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 public class QuestionReply {
 
