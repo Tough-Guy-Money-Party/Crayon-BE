@@ -28,15 +28,15 @@ public class ApplicationSaveService {
         return applicationRepository.save(application);
     }
 
-    public List<Application> saveAll(UUID recruitmentId, List<ApplicationReply> applicantReplies) {
+    public List<Application> saveAll(UUID recruitmentId, List<ApplicationReply> applicationReplies) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId).orElseThrow();
         Process process = recruitment.getDocumentProcess();
 
-        List<Application> applications = applicantReplies.stream()
+        List<Application> applications = applicationReplies.stream()
                 .map(ar -> ar.toApplication(recruitmentId, process))
                 .toList();
 
-        recruitmentRepository.increaseApplicantCount(recruitmentId, applicantReplies.size());
+        recruitmentRepository.increaseApplicantCount(recruitmentId, applicationReplies.size());
         return applicationJdbcRepository.batchInsert(applications);
     }
 }
