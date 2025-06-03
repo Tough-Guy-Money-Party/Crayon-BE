@@ -17,8 +17,8 @@ public class QuestionReply {
         return new QuestionReply(question, reply);
     }
 
-    public boolean isApplicantInfo() {
-        return question.isApplicantInfo();
+    public QuestionCategory getCategory() {
+        return QuestionCategory.match(question);
     }
 
     public Item toAnswer() {

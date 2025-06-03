@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.util.stream.Collectors.partitioningBy;
+import static java.util.stream.Collectors.groupingBy;
 
 @Getter
 @AllArgsConstructor
@@ -27,11 +27,11 @@ public class ApplicationReply {
      * @return 생성된 ApplicationReply 객체
      */
     public static ApplicationReply of(List<QuestionReply> questionReplies) {
-        Map<Boolean, List<QuestionReply>> collect = questionReplies.stream()
-                .collect(partitioningBy(QuestionReply::isApplicantInfo));
+        Map<QuestionCategory, List<QuestionReply>> questionRepliesPartition = questionReplies.stream()
+                .collect(groupingBy(QuestionReply::getCategory));
 
-        List<QuestionReply> applicantQuestionReplies = collect.get(true);
-        List<QuestionReply> formQuestionReplies = collect.get(false);
+        List<QuestionReply> applicantQuestionReplies = questionRepliesPartition.get(QuestionCategory.APPLICANT_INFO);
+        List<QuestionReply> formQuestionReplies = questionRepliesPartition.get(QuestionCategory.FORM);
 
         Applicant applicant = Applicant.from(applicantQuestionReplies);
         return new ApplicationReply(applicant, formQuestionReplies);
