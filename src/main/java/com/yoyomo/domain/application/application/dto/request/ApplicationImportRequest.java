@@ -32,7 +32,7 @@ public record ApplicationImportRequest(
 
     private List<Replies> toReplies() {
         return rows.stream()
-                .map(RespondentRequest::toAnswers)
+                .map(RespondentRequest::toReplies)
                 .toList();
     }
 
