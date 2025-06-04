@@ -22,6 +22,10 @@ public class Question {
         return this.title.contains(keyword);
     }
 
+    public DataType matchDataType() {
+        return DataType.match(type);
+    }
+
     public String getTitle() {
         return title;
     }
