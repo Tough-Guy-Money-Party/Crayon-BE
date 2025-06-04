@@ -1,9 +1,11 @@
-package com.yoyomo.domain.application.domain.model;
+package com.yoyomo.domain.application.domain.vo;
 
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 public class QuestionReply {
 
@@ -17,8 +19,8 @@ public class QuestionReply {
         return new QuestionReply(question, reply);
     }
 
-    public boolean isApplicantInfo() {
-        return question.isApplicantInfo();
+    public QuestionCategory getCategory() {
+        return QuestionCategory.match(question);
     }
 
     public Item toAnswer() {

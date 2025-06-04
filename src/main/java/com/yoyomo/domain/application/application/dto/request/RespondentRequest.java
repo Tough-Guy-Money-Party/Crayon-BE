@@ -1,7 +1,7 @@
 package com.yoyomo.domain.application.application.dto.request;
 
-import com.yoyomo.domain.application.domain.model.Replies;
-import com.yoyomo.domain.application.domain.model.Reply;
+import com.yoyomo.domain.application.domain.vo.Replies;
+import com.yoyomo.domain.application.domain.vo.Reply;
 
 import java.util.List;
 
