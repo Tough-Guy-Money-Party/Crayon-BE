@@ -22,6 +22,7 @@ public class Reply {
     }
 
     public Reply format(DataType dataType) {
-        return dataType.format(value);
+        String formatted = dataType.format(value);
+        return new Reply(formatted);
     }
 }

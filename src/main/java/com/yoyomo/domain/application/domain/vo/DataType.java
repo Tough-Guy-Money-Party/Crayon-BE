@@ -10,15 +10,15 @@ import java.util.function.Function;
 @AllArgsConstructor
 public enum DataType {
 
-    BOOLEAN("boolean", Reply::new),
-    NUMBER("number", Reply::new),
-    STRING("string", Reply::new),
-    DATE("date", input -> new Reply(DateFormatter.format(input))),
-    DATE_TIME("datetime", input -> new Reply(DateFormatter.format(input))),
-    TIME_OF_DATE("timeofday", input -> new Reply(DateFormatter.format(input)));
+    BOOLEAN("boolean", Function.identity()),
+    NUMBER("number", Function.identity()),
+    STRING("string", Function.identity()),
+    DATE("date", DateFormatter::format),
+    DATE_TIME("datetime", DateFormatter::format),
+    TIME_OF_DATE("timeofday", DateFormatter::format);
 
     private final String type;
-    private final Function<String, Reply> function;
+    private final Function<String, String> function;
 
     public static DataType match(String type) {
         return Arrays.stream(values())
@@ -27,7 +27,7 @@ public enum DataType {
                 .orElseThrow(InvalidDataType::new);
     }
 
-    public Reply format(String input) {
+    public String format(String input) {
         return function.apply(input);
     }
 }

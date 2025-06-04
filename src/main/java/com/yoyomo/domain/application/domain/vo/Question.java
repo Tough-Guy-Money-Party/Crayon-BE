@@ -10,10 +10,6 @@ public class Question {
     private final String title;
     private final String type;
 
-    public boolean isDateType() {
-        return "datetime".equals(type);
-    }
-
     public boolean isApplicantInfo() {
         return ApplicantInfo.anyMatch(title);
     }
