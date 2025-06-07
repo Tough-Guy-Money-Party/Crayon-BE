@@ -6,7 +6,7 @@ public record DataRequest(
         String v
 ) {
 
-    public Reply toAnswer() {
+    public Reply toReply() {
         return new Reply(v);
     }
 }

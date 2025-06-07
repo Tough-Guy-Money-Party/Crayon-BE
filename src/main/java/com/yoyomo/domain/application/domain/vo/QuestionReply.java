@@ -13,10 +13,12 @@ public class QuestionReply {
     private final Reply reply;
 
     public static QuestionReply of(Question question, Reply reply) {
-        if (!reply.isEmpty() && question.isDateType()) {
-            return new QuestionReply(question, reply.formatDate());
+        if (!reply.isEmpty()) {
+            return new QuestionReply(question, reply);
         }
-        return new QuestionReply(question, reply);
+
+        DataType dataType = question.matchDataType();
+        return new QuestionReply(question, reply.format(dataType));
     }
 
     public QuestionCategory getCategory() {

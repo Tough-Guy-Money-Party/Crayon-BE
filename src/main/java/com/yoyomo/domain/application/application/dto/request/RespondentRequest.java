@@ -9,9 +9,9 @@ public record RespondentRequest(
         List<DataRequest> c
 ) {
 
-    public Replies toAnswers() {
+    public Replies toReplies() {
         List<Reply> replies = c.stream()
-                .map(DataRequest::toAnswer)
+                .map(DataRequest::toReply)
                 .toList();
         return new Replies(replies);
     }
