@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DataTypeTest {
 
     @DisplayName("데이터 타입을 찾는다")
-    @CsvSource(value = {"dateTime", "dateTime", "Datetime", "DateTime"})
+    @CsvSource(value = {"dateTime", "dateTime", "Datetime", "DATETIME"})
     @ParameterizedTest
     void match(String data) {
         // when
