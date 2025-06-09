@@ -14,11 +14,12 @@ public class Answer extends Item {
     private String answer;
     private int maxLength;
 
-    public static Item of(String title, String answer) {
+    public static Item of(String title, String answer, int order) {
         return Answer.builder()
                 .type(Type.LONG_FORM)
                 .title(title)
                 .answer(answer)
+                .order(order)
                 .build();
     }
 }
