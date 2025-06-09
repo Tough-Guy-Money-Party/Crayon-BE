@@ -16,6 +16,7 @@ import com.yoyomo.domain.user.domain.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class TestFixture {
@@ -59,6 +60,18 @@ public class TestFixture {
                 .build();
     }
 
+    public static Recruitment recruitment(Club club, Process... processes) {
+        return Recruitment.builder()
+                .title("모집")
+                .isActive(false)
+                .startAt(LocalDateTime.now().minusHours(1))
+                .endAt(LocalDateTime.now().plusDays(1))
+                .currentProcess(Type.FORM)
+                .club(club)
+                .processes(Arrays.stream(processes).toList())
+                .build();
+    }
+
     public static Application application(User user) {
         return Application.builder()
                 .user(user)
@@ -76,6 +89,12 @@ public class TestFixture {
 
     public static Process process() {
         return Process.builder()
+                .build();
+    }
+
+    public static Process process(int stage) {
+        return Process.builder()
+                .stage(stage)
                 .build();
     }
 
