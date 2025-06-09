@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -50,8 +51,12 @@ public class ApplicationReply {
     }
 
     public List<Item> toAnswers() {
-        return formQuestionReplies.stream()
-                .map(QuestionReply::toAnswer)
-                .toList();
+        List<Item> answers = new ArrayList<>();
+        for (int i = 0; i < formQuestionReplies.size(); i++) {
+            Item answer = formQuestionReplies.get(i).toAnswer(i);
+            answers.add(answer);
+        }
+
+        return answers;
     }
 }

@@ -25,8 +25,8 @@ public class QuestionReply {
         return QuestionCategory.match(question);
     }
 
-    public Item toAnswer() {
-        return Answer.of(question.getTitle(), reply.value());
+    public Item toAnswer(int order) {
+        return Answer.of(question.getTitle(), reply.value(), order);
     }
 
     public boolean match(String keyword) {
