@@ -12,11 +12,11 @@ class QuestionReplyTest {
     @ParameterizedTest
     @CsvSource(value = {"datetime", "date", "timeofday"})
     void of(String type) {
-        // when
+        // given
         Question question = new Question("타임스탬프", type);
         Reply reply = new Reply("Date(2025,6,10,14,0,0)");
 
-        // given
+        // when
         QuestionReply questionReply = QuestionReply.of(question, reply);
 
         // then
