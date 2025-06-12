@@ -13,7 +13,7 @@ public class QuestionReply {
     private final Reply reply;
 
     public static QuestionReply of(Question question, Reply reply) {
-        if (!reply.isEmpty()) {
+        if (reply.isEmpty()) {
             return new QuestionReply(question, reply);
         }
 

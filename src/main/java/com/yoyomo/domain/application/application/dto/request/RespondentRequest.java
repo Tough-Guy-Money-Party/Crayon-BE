@@ -11,8 +11,15 @@ public record RespondentRequest(
 
     public Replies toReplies() {
         List<Reply> replies = c.stream()
-                .map(DataRequest::toReply)
+                .map(this::toReply)
                 .toList();
         return new Replies(replies);
+    }
+
+    private Reply toReply(DataRequest dataRequest) {
+        if (dataRequest == null) {
+            return Reply.empty();
+        }
+        return dataRequest.toReply();
     }
 }

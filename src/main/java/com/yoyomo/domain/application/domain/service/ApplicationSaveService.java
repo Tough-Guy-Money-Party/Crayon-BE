@@ -7,6 +7,7 @@ import com.yoyomo.domain.application.domain.vo.ApplicationReply;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
+import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,8 @@ public class ApplicationSaveService {
     }
 
     public List<Application> saveAll(UUID recruitmentId, List<ApplicationReply> applicationReplies) {
-        Recruitment recruitment = recruitmentRepository.findById(recruitmentId).orElseThrow();
+        Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
+                .orElseThrow(RecruitmentNotFoundException::new);
         Process process = recruitment.getDocumentProcess();
 
         List<Application> applications = applicationReplies.stream()
