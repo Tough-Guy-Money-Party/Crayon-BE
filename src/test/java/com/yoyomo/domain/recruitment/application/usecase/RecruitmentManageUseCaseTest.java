@@ -14,7 +14,6 @@ import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.EvaluationMemoRepository;
 import com.yoyomo.domain.application.domain.repository.EvaluationRepository;
-import com.yoyomo.domain.application.domain.repository.mongo.AnswerRepository;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.repository.ClubMangerRepository;
 import com.yoyomo.domain.club.domain.repository.ClubRepository;
@@ -47,9 +46,6 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 	ApplicationRepository applicationRepository;
 
 	@Autowired
-	AnswerRepository answerRepository;
-
-	@Autowired
 	RecruitmentManageUseCase recruitmentManageUseCase;
 
 	@Autowired
@@ -80,10 +76,8 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		evaluationRepository.save(TestFixture.evaluation(application, applicant, Rating.HIGH));
 		evaluationRepository.save(TestFixture.evaluation(application2, applicant, Rating.HIGH));
 
-		evaluationMemoRepository.save(
-			TestFixture.evaluationMemo(application, manager, process.getId()));
-		evaluationMemoRepository.save(
-			TestFixture.evaluationMemo(application2, manager, process.getId()));
+		evaluationMemoRepository.save(TestFixture.evaluationMemo(application, manager, process.getId()));
+		evaluationMemoRepository.save(TestFixture.evaluationMemo(application2, manager, process.getId()));
 
 		// when
 		recruitmentManageUseCase.cancel(recruitment.getId().toString(), manager);
@@ -96,3 +90,4 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		assertThat(applications).isEmpty();
 	}
 }
+
