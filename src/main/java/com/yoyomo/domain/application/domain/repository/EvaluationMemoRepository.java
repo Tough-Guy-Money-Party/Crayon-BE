@@ -6,12 +6,11 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.EvaluationMemo;
 import com.yoyomo.domain.user.domain.entity.User;
-
-import io.lettuce.core.dynamic.annotation.Param;
 
 public interface EvaluationMemoRepository extends JpaRepository<EvaluationMemo, Long> {
 
