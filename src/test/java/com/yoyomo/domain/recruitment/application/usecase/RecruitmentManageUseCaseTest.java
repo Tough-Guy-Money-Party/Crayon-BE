@@ -91,6 +91,8 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		// then
 		assertThat(recruitmentRepository.findById(recruitment.getId())).isEmpty();
 		List<Application> applications = applicationRepository.findAll();
+		assertThat(evaluationRepository.findAll()).isEmpty();
+		assertThat(evaluationMemoRepository.findAll()).isEmpty();
 		assertThat(applications).isEmpty();
 	}
 }
