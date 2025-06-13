@@ -12,7 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yoyomo.domain.application.domain.repository.EvaluationMemoRepository;
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
+import com.yoyomo.domain.application.domain.service.EvaluationDeleteService;
+import com.yoyomo.domain.application.domain.service.EvaluationMemoDeleteService;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.club.domain.service.ClubGetService;
 import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
@@ -58,6 +61,9 @@ public class RecruitmentManageUseCase {
 	private final ApplicationDeleteService applicationDeleteService;
 	private final ProcessSaveService processSaveService;
 	private final ProcessGetService processGetService;
+	private final EvaluationDeleteService evaluationDeleteService;
+	private final EvaluationMemoRepository evaluationMemoRepository;
+	private final EvaluationMemoDeleteService evaluationMemoDeleteService;
 
 	@Transactional
 	public RecruitmentCreateResponse save(Save dto, User manager) {
@@ -114,8 +120,13 @@ public class RecruitmentManageUseCase {
 	public void cancel(String recruitmentId, User user) {
 		Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
 
+		evaluationMemoDeleteService.deleteByRecruitmentId(recruitment.getId());
+		evaluationDeleteService.deleteEvaluationByRecruitmentId(recruitment.getId());
+
 		applicationDeleteService.deleteByRecruitmentId(recruitment);
+
 		processDeleteService.deleteAllByRecruitment(recruitment);
+
 		recruitmentDeleteService.delete(recruitment);
 	}
 
