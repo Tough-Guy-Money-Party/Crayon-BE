@@ -56,3 +56,5 @@ crayon:
       expiration: 604800000
       header: Authorization-refresh
     issuer: ${JWT_ISSUER}
+  monitor:
+    host: ${CRAYON_MONITOR_HOST}
