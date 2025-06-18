@@ -11,7 +11,8 @@ public class CustomRequestLoggingFilter extends CommonsRequestLoggingFilter {
             "/swagger-ui",
             "/swagger-resources",
             "/v3/api-docs",
-            "/health-check"
+            "/health-check",
+            "/actuator/prometheus"
     );
 
     public CustomRequestLoggingFilter() {
