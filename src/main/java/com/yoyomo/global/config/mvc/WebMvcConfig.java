@@ -28,7 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/notion/page/**",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        "/actuator/**"
                 );
     }
 
