@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(status)
-                .body(ResponseDto.of(status, ex.getMessage()));
+                .body(ResponseDto.of(status, "서버 오류가 발생했습니다"));
     }
 
     // @Valid에서 발생하는 예외 처리
