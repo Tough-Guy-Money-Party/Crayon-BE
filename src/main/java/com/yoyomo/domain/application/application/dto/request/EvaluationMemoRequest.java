@@ -3,11 +3,13 @@ package com.yoyomo.domain.application.application.dto.request;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.EvaluationMemo;
 import com.yoyomo.domain.user.domain.entity.User;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record EvaluationMemoRequest(
 
-        @NotNull
+        @NotBlank
+        @Size(max = 255, message = "250자 이하로 작성해주세요")
         String memo
 ) {
     public EvaluationMemo toEvaluationMemo(User manager, Application application) {
