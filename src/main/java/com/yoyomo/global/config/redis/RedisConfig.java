@@ -75,7 +75,6 @@ public class RedisConfig {
         template.setConnectionFactory(rateLimitConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericToStringSerializer<>(Long.class));
-        template.setEnableTransactionSupport(true);
         template.afterPropertiesSet();
         return template;
     }
