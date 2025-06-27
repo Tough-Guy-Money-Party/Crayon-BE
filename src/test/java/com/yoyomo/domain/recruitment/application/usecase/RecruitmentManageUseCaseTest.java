@@ -60,6 +60,7 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		// given
 		User manager = userRepository.save(TestFixture.user());
 		User applicant = userRepository.save(TestFixture.user());
+		User applicant2 = userRepository.save(TestFixture.user());
 		Club club = clubRepository.save(TestFixture.club());
 		clubMangerRepository.save(TestFixture.clubManager(club, manager));
 
@@ -71,7 +72,7 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		Application application = applicationRepository.save(
 			TestFixture.application(applicant, process, recruitment.getId()));
 		Application application2 = applicationRepository.save(
-			TestFixture.application(applicant, process, recruitment.getId()));
+			TestFixture.application(applicant2, process, recruitment.getId()));
 
 		evaluationRepository.save(TestFixture.evaluation(application, applicant, Rating.HIGH));
 		evaluationRepository.save(TestFixture.evaluation(application2, applicant, Rating.HIGH));
