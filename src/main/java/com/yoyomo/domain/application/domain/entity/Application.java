@@ -1,11 +1,15 @@
 package com.yoyomo.domain.application.domain.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import com.yoyomo.domain.application.exception.AccessDeniedException;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.entity.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -15,81 +19,82 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-
 @Getter
 @Builder
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+	@UniqueConstraint(
+		columnNames = {"recruitment_id", "user_id"}
+	)})
 public class Application extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "application_id")
-    private UUID id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "application_id")
+	private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    private String userName;
+	private String userName;
 
-    private String email;
+	private String email;
 
-    @Column(length = 13)
-    private String tel;
+	@Column(length = 13)
+	private String tel;
 
-    @Column(nullable = false, name = "recruitment_id")
-    private UUID recruitmentId;
+	@Column(nullable = false, name = "recruitment_id")
+	private UUID recruitmentId;
 
-    @ManyToOne
-    @JoinColumn(name = "process_id")
-    private Process process;
+	@ManyToOne
+	@JoinColumn(name = "process_id")
+	private Process process;
 
-    @Embedded
-    private Interview interview;
+	@Embedded
+	private Interview interview;
 
-    private LocalDateTime deletedAt;
+	private LocalDateTime deletedAt;
 
-    public UUID generateId() {
-        this.id = UUID.randomUUID();
-        return id;
-    }
+	public UUID generateId() {
+		this.id = UUID.randomUUID();
+		return id;
+	}
 
-    public void update(Process process) {
-        this.process = process;
-    }
+	public void update(Process process) {
+		this.process = process;
+	}
 
-    public void addInterview(Interview interview) {
-        this.interview = interview;
-    }
+	public void addInterview(Interview interview) {
+		this.interview = interview;
+	}
 
-    public void delete() {
-        this.deletedAt = LocalDateTime.now();
-    }
+	public void delete() {
+		this.deletedAt = LocalDateTime.now();
+	}
 
-    public void checkAuthorization(User user) {
-        if (!this.user.equals(user)) {
-            throw new AccessDeniedException();
-        }
-    }
+	public void checkAuthorization(User user) {
+		if (!this.user.equals(user)) {
+			throw new AccessDeniedException();
+		}
+	}
 
-    public boolean isBeforeInterview(List<Type> types) {
+	public boolean isBeforeInterview(List<Type> types) {
 
-        if (!types.contains(Type.INTERVIEW)) {
-            return false;
-        }
+		if (!types.contains(Type.INTERVIEW)) {
+			return false;
+		}
 
-        return types.indexOf(Type.INTERVIEW) > this.getProcess().getStage();
-    }
+		return types.indexOf(Type.INTERVIEW) > this.getProcess().getStage();
+	}
 }
