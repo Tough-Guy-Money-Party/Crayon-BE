@@ -93,7 +93,7 @@ class ApplicationSaveServiceTest extends ApplicationTest {
 
 	@DisplayName("동시에 여러 개의 지원서가 들어올 경우 하나의 지원서만 저장된다.")
 	@Test
-	void test() throws InterruptedException {
+	void saveAtomic() throws InterruptedException {
 		//given
 		Club club = clubRepository.save(club());
 		UUID recruitmentId = recruitmentRepository.save(recruitment(club)).getId();
