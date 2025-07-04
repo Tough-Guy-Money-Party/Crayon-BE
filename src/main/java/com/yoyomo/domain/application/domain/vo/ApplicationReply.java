@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.yoyomo.domain.application.domain.entity.Application;
@@ -52,9 +51,8 @@ public class ApplicationReply {
 			.recruitmentId(recruitmentId)
 			.process(process);
 
-		Optional.ofNullable(applicant.getAppliedAt())
-			.filter(Optional::isPresent)
-			.ifPresent(appliedAt -> builder.createdAt(appliedAt.get()));
+		applicant.getAppliedAt()
+			.ifPresent(builder::createdAt);
 
 		return builder.build();
 	}
