@@ -2,11 +2,12 @@ package com.yoyomo.domain.application.domain.vo;
 
 import com.yoyomo.domain.item.domain.entity.Answer;
 import com.yoyomo.domain.item.domain.entity.Item;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuestionReply {
 
     private final Question question;

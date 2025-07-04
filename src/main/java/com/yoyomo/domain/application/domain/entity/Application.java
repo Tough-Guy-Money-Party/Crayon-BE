@@ -28,7 +28,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -65,6 +64,25 @@ public class Application extends BaseEntity {
 	private Interview interview;
 
 	private LocalDateTime deletedAt;
+
+	@Builder
+	public Application(
+		LocalDateTime createdAt,
+		User user,
+		String userName,
+		String email,
+		String tel,
+		UUID recruitmentId,
+		Process process
+	) {
+		super(createdAt, createdAt);
+		this.user = user;
+		this.userName = userName;
+		this.email = email;
+		this.tel = tel;
+		this.recruitmentId = recruitmentId;
+		this.process = process;
+	}
 
 	public UUID generateId() {
 		this.id = UUID.randomUUID();
