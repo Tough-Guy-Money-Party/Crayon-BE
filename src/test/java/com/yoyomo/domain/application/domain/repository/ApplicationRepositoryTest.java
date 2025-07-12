@@ -1,11 +1,6 @@
 package com.yoyomo.domain.application.domain.repository;
 
-import static com.yoyomo.domain.fixture.TestFixture.*;
-import static org.assertj.core.api.Assertions.*;
-
 import java.nio.ByteBuffer;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,15 +12,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import com.yoyomo.domain.RepositoryTest;
+import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
+import com.yoyomo.domain.application.application.dto.request.condition.EvaluationFilter;
+import com.yoyomo.domain.application.application.dto.request.condition.ResultFilter;
+import com.yoyomo.domain.application.application.dto.request.condition.SortType;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
+
+import static com.yoyomo.domain.fixture.TestFixture.*;
+import static org.assertj.core.api.Assertions.*;
 
 class ApplicationRepositoryTest extends RepositoryTest {
 
@@ -60,15 +61,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 			.mapToObj(i -> userRepository.save(user()))
 			.forEach(user -> jdbcTemplate.update(
 				"INSERT INTO application(application_id, user_id, process_id, created_at, recruitment_id) VALUES (?, ?, ?, ?, ?)",
-				new PreparedStatementSetter() {
-					@Override
-					public void setValues(PreparedStatement ps) throws SQLException {
-						ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
-						ps.setLong(2, user.getId());
-						ps.setLong(3, process.getId());
-						ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-						ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
-					}
+				ps -> {
+					ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
+					ps.setLong(2, user.getId());
+					ps.setLong(3, process.getId());
+					ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+					ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
 				}));
 
 		List<UUID> applications = applicationRepository.findAll()
@@ -89,7 +87,15 @@ class ApplicationRepositoryTest extends RepositoryTest {
 
 		processResultRepository.saveAll(processResults);
 
-		List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(0, 7))
+		ApplicationCondition condition = new ApplicationCondition(
+			SortType.APPLIED,
+			EvaluationFilter.ALL,
+			ResultFilter.ALL,
+			PageRequest.of(0, 7)
+		);
+
+		List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(process, condition,
+				condition.pageRequest())
 			.getContent()
 			.stream()
 			.map(applicationWithStatus -> applicationWithStatus.application().getId())
@@ -107,7 +113,15 @@ class ApplicationRepositoryTest extends RepositoryTest {
 			)
 		);
 
-		List<UUID> applicationIds2 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(1, 7))
+		condition = new ApplicationCondition(
+			SortType.APPLIED,
+			EvaluationFilter.ALL,
+			ResultFilter.ALL,
+			PageRequest.of(1, 7)
+		);
+
+		List<UUID> applicationIds2 = applicationRepository.findAllWithStatusByProcess(process, condition,
+				condition.pageRequest())
 			.getContent()
 			.stream()
 			.map(applicationWithStatus -> applicationWithStatus.application().getId())

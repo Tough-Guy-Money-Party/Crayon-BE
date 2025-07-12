@@ -17,7 +17,7 @@ import com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.user.domain.entity.User;
 
-public interface ApplicationRepository extends JpaRepository<Application, UUID> {
+public interface ApplicationRepository extends JpaRepository<Application, UUID>, ApplicationQueryDslRepository {
 
 	List<Application> findAllByUserAndDeletedAtIsNull(User user);
 
@@ -42,18 +42,6 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
 		WHERE a.process = :process AND a.deletedAt IS NULL
 		""")
 	List<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process);
-
-	@Query("""
-		 SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
-		     a,
-		     pr.status
-		 )
-		 FROM Application a
-		 LEFT JOIN ProcessResult pr ON a.id = pr.applicationId AND a.process.id = pr.processId
-		 WHERE a.process = :process AND a.deletedAt IS NULL
-		 ORDER BY a.createdAt DESC
-		""")
-	Page<ApplicationWithStatus> findAllWithStatusByProcess(@Param("process") Process process, Pageable pageable);
 
 	@Query("""
 		SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
