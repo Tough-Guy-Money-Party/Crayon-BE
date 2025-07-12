@@ -1,18 +1,7 @@
 package com.yoyomo.domain.application.domain.repository;
 
-import com.yoyomo.domain.RepositoryTest;
-import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.ProcessResult;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
-import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
-import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
-import com.yoyomo.domain.user.domain.repository.UserRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
+import static com.yoyomo.domain.fixture.TestFixture.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.nio.ByteBuffer;
 import java.sql.PreparedStatement;
@@ -23,100 +12,113 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import static com.yoyomo.domain.fixture.TestFixture.process;
-import static com.yoyomo.domain.fixture.TestFixture.processResult;
-import static com.yoyomo.domain.fixture.TestFixture.user;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+
+import com.yoyomo.domain.RepositoryTest;
+import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.ProcessResult;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
+import com.yoyomo.domain.user.domain.repository.UserRepository;
 
 class ApplicationRepositoryTest extends RepositoryTest {
 
-    @Autowired
-    ProcessRepository processRepository;
+	@Autowired
+	ProcessRepository processRepository;
 
-    @Autowired
-    UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-    @Autowired
-    ApplicationRepository applicationRepository;
+	@Autowired
+	ApplicationRepository applicationRepository;
 
-    @Autowired
-    ProcessResultRepository processResultRepository;
+	@Autowired
+	ProcessResultRepository processResultRepository;
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 
-    @Test
-    void findAllWithStatusByProcess() {
-        Process process = processRepository.save(process());
+	private static byte[] uuidToBytes(UUID uuid) {
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(uuid.getMostSignificantBits());
+		bb.putLong(uuid.getLeastSignificantBits());
+		return bb.array();
+	}
 
-        IntStream.range(0, 10)
-                .mapToObj(i -> userRepository.save(user()))
-                .forEach(user -> jdbcTemplate.update("INSERT INTO application(application_id, user_id, process_id, created_at, recruitment_id) VALUES (?, ?, ?, ?, ?)", new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
-                        ps.setLong(2, user.getId());
-                        ps.setLong(3, process.getId());
-                        ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-                        ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
-                    }
-                }));
+	@DisplayName("생성일 기준 내림차순 정렬한다")
+	@Test
+	void findAllWithStatusByProcess() {
+		Process process = processRepository.save(process());
 
-        List<UUID> applications = applicationRepository.findAll()
-                .stream()
-                .map(Application::getId)
-                .toList();
+		IntStream.range(0, 10)
+			.mapToObj(i -> userRepository.save(user()))
+			.forEach(user -> jdbcTemplate.update(
+				"INSERT INTO application(application_id, user_id, process_id, created_at, recruitment_id) VALUES (?, ?, ?, ?, ?)",
+				new PreparedStatementSetter() {
+					@Override
+					public void setValues(PreparedStatement ps) throws SQLException {
+						ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
+						ps.setLong(2, user.getId());
+						ps.setLong(3, process.getId());
+						ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+						ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
+					}
+				}));
 
-        List<ProcessResult> processResults = List.of(
-                processResult(applications.get(0), process.getId(), Status.DOCUMENT_PASS),
-                processResult(applications.get(1), process.getId(), Status.PENDING),
-                processResult(applications.get(3), process.getId(), Status.DOCUMENT_FAIL),
-                processResult(applications.get(4), process.getId(), Status.PENDING),
-                processResult(applications.get(5), process.getId(), Status.PENDING),
-                processResult(applications.get(7), process.getId(), Status.DOCUMENT_PASS),
-                processResult(applications.get(8), process.getId(), Status.DOCUMENT_FAIL),
-                processResult(applications.get(9), process.getId(), Status.DOCUMENT_FAIL)
-        );
+		List<UUID> applications = applicationRepository.findAll()
+			.stream()
+			.map(Application::getId)
+			.toList();
 
-        processResultRepository.saveAll(processResults);
+		List<ProcessResult> processResults = List.of(
+			processResult(applications.get(0), process.getId(), Status.DOCUMENT_PASS),
+			processResult(applications.get(1), process.getId(), Status.PENDING),
+			processResult(applications.get(3), process.getId(), Status.DOCUMENT_FAIL),
+			processResult(applications.get(4), process.getId(), Status.PENDING),
+			processResult(applications.get(5), process.getId(), Status.PENDING),
+			processResult(applications.get(7), process.getId(), Status.DOCUMENT_PASS),
+			processResult(applications.get(8), process.getId(), Status.DOCUMENT_FAIL),
+			processResult(applications.get(9), process.getId(), Status.DOCUMENT_FAIL)
+		);
 
-        List<Status> statuses1 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(0, 7))
-                .getContent()
-                .stream()
-                .map(ApplicationWithStatus::status)
-                .toList();
+		processResultRepository.saveAll(processResults);
 
-        assertThat(statuses1).containsExactlyElementsOf(
-                List.of(
-                        Status.PENDING,
-                        Status.PENDING,
-                        Status.PENDING,
-                        Status.DOCUMENT_FAIL,
-                        Status.DOCUMENT_FAIL,
-                        Status.DOCUMENT_PASS,
-                        Status.BEFORE_EVALUATION
-                )
-        );
+		List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(0, 7))
+			.getContent()
+			.stream()
+			.map(applicationWithStatus -> applicationWithStatus.application().getId())
+			.toList();
 
-        List<Status> statuses2 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(1, 7))
-                .getContent()
-                .stream()
-                .map(ApplicationWithStatus::status)
-                .toList();
+		assertThat(applicationIds).containsExactlyElementsOf(
+			List.of(
+				applications.get(9),
+				applications.get(8),
+				applications.get(7),
+				applications.get(6),
+				applications.get(5),
+				applications.get(4),
+				applications.get(3)
+			)
+		);
 
-        assertThat(statuses2).containsExactlyElementsOf(
-                List.of(
-                        Status.DOCUMENT_FAIL,
-                        Status.BEFORE_EVALUATION,
-                        Status.DOCUMENT_PASS
-                )
-        );
-    }
+		List<UUID> applicationIds2 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(1, 7))
+			.getContent()
+			.stream()
+			.map(applicationWithStatus -> applicationWithStatus.application().getId())
+			.toList();
 
-    private static byte[] uuidToBytes(UUID uuid) {
-        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uuid.getMostSignificantBits());
-        bb.putLong(uuid.getLeastSignificantBits());
-        return bb.array();
-    }
+		assertThat(applicationIds2).containsExactlyElementsOf(
+			List.of(
+				applications.get(2),
+				applications.get(1),
+				applications.get(0)
+			)
+		);
+	}
 }
