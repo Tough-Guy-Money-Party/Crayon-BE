@@ -1,4 +1,4 @@
-package com.yoyomo.domain.application.application.dto.request.condition;
+package com.yoyomo.domain.application.domain.vo.condition;
 
 import java.util.Arrays;
 

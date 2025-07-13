@@ -1,25 +1,19 @@
-package com.yoyomo.domain.application.application.dto.request.condition;
+package com.yoyomo.domain.application.domain.vo.condition;
 
 import java.util.Arrays;
 
-public enum ResultFilter {
+public enum EvaluationFilter {
 	ALL,
-	NONE,
-	PENDING,
-	PASS,
-	FAIL,
+	YES,
+	NO,
 	;
 
-	public static ResultFilter from(String filter) {
+	public static EvaluationFilter from(String filter) {
 		String upperCaseFilter = filter.toUpperCase();
 		return Arrays.stream(values())
 			.filter(sortType -> sortType.name().equals(upperCaseFilter))
 			.findFirst()
 			.orElseThrow(IllegalAccessError::new);
-	}
-
-	public boolean isWithoutResult() {
-		return this == NONE;
 	}
 
 	public boolean isAll() {

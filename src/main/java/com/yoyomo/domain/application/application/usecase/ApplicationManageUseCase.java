@@ -9,12 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
 import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.entity.Answer;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
@@ -70,12 +70,15 @@ public class ApplicationManageUseCase {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ApplicationListResponse> readAll(UUID recruitmentId, int stage, User user,
-		ApplicationCondition command) {
+	public Page<ApplicationListResponse> readAll(
+		UUID recruitmentId, int stage, User user, ApplicationCondition condition, Pageable pageable
+	) {
 		Recruitment recruitment = checkAuthorityByRecruitmentId(recruitmentId, user);
 		Process process = processGetService.find(recruitment, stage);
 
-		Page<ApplicationWithStatus> applicationWithStatus = applicationGetService.findAll(process, command);
+		Page<ApplicationWithStatus> applicationWithStatus = applicationGetService.findAll(
+			process, condition, pageable
+		);
 
 		return ApplicationListResponse.toResponse(applicationWithStatus);
 	}

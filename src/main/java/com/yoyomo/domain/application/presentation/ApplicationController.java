@@ -20,16 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
 import com.yoyomo.domain.application.application.dto.request.ApplicationImportRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
 import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
-import com.yoyomo.domain.application.application.dto.request.condition.EvaluationFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.ResultFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.SortType;
 import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationListResponse;
@@ -39,6 +35,7 @@ import com.yoyomo.domain.application.application.usecase.ApplicationManageUseCas
 import com.yoyomo.domain.application.application.usecase.ApplicationVerifyUseCase;
 import com.yoyomo.domain.application.application.usecase.ApplyUseCase;
 import com.yoyomo.domain.application.application.usecase.InterviewManageUseCase;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.global.common.annotation.CurrentUser;
 import com.yoyomo.global.common.dto.ResponseDto;
@@ -152,16 +149,10 @@ public class ApplicationController {
 		@RequestParam(defaultValue = "all") String evaluationFilter,
 		@RequestParam(defaultValue = "all") String resultFilter
 	) {
-
-		ApplicationCondition applicationCondition = ApplicationCondition.builder()
-			.sortType(SortType.from(sort))
-			.evaluationFilter(EvaluationFilter.from(evaluationFilter))
-			.resultFilter(ResultFilter.from(resultFilter))
-			.pageRequest(PageRequest.of(page, size))
-			.build();
-
+		ApplicationCondition condition = ApplicationCondition.from(sort, evaluationFilter, resultFilter);
 		Page<ApplicationListResponse> response = applicationManageUseCase.readAll(
-			recruitmentId, stage, user, applicationCondition);
+			recruitmentId, stage, user, condition, PageRequest.of(page, size)
+		);
 
 		return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
 	}

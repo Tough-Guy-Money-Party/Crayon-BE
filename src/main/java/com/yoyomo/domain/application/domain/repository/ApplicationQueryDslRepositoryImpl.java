@@ -19,11 +19,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
-import com.yoyomo.domain.application.application.dto.request.condition.EvaluationFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.ResultFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.SortType;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
+import com.yoyomo.domain.application.domain.vo.condition.EvaluationFilter;
+import com.yoyomo.domain.application.domain.vo.condition.ResultFilter;
+import com.yoyomo.domain.application.domain.vo.condition.SortType;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRepository {
 
-	private static final Map<SortType, OrderSpecifier<?>> map = Map.of(
+	private static final Map<SortType, OrderSpecifier<?>> ORDER_SPECIFIER_MAP = Map.of(
 		SortType.NAME, new OrderSpecifier<>(Order.ASC, application.userName),
 		SortType.APPLIED, new OrderSpecifier<>(Order.DESC, application.createdAt)
 	);
@@ -41,14 +41,10 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 
 	@Override
 	public Page<ApplicationWithStatus> findAllWithStatusByProcess(
-		Process process,
-		ApplicationCondition condition,
-		Pageable pageable
+		Process process, ApplicationCondition condition, Pageable pageable
 	) {
 		List<ApplicationWithStatus> result = queryFactory.select(Projections.constructor(
-				ApplicationWithStatus.class,
-				application,
-				processResult.status
+				ApplicationWithStatus.class, application, processResult.status
 			))
 			.from(application)
 			.leftJoin(processResult)
@@ -56,7 +52,7 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 				application.id.eq(processResult.applicationId)
 					.and(application.process.id.eq(processResult.processId))
 			)
-			.leftJoin(evaluation) // todo: 분리 고민
+			.leftJoin(evaluation)
 			.on(
 				application.id.eq(evaluation.application.id)
 			)
@@ -66,7 +62,7 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 				eqResult(condition.resultFilter()),
 				notnullEvaluation(condition.evaluationFilter())
 			)
-			.orderBy(map.get(condition.sortType()))
+			.orderBy(ORDER_SPECIFIER_MAP.get(condition.sortType()))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();

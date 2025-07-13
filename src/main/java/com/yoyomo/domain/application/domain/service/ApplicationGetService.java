@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.repository.ApplicationRepository;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
@@ -36,8 +36,10 @@ public class ApplicationGetService {
 		return applicationRepository.findByProcessIdAndDeletedAtIsNull(processId, pageable);
 	}
 
-	public Page<ApplicationWithStatus> findAll(Process process, ApplicationCondition condition) {
-		return applicationRepository.findAllWithStatusByProcess(process, condition, condition.pageRequest());
+	public Page<ApplicationWithStatus> findAll(
+		Process process, ApplicationCondition condition, Pageable pageable
+	) {
+		return applicationRepository.findAllWithStatusByProcess(process, condition, pageable);
 	}
 
 	public List<Application> findAllOrderByName(Process process) {

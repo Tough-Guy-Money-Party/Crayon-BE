@@ -25,16 +25,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.yoyomo.domain.RepositoryTest;
-import com.yoyomo.domain.application.application.dto.request.ApplicationCondition;
-import com.yoyomo.domain.application.application.dto.request.condition.EvaluationFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.ResultFilter;
-import com.yoyomo.domain.application.application.dto.request.condition.SortType;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.entity.Application;
 import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
+import com.yoyomo.domain.application.domain.vo.condition.EvaluationFilter;
+import com.yoyomo.domain.application.domain.vo.condition.ResultFilter;
+import com.yoyomo.domain.application.domain.vo.condition.SortType;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.user.domain.entity.User;
@@ -121,11 +121,13 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterPass() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PASS, PageRequest.of(0, 5));
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PASS
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<ApplicationWithStatus> passApplications = applicationRepository.findAllWithStatusByProcess(
-					process, condition, condition.pageRequest())
-				.getContent();
+				process, condition, pageRequest
+			).getContent();
 
 			assertAll(
 				() -> assertThat(passApplications).hasSize(1),
@@ -138,14 +140,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterFail() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.ALL,
-				ResultFilter.FAIL,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.FAIL
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<ApplicationWithStatus> failApplications = applicationRepository.findAllWithStatusByProcess(
-				process, condition, condition.pageRequest()
+				process, condition, pageRequest
 			).getContent();
 
 			assertAll(
@@ -159,14 +159,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterPending() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.ALL,
-				ResultFilter.PENDING,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PENDING
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<ApplicationWithStatus> pendingApplications = applicationRepository.findAllWithStatusByProcess(
-				process, condition, condition.pageRequest()
+				process, condition, pageRequest
 			).getContent();
 
 			assertAll(
@@ -182,14 +180,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterWithoutResult() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.ALL,
-				ResultFilter.NONE,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.NONE
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<ApplicationWithStatus> noneResultApplications = applicationRepository.findAllWithStatusByProcess(
-				process, condition, condition.pageRequest()
+				process, condition, pageRequest
 			).getContent();
 
 			assertAll(
@@ -225,14 +221,11 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_hasEvaluation() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.YES,
-				ResultFilter.ALL,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.YES, ResultFilter.ALL
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
-			List<UUID> result = applicationRepository.findAllWithStatusByProcess(
-					process, condition, condition.pageRequest())
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(process, condition, pageRequest)
 				.getContent()
 				.stream()
 				.map(applicationWithStatus -> applicationWithStatus.application().getId())
@@ -248,14 +241,11 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_hasNotEvaluation() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.NO,
-				ResultFilter.ALL,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.NO, ResultFilter.ALL
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
-			List<UUID> result = applicationRepository.findAllWithStatusByProcess(
-					process, condition, condition.pageRequest())
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(process, condition, pageRequest)
 				.getContent()
 				.stream()
 				.map(applicationWithStatus -> applicationWithStatus.application().getId())
@@ -275,14 +265,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_OrderByCreatedAtDesc() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED,
-				EvaluationFilter.ALL,
-				ResultFilter.ALL,
-				PageRequest.of(0, 5)
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(
-					process, condition, condition.pageRequest())
+					process, condition, pageRequest)
 				.getContent()
 				.stream()
 				.map(applicationWithStatus -> applicationWithStatus.application().getId())
@@ -303,14 +291,12 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_OrderByNameAsc() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.NAME,
-				EvaluationFilter.ALL,
-				ResultFilter.ALL,
-				PageRequest.of(0, 5)
+				SortType.NAME, EvaluationFilter.ALL, ResultFilter.ALL
 			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
 
 			List<String> result = applicationRepository.findAllWithStatusByProcess(
-					process, condition, condition.pageRequest())
+					process, condition, pageRequest)
 				.getContent()
 				.stream()
 				.map(applicationWithStatus -> applicationWithStatus.application().getUserName())
