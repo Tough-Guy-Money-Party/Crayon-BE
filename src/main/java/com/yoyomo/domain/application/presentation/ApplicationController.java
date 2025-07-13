@@ -146,11 +146,11 @@ public class ApplicationController {
 		@PathVariable UUID recruitmentId,
 		@CurrentUser User user,
 		@RequestParam Integer stage,
-		@RequestParam Integer page,
+		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "5") int size,
 		@RequestParam(defaultValue = "applied") String sort,
-		@RequestParam(required = false, defaultValue = "all") String evaluationFilter,
-		@RequestParam(required = false, defaultValue = "all") String resultFilter
+		@RequestParam(defaultValue = "all") String evaluationFilter,
+		@RequestParam(defaultValue = "all") String resultFilter
 	) {
 
 		ApplicationCondition applicationCondition = ApplicationCondition.builder()
