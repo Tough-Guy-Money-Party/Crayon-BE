@@ -18,6 +18,7 @@ public class CustomRepository {
 
 	@Transactional
 	public void clearAndReset() {
+		entityManager.createNativeQuery("DELETE FROM evaluation").executeUpdate();
 		entityManager.createNativeQuery("DELETE FROM application").executeUpdate();
 		entityManager.createNativeQuery("DELETE FROM interview_record").executeUpdate();
 		entityManager.createNativeQuery("DELETE FROM process_result").executeUpdate();

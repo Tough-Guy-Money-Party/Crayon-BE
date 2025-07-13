@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,11 +30,14 @@ import com.yoyomo.domain.application.application.dto.request.condition.Evaluatio
 import com.yoyomo.domain.application.application.dto.request.condition.ResultFilter;
 import com.yoyomo.domain.application.application.dto.request.condition.SortType;
 import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.Evaluation;
 import com.yoyomo.domain.application.domain.entity.ProcessResult;
+import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.application.domain.entity.enums.Status;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
 import com.yoyomo.domain.recruitment.domain.entity.Process;
 import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
+import com.yoyomo.domain.user.domain.entity.User;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
 
 class ApplicationRepositoryTest extends RepositoryTest {
@@ -48,6 +53,9 @@ class ApplicationRepositoryTest extends RepositoryTest {
 
 	@Autowired
 	ProcessResultRepository processResultRepository;
+
+	@Autowired
+	EvaluationRepository evaluationRepository;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -188,6 +196,74 @@ class ApplicationRepositoryTest extends RepositoryTest {
 				() -> assertThat(noneResultApplications).hasSize(1),
 				() -> assertThat(noneResultApplications.get(0).application().getId())
 					.isEqualTo(withoutResultApplicationId)
+			);
+		}
+	}
+
+	@Nested
+	class EvaluationTest {
+
+		private int hasEvalautionCount = 2;
+		private int hasNotEvalautionCount = 3;
+		private Set<UUID> hasEvaluationApplicationIds = new HashSet<>();
+		private Set<UUID> hasNotEvaluationApplicationIds = new HashSet<>();
+
+		@BeforeEach
+		void setUp() {
+			for (int i = 0; i < hasEvalautionCount + hasNotEvalautionCount; i++) {
+				if (i < hasEvalautionCount) {
+					User user = userRepository.save(user());
+					Evaluation saved = evaluationRepository.save(evaluation(applications.get(i), user, Rating.HIGH));
+					hasEvaluationApplicationIds.add(saved.getApplication().getId());
+				} else {
+					hasNotEvaluationApplicationIds.add(applications.get(i).getId());
+				}
+			}
+		}
+
+		@DisplayName("개인 평가 완료 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_hasEvaluation() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED,
+				EvaluationFilter.YES,
+				ResultFilter.ALL,
+				PageRequest.of(0, 5)
+			);
+
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(
+					process, condition, condition.pageRequest())
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result).hasSize(hasEvalautionCount),
+				() -> assertThat(result).containsAll(hasEvaluationApplicationIds)
+			);
+		}
+
+		@DisplayName("개인 평가 미완료 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_hasNotEvaluation() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED,
+				EvaluationFilter.NO,
+				ResultFilter.ALL,
+				PageRequest.of(0, 5)
+			);
+
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(
+					process, condition, condition.pageRequest())
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result).hasSize(hasNotEvalautionCount),
+				() -> assertThat(result).containsAll(hasNotEvaluationApplicationIds)
 			);
 		}
 	}
