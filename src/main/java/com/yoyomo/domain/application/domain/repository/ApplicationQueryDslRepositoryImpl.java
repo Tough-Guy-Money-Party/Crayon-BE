@@ -1,5 +1,9 @@
 package com.yoyomo.domain.application.domain.repository;
 
+import static com.yoyomo.domain.application.domain.entity.QApplication.*;
+import static com.yoyomo.domain.application.domain.entity.QEvaluation.*;
+import static com.yoyomo.domain.application.domain.entity.QProcessResult.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,16 +28,12 @@ import com.yoyomo.domain.recruitment.domain.entity.Process;
 
 import lombok.AllArgsConstructor;
 
-import static com.yoyomo.domain.application.domain.entity.QApplication.*;
-import static com.yoyomo.domain.application.domain.entity.QEvaluation.*;
-import static com.yoyomo.domain.application.domain.entity.QProcessResult.*;
-
 @Repository
 @AllArgsConstructor
 public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRepository {
 
 	private static final Map<SortType, OrderSpecifier<?>> map = Map.of(
-		SortType.NAME, new OrderSpecifier<>(Order.DESC, application.userName),
+		SortType.NAME, new OrderSpecifier<>(Order.ASC, application.userName),
 		SortType.APPLIED, new OrderSpecifier<>(Order.DESC, application.createdAt)
 	);
 
