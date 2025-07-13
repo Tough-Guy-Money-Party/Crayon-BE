@@ -2,6 +2,8 @@ package com.yoyomo.domain.application.application.dto.request.condition;
 
 import java.util.Arrays;
 
+import com.yoyomo.domain.application.exception.InvalidSortType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,6 +20,6 @@ public enum SortType {
 		return Arrays.stream(values())
 			.filter(sortType -> sortType.name().equals(upperCaseType))
 			.findFirst()
-			.orElseThrow(IllegalAccessError::new);
+			.orElseThrow(InvalidSortType::new);
 	}
 }
