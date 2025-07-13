@@ -1,5 +1,10 @@
 package com.yoyomo.domain.application.presentation;
 
+import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.*;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.*;
+import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
+import static org.springframework.http.HttpStatus.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -42,19 +47,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.VerificationRequest;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.Response;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_GENERATE_CODE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_MOVE_PASS;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_READ_ALL;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SAVE_INTERVIEW;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_SEARCH;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_UPDATE;
-import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.SUCCESS_VERIFY_CODE;
-import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "APPLICATION")
 @RestController
@@ -168,26 +160,8 @@ public class ApplicationController {
 			.pageRequest(PageRequest.of(page, size))
 			.build();
 
-		Page<ApplicationListResponse> response = applicationManageUseCase.readAll(recruitmentId, stage, user,
-			applicationCondition);
-
-		return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
-	}
-
-	@GetMapping("/manager/{recruitmentId}/all")
-	@Operation(summary = "[Manager] 지원서 목록 조회")
-	public ResponseDto<Page<ApplicationListResponse>> readWithFilter(
-		@PathVariable UUID recruitmentId,
-		@CurrentUser User user,
-		@RequestParam int stage,
-		@RequestParam int page,
-		@RequestParam(defaultValue = "5") int size
-	) {
-		ApplicationCondition applicationCondition = ApplicationCondition.builder()
-			.pageRequest(PageRequest.of(page, size))
-			.build();
-		Page<ApplicationListResponse> response = applicationManageUseCase.readAll(recruitmentId, stage, user,
-			applicationCondition);
+		Page<ApplicationListResponse> response = applicationManageUseCase.readAll(
+			recruitmentId, stage, user, applicationCondition);
 
 		return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
 	}
