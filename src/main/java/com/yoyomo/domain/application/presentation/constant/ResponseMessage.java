@@ -46,6 +46,7 @@ public enum ResponseMessage {
 	INVALID_DATA_TYPE("지원하지 않는 데이터 타입입니다."),
 	QUESTION_REPLY_SIZE_MISMATCH("질문과 답변의 개수가 일치하지 않습니다."),
 	APPLICATION_REPLY_SIZE_MISMATCH("지원서와 답변의 개수가 일치하지 않습니다."),
-	INVALID_SORT_TYPE("지원하지 않는 정렬 방식입니다.");
+	INVALID_SORT_TYPE("지원하지 않는 정렬 방식입니다."),
+	INVALID_FILTER_TYPE("지원하지 않는 필터링 방식입니다.");
 	private final String message;
 }

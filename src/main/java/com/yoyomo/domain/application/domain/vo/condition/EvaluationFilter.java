@@ -2,6 +2,8 @@ package com.yoyomo.domain.application.domain.vo.condition;
 
 import java.util.Arrays;
 
+import com.yoyomo.domain.application.exception.InvalidFilterTypeException;
+
 public enum EvaluationFilter {
 	ALL,
 	YES,
@@ -13,7 +15,7 @@ public enum EvaluationFilter {
 		return Arrays.stream(values())
 			.filter(sortType -> sortType.name().equals(upperCaseFilter))
 			.findFirst()
-			.orElseThrow(IllegalAccessError::new);
+			.orElseThrow(InvalidFilterTypeException::new);
 	}
 
 	public boolean isAll() {

@@ -5,8 +5,8 @@ import static org.springframework.http.HttpStatus.*;
 
 import com.yoyomo.global.config.exception.ApplicationException;
 
-public class InvalidSortType extends ApplicationException {
-	public InvalidSortType() {
-		super(BAD_REQUEST.value(), INVALID_DATA_TYPE.getMessage());
+public class InvalidFilterTypeException extends ApplicationException {
+	public InvalidFilterTypeException() {
+		super(BAD_REQUEST.value(), INVALID_FILTER_TYPE.getMessage());
 	}
 }

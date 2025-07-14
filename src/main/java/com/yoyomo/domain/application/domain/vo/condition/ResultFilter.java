@@ -2,6 +2,8 @@ package com.yoyomo.domain.application.domain.vo.condition;
 
 import java.util.Arrays;
 
+import com.yoyomo.domain.application.exception.InvalidFilterTypeException;
+
 public enum ResultFilter {
 	ALL,
 	NONE,
@@ -15,7 +17,7 @@ public enum ResultFilter {
 		return Arrays.stream(values())
 			.filter(sortType -> sortType.name().equals(upperCaseFilter))
 			.findFirst()
-			.orElseThrow(IllegalAccessError::new);
+			.orElseThrow(InvalidFilterTypeException::new);
 	}
 
 	public boolean isWithoutResult() {
