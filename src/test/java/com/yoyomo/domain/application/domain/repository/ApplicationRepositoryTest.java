@@ -313,4 +313,49 @@ class ApplicationRepositoryTest extends RepositoryTest {
 			);
 		}
 	}
+
+	@Nested
+	class PageTest {
+
+		@DisplayName("페이지네이션을 적용한다")
+		@Test
+		void findAllWithStatusByProcess_withPage() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
+			);
+
+			List<UUID> result1 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(0, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			List<UUID> result2 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(1, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+			
+			List<UUID> result3 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(2, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result1).containsExactlyElementsOf(
+					List.of(applications.get(4).getId(), applications.get(3).getId())
+				),
+				() -> assertThat(result2).containsExactlyElementsOf(
+					List.of(applications.get(2).getId(), applications.get(1).getId())
+				),
+				() -> assertThat(result3).containsExactlyElementsOf(
+					List.of(applications.get(0).getId())
+				)
+			);
+		}
+	}
 }
