@@ -9,7 +9,9 @@ import java.util.Arrays;
 public enum ApplicantInfo {
     NAME("이름"),
     PHONE("전화번호"),
-    EMAIL("메일");
+    EMAIL("메일"),
+    APPLIED_AT("타임스탬프"),
+    ;
 
     private final String keyword;
 
