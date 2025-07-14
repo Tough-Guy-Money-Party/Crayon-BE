@@ -17,7 +17,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
@@ -67,8 +66,8 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		JPAQuery<Long> totalCount = queryFactory
-			.select(application.count())
+		Long totalCount = queryFactory
+			.select(application.countDistinct())
 			.from(application)
 			.leftJoin(processResult)
 			.on(
@@ -84,8 +83,8 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 				application.deletedAt.isNull(),
 				eqResult(condition.resultFilter()),
 				notnullEvaluation(condition.evaluationFilter())
-			);
-		return PageableExecutionUtils.getPage(result, pageable, () -> totalCount.fetch().size());
+			).fetchOne();
+		return PageableExecutionUtils.getPage(result, pageable, () -> totalCount != null ? totalCount : 0L);
 	}
 
 	private BooleanExpression notnullEvaluation(EvaluationFilter filter) {
