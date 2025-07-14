@@ -32,6 +32,14 @@ public class TestFixture {
 			.build();
 	}
 
+	public static User user(String username) {
+		return User.builder()
+			.name(username)
+			.email("naayen@crayon.land")
+			.tel("01012345678")
+			.build();
+	}
+
 	public static Club club() {
 		return Club.builder()
 			.name("끄래용~")

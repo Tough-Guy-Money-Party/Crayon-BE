@@ -1,122 +1,361 @@
 package com.yoyomo.domain.application.domain.repository;
 
-import com.yoyomo.domain.RepositoryTest;
-import com.yoyomo.domain.application.domain.entity.Application;
-import com.yoyomo.domain.application.domain.entity.ProcessResult;
-import com.yoyomo.domain.application.domain.entity.enums.Status;
-import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
-import com.yoyomo.domain.recruitment.domain.entity.Process;
-import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
-import com.yoyomo.domain.user.domain.repository.UserRepository;
+import static com.yoyomo.domain.fixture.TestFixture.*;
+import static java.util.stream.Collectors.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
-import java.nio.ByteBuffer;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.IntStream;
-
-import static com.yoyomo.domain.fixture.TestFixture.process;
-import static com.yoyomo.domain.fixture.TestFixture.processResult;
-import static com.yoyomo.domain.fixture.TestFixture.user;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.yoyomo.domain.RepositoryTest;
+import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
+import com.yoyomo.domain.application.domain.entity.Application;
+import com.yoyomo.domain.application.domain.entity.Evaluation;
+import com.yoyomo.domain.application.domain.entity.ProcessResult;
+import com.yoyomo.domain.application.domain.entity.enums.Rating;
+import com.yoyomo.domain.application.domain.entity.enums.Status;
+import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
+import com.yoyomo.domain.application.domain.vo.condition.EvaluationFilter;
+import com.yoyomo.domain.application.domain.vo.condition.ResultFilter;
+import com.yoyomo.domain.application.domain.vo.condition.SortType;
+import com.yoyomo.domain.recruitment.domain.entity.Process;
+import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
+import com.yoyomo.domain.user.domain.entity.User;
+import com.yoyomo.domain.user.domain.repository.UserRepository;
 
 class ApplicationRepositoryTest extends RepositoryTest {
 
-    @Autowired
-    ProcessRepository processRepository;
+	@Autowired
+	ProcessRepository processRepository;
 
-    @Autowired
-    UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-    @Autowired
-    ApplicationRepository applicationRepository;
+	@Autowired
+	ApplicationRepository applicationRepository;
 
-    @Autowired
-    ProcessResultRepository processResultRepository;
+	@Autowired
+	ProcessResultRepository processResultRepository;
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+	@Autowired
+	EvaluationRepository evaluationRepository;
 
-    @Test
-    void findAllWithStatusByProcess() {
-        Process process = processRepository.save(process());
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 
-        IntStream.range(0, 10)
-                .mapToObj(i -> userRepository.save(user()))
-                .forEach(user -> jdbcTemplate.update("INSERT INTO application(application_id, user_id, process_id, created_at, recruitment_id) VALUES (?, ?, ?, ?, ?)", new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
-                        ps.setLong(2, user.getId());
-                        ps.setLong(3, process.getId());
-                        ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-                        ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
-                    }
-                }));
+	private Process process;
+	private List<Application> applications;
+	private Map<Status, List<UUID>> statusApplicationIds;
+	private UUID withoutResultApplicationId;
 
-        List<UUID> applications = applicationRepository.findAll()
-                .stream()
-                .map(Application::getId)
-                .toList();
+	@BeforeEach
+	void setUp() {
+		process = processRepository.save(process());
 
-        List<ProcessResult> processResults = List.of(
-                processResult(applications.get(0), process.getId(), Status.DOCUMENT_PASS),
-                processResult(applications.get(1), process.getId(), Status.PENDING),
-                processResult(applications.get(3), process.getId(), Status.DOCUMENT_FAIL),
-                processResult(applications.get(4), process.getId(), Status.PENDING),
-                processResult(applications.get(5), process.getId(), Status.PENDING),
-                processResult(applications.get(7), process.getId(), Status.DOCUMENT_PASS),
-                processResult(applications.get(8), process.getId(), Status.DOCUMENT_FAIL),
-                processResult(applications.get(9), process.getId(), Status.DOCUMENT_FAIL)
-        );
+		List<String> usernames = List.of("나아연", "이근표", "김성민", "이한별", "조혜원");
 
-        processResultRepository.saveAll(processResults);
+		IntStream.range(0, 5)
+			.mapToObj(i -> userRepository.save(user(usernames.get(i))))
+			.forEach(user -> jdbcTemplate.update(
+				"""
+					INSERT INTO application(application_id, user_id, process_id, created_at, recruitment_id, user_name)
+					VALUES (?, ?, ?, ?, ?, ?)
+					""",
+				ps -> {
+					ps.setBytes(1, uuidToBytes(UUID.randomUUID()));
+					ps.setLong(2, user.getId());
+					ps.setLong(3, process.getId());
+					ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+					ps.setBytes(5, uuidToBytes(UUID.randomUUID()));
+					ps.setString(6, user.getName());
+				}));
 
-        List<Status> statuses1 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(0, 7))
-                .getContent()
-                .stream()
-                .map(ApplicationWithStatus::status)
-                .toList();
+		applications = applicationRepository.findAll()
+			.stream()
+			.toList();
 
-        assertThat(statuses1).containsExactlyElementsOf(
-                List.of(
-                        Status.PENDING,
-                        Status.PENDING,
-                        Status.PENDING,
-                        Status.DOCUMENT_FAIL,
-                        Status.DOCUMENT_FAIL,
-                        Status.DOCUMENT_PASS,
-                        Status.BEFORE_EVALUATION
-                )
-        );
+		List<ProcessResult> processResults = List.of(
+			processResult(applications.get(0).getId(), process.getId(), Status.DOCUMENT_PASS),
+			processResult(applications.get(1).getId(), process.getId(), Status.PENDING),
+			processResult(applications.get(2).getId(), process.getId(), Status.DOCUMENT_FAIL),
+			processResult(applications.get(3).getId(), process.getId(), Status.PENDING)
+		);
+		processResultRepository.saveAll(processResults);
 
-        List<Status> statuses2 = applicationRepository.findAllWithStatusByProcess(process, PageRequest.of(1, 7))
-                .getContent()
-                .stream()
-                .map(ApplicationWithStatus::status)
-                .toList();
+		statusApplicationIds = processResults.stream()
+			.collect(
+				groupingBy(ProcessResult::getStatus,
+					mapping(ProcessResult::getApplicationId, Collectors.toList()))
+			);
+		withoutResultApplicationId = applications.get(4).getId();
+	}
 
-        assertThat(statuses2).containsExactlyElementsOf(
-                List.of(
-                        Status.DOCUMENT_FAIL,
-                        Status.BEFORE_EVALUATION,
-                        Status.DOCUMENT_PASS
-                )
-        );
-    }
+	private byte[] uuidToBytes(UUID uuid) {
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(uuid.getMostSignificantBits());
+		bb.putLong(uuid.getLeastSignificantBits());
+		return bb.array();
+	}
 
-    private static byte[] uuidToBytes(UUID uuid) {
-        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uuid.getMostSignificantBits());
-        bb.putLong(uuid.getLeastSignificantBits());
-        return bb.array();
-    }
+	@Nested
+	class ResultFilterTest {
+
+		@DisplayName("합격 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_filterPass() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PASS
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<ApplicationWithStatus> passApplications = applicationRepository.findAllWithStatusByProcess(
+				process, condition, pageRequest
+			).getContent();
+
+			assertAll(
+				() -> assertThat(passApplications).hasSize(1),
+				() -> assertThat(passApplications.get(0).application().getId())
+					.isIn(statusApplicationIds.get(Status.DOCUMENT_PASS))
+			);
+		}
+
+		@DisplayName("불합격 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_filterFail() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.FAIL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<ApplicationWithStatus> failApplications = applicationRepository.findAllWithStatusByProcess(
+				process, condition, pageRequest
+			).getContent();
+
+			assertAll(
+				() -> assertThat(failApplications).hasSize(1),
+				() -> assertThat(failApplications.get(0).application().getId())
+					.isIn(statusApplicationIds.get(Status.DOCUMENT_FAIL))
+			);
+		}
+
+		@DisplayName("보류 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_filterPending() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PENDING
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<ApplicationWithStatus> pendingApplications = applicationRepository.findAllWithStatusByProcess(
+				process, condition, pageRequest
+			).getContent();
+
+			assertAll(
+				() -> assertThat(pendingApplications).hasSize(2),
+				() -> assertThat(pendingApplications.get(0).application().getId())
+					.isIn(statusApplicationIds.get(Status.PENDING)),
+				() -> assertThat(pendingApplications.get(1).application().getId())
+					.isIn(statusApplicationIds.get(Status.PENDING))
+			);
+		}
+
+		@DisplayName("평가 전 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_filterWithoutResult() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.NONE
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<ApplicationWithStatus> noneResultApplications = applicationRepository.findAllWithStatusByProcess(
+				process, condition, pageRequest
+			).getContent();
+
+			assertAll(
+				() -> assertThat(noneResultApplications).hasSize(1),
+				() -> assertThat(noneResultApplications.get(0).application().getId())
+					.isEqualTo(withoutResultApplicationId)
+			);
+		}
+	}
+
+	@Nested
+	class EvaluationTest {
+
+		private int hasEvalautionCount = 2;
+		private int hasNotEvalautionCount = 3;
+		private Set<UUID> hasEvaluationApplicationIds = new HashSet<>();
+		private Set<UUID> hasNotEvaluationApplicationIds = new HashSet<>();
+
+		@BeforeEach
+		void setUp() {
+			for (int i = 0; i < hasEvalautionCount + hasNotEvalautionCount; i++) {
+				if (i < hasEvalautionCount) {
+					User user = userRepository.save(user());
+					Evaluation saved = evaluationRepository.save(evaluation(applications.get(i), user, Rating.HIGH));
+					hasEvaluationApplicationIds.add(saved.getApplication().getId());
+				} else {
+					hasNotEvaluationApplicationIds.add(applications.get(i).getId());
+				}
+			}
+		}
+
+		@DisplayName("개인 평가 완료 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_hasEvaluation() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.YES, ResultFilter.ALL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(process, condition, pageRequest)
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result).hasSize(hasEvalautionCount),
+				() -> assertThat(result).containsAll(hasEvaluationApplicationIds)
+			);
+		}
+
+		@DisplayName("개인 평가 미완료 지원서만 필터링한다")
+		@Test
+		void findAllWithStatusByProcess_hasNotEvaluation() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.NO, ResultFilter.ALL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<UUID> result = applicationRepository.findAllWithStatusByProcess(process, condition, pageRequest)
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result).hasSize(hasNotEvalautionCount),
+				() -> assertThat(result).containsAll(hasNotEvaluationApplicationIds)
+			);
+		}
+	}
+
+	@Nested
+	class SortTest {
+
+		@DisplayName("생성일 기준 내림차순 정렬한다")
+		@Test
+		void findAllWithStatusByProcess_OrderByCreatedAtDesc() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(
+					process, condition, pageRequest)
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertThat(applicationIds).containsExactlyElementsOf(
+				List.of(
+					applications.get(4).getId(),
+					applications.get(3).getId(),
+					applications.get(2).getId(),
+					applications.get(1).getId(),
+					applications.get(0).getId()
+				)
+			);
+		}
+
+		@DisplayName("이름 기준 오름차순 정렬한다")
+		@Test
+		void findAllWithStatusByProcess_OrderByNameAsc() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.NAME, EvaluationFilter.ALL, ResultFilter.ALL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<String> result = applicationRepository.findAllWithStatusByProcess(
+					process, condition, pageRequest)
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getUserName())
+				.toList();
+
+			assertThat(result).containsExactlyElementsOf(
+				List.of(
+					"김성민",
+					"나아연",
+					"이근표",
+					"이한별",
+					"조혜원"
+				)
+			);
+		}
+	}
+
+	@Nested
+	class PageTest {
+
+		@DisplayName("페이지네이션을 적용한다")
+		@Test
+		void findAllWithStatusByProcess_withPage() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
+			);
+
+			List<UUID> result1 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(0, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			List<UUID> result2 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(1, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+			
+			List<UUID> result3 = applicationRepository.findAllWithStatusByProcess(
+					process, condition, PageRequest.of(2, 2)
+				).getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertAll(
+				() -> assertThat(result1).containsExactlyElementsOf(
+					List.of(applications.get(4).getId(), applications.get(3).getId())
+				),
+				() -> assertThat(result2).containsExactlyElementsOf(
+					List.of(applications.get(2).getId(), applications.get(1).getId())
+				),
+				() -> assertThat(result3).containsExactlyElementsOf(
+					List.of(applications.get(0).getId())
+				)
+			);
+		}
+	}
 }
