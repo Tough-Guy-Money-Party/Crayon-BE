@@ -1,7 +1,7 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
 import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.*;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.*;
 import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
 
 import java.util.List;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yoyomo.domain.application.domain.repository.EvaluationMemoRepository;
 import com.yoyomo.domain.application.domain.service.ApplicationDeleteService;
 import com.yoyomo.domain.application.domain.service.EvaluationDeleteService;
 import com.yoyomo.domain.application.domain.service.EvaluationMemoDeleteService;
@@ -22,6 +21,7 @@ import com.yoyomo.domain.club.domain.service.ClubManagerAuthService;
 import com.yoyomo.domain.form.application.usecase.FormManageUseCase;
 import com.yoyomo.domain.form.domain.entity.Form;
 import com.yoyomo.domain.form.domain.service.FormGetService;
+import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentSaveRequest;
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentDetailsResponse;
 import com.yoyomo.domain.recruitment.domain.dto.ProcessWithApplicantCount;
@@ -55,24 +55,20 @@ public class RecruitmentManageUseCase {
 	private final FormManageUseCase formManageUseCase;
 	private final ClubManagerAuthService clubManagerAuthService;
 
-	private final ProcessManageUseCase processManageUseCase;
-	private final ProcessDeleteService processDeleteService;
-
 	private final ApplicationDeleteService applicationDeleteService;
 	private final ProcessSaveService processSaveService;
 	private final ProcessGetService processGetService;
+	private final ProcessDeleteService processDeleteService;
 	private final EvaluationDeleteService evaluationDeleteService;
-	private final EvaluationMemoRepository evaluationMemoRepository;
 	private final EvaluationMemoDeleteService evaluationMemoDeleteService;
 
 	@Transactional
-	public RecruitmentCreateResponse save(Save dto, User manager) {
-		Club club = clubGetService.find(dto.clubId());
+	public RecruitmentCreateResponse save(RecruitmentSaveRequest request, User manager) {
+		Club club = clubGetService.find(request.clubId());
 		clubManagerAuthService.checkAuthorization(club, manager);
 
-		Recruitment recruitment = recruitmentSaveService.save(dto, club);
-		List<Process> processes = processManageUseCase.save(dto.processes(), recruitment);
-		recruitment.addProcesses(processes);
+		Recruitment recruitment = recruitmentSaveService.save(request.toRecruitment(club));
+		processSaveService.saveAll(request.toProcesses(), recruitment);
 
 		return RecruitmentCreateResponse.from(recruitment);
 	}

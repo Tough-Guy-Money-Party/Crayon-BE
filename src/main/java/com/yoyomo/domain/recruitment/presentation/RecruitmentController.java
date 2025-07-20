@@ -1,6 +1,5 @@
 package com.yoyomo.domain.recruitment.presentation;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.RecruitmentRequestDTO.*;
 import static com.yoyomo.domain.recruitment.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentSaveRequest;
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentDetailsResponse;
@@ -48,8 +48,10 @@ public class RecruitmentController {
 
 	@PostMapping
 	@Operation(summary = "모집 생성")
-	public ResponseDto<RecruitmentCreateResponse> save(@RequestBody @Valid Save dto, @CurrentUser User user) {
-		RecruitmentCreateResponse response = recruitmentManageUseCase.save(dto, user);
+	public ResponseDto<RecruitmentCreateResponse> save(
+		@RequestBody @Valid RecruitmentSaveRequest request, @CurrentUser User user
+	) {
+		RecruitmentCreateResponse response = recruitmentManageUseCase.save(request, user);
 
 		return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage(), response);
 	}
