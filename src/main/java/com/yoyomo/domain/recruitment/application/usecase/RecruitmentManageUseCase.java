@@ -67,10 +67,10 @@ public class RecruitmentManageUseCase {
 		Club club = clubGetService.find(request.clubId());
 		clubManagerAuthService.checkAuthorization(club, manager);
 
-		Recruitment recruitment = recruitmentSaveService.save(request.toRecruitment(club));
-		processSaveService.saveAll(request.toProcesses(), recruitment);
+		List<Recruitment> recruitments = recruitmentSaveService.saveAll(request.toRecruitments(club));
+		processSaveService.saveAll(request.toProcesses(), recruitments);
 
-		return RecruitmentCreateResponse.from(recruitment);
+		return RecruitmentCreateResponse.from(recruitments);
 	}
 
 	@Transactional(readOnly = true)

@@ -1,5 +1,7 @@
 package com.yoyomo.domain.recruitment.domain.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.yoyomo.domain.recruitment.domain.entity.Recruitment;
@@ -14,5 +16,9 @@ public class RecruitmentSaveService {
 
 	public Recruitment save(Recruitment recruitment) {
 		return recruitmentRepository.save(recruitment);
+	}
+
+	public List<Recruitment> saveAll(List<Recruitment> recruitments) {
+		return recruitmentRepository.saveAll(recruitments);
 	}
 }

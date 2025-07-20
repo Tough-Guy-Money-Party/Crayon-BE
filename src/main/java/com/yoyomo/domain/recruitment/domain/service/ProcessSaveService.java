@@ -2,6 +2,7 @@ package com.yoyomo.domain.recruitment.domain.service;
 
 import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -20,9 +21,13 @@ public class ProcessSaveService {
 	private final ProcessRepository processRepository;
 	private final ProcessMapper processMapper;
 
-	public List<Process> saveAll(List<Process> processes, Recruitment recruitment) {
-		processes.forEach(process -> process.addRecruitment(recruitment));
-		return processRepository.saveAll(processes);
+	public List<Process> saveAll(List<Process> processes, List<Recruitment> recruitments) {
+		List<Process> processList = new ArrayList<>();
+		for (Recruitment recruitment : recruitments) {
+			processes.forEach(process -> process.addRecruitment(recruitment));
+			processList.addAll(processes);
+		}
+		return processRepository.saveAll(processList);
 	}
 
 	public List<Process> saveAll(List<Process> processes) {

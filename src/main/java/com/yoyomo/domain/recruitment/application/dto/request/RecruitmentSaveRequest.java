@@ -13,22 +13,28 @@ import jakarta.validation.constraints.NotNull;
 
 public record RecruitmentSaveRequest(
 	@NotEmpty String title,
-	@NotEmpty String position,
+	@NotEmpty List<String> positions,
 	@NotEmpty String generation,
 	@NotNull Submit submit,
 	@NotEmpty String clubId,
 	@Valid @NotNull List<ProcessRequestDTO.Save> processes
 ) {
-	public Recruitment toRecruitment(Club club) {
-		List<Process> processList = toProcesses();
+	public List<Recruitment> toRecruitments(Club club) {
+		Process firstProcess = toProcesses().get(0);
+		return positions.stream()
+			.map(position -> toRecruitment(club, firstProcess, position))
+			.toList();
+	}
+
+	private Recruitment toRecruitment(Club club, Process process, String position) {
 		return Recruitment.builder()
 			.title(title)
 			.generation(generation)
 			.club(club)
 			.submit(submit)
 			.position(position)
-			.startAt(processList.get(0).getStartAt())
-			.endAt(processList.get(0).getEndAt())
+			.startAt(process.getStartAt())
+			.endAt(process.getEndAt())
 			.build();
 	}
 
