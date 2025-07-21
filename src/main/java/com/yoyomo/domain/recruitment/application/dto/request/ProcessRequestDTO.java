@@ -26,8 +26,8 @@ public class ProcessRequestDTO {
 				.type(type)
 				.startAt(period.evaluation.time().startAt)
 				.endAt(period.evaluation.time().endAt)
-				.announceStartAt(period.evaluation.time().startAt)
-				.announceEndAt(period.evaluation.time().endAt)
+				.announceStartAt(period.announcement.time().startAt)
+				.announceEndAt(period.announcement.time().endAt)
 				.build();
 		}
 	}
