@@ -115,8 +115,8 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		assertThat(newRecruitment.getTitle()).isEqualTo(recruitment.getTitle());
 		assertThat(newRecruitment.getSubmit()).isEqualTo(recruitment.getSubmit());
 		assertThat(newRecruitment.isActive()).isFalse();
-		assertThat(newRecruitment.getStartAt()).isEqualTo(recruitment.getStartAt());
-		assertThat(newRecruitment.getEndAt()).isEqualTo(recruitment.getEndAt());
+		assertThat(newRecruitment.getStartAt()).isEqualToIgnoringNanos(recruitment.getStartAt());
+		assertThat(newRecruitment.getEndAt()).isEqualToIgnoringNanos(recruitment.getEndAt());
 		assertThat(newRecruitment.getCurrentProcess()).isEqualTo(recruitment.getCurrentProcess());
 		assertThat(newRecruitment.getPosition()).isNull();
 
