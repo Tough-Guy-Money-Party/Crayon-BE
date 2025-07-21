@@ -22,12 +22,14 @@ public class ProcessSaveService {
 	private final ProcessMapper processMapper;
 
 	public List<Process> saveAll(List<Process> processes, List<Recruitment> recruitments) {
-		List<Process> processList = new ArrayList<>();
+		List<Process> allProcesses = new ArrayList<>();
 		for (Recruitment recruitment : recruitments) {
-			processes.forEach(process -> process.addRecruitment(recruitment));
-			processList.addAll(processes);
+			List<Process> recruitmentProcesses = processes.stream()
+				.map(process -> process.addRecruitment(recruitment))
+				.toList();
+			allProcesses.addAll(recruitmentProcesses);
 		}
-		return processRepository.saveAll(processList);
+		return processRepository.saveAll(allProcesses);
 	}
 
 	public List<Process> saveAll(List<Process> processes) {

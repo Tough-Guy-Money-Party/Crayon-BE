@@ -141,19 +141,17 @@ public class RecruitmentManageUseCase {
 	}
 
 	@Transactional
-	public void replicate(String recruitmentId, User user) {
+	public UUID replicate(String recruitmentId, User user) {
 		Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
 		Recruitment newRecruitment = Recruitment.replicate(recruitment);
 
-		List<Process> newProcesses = recruitment.getProcesses()
+		List<Process> newProcesses = processGetService.findAll(recruitment)
 			.stream()
 			.map(Process::replicate)
+			.map(process -> process.addRecruitment(newRecruitment))
 			.toList();
 
-		newProcesses.forEach(process -> process.addRecruitment(newRecruitment));
-		newRecruitment.addNewProcesses(newProcesses);
-
 		processSaveService.saveAll(newProcesses);
-		recruitmentSaveService.save(newRecruitment);
+		return recruitmentSaveService.save(newRecruitment).getId();
 	}
 }

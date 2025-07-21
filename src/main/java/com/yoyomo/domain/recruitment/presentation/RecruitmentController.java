@@ -104,8 +104,7 @@ public class RecruitmentController {
 
 	@DeleteMapping("/{recruitmentId}")
 	@Operation(summary = "모집 마감")
-	public ResponseDto<Void> close(@PathVariable String recruitmentId,
-		@CurrentUser User user) {
+	public ResponseDto<Void> close(@PathVariable String recruitmentId, @CurrentUser User user) {
 		recruitmentManageUseCase.close(recruitmentId, user);
 
 		return ResponseDto.of(OK.value(), SUCCESS_DELETE.getMessage());
@@ -113,8 +112,7 @@ public class RecruitmentController {
 
 	@DeleteMapping("/{recruitmentId}/force")
 	@Operation(summary = "모집 삭제")
-	public ResponseDto<Void> cancel(@PathVariable String recruitmentId,
-		@CurrentUser User user) {
+	public ResponseDto<Void> cancel(@PathVariable String recruitmentId, @CurrentUser User user) {
 		recruitmentManageUseCase.cancel(recruitmentId, user);
 
 		return ResponseDto.of(OK.value(), SUCCESS_CANCEL.getMessage());
@@ -122,8 +120,7 @@ public class RecruitmentController {
 
 	@GetMapping("/processes/{recruitmentId}")
 	@Operation(summary = "모집 프로세스 목록 조회")
-	public ResponseDto<List<ProcessResponse>> readAll(@PathVariable UUID recruitmentId,
-		@CurrentUser User user) {
+	public ResponseDto<List<ProcessResponse>> readAll(@PathVariable UUID recruitmentId, @CurrentUser User user) {
 		List<ProcessResponse> responses = processManageUseCase.readAll(recruitmentId, user);
 
 		return ResponseDto.of(OK.value(), SUCCESS_READ_PROCESSES.getMessage(), responses);
@@ -131,9 +128,8 @@ public class RecruitmentController {
 
 	@PostMapping("/replication/{recruitmentId}")
 	@Operation(summary = "모집 복제")
-	public ResponseDto<Void> replicate(@PathVariable String recruitmentId,
-		@CurrentUser User user) {
-		recruitmentManageUseCase.replicate(recruitmentId, user);
-		return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
+	public ResponseDto<UUID> replicate(@PathVariable String recruitmentId, @CurrentUser User user) {
+		UUID response = recruitmentManageUseCase.replicate(recruitmentId, user);
+		return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage(), response);
 	}
 }
