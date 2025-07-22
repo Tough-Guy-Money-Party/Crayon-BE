@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,6 +56,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
 	@Autowired
 	ApplicationImportUseCase applicationImportUseCase;
 
+	@DisplayName("지원서를 일괄 등록한다")
 	@Test
 	void importApplications() {
 		// given
@@ -124,6 +126,7 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
 		);
 	}
 
+	@DisplayName("지원서 일괄 등록 시 질문과 응답의 크기가 일치하지 않으면 예외가 발생한다")
 	@Test
 	void importApplications_MismatchSizeException() {
 		// given
@@ -163,8 +166,9 @@ class ApplicationImportUseCaseTest extends ApplicationTest {
 			)
 		);
 
-		ApplicationImportRequest applicationImportRequest = new ApplicationImportRequest(questionRequests,
-			respondentRequests);
+		ApplicationImportRequest applicationImportRequest = new ApplicationImportRequest(
+			questionRequests, respondentRequests
+		);
 
 		// when & then
 		assertThatThrownBy(
