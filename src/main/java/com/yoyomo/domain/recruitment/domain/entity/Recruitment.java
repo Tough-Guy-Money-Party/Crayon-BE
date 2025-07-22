@@ -1,5 +1,13 @@
 package com.yoyomo.domain.recruitment.domain.entity;
 
+import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import com.yoyomo.domain.application.exception.OutOfDeadlineException;
 import com.yoyomo.domain.club.domain.entity.Club;
 import com.yoyomo.domain.recruitment.domain.entity.enums.Submit;
@@ -7,6 +15,7 @@ import com.yoyomo.domain.recruitment.domain.entity.enums.Type;
 import com.yoyomo.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.yoyomo.domain.recruitment.exception.RecruitmentUnmodifiableException;
 import com.yoyomo.global.common.entity.BaseEntity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,15 +35,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.RECRUITING;
-import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus;
-
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,133 +42,116 @@ import static com.yoyomo.domain.recruitment.domain.entity.enums.Status.getStatus
 @Entity
 public class Recruitment extends BaseEntity {
 
-    @Id
-    @Column(name = "recruitment_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+	@Id
+	@Column(name = "recruitment_id")
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 
-    private String title;
+	private String title;
 
-    private String position;
+	private String position;
 
-    private String generation;
+	private String generation;
 
-    @Enumerated(EnumType.STRING)
-    private Submit submit;
+	@Enumerated(EnumType.STRING)
+	private Submit submit;
 
-    private boolean isActive;
+	private boolean isActive;
 
-    private LocalDateTime startAt;
+	private LocalDateTime startAt;
 
-    private LocalDateTime endAt;
+	private LocalDateTime endAt;
 
-    private String formId;
+	private String formId;
 
-    private int totalApplicantsCount;   // 수정: applicant++
+	private int totalApplicantsCount;
 
-    private LocalDateTime deletedAt;
+	private LocalDateTime deletedAt;
 
-    @Builder.Default
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Type currentProcess = Type.FORM;
+	@Builder.Default
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Type currentProcess = Type.FORM;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id")
-    private Club club;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "club_id")
+	private Club club;
 
-    @OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Process> processes = new ArrayList<>();
+	@OneToMany(mappedBy = "recruitment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Process> processes = new ArrayList<>();
 
-    @Version
-    private Long version;
+	@Version
+	private Long version;
 
-    public static Recruitment replicate(Recruitment recruitment) {
-        return Recruitment.builder()
-                .generation(recruitment.generation)
-                .title(recruitment.title)
-                .submit(recruitment.submit)
-                .isActive(false)
-                .startAt(recruitment.startAt)
-                .endAt(recruitment.endAt)
-                .currentProcess(Type.FORM)
-                .club(recruitment.club)
-                .processes(new ArrayList<>())
-                .build();
-    }
+	public static Recruitment replicate(Recruitment recruitment) {
+		return Recruitment.builder()
+			.generation(recruitment.generation)
+			.title(recruitment.title)
+			.submit(recruitment.submit)
+			.isActive(false)
+			.startAt(recruitment.startAt)
+			.endAt(recruitment.endAt)
+			.currentProcess(Type.FORM)
+			.club(recruitment.club)
+			.processes(new ArrayList<>())
+			.build();
+	}
 
-    public void addProcesses(List<Process> processes) {
-        this.processes.clear();
-        this.processes.addAll(processes);
-    }
+	public void activate(String formId) {
+		this.formId = formId;
+		this.isActive = true;
+	}
 
-    public void addNewProcesses(List<Process> processes) {
-        this.processes.addAll(processes);
-    }
+	public void checkModifiable() {
+		if (this.isActive) {
+			throw new RecruitmentUnmodifiableException();
+		}
+	}
 
-    public void activate(String formId) {
-        this.formId = formId;
-        this.isActive = true;
-    }
+	public void clearProcesses() {
+		this.processes.clear();
+	}
 
-    public void checkModifiable() {
-        if (this.isActive) {
-            throw new RecruitmentUnmodifiableException();
-        }
-    }
+	public void close() {
+		this.deletedAt = LocalDateTime.now();
+		this.isActive = false;
+	}
 
-    public void clearProcesses() {
-        this.processes.clear();
-    }
+	public boolean isBefore() {
+		return this.startAt.isAfter(LocalDateTime.now());
+	}
 
-    public void close() {
-        this.deletedAt = LocalDateTime.now();
-        this.isActive = false;
-    }
+	public boolean isAfter() {
+		return this.endAt.isBefore(LocalDateTime.now());
+	}
 
-    public boolean isBefore() {
-        return this.startAt.isAfter(LocalDateTime.now());
-    }
+	public void checkAvailable() {
+		if (this.deletedAt != null) {
+			throw new RecruitmentNotFoundException();
+		}
 
-    public boolean isAfter() {
-        return this.endAt.isBefore(LocalDateTime.now());
-    }
+		if (getStatus(this) != RECRUITING) {
+			throw new OutOfDeadlineException();
+		}
+	}
 
-    public void plusApplicantsCount() {
-        this.totalApplicantsCount++;
-    }
+	public LocalDate getEndDate() {
+		return endAt.toLocalDate();
+	}
 
-    public void minusApplicantsCount() {
-        this.totalApplicantsCount--;
-    }
+	public Process getDocumentProcess() {
+		return processes.get(0);
+	}
 
-    public void checkAvailable() {
-        if (this.deletedAt != null) {
-            throw new RecruitmentNotFoundException();
-        }
+	public void updateProcess(Type type) {
+		this.currentProcess = type;
+	}
 
-        if (getStatus(this) != RECRUITING) {
-            throw new OutOfDeadlineException();
-        }
-    }
-
-    public LocalDate getEndDate() {
-        return endAt.toLocalDate();
-    }
-
-    public Process getDocumentProcess() {
-        return processes.get(0);
-    }
-
-    public void updateProcess(Type type) {
-        this.currentProcess = type;
-    }
-
-    public void update(String title, String position, LocalDateTime startAt, LocalDateTime endAt) {
-        this.title = title;
-        this.position = position;
-        this.startAt = startAt;
-        this.endAt = endAt;
-    }
+	public void update(String title, String position, LocalDateTime startAt, LocalDateTime endAt) {
+		this.title = title;
+		this.position = position;
+		this.startAt = startAt;
+		this.endAt = endAt;
+	}
 }
 

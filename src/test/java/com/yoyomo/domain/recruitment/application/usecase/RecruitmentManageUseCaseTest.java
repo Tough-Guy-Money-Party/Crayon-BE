@@ -3,7 +3,9 @@ package com.yoyomo.domain.recruitment.application.usecase;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,20 +56,20 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 	@Autowired
 	EvaluationMemoRepository evaluationMemoRepository;
 
-	@DisplayName("동아리 관리자는 모집을 삭제할 수 있다.")
-	@Test
-	void deleteRecruitment() {
-		// given
-		User manager = userRepository.save(TestFixture.user());
+	private Recruitment recruitment;
+	private User manager;
+
+	@BeforeEach
+	void setUp() {
+		manager = userRepository.save(TestFixture.user());
 		User applicant = userRepository.save(TestFixture.user());
 		User applicant2 = userRepository.save(TestFixture.user());
 		Club club = clubRepository.save(TestFixture.club());
 		clubMangerRepository.save(TestFixture.clubManager(club, manager));
 
 		Process process = processRepository.save(TestFixture.process(1));
-		Recruitment recruitment = recruitmentRepository.save(TestFixture.recruitment(club, process));
-		process.addRecruitment(recruitment);
-		processRepository.save(process);
+		recruitment = recruitmentRepository.save(TestFixture.recruitment(club, process));
+		processRepository.save(process.addRecruitment(recruitment));
 
 		Application application = applicationRepository.save(
 			TestFixture.application(applicant, process, recruitment.getId()));
@@ -79,7 +81,11 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 
 		evaluationMemoRepository.save(TestFixture.evaluationMemo(application, manager, process.getId()));
 		evaluationMemoRepository.save(TestFixture.evaluationMemo(application2, manager, process.getId()));
+	}
 
+	@DisplayName("동아리 관리자는 모집을 삭제할 수 있다.")
+	@Test
+	void deleteRecruitment() {
 		// when
 		recruitmentManageUseCase.cancel(recruitment.getId().toString(), manager);
 
@@ -89,6 +95,33 @@ class RecruitmentManageUseCaseTest extends ApplicationTest {
 		assertThat(evaluationRepository.findAll()).isEmpty();
 		assertThat(evaluationMemoRepository.findAll()).isEmpty();
 		assertThat(applications).isEmpty();
+	}
+
+	@DisplayName("동아리 관리자는 모집을 복제할 수 있다.")
+	@Test
+	void replicate() {
+		// when
+		UUID newRecruitmentId = recruitmentManageUseCase.replicate(recruitment.getId().toString(), manager);
+
+		// then
+		List<Recruitment> recruitments = recruitmentRepository.findAll();
+		Recruitment newRecruitment = recruitments.stream()
+			.filter(r -> r.getId().equals(newRecruitmentId))
+			.findFirst()
+			.orElseThrow();
+
+		assertThat(recruitments).hasSize(2);
+		assertThat(newRecruitment.getGeneration()).isEqualTo(recruitment.getGeneration());
+		assertThat(newRecruitment.getTitle()).isEqualTo(recruitment.getTitle());
+		assertThat(newRecruitment.getSubmit()).isEqualTo(recruitment.getSubmit());
+		assertThat(newRecruitment.isActive()).isFalse();
+		assertThat(newRecruitment.getStartAt()).isEqualToIgnoringNanos(recruitment.getStartAt());
+		assertThat(newRecruitment.getEndAt()).isEqualToIgnoringNanos(recruitment.getEndAt());
+		assertThat(newRecruitment.getCurrentProcess()).isEqualTo(recruitment.getCurrentProcess());
+		assertThat(newRecruitment.getPosition()).isNull();
+
+		List<Process> processes = processRepository.findAll();
+		assertThat(processes).hasSize(2);
 	}
 }
 

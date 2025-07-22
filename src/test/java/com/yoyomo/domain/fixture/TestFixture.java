@@ -71,6 +71,18 @@ public class TestFixture {
 			.build();
 	}
 
+	public static Recruitment activeRecruitment(Club club) {
+		return Recruitment.builder()
+			.title("모집")
+			.isActive(true)
+			.startAt(LocalDateTime.now().minusHours(1))
+			.endAt(LocalDateTime.now().plusDays(1))
+			.currentProcess(Type.FORM)
+			.club(club)
+			.processes(new ArrayList<>())
+			.build();
+	}
+
 	public static Recruitment recruitment(Club club, Process... processes) {
 		return Recruitment.builder()
 			.title("모집")
@@ -114,6 +126,13 @@ public class TestFixture {
 	public static Process process(int stage) {
 		return Process.builder()
 			.stage(stage)
+			.build();
+	}
+
+	public static Process process(int stage, Recruitment recruitment) {
+		return Process.builder()
+			.stage(stage)
+			.recruitment(recruitment)
 			.build();
 	}
 
