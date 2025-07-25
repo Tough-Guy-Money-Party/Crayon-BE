@@ -153,5 +153,9 @@ public class Recruitment extends BaseEntity {
 		this.startAt = startAt;
 		this.endAt = endAt;
 	}
+
+	public void updateDocumentProcess(LocalDateTime startAt, LocalDateTime endAt) {
+		getDocumentProcess().updateDate(startAt, endAt);
+	}
 }
 
