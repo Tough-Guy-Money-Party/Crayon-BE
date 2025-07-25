@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResponseMessage {
-    INVALID_CODE("이메일 인증 코드가 올바르지 않습니다.");
+	INVALID_CODE("이메일 인증 코드가 올바르지 않습니다.");
 
-    private final String message;
+	private final String message;
 }

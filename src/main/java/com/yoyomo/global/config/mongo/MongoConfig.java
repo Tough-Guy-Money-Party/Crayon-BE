@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoAuditing
-@EnableMongoRepositories({"com.yoyomo.domain.form.domain.repository", "com.yoyomo.domain.application.domain.repository.mongo"})
+@EnableMongoRepositories({"com.yoyomo.domain.form.domain.repository",
+	"com.yoyomo.domain.application.domain.repository.mongo"})
 public class MongoConfig {
 }

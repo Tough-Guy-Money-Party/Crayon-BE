@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface MailLimiter {
 
-    boolean tryConsume(UUID clubId, int requestSize);
+	boolean tryConsume(UUID clubId, int requestSize);
 }

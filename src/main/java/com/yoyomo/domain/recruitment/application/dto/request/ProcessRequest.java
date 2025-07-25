@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public class ProcessRequestDTO {
+public class ProcessRequest {
 
 	public record Save(
 		@NotEmpty String title,

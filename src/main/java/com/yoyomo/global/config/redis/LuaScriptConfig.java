@@ -9,11 +9,11 @@ import org.springframework.data.redis.core.script.RedisScript;
 @Configuration
 public class LuaScriptConfig {
 
-    private static final String MAIL_LUA_SCRIPT_PATH = "scripts/mail_limit.lua";
+	private static final String MAIL_LUA_SCRIPT_PATH = "scripts/mail_limit.lua";
 
-    @Bean
-    public RedisScript<Boolean> mailLimitScript() {
-        Resource scriptResource = new ClassPathResource(MAIL_LUA_SCRIPT_PATH);
-        return RedisScript.of(scriptResource, Boolean.class);
-    }
+	@Bean
+	public RedisScript<Boolean> mailLimitScript() {
+		Resource scriptResource = new ClassPathResource(MAIL_LUA_SCRIPT_PATH);
+		return RedisScript.of(scriptResource, Boolean.class);
+	}
 }

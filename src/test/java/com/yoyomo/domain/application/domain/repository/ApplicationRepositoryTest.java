@@ -337,7 +337,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 				.stream()
 				.map(applicationWithStatus -> applicationWithStatus.application().getId())
 				.toList();
-			
+
 			List<UUID> result3 = applicationRepository.findAllWithStatusByProcess(
 					process, condition, PageRequest.of(2, 2)
 				).getContent()

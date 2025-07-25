@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public abstract class ApplicationException extends RuntimeException {
-    private final int errorCode;
+	private final int errorCode;
 
-    protected ApplicationException(int errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
-    }
+	protected ApplicationException(int errorCode, String message) {
+		super(message);
+		this.errorCode = errorCode;
+	}
 }

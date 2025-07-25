@@ -1,24 +1,25 @@
 package com.yoyomo.domain.mail.domain.service.strategy;
 
-import com.yoyomo.domain.mail.application.dto.request.MailTransformDto;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.yoyomo.domain.mail.application.dto.request.MailTransformRequest;
+
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+
 public interface MailStrategy {
-    void apply(MailTransformDto dto);
+	void apply(MailTransformRequest dto);
 
-    String getUpdateExpression();
+	String getUpdateExpression();
 
-    Map<String, String> getExpressionAttributeNames();
+	Map<String, String> getExpressionAttributeNames();
 
-    Map<String, AttributeValue> getExpressionValues(MailTransformDto dto);
+	Map<String, AttributeValue> getExpressionValues(MailTransformRequest dto);
 
-    boolean isSupport(Type type);
+	boolean isSupport(Type type);
 
-    void setScheduledTime(LocalDateTime scheduledTime);
+	LocalDateTime getScheduledTime();
 
-    LocalDateTime getScheduledTime();
+	void setScheduledTime(LocalDateTime scheduledTime);
 }
 

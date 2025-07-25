@@ -1,6 +1,5 @@
 package com.yoyomo.domain.application.domain.entity;
 
-
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Interview {
 
-    private String place;
-    private String date;
+	private String place;
+	private String date;
 }
 

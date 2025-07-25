@@ -1,22 +1,23 @@
 package com.yoyomo.domain.club.application.mapper;
 
-import com.yoyomo.domain.club.domain.entity.Club;
+import static com.yoyomo.domain.club.application.dto.request.ClubRequest.*;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponse.*;
+import static com.yoyomo.domain.club.application.dto.response.ClubResponse.Participation;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-import static com.yoyomo.domain.club.application.dto.request.ClubRequestDTO.Save;
-import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Participation;
-import static com.yoyomo.domain.club.application.dto.response.ClubResponseDTO.Response;
+import com.yoyomo.domain.club.domain.entity.Club;
 
 @Mapper(componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	unmappedTargetPolicy = ReportingPolicy.IGNORE,
+	nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ClubMapper {
 
-    Club from(Save dto);
+	Club from(Save dto);
 
-    Response toResponse(Club club);
+	Response toResponse(Club club);
 
-    Participation toParticipation(Club club);
+	Participation toParticipation(Club club);
 }

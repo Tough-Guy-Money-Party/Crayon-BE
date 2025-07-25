@@ -40,9 +40,9 @@ public class DateFormatter {
 
 		String trimmed = dateTime.trim();
 		for (FormatterEntry entry : ENTRIES) {
-			Matcher m = entry.pattern.matcher(trimmed);
-			if (m.matches()) {
-				return format(entry, m);
+			Matcher matcher = entry.pattern.matcher(trimmed);
+			if (matcher.matches()) {
+				return format(entry, matcher);
 			}
 		}
 		throw new InvalidDateFormat();
@@ -52,11 +52,11 @@ public class DateFormatter {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
 	}
 
-	private static String format(FormatterEntry entry, Matcher m) {
-		int groupCount = m.groupCount();
+	private static String format(FormatterEntry entry, Matcher matcher) {
+		int groupCount = matcher.groupCount();
 		Object[] args = new Object[groupCount];
 		for (int i = 1; i <= groupCount; i++) {
-			args[i - 1] = Integer.parseInt(m.group(i));
+			args[i - 1] = Integer.parseInt(matcher.group(i));
 		}
 		return String.format(entry.format, args);
 	}

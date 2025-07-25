@@ -1,7 +1,7 @@
 package com.yoyomo.domain.application.presentation;
 
-import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequestDto.*;
-import static com.yoyomo.domain.application.application.dto.response.ApplicationResponseDTO.*;
+import static com.yoyomo.domain.application.application.dto.request.ApplicationVerificationRequest.*;
+import static com.yoyomo.domain.application.application.dto.response.ApplicationResponse.*;
 import static com.yoyomo.domain.application.presentation.constant.ResponseMessage.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,7 +24,7 @@ import com.yoyomo.domain.application.application.dto.request.ApplicationImportRe
 import com.yoyomo.domain.application.application.dto.request.ApplicationMoveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationSaveRequest;
 import com.yoyomo.domain.application.application.dto.request.ApplicationUpdateRequest;
-import com.yoyomo.domain.application.application.dto.request.InterviewRequestDTO;
+import com.yoyomo.domain.application.application.dto.request.InterviewRequest;
 import com.yoyomo.domain.application.application.dto.request.StageUpdateRequest;
 import com.yoyomo.domain.application.application.dto.response.ApplicantsResponse;
 import com.yoyomo.domain.application.application.dto.response.ApplicationDetailResponse;
@@ -217,7 +217,7 @@ public class ApplicationController {
 	@Operation(summary = "[Manager] 면접 일정 설정")
 	public ResponseDto<Void> saveInterview(
 		@PathVariable String applicationId,
-		@RequestBody InterviewRequestDTO.Save dto,
+		@RequestBody InterviewRequest.Save dto,
 		@CurrentUser User user
 	) {
 		interviewManageUseCase.saveInterview(applicationId, dto, user);

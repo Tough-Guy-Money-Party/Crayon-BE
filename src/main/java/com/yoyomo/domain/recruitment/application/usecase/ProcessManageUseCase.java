@@ -1,6 +1,6 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequestDTO.*;
+import static com.yoyomo.domain.recruitment.application.dto.request.ProcessRequest.*;
 
 import java.util.Comparator;
 import java.util.List;

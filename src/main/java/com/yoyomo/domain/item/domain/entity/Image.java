@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class Image {
 
-    private String name;
-    private String url;
+	private String name;
+	private String url;
 }

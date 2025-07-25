@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CachingConfig {
 
-    @Bean
-    public CacheManager cacheManager() {
-        ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
-        cacheManager.setAllowNullValues(false);
-        return cacheManager;
-    }
+	@Bean
+	public CacheManager cacheManager() {
+		ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
+		cacheManager.setAllowNullValues(false);
+		return cacheManager;
+	}
 }

@@ -1,21 +1,21 @@
 package com.yoyomo.domain.recruitment.application.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotNull;
 
 public record RecruitmentUpdateRequest(
 
-        @NotNull
-        String title,
+	@NotNull
+	String title,
 
-        @NotNull
-        String position,
+	@NotNull
+	String position,
 
-        @NotNull
-        LocalDateTime startAt,
+	@NotNull
+	LocalDateTime startAt,
 
-        @NotNull
-        LocalDateTime endAt
+	@NotNull
+	LocalDateTime endAt
 ) {
 }

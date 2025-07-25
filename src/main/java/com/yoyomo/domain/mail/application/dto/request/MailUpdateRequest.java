@@ -1,10 +1,10 @@
 package com.yoyomo.domain.mail.application.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+
 public record MailUpdateRequest(
-        @NotNull LocalDateTime scheduledTime
+	@NotNull LocalDateTime scheduledTime
 ) {
 }

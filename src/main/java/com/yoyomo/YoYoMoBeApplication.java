@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableScheduling
 public class YoYoMoBeApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(YoYoMoBeApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(YoYoMoBeApplication.class, args);
+	}
 }

@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Option {
-    private String id;
-    private String title;
-    private boolean selected;
-    private boolean isEtc;
-    private String content;
+	private String id;
+	private String title;
+	private boolean selected;
+	private boolean isEtc;
+	private String content;
 }

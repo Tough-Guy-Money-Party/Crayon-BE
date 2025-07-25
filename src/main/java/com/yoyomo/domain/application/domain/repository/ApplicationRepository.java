@@ -23,8 +23,9 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID>,
 
 	List<Application> findByProcessIdAndDeletedAtIsNull(Long processId, Pageable pageable);
 
-	Page<Application> findAllByUserNameContainingAndProcessAndDeletedAtIsNull(String userName, Process process,
-		Pageable pageable);
+	Page<Application> findAllByUserNameContainingAndProcessAndDeletedAtIsNull(
+		String userName, Process process, Pageable pageable
+	);
 
 	Optional<Application> findByIdAndDeletedAtIsNull(UUID id);
 
@@ -34,8 +35,8 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID>,
 
 	@Query("""
 		SELECT new com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus(
-		    a,
-		    COALESCE(pr.status, 'BEFORE_EVALUATION')
+			a,
+			COALESCE(pr.status, 'BEFORE_EVALUATION')
 		)
 		FROM Application a
 		LEFT JOIN ProcessResult pr ON a.id = pr.applicationId
@@ -45,19 +46,18 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID>,
 
 	@Query("""
 		SELECT new com.yoyomo.domain.application.domain.repository.dto.ProcessApplicant(
-		    a.process,
-		    COUNT(a.id)
+			a.process,
+			COUNT(a.id)
 		)
 		FROM Application a
-		WHERE a.recruitmentId = :recruitmentId AND a.process IN :processes AND a.deletedAt IS NULL 
+		WHERE a.recruitmentId = :recruitmentId AND a.process IN :processes AND a.deletedAt IS NULL
 		GROUP BY a.process
 		""")
 	List<ProcessApplicant> countByRecruitmentAndProcess(UUID recruitmentId, List<Process> processes);
 
 	@Modifying
 	@Query("UPDATE Application a SET a.process = :process WHERE a.id IN :applicationIds")
-	void updateProcess(@Param("applicationIds") List<UUID> applicationIds,
-		@Param("process") Process process);
+	void updateProcess(@Param("applicationIds") List<UUID> applicationIds, @Param("process") Process process);
 
 	@Modifying
 	@Query("DELETE FROM Application a WHERE a.recruitmentId = :recruitmentId")
