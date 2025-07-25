@@ -2,6 +2,7 @@ package com.yoyomo.domain.application.domain.entity;
 
 import com.yoyomo.domain.application.domain.entity.enums.Rating;
 import com.yoyomo.domain.user.domain.entity.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,43 +20,46 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {
-        @UniqueConstraint(
-                columnNames = {"user_id", "application_id"}
-        )})
+@Table(uniqueConstraints =
+	{
+		@UniqueConstraint(columnNames =
+			{
+				"user_id", "application_id"
+			}
+		)
+	})
 public class Evaluation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evaluation_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "evaluation_id")
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+	@Enumerated(EnumType.STRING)
+	private Rating rating;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User manager;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User manager;
 
-    @ManyToOne
-    @JoinColumn(name = "application_id")
-    private Application application;
+	@ManyToOne
+	@JoinColumn(name = "application_id")
+	private Application application;
 
-    public static Evaluation empty() {
-        return new Evaluation();
-    }
+	public static Evaluation empty() {
+		return new Evaluation();
+	}
 
-    public void update(Rating rating) {
-        this.rating = rating;
-    }
+	public void update(Rating rating) {
+		this.rating = rating;
+	}
 
-    public boolean isNotMine(User manager) {
-        return this.manager != manager;
-    }
+	public boolean isNotMine(User manager) {
+		return this.manager != manager;
+	}
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KakaoInfoResponse {
-    private String name;
-    private String email;
+	private String name;
+	private String email;
 }

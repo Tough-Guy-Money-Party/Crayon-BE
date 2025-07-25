@@ -9,8 +9,7 @@ public enum ResultFilter {
 	NONE,
 	PENDING,
 	PASS,
-	FAIL,
-	;
+	FAIL;
 
 	public static ResultFilter from(String filter) {
 		String upperCaseFilter = filter.toUpperCase();

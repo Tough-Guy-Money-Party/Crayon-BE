@@ -11,9 +11,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Score extends Item {
 
-    private String meaningOfHigh;
+	private String meaningOfHigh;
 
-    private String meaningOfLow;
+	private String meaningOfLow;
 
-    private int score;
+	private int score;
 }

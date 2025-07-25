@@ -11,9 +11,6 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-  application:
-    kakao-client-id: ${KAKAO_CLIENT_ID}
-    kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
       uri: mongodb://${USERNAME}:${PASSWORD}@${HOST:localhost}:${PORT:27017}/${DATABASE:crayon}?authSource=admin&authMechanism=SCRAM-SHA-1

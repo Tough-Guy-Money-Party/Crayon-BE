@@ -6,7 +6,7 @@ import com.yoyomo.domain.item.domain.entity.type.Type;
 
 public interface ItemCreationStrategy {
 
-    boolean isSupported(Type type);
+	boolean isSupported(Type type);
 
-    Item create(ItemRequest type);
+	Item create(ItemRequest type);
 }

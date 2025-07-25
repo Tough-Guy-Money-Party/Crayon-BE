@@ -11,9 +11,6 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-  application:
-    kakao-client-id: ${KAKAO_CLIENT_ID}
-    kakao-redirect-uri: ${KAKAO_REDIRECT_URL}
   data:
     mongodb:
       uri: mongodb://${HOST:localhost}:${PORT:27017}/${DATABASE:crayon}

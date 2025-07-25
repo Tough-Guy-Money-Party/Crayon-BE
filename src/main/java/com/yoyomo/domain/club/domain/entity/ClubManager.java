@@ -1,6 +1,7 @@
 package com.yoyomo.domain.club.domain.entity;
 
 import com.yoyomo.domain.user.domain.entity.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,46 +22,46 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubManager {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "club_manager_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "club_manager_id")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "club_id")
-    private Club club;
+	@ManyToOne
+	@JoinColumn(name = "club_id")
+	private Club club;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User manager;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User manager;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "manager_role", nullable = false)
-    private ManagerRole managerRole;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "manager_role", nullable = false)
+	private ManagerRole managerRole;
 
-    private ClubManager(Club club, User user, ManagerRole managerRole) {
-        this.club = club;
-        this.manager = user;
-        this.managerRole = managerRole;
-    }
+	private ClubManager(Club club, User user, ManagerRole managerRole) {
+		this.club = club;
+		this.manager = user;
+		this.managerRole = managerRole;
+	}
 
-    public static ClubManager asManager(Club club, User manager) {
-        return new ClubManager(club, manager, ManagerRole.MANAGER);
-    }
+	public static ClubManager asManager(Club club, User manager) {
+		return new ClubManager(club, manager, ManagerRole.MANAGER);
+	}
 
-    public static ClubManager asOwner(Club club, User manager) {
-        return new ClubManager(club, manager, ManagerRole.OWNER);
-    }
+	public static ClubManager asOwner(Club club, User manager) {
+		return new ClubManager(club, manager, ManagerRole.OWNER);
+	}
 
-    public void toManager() {
-        this.managerRole = ManagerRole.MANAGER;
-    }
+	public void toManager() {
+		this.managerRole = ManagerRole.MANAGER;
+	}
 
-    public void toOwner() {
-        this.managerRole = ManagerRole.OWNER;
-    }
+	public void toOwner() {
+		this.managerRole = ManagerRole.OWNER;
+	}
 
-    public boolean isOwner() {
-        return managerRole.isOwner();
-    }
+	public boolean isOwner() {
+		return managerRole.isOwner();
+	}
 }

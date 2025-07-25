@@ -17,7 +17,7 @@ public record RecruitmentSaveRequest(
 	@NotEmpty String generation,
 	@NotNull Submit submit,
 	@NotEmpty String clubId,
-	@Valid @NotNull List<ProcessRequestDTO.Save> processes
+	@Valid @NotNull List<ProcessRequest.Save> processes
 ) {
 	public List<Recruitment> toRecruitments(Club club) {
 		Process firstProcess = toProcesses().get(0);
@@ -40,7 +40,7 @@ public record RecruitmentSaveRequest(
 
 	public List<Process> toProcesses() {
 		return processes.stream()
-			.map(ProcessRequestDTO.Save::toProcess)
+			.map(ProcessRequest.Save::toProcess)
 			.toList();
 	}
 }

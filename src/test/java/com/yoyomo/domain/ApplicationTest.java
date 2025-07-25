@@ -18,11 +18,11 @@ import com.yoyomo.domain.recruitment.domain.repository.ProcessRepository;
 import com.yoyomo.domain.recruitment.domain.repository.RecruitmentRepository;
 import com.yoyomo.domain.user.domain.repository.UserRepository;
 import com.yoyomo.global.config.jwt.JwtProvider;
-import com.yoyomo.global.config.kakao.KakaoServiceNew;
+import com.yoyomo.global.config.kakao.KakaoService;
 
 @MockBean(classes = {
 	ApplicationVerifyUseCase.class,
-	KakaoServiceNew.class,
+	KakaoService.class,
 	JwtProvider.class,
 	RedissonClient.class
 })
@@ -41,25 +41,19 @@ import com.yoyomo.global.config.kakao.KakaoServiceNew;
 public class ApplicationTest {
 
 	@Autowired
-	CustomRepository customRepository;
-
-	@Autowired
 	protected UserRepository userRepository;
-
 	@Autowired
 	protected ClubRepository clubRepository;
-
 	@Autowired
 	protected ClubMangerRepository clubMangerRepository;
-
 	@Autowired
 	protected RecruitmentRepository recruitmentRepository;
-
 	@Autowired
 	protected ProcessRepository processRepository;
-
 	@Autowired
 	protected ApplicationRepository applicationRepository;
+	@Autowired
+	CustomRepository customRepository;
 
 	@AfterEach
 	void tearDown() {

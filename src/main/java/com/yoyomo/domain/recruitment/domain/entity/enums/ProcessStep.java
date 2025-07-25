@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ProcessStep {
-    EVALUATION(1),
-    MAILING(2),
-    MOVING(3);
+	EVALUATION(1),
+	MAILING(2),
+	MOVING(3);
 
-    private final int order;
+	private final int order;
 }

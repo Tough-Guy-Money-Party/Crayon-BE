@@ -31,10 +31,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(uniqueConstraints = {
-	@UniqueConstraint(
-		columnNames = {"recruitment_id", "user_id"}
-	)})
+@Table(uniqueConstraints =
+	{
+		@UniqueConstraint(columnNames =
+			{
+				"recruitment_id", "user_id"
+			}
+		)
+	}
+)
 public class Application extends BaseEntity {
 
 	@Id

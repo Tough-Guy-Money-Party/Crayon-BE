@@ -23,7 +23,7 @@ import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentSaveRequ
 import com.yoyomo.domain.recruitment.application.dto.request.RecruitmentUpdateRequest;
 import com.yoyomo.domain.recruitment.application.dto.response.ProcessResponse;
 import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentDetailsResponse;
-import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+import com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponse.Response;
 import com.yoyomo.domain.recruitment.application.usecase.ProcessManageUseCase;
 import com.yoyomo.domain.recruitment.application.usecase.RecruitmentManageUseCase;
 import com.yoyomo.domain.recruitment.domain.dto.RecruitmentCreateResponse;

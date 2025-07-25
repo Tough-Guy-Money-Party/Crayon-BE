@@ -1,6 +1,7 @@
 package com.yoyomo.domain.item.domain.entity;
 
 import com.yoyomo.domain.item.domain.entity.type.Type;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,15 +12,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Answer extends Item {
-    private String answer;
-    private int maxLength;
+	private String answer;
+	private int maxLength;
 
-    public static Item of(String title, String answer, int order) {
-        return Answer.builder()
-                .type(Type.LONG_FORM)
-                .title(title)
-                .answer(answer)
-                .order(order)
-                .build();
-    }
+	public static Item of(String title, String answer, int order) {
+		return Answer.builder()
+			.type(Type.LONG_FORM)
+			.title(title)
+			.answer(answer)
+			.order(order)
+			.build();
+	}
 }

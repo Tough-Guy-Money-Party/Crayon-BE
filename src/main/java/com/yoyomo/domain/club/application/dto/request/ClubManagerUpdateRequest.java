@@ -1,6 +1,6 @@
 package com.yoyomo.domain.club.application.dto.request;
 
-public record ClubManagerUpdateDto(
-        long userId
+public record ClubManagerUpdateRequest(
+	long userId
 ) {
 }

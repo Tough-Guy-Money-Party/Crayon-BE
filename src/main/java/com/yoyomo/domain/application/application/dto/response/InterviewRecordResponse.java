@@ -5,12 +5,12 @@ import lombok.Builder;
 @Builder
 public record InterviewRecordResponse(
 
-        long interviewRecordId
+	long interviewRecordId
 ) {
 
-    public static InterviewRecordResponse toResponse(long interviewRecordId) {
-        return InterviewRecordResponse.builder()
-                .interviewRecordId(interviewRecordId)
-                .build();
-    }
+	public static InterviewRecordResponse toResponse(long interviewRecordId) {
+		return InterviewRecordResponse.builder()
+			.interviewRecordId(interviewRecordId)
+			.build();
+	}
 }

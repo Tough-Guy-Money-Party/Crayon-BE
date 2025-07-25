@@ -1,8 +1,8 @@
 package com.yoyomo.domain.recruitment.application.usecase;
 
-import static com.yoyomo.domain.form.application.dto.response.FormResponseDTO.*;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.*;
-import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponseDTO.Response;
+import static com.yoyomo.domain.form.application.dto.response.FormResponse.*;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponse.*;
+import static com.yoyomo.domain.recruitment.application.dto.response.RecruitmentResponse.Response;
 
 import java.util.List;
 import java.util.UUID;

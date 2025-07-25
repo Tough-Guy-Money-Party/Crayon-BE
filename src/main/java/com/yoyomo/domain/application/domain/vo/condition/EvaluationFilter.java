@@ -7,8 +7,7 @@ import com.yoyomo.domain.application.exception.InvalidFilterTypeException;
 public enum EvaluationFilter {
 	ALL,
 	YES,
-	NO,
-	;
+	NO;
 
 	public static EvaluationFilter from(String filter) {
 		String upperCaseFilter = filter.toUpperCase();
