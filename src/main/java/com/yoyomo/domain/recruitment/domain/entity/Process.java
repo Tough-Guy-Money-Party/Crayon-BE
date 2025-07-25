@@ -135,4 +135,9 @@ public class Process extends BaseEntity {
 		}
 		return false;
 	}
+
+	public void updateDate(LocalDateTime startAt, LocalDateTime endAt) {
+		this.startAt = startAt;
+		this.endAt = endAt;
+	}
 }
