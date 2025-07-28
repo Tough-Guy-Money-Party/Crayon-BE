@@ -3,7 +3,6 @@ package com.yoyomo.domain.application.domain.vo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.yoyomo.global.common.util.DateFormatter;
@@ -35,11 +34,11 @@ public class Applicant {
 		return values.getOrDefault(ApplicantInfo.EMAIL, Reply.empty()).value();
 	}
 
-	public Optional<LocalDateTime> getAppliedAt() {
+	public LocalDateTime getAppliedAt() {
 		Reply reply = values.getOrDefault(ApplicantInfo.APPLIED_AT, Reply.empty());
 		if (reply.isEmpty()) {
-			return Optional.empty();
+			return LocalDateTime.now();
 		}
-		return Optional.of(DateFormatter.parse(reply.value()));
+		return DateFormatter.parse(reply.value());
 	}
 }

@@ -33,8 +33,7 @@ class ApplicationReplyTest {
 			() -> assertThat(applicant.getName()).isEqualTo("나아연"),
 			() -> assertThat(applicant.getPhone()).isEqualTo("01099998888"),
 			() -> assertThat(applicant.getEmail()).isEmpty(),
-			() -> assertThat(applicant.getAppliedAt()).isPresent(),
-			() -> assertThat(applicant.getAppliedAt().get()).isEqualTo(LocalDateTime.of(2025, 7, 4, 15, 40, 0))
+			() -> assertThat(applicant.getAppliedAt()).isEqualTo(LocalDateTime.of(2025, 7, 4, 15, 40, 0))
 		);
 
 		assertThat(applicationReply.getFormQuestionReplies()).hasSize(2);

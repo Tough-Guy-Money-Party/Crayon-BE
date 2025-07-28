@@ -3,6 +3,7 @@ package com.yoyomo.domain.application.domain.repository;
 import java.nio.ByteBuffer;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,8 +33,11 @@ public class ApplicationJdbcRepository {
 			List<Application> chunk = applications.subList(start, end);
 
 			int[] results = jdbcTemplate.batchUpdate(
-				"INSERT INTO application(application_id, user_name, email, tel, recruitment_id, process_id) "
-					+ "VALUES (?, ?, ?, ?, ?, ?)",
+				"""
+					INSERT INTO application
+					(application_id, user_name, email, tel, recruitment_id, process_id, created_at)
+					VALUES (?, ?, ?, ?, ?, ?, ?)
+					""",
 				new BatchPreparedStatementSetter() {
 					@Override
 					public void setValues(PreparedStatement ps, int index) throws SQLException {
@@ -46,6 +50,7 @@ public class ApplicationJdbcRepository {
 						ps.setString(4, application.getTel());
 						ps.setBytes(5, uuidToBytes(application.getRecruitmentId()));
 						ps.setLong(6, application.getProcess().getId());
+						ps.setTimestamp(7, Timestamp.valueOf(application.getCreatedAt()));
 					}
 
 					@Override

@@ -44,17 +44,14 @@ public class ApplicationReply {
 	}
 
 	public Application toApplication(UUID recruitmentId, Process process) {
-		Application.ApplicationBuilder builder = Application.builder()
+		return Application.builder()
 			.userName(applicant.getName())
 			.tel(applicant.getPhone())
 			.email(applicant.getEmail())
 			.recruitmentId(recruitmentId)
-			.process(process);
-
-		applicant.getAppliedAt()
-			.ifPresent(builder::createdAt);
-
-		return builder.build();
+			.process(process)
+			.createdAt(applicant.getAppliedAt())
+			.build();
 	}
 
 	public List<Item> toAnswers() {
