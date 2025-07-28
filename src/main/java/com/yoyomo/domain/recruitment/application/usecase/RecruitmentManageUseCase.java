@@ -95,6 +95,7 @@ public class RecruitmentManageUseCase {
 		Recruitment recruitment = checkAuthorityByRecruitment(recruitmentId, user);
 		recruitment.checkModifiable();
 		recruitment.update(request.title(), request.position(), request.startAt(), request.endAt());
+		recruitment.updateDocumentProcess(request.startAt(), request.endAt());
 	}
 
 	@Transactional
