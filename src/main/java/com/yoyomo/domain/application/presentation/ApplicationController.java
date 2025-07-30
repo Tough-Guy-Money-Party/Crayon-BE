@@ -137,11 +137,11 @@ public class ApplicationController {
 		return ResponseDto.of(OK.value(), SUCCESS_SAVE.getMessage());
 	}
 
-	@GetMapping("/manager/{recruitmentId}/all")
-	@Operation(summary = "[Manager] 지원서 목록 조회") // todo 로그인 후 Request Body 수정
+	@GetMapping("/manager")
+	@Operation(summary = "[Manager] 지원서 목록 조회")
 	public ResponseDto<Page<ApplicationListResponse>> readAll(
-		@PathVariable UUID recruitmentId,
 		@CurrentUser User user,
+		@RequestParam UUID recruitmentId,
 		@RequestParam Integer stage,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "5") int size,
@@ -157,10 +157,11 @@ public class ApplicationController {
 		return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), response);
 	}
 
-	@GetMapping("/manager/{processId}/applicant/all")
+	@GetMapping("/manager/{processId}/applicants")
 	@Operation(summary = "[Manager] 지원자 목록 조회")
-	public ResponseDto<List<ApplicantsResponse>> readAllApplicants(@PathVariable Long processId,
-		@CurrentUser User user) {
+	public ResponseDto<List<ApplicantsResponse>> readAllApplicants(
+		@PathVariable Long processId, @CurrentUser User user
+	) {
 		List<ApplicantsResponse> responses = applicationManageUseCase.readAll(processId, user);
 		return ResponseDto.of(OK.value(), SUCCESS_READ_ALL.getMessage(), responses);
 	}
@@ -176,16 +177,19 @@ public class ApplicationController {
 		return ResponseDto.of(OK.value(), SUCCESS_READ.getMessage(), response);
 	}
 
-	@GetMapping("/manager/{recruitmentId}/search")
+	@GetMapping("/manager/search")
 	@Operation(summary = "[Manager] 이름으로 지원서 검색")
 	public ResponseDto<Page<ApplicationListResponse>> search(
-		@PathVariable UUID recruitmentId,
 		@CurrentUser User user,
-		@RequestParam String name, @RequestParam Integer stage,
-		@RequestParam Integer page, @RequestParam Integer size
+		@RequestParam UUID recruitmentId,
+		@RequestParam Integer stage,
+		@RequestParam String name,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "5") int size
 	) {
-		Page<ApplicationListResponse> responses = applicationManageUseCase.search(name, recruitmentId, stage, user,
-			PageRequest.of(page, size));
+		Page<ApplicationListResponse> responses = applicationManageUseCase.search(
+			name, recruitmentId, stage, user, PageRequest.of(page, size)
+		);
 
 		return ResponseDto.of(OK.value(), SUCCESS_SEARCH.getMessage(), responses);
 	}
