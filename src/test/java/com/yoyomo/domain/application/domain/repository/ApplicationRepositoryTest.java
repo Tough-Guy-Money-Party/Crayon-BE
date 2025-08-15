@@ -121,7 +121,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterPass() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PASS
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.PASS
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -140,7 +140,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterFail() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.FAIL
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.FAIL
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -159,7 +159,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterPending() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.PENDING
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.PENDING
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -180,7 +180,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_filterWithoutResult() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.NONE
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.NONE
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -197,7 +197,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 	}
 
 	@Nested
-	class EvaluationTest {
+	class EvaluationFilterTest {
 
 		private int hasEvalautionCount = 2;
 		private int hasNotEvalautionCount = 3;
@@ -221,7 +221,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_hasEvaluation() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.YES, ResultFilter.ALL
+				SortType.LATEST, EvaluationFilter.YES, ResultFilter.ALL
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -241,7 +241,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_hasNotEvaluation() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.NO, ResultFilter.ALL
+				SortType.LATEST, EvaluationFilter.NO, ResultFilter.ALL
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -265,7 +265,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_OrderByCreatedAtDesc() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.ALL
 			);
 			PageRequest pageRequest = PageRequest.of(0, 5);
 
@@ -283,6 +283,32 @@ class ApplicationRepositoryTest extends RepositoryTest {
 					applications.get(2).getId(),
 					applications.get(1).getId(),
 					applications.get(0).getId()
+				)
+			);
+		}
+
+		@DisplayName("생성일 기준 내림차순 정렬한다")
+		@Test
+		void findAllWithStatusByProcess_OrderByCreatedAtAsc() {
+			ApplicationCondition condition = new ApplicationCondition(
+				SortType.OLDEST, EvaluationFilter.ALL, ResultFilter.ALL
+			);
+			PageRequest pageRequest = PageRequest.of(0, 5);
+
+			List<UUID> applicationIds = applicationRepository.findAllWithStatusByProcess(
+					process, condition, pageRequest)
+				.getContent()
+				.stream()
+				.map(applicationWithStatus -> applicationWithStatus.application().getId())
+				.toList();
+
+			assertThat(applicationIds).containsExactlyElementsOf(
+				List.of(
+					applications.get(0).getId(),
+					applications.get(1).getId(),
+					applications.get(2).getId(),
+					applications.get(3).getId(),
+					applications.get(4).getId()
 				)
 			);
 		}
@@ -321,7 +347,7 @@ class ApplicationRepositoryTest extends RepositoryTest {
 		@Test
 		void findAllWithStatusByProcess_withPage() {
 			ApplicationCondition condition = new ApplicationCondition(
-				SortType.APPLIED, EvaluationFilter.ALL, ResultFilter.ALL
+				SortType.LATEST, EvaluationFilter.ALL, ResultFilter.ALL
 			);
 
 			List<UUID> result1 = applicationRepository.findAllWithStatusByProcess(

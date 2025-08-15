@@ -33,7 +33,8 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 
 	private static final Map<SortType, OrderSpecifier<?>> ORDER_SPECIFIER_MAP = Map.of(
 		SortType.NAME, new OrderSpecifier<>(Order.ASC, application.userName),
-		SortType.APPLIED, new OrderSpecifier<>(Order.DESC, application.createdAt)
+		SortType.OLDEST, new OrderSpecifier<>(Order.ASC, application.createdAt),
+		SortType.LATEST, new OrderSpecifier<>(Order.DESC, application.createdAt)
 	);
 
 	private final JPAQueryFactory queryFactory;
