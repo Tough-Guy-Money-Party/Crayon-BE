@@ -145,7 +145,7 @@ public class ApplicationController {
 		@RequestParam Integer stage,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "5") int size,
-		@RequestParam(defaultValue = "applied") String sort,
+		@RequestParam(defaultValue = "latest") String sort,
 		@RequestParam(defaultValue = "all") String evaluationFilter,
 		@RequestParam(defaultValue = "all") String resultFilter
 	) {

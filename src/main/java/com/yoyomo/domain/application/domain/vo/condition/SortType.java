@@ -11,7 +11,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SortType {
 	NAME("name"),
-	APPLIED("applied");
+	LATEST("latest"),
+	OLDEST("oldest");
+
 	private final String value;
 
 	public static SortType from(String type) {
