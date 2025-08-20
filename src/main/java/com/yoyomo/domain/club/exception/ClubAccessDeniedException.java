@@ -7,6 +7,6 @@ import com.yoyomo.global.config.exception.ApplicationException;
 
 public class ClubAccessDeniedException extends ApplicationException {
 	public ClubAccessDeniedException() {
-		super(FORBIDDEN.value(), ACCESS_DENIED.getMessage());
+		super(BAD_REQUEST.value(), ACCESS_DENIED.getMessage());
 	}
 }
