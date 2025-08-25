@@ -17,6 +17,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yoyomo.domain.application.application.usecase.dto.ApplicationCondition;
 import com.yoyomo.domain.application.domain.repository.dto.ApplicationWithStatus;
@@ -52,10 +54,6 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 				application.id.eq(processResult.applicationId)
 					.and(application.process.id.eq(processResult.processId))
 			)
-			.leftJoin(evaluation)
-			.on(
-				application.id.eq(evaluation.application.id)
-			)
 			.where(
 				application.process.eq(process),
 				application.deletedAt.isNull(),
@@ -75,10 +73,6 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 				application.id.eq(processResult.applicationId)
 					.and(application.process.id.eq(processResult.processId))
 			)
-			.leftJoin(evaluation)
-			.on(
-				application.id.eq(evaluation.application.id)
-			)
 			.where(
 				application.process.eq(process),
 				application.deletedAt.isNull(),
@@ -92,7 +86,15 @@ public class ApplicationQueryDslRepositoryImpl implements ApplicationQueryDslRep
 		if (StringUtils.isNullOrEmpty(filter.name()) || filter.isAll()) {
 			return null;
 		}
-		return filter == EvaluationFilter.YES ? evaluation.isNotNull() : evaluation.isNull();
+
+		JPQLQuery<Integer> evaluationFilterQuery = JPAExpressions
+			.selectOne()
+			.from(evaluation)
+			.where(evaluation.application.id.eq(application.id));
+
+		return filter == EvaluationFilter.YES
+			? evaluationFilterQuery.exists()
+			: evaluationFilterQuery.notExists();
 	}
 
 	private BooleanExpression eqResult(ResultFilter filter) {
